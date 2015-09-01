@@ -144,9 +144,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                         _testContext.Checkpoint(Checkpoint.IterationEndCheckpointName);
                         _testContext.Stop();
                     }
-
-                    OnScenarioExecutionFinished();
                     _executeIterationQueued = false;
+                    OnScenarioExecutionFinished();
                 }
                 else
                 {
@@ -154,6 +153,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 }
             }
 
+            _testContext.Reset();
             _testScenario.ScenarioTearDown(_testContext);
         }
 

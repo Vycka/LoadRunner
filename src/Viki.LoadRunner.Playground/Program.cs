@@ -17,8 +17,8 @@ namespace Viki.LoadRunner.Playground
                         maxDuration: TimeSpan.FromSeconds(10),
                         minThreads: 1,
                         maxThreads: 200,
-                        maxRequestsPerSecond: 50,
-                        finishTimeoutMilliseconds: 10000
+                        maxRequestsPerSecond: Int32.MaxValue,
+                        finishTimeoutMilliseconds: 4000
                     )
                 );
 
@@ -36,23 +36,23 @@ namespace Viki.LoadRunner.Playground
 
         public void ScenarioSetup(ITestContext testContext)
         {
-            //Console.WriteLine($"ScenarioSetup {testContext.ThreadId}");
+            Console.WriteLine($"ScenarioSetup {testContext.ThreadId}");
         }
 
         public void ScenarioTearDown(ITestContext testContext)
         {
             
-            //Console.WriteLine($"ScenarioTearDown {testContext.ThreadId}");
+            Console.WriteLine($"ScenarioTearDown {testContext.ThreadId}");
         }
 
         public void IterationSetup(ITestContext testContext)
         {
-            //Console.WriteLine($"IterationSetup {testContext.ThreadId}");
+            Console.WriteLine($"IterationSetup {testContext.ThreadId} {testContext.IterartionId}");
         }
 
         public void IterationTearDown(ITestContext testContext)
         {
-            //Console.WriteLine($"IterationTearDown {testContext.ThreadId}");
+            Console.WriteLine($"IterationTearDown {testContext.ThreadId} {testContext.IterartionId}");
         }
 
         public void ExecuteScenario(ITestContext testContext)

@@ -36,7 +36,7 @@ namespace Viki.LoadRunner.Engine
             stopwatch.Start();
 
             TimeSpan lastExecutionQueued = TimeSpan.Zero;
-            TimeSpan minimumDelayBetweenTests = TimeSpan.FromTicks(TimeSpan.FromSeconds(1).Ticks/_parameters.MaxRequestsPerSecond);
+            TimeSpan minimumDelayBetweenTests = TimeSpan.FromTicks(TimeSpan.FromSeconds(1).Ticks / _parameters.MaxRequestsPerSecond);
 
             while (stopwatch.Elapsed < _parameters.MaxDuration)
             {
@@ -51,8 +51,7 @@ namespace Viki.LoadRunner.Engine
                     lastExecutionQueued = stopwatch.Elapsed;
 
                     threadCoordinator.ExecuteTestScenario();
-                }
-                
+                } 
             }
 
             threadCoordinator.Dispose(_parameters.FinishTimeoutMilliseconds);

@@ -80,7 +80,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
         }
 
-        public int AvailableThreadCount => _maxThreads - _allThreads.Count;
+        public int AvailableThreadCount => (_maxThreads - _allThreads.Count) + _availableThreads.Count;
 
         public void Dispose()
         {
