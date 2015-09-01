@@ -6,6 +6,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 {
     public class ThreadCoordinator : IDisposable
     {
+        #region Fields
+
         private readonly int _maxThreads;
         private readonly Type _testScenarioType;
 
@@ -15,6 +17,16 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         private bool _disposing = false;
         private int _nextIterationId = 0;
+
+        #endregion
+
+        #region Properties
+
+        public int AvailableThreadCount => (_maxThreads - _allThreads.Count) + _availableThreads.Count;
+
+        #endregion
+
+        #region Ctor
 
         public ThreadCoordinator(int minThreads, int maxThreads, Type testScenarioType)
         {
@@ -29,20 +41,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             InitializeThreads(minThreads);
         }
 
-        private void InitializeThreads(int threadCount)
-        {
-            for (int i = 0; i < threadCount; i++)
-            {
-                int nextThreadId = _allThreads.Count + 1;
-                var testScenarioInstance = (ITestScenario)Activator.CreateInstance(_testScenarioType);
-                var executorThread = new TestExecutorThread(testScenarioInstance, nextThreadId);
+        #endregion
 
-                executorThread.ScenarioExecutionFinished += ExecutorThread_ScenarioExecutionFinished;
-
-                _availableThreads.Enqueue(executorThread);
-                _allThreads.Add(executorThread);
-            }
-        }
+        #region Methods
 
         public bool ExecuteTestScenario()
         {
@@ -70,17 +71,24 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             
         }
 
-        private void ExecutorThread_ScenarioExecutionFinished(TestExecutorThread sender, TestContextResult result)
+        private void InitializeThreads(int threadCount)
         {
-            _availableThreads.Enqueue(sender);
-
-            if (!_disposing)
+            for (int i = 0; i < threadCount; i++)
             {
-                OnScenarioExecutionFinished(result);
+                int nextThreadId = _allThreads.Count + 1;
+                var testScenarioInstance = (ITestScenario)Activator.CreateInstance(_testScenarioType);
+                var executorThread = new TestExecutorThread(testScenarioInstance, nextThreadId);
+
+                executorThread.ScenarioExecutionFinished += ExecutorThread_ScenarioExecutionFinished;
+
+                _availableThreads.Enqueue(executorThread);
+                _allThreads.Add(executorThread);
             }
         }
 
-        public int AvailableThreadCount => (_maxThreads - _allThreads.Count) + _availableThreads.Count;
+        #endregion
+
+        #region IDisposable
 
         public void Dispose()
         {
@@ -91,11 +99,11 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 testExecutorThread.Dispose();
             }
 
-            _allThreads = new ConcurrentBag<TestExecutorThread>();
-            _availableThreads = new ConcurrentQueue<TestExecutorThread>();
+            _allThreads = null;
+            _availableThreads = null;
         }
 
-        public void Dispose(int timeoutMilliseconds)
+        public void StopAndDispose(int timeoutMilliseconds)
         {
             DateTime timeoutThreshold = DateTime.UtcNow.AddMilliseconds(timeoutMilliseconds);
 
@@ -116,7 +124,19 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             Dispose();
         }
 
+        #endregion
+
         #region Events
+
+        private void ExecutorThread_ScenarioExecutionFinished(TestExecutorThread sender, TestContextResult result)
+        {
+            _availableThreads.Enqueue(sender);
+
+            if (!_disposing)
+            {
+                OnScenarioExecutionFinished(result);
+            }
+        }
 
         public delegate void ScenarioExecutionFinishedEvent(object sender, TestContextResult result);
         public event ScenarioExecutionFinishedEvent ScenarioExecutionFinished;

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viki.LoadRunner.Engine", "src\Viki.LoadRunner.Engine\Viki.LoadRunner.Engine\Viki.LoadRunner.Engine.csproj", "{AF9183C0-B96D-4854-96C5-3042513CF754}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viki.LoadRunner.Engine", "src\Viki.LoadRunner.Engine\Viki.LoadRunner.Engine.csproj", "{AF9183C0-B96D-4854-96C5-3042513CF754}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viki.LoadRunner.Playground", "src\Viki.LoadRunner.Playground\Viki.LoadRunner.Playground.csproj", "{507429BD-41E3-456B-B602-F8AE40F885B8}"
 EndProject

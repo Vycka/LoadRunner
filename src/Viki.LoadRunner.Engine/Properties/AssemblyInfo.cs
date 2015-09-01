@@ -1,15 +1,14 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Viki.LoadRunner")]
+[assembly: AssemblyTitle("Viki.LoadRunner.Engine")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Viki.LoadRunner")]
+[assembly: AssemblyProduct("Viki.LoadRunner.Engine")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("01fa02de-323d-456b-a524-c8f51118349d")]
+[assembly: Guid("af9183c0-b96d-4854-96c5-3042513cf754")]
 
 // Version information for an assembly consists of the following four values:
 //

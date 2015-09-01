@@ -55,7 +55,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Viki.LoadRunner.Engine\Viki.LoadRunner.Engine\Viki.LoadRunner.Engine.csproj">
+    <ProjectReference Include="..\Viki.LoadRunner.Engine\Viki.LoadRunner.Engine.csproj">
       <Project>{AF9183C0-B96D-4854-96C5-3042513CF754}</Project>
       <Name>Viki.LoadRunner.Engine</Name>
     </ProjectReference>

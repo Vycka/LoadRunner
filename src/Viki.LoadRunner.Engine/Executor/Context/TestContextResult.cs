@@ -1,11 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
     public class TestContextResult
     {
-        public readonly Exception[] Exceptions;
         public readonly Checkpoint[] Checkpoints;
 
         public readonly int ThreadId;
@@ -13,7 +11,6 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         public TestContextResult(TestContext testContext)
         {
-            Exceptions = testContext.LoggedExceptions.ToArray();
             Checkpoints = testContext.LoggedCheckpoints.ToArray();
 
             ThreadId = testContext.ThreadId;

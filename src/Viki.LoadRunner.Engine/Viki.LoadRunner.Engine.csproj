@@ -41,13 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aggregator\ResultItem.cs" />
-    <Compile Include="Aggregator\ResultsAggregator.cs" />
+    <Compile Include="Aggregates\Utils\AsyncResultsAggregator.cs" />
+    <Compile Include="Aggregates\Default\DefaultResultsAggregator.cs" />
+    <Compile Include="Aggregates\IResultsAggregator.cs" />
+    <Compile Include="Aggregates\Default\ResultItem.cs" />
+    <Compile Include="Executor\Context\Checkpoint.cs" />
+    <Compile Include="Executor\Context\ITestContext.cs" />
     <Compile Include="Executor\ExecutionParameters.cs" />
     <Compile Include="Executor\Threads\ThreadCoordinator.cs" />
     <Compile Include="ITestScenario.cs" />
     <Compile Include="Executor\Context\TestContext.cs" />
-    <Compile Include="LoadRunner.cs" />
+    <Compile Include="LoadTestClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Executor\Context\TestContextResult.cs" />
     <Compile Include="Executor\Threads\TestExecutorThread.cs" />
