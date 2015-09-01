@@ -1,4 +1,4 @@
-### .NET 4.5 Load/Stress test library for executing tests written in c#
+### Load/Stress test library for executing tests written in c#
 * NuGet: `Install-Package Viki.LoadRunner -Pre`
 
 ## *Quick Intro*
