@@ -40,13 +40,19 @@ namespace Viki.LoadRunner.Engine
 
             while (stopwatch.Elapsed < _parameters.MaxDuration)
             {
-                if (threadCoordinator.AvailableThreadCount > 0 && stopwatch.Elapsed - lastExecutionQueued >= minimumDelayBetweenTests)
+                if (threadCoordinator.AvailableThreadCount == 0)
+                {
+                    Thread.Sleep(1);
+                    continue;
+                }
+
+                if (stopwatch.Elapsed - lastExecutionQueued >= minimumDelayBetweenTests)
                 {
                     lastExecutionQueued = stopwatch.Elapsed;
 
                     threadCoordinator.ExecuteTestScenario();
                 }
-                Thread.Sleep(1);
+                
             }
 
             threadCoordinator.Dispose(_parameters.FinishTimeoutMilliseconds);

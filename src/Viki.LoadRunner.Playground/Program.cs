@@ -14,10 +14,11 @@ namespace Viki.LoadRunner.Playground
             LoadRunner<TestScenario> testRunner = 
                 new LoadRunner<TestScenario>(
                     new ExecutionParameters(
-                        TimeSpan.FromSeconds(10),
-                        10,
-                        100,
-                        10
+                        maxDuration: TimeSpan.FromSeconds(10),
+                        minThreads: 1,
+                        maxThreads: 200,
+                        maxRequestsPerSecond: 50,
+                        finishTimeoutMilliseconds: 10000
                     )
                 );
 
@@ -35,32 +36,38 @@ namespace Viki.LoadRunner.Playground
 
         public void ScenarioSetup(ITestContext testContext)
         {
-            Console.WriteLine($"ScenarioSetup {testContext.ThreadId}");
+            //Console.WriteLine($"ScenarioSetup {testContext.ThreadId}");
         }
 
         public void ScenarioTearDown(ITestContext testContext)
         {
             
-            Console.WriteLine($"ScenarioTearDown {testContext.ThreadId}");
+            //Console.WriteLine($"ScenarioTearDown {testContext.ThreadId}");
         }
 
         public void IterationSetup(ITestContext testContext)
         {
-            Console.WriteLine($"IterationSetup {testContext.ThreadId}");
+            //Console.WriteLine($"IterationSetup {testContext.ThreadId}");
         }
 
         public void IterationTearDown(ITestContext testContext)
         {
-            Console.WriteLine($"IterationTearDown {testContext.ThreadId}");
+            //Console.WriteLine($"IterationTearDown {testContext.ThreadId}");
         }
 
         public void ExecuteScenario(ITestContext testContext)
         {
-            testContext.Checkpoint("Before Console");
-            Console.WriteLine("Zzzz... " + testContext.IterartionId);
-            Thread.Sleep(Random.Next(5000));
+            testContext.Checkpoint();
 
-            testContext.Checkpoint("After Console");
+            Thread.Sleep(Random.Next(1000));
+
+            testContext.Checkpoint("Checkpoint AAA");
+
+            Thread.Sleep(Random.Next(1000));
+
+            testContext.Checkpoint("Checkpoint BBB");
+
+            Thread.Sleep(Random.Next(1000));
         }
     }
 }
