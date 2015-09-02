@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
@@ -8,6 +9,8 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         public readonly int ThreadId;
         public readonly int IterationId;
+        public readonly DateTime IterationStarted;
+        public readonly DateTime IterationFinished;
 
         public TestContextResult(TestContext testContext)
         {
@@ -15,6 +18,9 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
             ThreadId = testContext.ThreadId;
             IterationId = testContext.IterartionId;
+
+            IterationStarted = testContext.IterationStarted;
+            IterationFinished = testContext.IterationFinished;
         }
     }
 }
