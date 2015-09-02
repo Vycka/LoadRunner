@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
-using Viki.LoadRunner.Engine.Aggregates.Default;
+using Viki.LoadRunner.Engine.Aggregates;
+using Viki.LoadRunner.Engine.Aggregates.Utils;
 using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Executor.Context;
 
@@ -12,26 +15,30 @@ namespace Viki.LoadRunner.Playground
     {
         static void Main(string[] args)
         {
-            DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
+            DefaultResultsAggregator defaultResultsAggregator = new DefaultResultsAggregator();
+            HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(3);
 
             LoadTestClient testClient = 
                 LoadTestClient.Create<TestScenario>(
                     new ExecutionParameters(
-                        maxDuration: TimeSpan.FromSeconds(3),
+                        maxDuration: TimeSpan.FromSeconds(5),
                         minThreads: 10,
                         maxThreads: 100,
-                        maxRequestsPerSecond: 2,
+                        maxRequestsPerSecond: 100,
                         finishTimeoutMilliseconds: 4000,
                         maxIterationsCount: Int32.MaxValue
                     ),
-                    resultsAggregator
+                    defaultResultsAggregator,
+                    histogramResultsAggregator
                 );
 
             testClient.Run();
 
-            var results = resultsAggregator.BuildResultsObject();
+            List<ResultItem> defaultResults = defaultResultsAggregator.GetResults().ToList();
+            List<HistogramResultRow> histogramResults = histogramResultsAggregator.GetResults().ToList();
 
-            Console.WriteLine(JsonConvert.SerializeObject(results, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(histogramResults, Formatting.Indented));
         }
     }
 

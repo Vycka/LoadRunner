@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Viki.LoadRunner.Engine.Aggregates.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Default
+namespace Viki.LoadRunner.Engine.Aggregates
 {
     public class DefaultResultsAggregator : IResultsAggregator
     {
@@ -23,11 +24,6 @@ namespace Viki.LoadRunner.Engine.Aggregates.Default
                 checkpointResultObject.AggregateResult(momentCheckpointTimeSpan, currentCheckpoint, resultItem);
                 previousCheckpoint = currentCheckpoint;
             }
-        }
-
-        public List<ResultItem> BuildResultsObject()
-        {
-            return _checkpointsOrder.Select(checkpointName => _results[checkpointName]).ToList();
         }
 
         private ResultItem GetCheckpointResultObject(string checkpointName, Checkpoint previousCheckpoint)
@@ -59,6 +55,10 @@ namespace Viki.LoadRunner.Engine.Aggregates.Default
             }
 
             return result;
+        }
+        public IEnumerable<ResultItem> GetResults()
+        {
+            return _checkpointsOrder.Select(checkpointName => _results[checkpointName]);
         }
     }
 }

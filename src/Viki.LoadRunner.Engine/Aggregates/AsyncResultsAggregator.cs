@@ -4,10 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Utils
+namespace Viki.LoadRunner.Engine.Aggregates
 {
     /// <summary>
     /// Since TestContextResultReceived call are synchronous from benchmarking threads, this class unloads processing to its own seperate thread
+    /// It's already used in LoadTestClient, so no need to reuse it again.
     /// </summary>
     internal class AsyncResultsAggregator : IResultsAggregator, IDisposable
     {

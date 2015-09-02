@@ -1,14 +1,14 @@
 @ECHO OFF
 cd %~dp0
 
-SET minorVersion="0.0-alpha"
+SET minorVersion="0.1-alpha"
 SET majorVersion="0"
 
 SET projectID=Viki.LoadRunner.Engine
 SET project1="..\src\\%projectID%\\%projectID%.csproj"
 
 "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" "%project1%" /verbosity:m /target:Rebuild /tv:14.0 /p:GenerateBuildInfoConfigFile=false /p:VisualStudioVersion=14.0 /p:platform=AnyCPU /p:TargetFrameworkVersion="v4.5" /p:Configuration=Release /p:OutputPath="%cd%\pack\lib\net45" /p:DebugSymbols=false /p:DebugType=none /P:SignAssembly=False
-"C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" "%project1%" /verbosity:m /target:Rebuild /tv:14.0 /p:GenerateBuildInfoConfigFile=false /p:VisualStudioVersion=14.0 /p:platform=AnyCPU /p:TargetFrameworkVersion="v4.6" /p:Configuration=Release /p:OutputPath="%cd%\pack\lib\net46" /p:DebugSymbols=false /p:DebugType=none /P:SignAssembly=False
+REM "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" "%project1%" /verbosity:m /target:Rebuild /tv:14.0 /p:GenerateBuildInfoConfigFile=false /p:VisualStudioVersion=14.0 /p:platform=AnyCPU /p:TargetFrameworkVersion="v4.6" /p:Configuration=Release /p:OutputPath="%cd%\pack\lib\net46" /p:DebugSymbols=false /p:DebugType=none /P:SignAssembly=False
 
 %windir%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe EditNuspec.msbuild /p:File="%projectID%.nuspec" /p:projectID="%projectID%" /p:majorVersion=%majorVersion% /p:minorVersion=%minorVersion%
 

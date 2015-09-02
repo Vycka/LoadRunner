@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Default
+namespace Viki.LoadRunner.Engine.Aggregates.Utils
 {
     [Serializable]
     public class ResultItem
