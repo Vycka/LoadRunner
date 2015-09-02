@@ -19,6 +19,6 @@ WIP Library: Namespace and project name might still change, once proper name is 
 	<licenseUrl>https://github.com/Vycka/LoadRunner/blob/master/LICENSE</licenseUrl>
 	<projectUrl>https://github.com/Vycka/LoadRunner</projectUrl>
     <copyright>2015</copyright>
-    <tags>Load Stress Test c# Runner Client .NET</tags>
+    <tags>Load Stress Test Tester c# Runner Parallel Thread Client Library Framework Tool .NET</tags>
   </metadata>
 </package>
