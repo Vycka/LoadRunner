@@ -88,9 +88,9 @@ ExecutionParameters executionParameters = new ExecutionParameters(
 );
 ```
 
-### Choose your Load-test aggregation
+### *Choose results aggregator*
 ```cs
-  // This aggregation is similar to SoapUI
+  // This aggregation is similar to SoapUI (Like Min, Max, Avg, ...)
   DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
   // This one aggregates same results as DefaultResultsAggregator, but splits into time-based histogram
   HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 3);
