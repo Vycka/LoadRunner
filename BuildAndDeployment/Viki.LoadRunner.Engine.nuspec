@@ -1,13 +1,19 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <title>LoadRunner</title>
-    <id>Viki.LoadRunner.Engine</id>
+    <title>LoadRunner LoadTest Client</title>
+    <id>Viki.LoadRunner</id>
     <version></version>
     <authors>Vytautas Klumbys</authors>
     <owners></owners>
-    <description>LoadTest library for c# written loadtest scenarios </description>
-	<summary>Namespace and project name might still change, once proper name is decided</summary>
+    <description>LoadTest library for c# written loadtest scenarios.
+
+Visit project website for documentation.
+
+Easy-to-use, Customizable, Light-weight and Fast.
+
+WIP Library: Namespace and project name might still change, once proper name is decided.</description>
+	<summary></summary>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes></releaseNotes>
 	<licenseUrl>https://github.com/Vycka/LoadRunner/blob/master/LICENSE</licenseUrl>
