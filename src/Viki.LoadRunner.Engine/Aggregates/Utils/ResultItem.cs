@@ -8,6 +8,8 @@ namespace Viki.LoadRunner.Engine.Aggregates.Utils
     [Serializable]
     public class ResultItem
     {
+        private readonly List<Exception> _errors;
+
         public ResultItem(string name)
         {
             if (name == null)
@@ -15,7 +17,7 @@ namespace Viki.LoadRunner.Engine.Aggregates.Utils
 
             Name = name;
 
-            Errors = new List<Exception>();
+            _errors = new List<Exception>();
             _summedMomentTime = new TimeSpan();
             MomentMin = TimeSpan.MaxValue;
             MomentMax = TimeSpan.MinValue;
@@ -30,7 +32,7 @@ namespace Viki.LoadRunner.Engine.Aggregates.Utils
             Count++;
 
             if (checkpoint.Errors != null)
-                Errors.AddRange(checkpoint.Errors);
+                _errors.AddRange(checkpoint.Errors);
             _summedMomentTime += momentDuration;
             _summedTotalTime += checkpoint.TimePoint;
 
@@ -51,6 +53,11 @@ namespace Viki.LoadRunner.Engine.Aggregates.Utils
 
             if (_lastRequestEndTime < resultContext.IterationFinished)
                 _lastRequestEndTime = resultContext.IterationFinished;
+        }
+
+        public IReadOnlyList<Exception> GetErrors()
+        {
+            return _errors;
         }
 
         [DataMember]
@@ -84,12 +91,10 @@ namespace Viki.LoadRunner.Engine.Aggregates.Utils
 
         [DataMember]
         public int Count { get; private set; }
+       
 
         [DataMember]
-        public List<Exception> Errors;
-
-        [DataMember]
-        public int ErrorCount => Errors.Count;
+        public int ErrorCount => _errors.Count;
 
         [DataMember]
         public double ErrorRate => (1.0 / Count) * ErrorCount;

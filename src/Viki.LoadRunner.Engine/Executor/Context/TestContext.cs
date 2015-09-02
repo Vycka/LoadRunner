@@ -32,18 +32,19 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             _stopwatch.Start();
         }
 
-        public void Stop()
+        public void Stop(bool createIterationEndCheckpoint = true)
         {
             _stopwatch.Stop();
             IterationFinished = DateTime.UtcNow;
-            Checkpoint(Context.Checkpoint.IterationEndCheckpointName);
+
+            if (createIterationEndCheckpoint)
+                Checkpoint(Context.Checkpoint.IterationEndCheckpointName);
         }
 
         public void Reset(int iterationId)
         {
             IterartionId = iterationId;
 
-            IterartionId = -1;
             _checkpoints.Clear();
             _stopwatch.Reset();
         }

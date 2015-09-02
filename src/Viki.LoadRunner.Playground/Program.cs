@@ -16,7 +16,7 @@ namespace Viki.LoadRunner.Playground
         static void Main(string[] args)
         {
             DefaultResultsAggregator defaultResultsAggregator = new DefaultResultsAggregator();
-            HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(3);
+            HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 3);
 
             LoadTestClient testClient = 
                 LoadTestClient.Create<TestScenario>(
@@ -25,7 +25,7 @@ namespace Viki.LoadRunner.Playground
                         minThreads: 10,
                         maxThreads: 100,
                         maxRequestsPerSecond: 100,
-                        finishTimeoutMilliseconds: 4000,
+                        finishTimeoutMilliseconds: 5000,
                         maxIterationsCount: Int32.MaxValue
                     ),
                     defaultResultsAggregator,
@@ -69,17 +69,18 @@ namespace Viki.LoadRunner.Playground
 
         public void ExecuteScenario(ITestContext testContext)
         {
-           // testContext.Checkpoint();
+            if (Random.Next(100) % 10 == 0)
+                throw new Exception("err");
 
-            Thread.Sleep(Random.Next(1));
+            Thread.Sleep(Random.Next(500));
+            
+            testContext.Checkpoint("Checkpoint AAA");
 
-            //testContext.Checkpoint("Checkpoint AAA");
 
-            //Thread.Sleep(Random.Next(1000));
+            if (Random.Next(100) % 10 == 0)
+                throw new Exception("err");
 
-            //testContext.Checkpoint("Checkpoint BBB");
-
-            //Thread.Sleep(Random.Next(1000));
+            Thread.Sleep(Random.Next(1000));
         }
     }
 }

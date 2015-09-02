@@ -117,6 +117,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         private void ExecuteScenarioThreadFunction()
         {
+            _testContext.Reset(-1);
             _testScenario.ScenarioSetup(_testContext);
 
             while (_stopQueued != true)
@@ -127,14 +128,15 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                     OnScenarioExecutionStarted();
                     
                     bool setupSuccess = ExecuteWithExceptionHandling(() => _testScenario.IterationSetup(_testContext), _testContext);
+                    bool iterationSuccess = false;
                     if (setupSuccess)
                     {
                         _testContext.Start();
 
-                        ExecuteWithExceptionHandling(() => _testScenario.ExecuteScenario(_testContext), _testContext);
+                        iterationSuccess = ExecuteWithExceptionHandling(() => _testScenario.ExecuteScenario(_testContext), _testContext);
                     }
 
-                    _testContext.Stop();
+                    _testContext.Stop(iterationSuccess);
                     ExecuteWithExceptionHandling(() => _testScenario.IterationTearDown(_testContext), _testContext);
 
                     _executeIterationQueued = false;
@@ -146,6 +148,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 }
             }
 
+            _testContext.Reset(-1);
             _testScenario.ScenarioTearDown(_testContext);
         }
 

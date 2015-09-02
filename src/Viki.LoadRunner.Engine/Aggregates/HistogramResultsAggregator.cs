@@ -62,7 +62,7 @@ namespace Viki.LoadRunner.Engine.Aggregates
         {
             double unixTime = requestTime.ToUnixTimeMs() / 1000.0;
 
-            var resultTimeSlot = ((int) Math.Floor(unixTime / _aggregationStepSeconds)) * _aggregationStepSeconds;
+            var resultTimeSlot = ((int)(unixTime / _aggregationStepSeconds)) * _aggregationStepSeconds;
 
             return resultTimeSlot;
         }
