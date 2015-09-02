@@ -16,8 +16,8 @@ public class TestScenario : ITestScenario
         Console.WriteLine(
             "ExecuteScenario defines single iteration for load test scenario, " +
             "It is called after each successful IterationSetup call. " +
-            "Execution time is meassured only for this function" +
-            "You can use testContext.Checkpoint() function to mark points, where time should be meassured"
+            "Execution time is measured only for this function" +
+            "You can use testContext.Checkpoint() function to mark points, where time should be measured"
         );
         Thread.Sleep(Random.Next(5000));
 
@@ -89,12 +89,14 @@ ExecutionParameters executionParameters = new ExecutionParameters(
 ```
 
 ### Choose your Load-test aggregation
-There is already one created which gives similar stats to SoapUI
 ```cs
+  // This aggregation is similar to SoapUI
   DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
+  // this one aggregates same results as DefaultResultsAggregator, but splits into time-based histogram
+  HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 3);
 ```
 
-Or `IResultsAggregator` interface could be implemented, thus giving access to raw meassurements
+Or `IResultsAggregator` interface could be implemented, thus giving access to raw measurements
 ```cs
     public interface IResultsAggregator
     {
