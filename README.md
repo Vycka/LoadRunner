@@ -128,8 +128,8 @@ LoadTestClient testClient = LoadTestClient.Create<TestScenario>(executionParamet
 testClient.Run();
 
 // ResultItem will have all logged exceptions within LoadTest execution
-List<ResultItem> results = resultsAggregator.BuildResultsObject();
-Console.WriteLine(JsonConvert.SerializeObject(results, Formatting.Indented));
+List<ResultItem> defaultResults = defaultResultsAggregator.GetResults().ToList();
+Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
 ```
 ## *Enjoy the result*
 
