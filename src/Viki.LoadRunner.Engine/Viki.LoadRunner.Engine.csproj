@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aggregates\Default\HistogramResultsAggregator.cs" />
     <Compile Include="Aggregates\Utils\AsyncResultsAggregator.cs" />
     <Compile Include="Aggregates\Default\DefaultResultsAggregator.cs" />
     <Compile Include="Aggregates\IResultsAggregator.cs" />

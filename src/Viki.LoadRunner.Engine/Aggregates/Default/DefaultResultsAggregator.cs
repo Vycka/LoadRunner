@@ -20,7 +20,7 @@ namespace Viki.LoadRunner.Engine.Aggregates.Default
                 TimeSpan momentCheckpointTimeSpan = currentCheckpoint.TimePoint - previousCheckpoint.TimePoint;
                 ResultItem checkpointResultObject = GetCheckpointResultObject(currentCheckpoint.CheckpointName, previousCheckpoint);
 
-                checkpointResultObject.AggregateResult(momentCheckpointTimeSpan, currentCheckpoint);
+                checkpointResultObject.AggregateResult(momentCheckpointTimeSpan, currentCheckpoint, resultItem);
                 previousCheckpoint = currentCheckpoint;
             }
         }

@@ -57,7 +57,7 @@ namespace Viki.LoadRunner.Engine
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                TimeSpan minimumDelayBetweenTests = TimeSpan.FromTicks(TimeSpan.FromSeconds(1).Ticks / _parameters.MaxRequestsPerSecond);
+                TimeSpan minimumDelayBetweenTests = TimeSpan.FromTicks((int)((TimeSpan.FromSeconds(1).Ticks / _parameters.MaxRequestsPerSecond) + 0.5));
                 int testIterationCount = 0;
                 TimeSpan lastExecutionQueued = TimeSpan.Zero;
 

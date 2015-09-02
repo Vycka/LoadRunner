@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Aggregates.Default
@@ -21,9 +22,11 @@ namespace Viki.LoadRunner.Engine.Aggregates.Default
             MomentMax = TimeSpan.MinValue;
             TotalMin = TimeSpan.MaxValue;
             TotalMax = TimeSpan.MinValue;
+            _firstRequestBeginTime = DateTime.MaxValue;
+            _lastRequestEndTime = DateTime.MinValue;
         }
 
-        public void AggregateResult(TimeSpan momentDuration, Checkpoint checkpoint)
+        public void AggregateResult(TimeSpan momentDuration, Checkpoint checkpoint, TestContextResult resultContext)
         {
             Count++;
 
@@ -43,6 +46,12 @@ namespace Viki.LoadRunner.Engine.Aggregates.Default
 
             if (TotalMax < checkpoint.TimePoint)
                 TotalMax = checkpoint.TimePoint;
+
+            if (_firstRequestBeginTime > resultContext.IterationStarted)
+                _firstRequestBeginTime = resultContext.IterationStarted;
+
+            if (_lastRequestEndTime < resultContext.IterationFinished)
+                _lastRequestEndTime = resultContext.IterationFinished;
         }
 
         [DataMember]
@@ -58,6 +67,9 @@ namespace Viki.LoadRunner.Engine.Aggregates.Default
         public TimeSpan MomentAverage => TimeSpan.FromMilliseconds(_summedMomentTime.TotalMilliseconds / Count);
 
         [DataMember]
+        public double MomentCountPerSecond => Count / (_summedMomentTime.TotalMilliseconds / 1000.0);
+
+        [DataMember]
         public TimeSpan TotalMin { get; private set; }
 
         [DataMember]
@@ -66,9 +78,10 @@ namespace Viki.LoadRunner.Engine.Aggregates.Default
         [DataMember]
         public TimeSpan TotalAverage => TimeSpan.FromMilliseconds(_summedTotalTime.TotalMilliseconds / Count);
 
-
         [DataMember]
-        public double CountPerSecond => (Count / _summedMomentTime.TotalMilliseconds) * 1000.0;
+        public double TotalCountPerSecond => Count / (_summedTotalTime.TotalMilliseconds / 1000.0);
+
+        public double ActualCountPerSecond => Count / ((_lastRequestEndTime - _firstRequestBeginTime).TotalMilliseconds / 1000.0);
 
         [DataMember]
         public int Count { get; private set; }
@@ -85,6 +98,9 @@ namespace Viki.LoadRunner.Engine.Aggregates.Default
         private TimeSpan _summedMomentTime;
 
         private TimeSpan _summedTotalTime;
+
+        private DateTime _firstRequestBeginTime;
+        private DateTime _lastRequestEndTime;
 
     }
 }
