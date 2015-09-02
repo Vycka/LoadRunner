@@ -92,7 +92,7 @@ ExecutionParameters executionParameters = new ExecutionParameters(
 ```cs
   // This aggregation is similar to SoapUI
   DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
-  // this one aggregates same results as DefaultResultsAggregator, but splits into time-based histogram
+  // This one aggregates same results as DefaultResultsAggregator, but splits into time-based histogram
   HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 3);
 ```
 
