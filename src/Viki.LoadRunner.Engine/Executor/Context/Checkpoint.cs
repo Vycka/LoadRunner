@@ -9,7 +9,8 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         public const string IterationStartCheckpointName = "SYS_ITERATION_START";
         public const string IterationEndCheckpointName = "SYS_ITERATION_END";
-        public const string IterationTearDownEndCheckpointName = "SYS_TEARDOWN_END";
+        public const string IterationSetupCheckpointName = "SYS_ITERATION_SETUP";
+        public const string IterationTearDownCheckpointName = "SYS_ITERATION_TEARDOWN";
 
         #endregion
 
@@ -18,7 +19,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         public readonly string CheckpointName;
         public readonly TimeSpan TimePoint;
-        public Exception Error { get; internal set; }
+        internal Exception Error { get; set; }
 
         #endregion
 

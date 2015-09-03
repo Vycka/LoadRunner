@@ -60,11 +60,11 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
                 if (!_handlerThread.Join(timeoutMilliseconds))
                 {
-                    Console.WriteLine($"Aborting {_testContext.ThreadId}");
+                    //Console.WriteLine($"Aborting {_testContext.ThreadId}");
                     _handlerThread.Abort();
                     if (_executeIterationQueued && _testContext.LoggedCheckpoints.Count > 0)
                     {
-                        Console.WriteLine($"Broadcasting {_testContext.ThreadId}");
+                        //Console.WriteLine($"Broadcasting {_testContext.ThreadId}");
                         OnScenarioExecutionFinished();
                     }
                 }
@@ -129,17 +129,25 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                     _testContext.Reset(_queuedIterationId);
                     OnScenarioExecutionStarted();
 
+                    _testContext.Checkpoint(Checkpoint.IterationSetupCheckpointName);
                     bool setupSuccess = ExecuteWithExceptionHandling(() => _loadTestScenario.IterationSetup(_testContext), _testContext);
 
-                    _testContext.Start();
                     if (setupSuccess)
                     {
-                        ExecuteWithExceptionHandling(() => _loadTestScenario.ExecuteScenario(_testContext), _testContext);
-                    }
-                    _testContext.Stop();
+                        _testContext.Checkpoint(Checkpoint.IterationStartCheckpointName);
 
-                    ExecuteWithExceptionHandling(() => _loadTestScenario.IterationTearDown(_testContext),_testContext);
-                    _testContext.Checkpoint(Checkpoint.IterationTearDownEndCheckpointName);
+                        _testContext.Start();
+                        bool iterationSuccess = ExecuteWithExceptionHandling(() => _loadTestScenario.ExecuteScenario(_testContext), _testContext);
+                        _testContext.Stop();
+
+                        if (iterationSuccess)
+                        {
+                            _testContext.Checkpoint(Checkpoint.IterationEndCheckpointName);
+                        }
+                    }
+
+                    _testContext.Checkpoint(Checkpoint.IterationTearDownCheckpointName);
+                    ExecuteWithExceptionHandling(() => _loadTestScenario.IterationTearDown(_testContext), _testContext);
 
                     _executeIterationQueued = false;
                     OnScenarioExecutionFinished();

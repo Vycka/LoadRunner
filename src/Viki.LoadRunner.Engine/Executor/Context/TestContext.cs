@@ -9,7 +9,6 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         #region Fields
 
         private readonly List<Checkpoint> _checkpoints = new List<Checkpoint>();
-        private Exception _loggedError = null;
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         public TestContext(int threadId)
@@ -26,46 +25,29 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         #region Internal methods
 
-        public void Start()
+        internal void Start()
         {
             IterationStarted = DateTime.UtcNow;
-            Checkpoint(Context.Checkpoint.IterationStartCheckpointName);
-
             _stopwatch.Start();
         }
 
-        public void Stop()
+        internal void Stop()
         {
             _stopwatch.Stop();
             IterationFinished = DateTime.UtcNow;
-
-            Checkpoint(Context.Checkpoint.IterationEndCheckpointName);
         }
 
-        public void Clear()
-        {
-            Reset(-1);
-        }
-
-        public void Reset(int iterationId)
+        internal void Reset(int iterationId)
         {
             IterartionId = iterationId;
 
             _checkpoints.Clear();
             _stopwatch.Reset();
-            _loggedError = null;
         }
 
-        public void SetError(Exception ex)
+        internal void SetError(Exception error)
         {
-            if (_stopwatch.IsRunning)
-            {
-                _checkpoints[_checkpoints.Count - 1].Error = ex;
-            }
-            else
-            {
-                _loggedError = ex;
-            }
+            _checkpoints[_checkpoints.Count - 1].Error = error;
         }
 
         #endregion
@@ -78,11 +60,6 @@ namespace Viki.LoadRunner.Engine.Executor.Context
                 checkpointName = $"Checkpoint #{_checkpoints.Count + 1}";
 
             Checkpoint newCheckpoint = new Checkpoint(checkpointName, _stopwatch.Elapsed);
-            if (_loggedError != null)
-            {
-                newCheckpoint.Error = _loggedError;
-                _loggedError = null;
-            }
             _checkpoints.Add(newCheckpoint);  
         }
 
