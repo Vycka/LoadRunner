@@ -45,12 +45,14 @@
     <Compile Include="Aggregates\AsyncResultsAggregator.cs" />
     <Compile Include="Aggregates\DefaultResultsAggregator.cs" />
     <Compile Include="Aggregates\IResultsAggregator.cs" />
-    <Compile Include="Aggregates\Results\ResultItem.cs" />
+    <Compile Include="Aggregates\Results\ResultsContainer.cs" />
     <Compile Include="Aggregates\Results\ResultItemTotals.cs" />
-    <Compile Include="Aggregates\Utils\HistogramResultRow.cs" />
+    <Compile Include="Aggregates\Results\HistogramResultRow.cs" />
     <Compile Include="Aggregates\Results\ResultItemRow.cs" />
+    <Compile Include="Aggregates\Results\ResultsMapper.cs" />
     <Compile Include="Aggregates\Utils\DateTimeExtensions.cs" />
     <Compile Include="Aggregates\Utils\CheckpointOrderLearner.cs" />
+    <Compile Include="Aggregates\Utils\AggregatedCheckpoint.cs" />
     <Compile Include="Client\LoadTestBase.cs" />
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\ITestContext.cs" />

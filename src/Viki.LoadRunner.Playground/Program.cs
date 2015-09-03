@@ -26,19 +26,19 @@ namespace Viki.LoadRunner.Playground
                         minThreads: 50,
                         maxThreads: 100,
                         maxRequestsPerSecond: 200,
-                        finishTimeoutMilliseconds: 700,
+                        finishTimeoutMilliseconds: 0,
                         maxIterationsCount: Int32.MaxValue
                     ),
-                    defaultResultsAggregator
+                    defaultResultsAggregator, histogramResultsAggregator
                     
                 );
 
             testClient.Run();
 
-            List<ResultItem> defaultResults = defaultResultsAggregator.GetResults().ToList();
+            ResultsContainer results = defaultResultsAggregator.GetResults();
             List<HistogramResultRow> histogramResults = histogramResultsAggregator.GetResults().ToList();
 
-            Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(results, Formatting.Indented));
             Console.WriteLine(JsonConvert.SerializeObject(histogramResults, Formatting.Indented));
         }
     }
@@ -62,7 +62,7 @@ namespace Viki.LoadRunner.Playground
         {
             //Console.WriteLine($"IterationSetup {testContext.ThreadId} {testContext.IterartionId}");
             if (Random.Next(100) % 100 == 0)
-                throw new Exception($"err {testContext.IterartionId}");
+                throw new Exception($"#### {testContext.IterartionId}");
         }
 
         public void IterationTearDown(ITestContext testContext)
@@ -73,15 +73,15 @@ namespace Viki.LoadRunner.Playground
         public void ExecuteScenario(ITestContext testContext)
         {
             if (Random.Next(100) % 10 == 0)
-                throw new Exception($"err {testContext.IterartionId}");
+                throw new Exception($"@@@@ {testContext.IterartionId}");
 
             Thread.Sleep(Random.Next(700));
             
             testContext.Checkpoint("Checkpoint AAA");
 
 
-            //if (Random.Next(100) % 10 == 0)
-            //    throw new Exception("err");
+            if (Random.Next(100) % 50 == 0)
+                throw new Exception("err");
 
             Thread.Sleep(Random.Next(1000));
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using Viki.LoadRunner.Engine.Client;
 using Viki.LoadRunner.Engine.Executor.Context;
@@ -62,7 +63,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 {
                     //Console.WriteLine($"Aborting {_testContext.ThreadId}");
                     _handlerThread.Abort();
-                    if (_executeIterationQueued && _testContext.LoggedCheckpoints.Count > 0)
+
+                    //Broadcast threads that managed to start TeardownProcess
+                    if (_executeIterationQueued && _testContext.ExecutionTime.Ticks != 0)
                     {
                         //Console.WriteLine($"Broadcasting {_testContext.ThreadId}");
                         OnScenarioExecutionFinished();

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Viki.LoadRunner.Engine.Aggregates.Results;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Utils
+namespace Viki.LoadRunner.Engine.Aggregates.Results
 {
     [Serializable]
     public class HistogramResultRow

@@ -14,7 +14,8 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         public TestContext(int threadId)
         {
             ThreadId = threadId;
-            IterartionId = -1;
+            
+            Reset(-1);
         }
 
         #endregion
@@ -43,6 +44,9 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
             _checkpoints.Clear();
             _stopwatch.Reset();
+
+            IterationStarted = DateTime.MaxValue;
+            IterationFinished = DateTime.MinValue;
         }
 
         internal void SetError(Exception error)
