@@ -48,15 +48,25 @@ namespace Viki.LoadRunner.Engine.Aggregates
             _processingQueue.Enqueue(result);
         }
 
+        public void Reset()
+        {
+        }
+
         private void ProcessorThreadFunction()
         {
+            bool onlyOneAggregator = _resultsAggregators.Length == 1;
+
             while (!_stopping)
             {
                 TestContextResult resultObject;
                 while (_processingQueue.TryDequeue(out resultObject))
                 {
                     TestContextResult localResultObject = resultObject;
-                    Parallel.ForEach(_resultsAggregators, aggregator => aggregator.TestContextResultReceived(localResultObject));
+
+                    if (onlyOneAggregator)
+                        _resultsAggregators[0].TestContextResultReceived(localResultObject);
+                    else
+                        Parallel.ForEach(_resultsAggregators, aggregator => aggregator.TestContextResultReceived(localResultObject));
                 }
 
                 Thread.Sleep(50);

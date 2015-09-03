@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using Viki.LoadRunner.Engine.Client;
 using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
@@ -76,7 +77,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             for (int i = 0; i < threadCount; i++)
             {
                 int nextThreadId = _allThreads.Count + 1;
-                var testScenarioInstance = (ITestScenario)Activator.CreateInstance(_testScenarioType);
+                var testScenarioInstance = (ILoadTestScenario)Activator.CreateInstance(_testScenarioType);
                 var executorThread = new TestExecutorThread(testScenarioInstance, nextThreadId);
 
                 executorThread.ScenarioExecutionFinished += ExecutorThread_ScenarioExecutionFinished;

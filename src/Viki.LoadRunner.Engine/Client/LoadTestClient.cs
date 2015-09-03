@@ -2,12 +2,11 @@
 using System.Diagnostics;
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregates;
-using Viki.LoadRunner.Engine.Aggregates.Utils;
 using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Threads;
 
-namespace Viki.LoadRunner.Engine
+namespace Viki.LoadRunner.Engine.Client
 {
     public class LoadTestClient
     {
@@ -35,7 +34,7 @@ namespace Viki.LoadRunner.Engine
 
         }
 
-        public static LoadTestClient Create<TTestScenario>(ExecutionParameters parameters, params IResultsAggregator[] resultsAggregators) where TTestScenario : ITestScenario
+        public static LoadTestClient Create<TTestScenario>(ExecutionParameters parameters, params IResultsAggregator[] resultsAggregators) where TTestScenario : ILoadTestScenario
         {
             return new LoadTestClient(parameters, typeof(TTestScenario), resultsAggregators);
         }

@@ -9,12 +9,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         public const string IterationStartCheckpointName = "SYS_ITERATION_START";
         public const string IterationEndCheckpointName = "SYS_ITERATION_END";
-
-        #endregion
-
-        #region Fields
-
-        private List<Exception> _errors = null;
+        public const string IterationTearDownEndCheckpointName = "SYS_TEARDOWN_END";
 
         #endregion
 
@@ -23,7 +18,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         public readonly string CheckpointName;
         public readonly TimeSpan TimePoint;
-        public IReadOnlyList<Exception> Errors => _errors;
+        public Exception Error { get; internal set; }
 
         #endregion
 
@@ -33,14 +28,6 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         {
             CheckpointName = checkpointName;
             TimePoint = timePoint;
-        }
-
-        public void LogError(Exception ex)
-        {
-            if (_errors == null)
-                _errors = new List<Exception>();
-
-            _errors.Add(ex);
         }
 
         #endregion

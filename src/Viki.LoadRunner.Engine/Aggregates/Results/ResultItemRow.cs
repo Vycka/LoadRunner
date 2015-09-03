@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Utils
+namespace Viki.LoadRunner.Engine.Aggregates.Results
 {
-    [Serializable]
-    public class ResultItem
+    public class ResultItemRow : ResultItem
     {
         private readonly List<Exception> _errors;
 
-        public ResultItem(string name)
+        private TimeSpan _summedMomentTime;
+        private TimeSpan _summedTotalTime;
+
+        private DateTime _firsIterationBeginTime;
+        private DateTime _lastIterationEndTime;
+
+        public ResultItemRow(string name)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
@@ -23,16 +27,18 @@ namespace Viki.LoadRunner.Engine.Aggregates.Utils
             MomentMax = TimeSpan.MinValue;
             TotalMin = TimeSpan.MaxValue;
             TotalMax = TimeSpan.MinValue;
-            _firstRequestBeginTime = DateTime.MaxValue;
-            _lastRequestEndTime = DateTime.MinValue;
+            _firsIterationBeginTime = DateTime.MaxValue;
+            _lastIterationEndTime = DateTime.MinValue;
+            Count = 0;
         }
 
         public void AggregateResult(TimeSpan momentDuration, Checkpoint checkpoint, TestContextResult resultContext)
         {
             Count++;
 
-            if (checkpoint.Errors != null)
-                _errors.AddRange(checkpoint.Errors);
+            if (checkpoint.Error != null)
+                _errors.Add(checkpoint.Error);
+
             _summedMomentTime += momentDuration;
             _summedTotalTime += checkpoint.TimePoint;
 
@@ -48,63 +54,43 @@ namespace Viki.LoadRunner.Engine.Aggregates.Utils
             if (TotalMax < checkpoint.TimePoint)
                 TotalMax = checkpoint.TimePoint;
 
-            if (_firstRequestBeginTime > resultContext.IterationStarted)
-                _firstRequestBeginTime = resultContext.IterationStarted;
+            if (_firsIterationBeginTime > resultContext.IterationStarted)
+                _firsIterationBeginTime = resultContext.IterationStarted;
 
-            if (_lastRequestEndTime < resultContext.IterationFinished)
-                _lastRequestEndTime = resultContext.IterationFinished;
+            if (_lastIterationEndTime < resultContext.IterationFinished)
+                _lastIterationEndTime = resultContext.IterationFinished;
         }
+         
 
-        public IReadOnlyList<Exception> GetErrors()
+        public IReadOnlyList<Exception> GetErrors() => _errors;
+
+        public DateTime GetFirstIterationBeginTime() => _firsIterationBeginTime;
+        public DateTime GetLastIterationEndTime() => _lastIterationEndTime;
+
+        public void SetErrors(IEnumerable<Exception> errors)
         {
-            return _errors;
+            _errors.Clear();
+            _errors.AddRange(errors);
         }
 
-        [DataMember]
         public readonly string Name;
 
-        [DataMember]
         public TimeSpan MomentMin { get; private set; }
 
-        [DataMember]
         public TimeSpan MomentMax { get; private set; }
 
-        [DataMember]
         public TimeSpan MomentAverage => TimeSpan.FromMilliseconds(_summedMomentTime.TotalMilliseconds / Count);
 
-        [DataMember]
-        public double MomentCountPerSecond => Count / (_summedMomentTime.TotalMilliseconds / 1000.0);
-
-        [DataMember]
         public TimeSpan TotalMin { get; private set; }
 
-        [DataMember]
         public TimeSpan TotalMax { get; private set; }
 
-        [DataMember]
         public TimeSpan TotalAverage => TimeSpan.FromMilliseconds(_summedTotalTime.TotalMilliseconds / Count);
 
-        [DataMember]
-        public double TotalCountPerSecond => Count / (_summedTotalTime.TotalMilliseconds / 1000.0);
+        public double ActualCountPerSecond => Count / ((_lastIterationEndTime - _firsIterationBeginTime).TotalMilliseconds / 1000.0);
 
-        public double ActualCountPerSecond => Count / ((_lastRequestEndTime - _firstRequestBeginTime).TotalMilliseconds / 1000.0);
-
-        [DataMember]
         public int Count { get; private set; }
-       
 
-        [DataMember]
         public int ErrorCount => _errors.Count;
-
-        [DataMember]
-        public double ErrorRate => (1.0 / Count) * ErrorCount;
-
-        private TimeSpan _summedMomentTime;
-
-        private TimeSpan _summedTotalTime;
-
-        private DateTime _firstRequestBeginTime;
-        private DateTime _lastRequestEndTime;
-
     }
 }

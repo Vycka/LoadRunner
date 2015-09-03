@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Viki.LoadRunner.Engine.Aggregates.Results;
 using Viki.LoadRunner.Engine.Aggregates.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 
@@ -9,7 +10,7 @@ namespace Viki.LoadRunner.Engine.Aggregates
     public class HistogramResultsAggregator : IResultsAggregator
     {
         private readonly int _aggregationStepSeconds;
-        private readonly Dictionary<int, Dictionary<string, ResultItem>> _histogramItems = new Dictionary<int, Dictionary<string, ResultItem>>();
+        private readonly Dictionary<int, Dictionary<string, ResultItemRow>> _histogramItems = new Dictionary<int, Dictionary<string, ResultItemRow>>();
 
         private readonly static Checkpoint PreviousCheckpointBase = new Checkpoint("", TimeSpan.Zero);
 
@@ -21,37 +22,37 @@ namespace Viki.LoadRunner.Engine.Aggregates
         public void TestContextResultReceived(TestContextResult result)
         {
             int histogramRowTimeSlot = GetHistogramRowTimeSlot(result.IterationFinished);
-            Dictionary<string, ResultItem> histogramRow = GetHistogramRow(histogramRowTimeSlot);
+            Dictionary<string, ResultItemRow> histogramRow = GetHistogramRow(histogramRowTimeSlot);
 
             Checkpoint previousCheckpoint = PreviousCheckpointBase;
             foreach (Checkpoint currentCheckpoint in result.Checkpoints)
             {
                 TimeSpan momentCheckpointTimeSpan = currentCheckpoint.TimePoint - previousCheckpoint.TimePoint;
-                ResultItem checkpointResultObject = GetHistogramTargetResultObject(histogramRow, currentCheckpoint.CheckpointName);
+                ResultItemRow checkpointResultObject = GetHistogramTargetResultObject(histogramRow, currentCheckpoint.CheckpointName);
 
                 checkpointResultObject.AggregateResult(momentCheckpointTimeSpan, currentCheckpoint, result);
                 previousCheckpoint = currentCheckpoint;
             }
         }
 
-        private ResultItem GetHistogramTargetResultObject(Dictionary<string, ResultItem> histogramRow, string checkpointName)
+        private ResultItemRow GetHistogramTargetResultObject(Dictionary<string, ResultItemRow> histogramRow, string checkpointName)
         {
-            ResultItem result = null;
+            ResultItemRow result = null;
             if (!histogramRow.TryGetValue(checkpointName, out result))
             {
-                result = new ResultItem(checkpointName);
+                result = new ResultItemRow(checkpointName);
                 histogramRow.Add(checkpointName, result);
             }
 
             return result;
         }
 
-        private Dictionary<string, ResultItem> GetHistogramRow(int timeslot)
+        private Dictionary<string, ResultItemRow> GetHistogramRow(int timeslot)
         {
-            Dictionary<string, ResultItem> result = null;
+            Dictionary<string, ResultItemRow> result = null;
             if (!_histogramItems.TryGetValue(timeslot, out result))
             {
-                result = new Dictionary<string, ResultItem>();
+                result = new Dictionary<string, ResultItemRow>();
                 _histogramItems.Add(timeslot, result);
             }
 
@@ -69,10 +70,10 @@ namespace Viki.LoadRunner.Engine.Aggregates
 
         public IEnumerable<HistogramResultRow> GetResults()
         {
-            foreach (KeyValuePair<int, Dictionary<string, ResultItem>> histogramRow in _histogramItems.OrderBy(kv => kv.Key))
+            foreach (KeyValuePair<int, Dictionary<string, ResultItemRow>> histogramRow in _histogramItems.OrderBy(kv => kv.Key))
             {
                 DateTime rowTime = DateTimeExtensions.UnixTimeToDateTime(histogramRow.Key);
-                List<ResultItem> rowResultItems = histogramRow.Value.Select(kv => kv.Value).ToList();
+                List<ResultItemRow> rowResultItems = histogramRow.Value.Select(kv => kv.Value).ToList();
 
                 yield return new HistogramResultRow(rowTime, rowResultItems);
             }

@@ -9,6 +9,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         #region Fields
 
         private readonly List<Checkpoint> _checkpoints = new List<Checkpoint>();
+        private Exception _loggedError = null;
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         public TestContext(int threadId)
@@ -27,18 +28,23 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         public void Start()
         {
-            Checkpoint(Context.Checkpoint.IterationStartCheckpointName);
             IterationStarted = DateTime.UtcNow;
+            Checkpoint(Context.Checkpoint.IterationStartCheckpointName);
+
             _stopwatch.Start();
         }
 
-        public void Stop(bool createIterationEndCheckpoint = true)
+        public void Stop()
         {
             _stopwatch.Stop();
             IterationFinished = DateTime.UtcNow;
 
-            if (createIterationEndCheckpoint)
-                Checkpoint(Context.Checkpoint.IterationEndCheckpointName);
+            Checkpoint(Context.Checkpoint.IterationEndCheckpointName);
+        }
+
+        public void Clear()
+        {
+            Reset(-1);
         }
 
         public void Reset(int iterationId)
@@ -47,11 +53,19 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
             _checkpoints.Clear();
             _stopwatch.Reset();
+            _loggedError = null;
         }
 
-        public void LogException(Exception ex)
+        public void SetError(Exception ex)
         {
-            _checkpoints[_checkpoints.Count - 1].LogError(ex);
+            if (_stopwatch.IsRunning)
+            {
+                _checkpoints[_checkpoints.Count - 1].Error = ex;
+            }
+            else
+            {
+                _loggedError = ex;
+            }
         }
 
         #endregion
@@ -63,7 +77,13 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             if (checkpointName == null)
                 checkpointName = $"Checkpoint #{_checkpoints.Count + 1}";
 
-            _checkpoints.Add(new Checkpoint(checkpointName, _stopwatch.Elapsed));
+            Checkpoint newCheckpoint = new Checkpoint(checkpointName, _stopwatch.Elapsed);
+            if (_loggedError != null)
+            {
+                newCheckpoint.Error = _loggedError;
+                _loggedError = null;
+            }
+            _checkpoints.Add(newCheckpoint);  
         }
 
         public TimeSpan ExecutionTime => _stopwatch.Elapsed;
