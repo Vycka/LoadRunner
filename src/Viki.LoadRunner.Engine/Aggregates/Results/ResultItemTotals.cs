@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Viki.LoadRunner.Engine.Aggregates.Aggregates;
 using Viki.LoadRunner.Engine.Aggregates.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 
@@ -12,10 +13,10 @@ namespace Viki.LoadRunner.Engine.Aggregates.Results
         private readonly List<Exception> _iterationTearDownErrors;
 
 
-        public ResultItemTotals(Dictionary<string, AggregatedCheckpoint> resultRows)
+        public ResultItemTotals(Dictionary<string, CheckpointAggregate> resultRows)
         {
-            AggregatedCheckpoint setupRow = resultRows[Checkpoint.IterationSetupCheckpointName];
-            AggregatedCheckpoint tearDownRow = resultRows[Checkpoint.IterationTearDownCheckpointName];
+            CheckpointAggregate setupRow = resultRows[Checkpoint.IterationSetupCheckpointName];
+            CheckpointAggregate tearDownRow = resultRows[Checkpoint.IterationTearDownCheckpointName];
 
             TotalDuration = tearDownRow.LastIterationEndTime - setupRow.FirsIterationBeginTime;
 

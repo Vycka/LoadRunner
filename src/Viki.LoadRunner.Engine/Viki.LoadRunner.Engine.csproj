@@ -50,9 +50,10 @@
     <Compile Include="Aggregates\Results\HistogramResultRow.cs" />
     <Compile Include="Aggregates\Results\ResultItemRow.cs" />
     <Compile Include="Aggregates\Results\ResultsMapper.cs" />
-    <Compile Include="Aggregates\Utils\DateTimeExtensions.cs" />
+    <Compile Include="Aggregates\Utils\UnixDateTimeExtensions.cs" />
     <Compile Include="Aggregates\Utils\CheckpointOrderLearner.cs" />
-    <Compile Include="Aggregates\Utils\AggregatedCheckpoint.cs" />
+    <Compile Include="Aggregates\Aggregates\CheckpointAggregate.cs" />
+    <Compile Include="Aggregates\Aggregates\TestContextResultAggregate.cs" />
     <Compile Include="Client\LoadTestBase.cs" />
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\ITestContext.cs" />
@@ -65,9 +66,7 @@
     <Compile Include="Executor\Context\TestContextResult.cs" />
     <Compile Include="Executor\Threads\TestExecutorThread.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Strategies\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

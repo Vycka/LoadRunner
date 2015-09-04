@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Viki.LoadRunner.Engine.Aggregates.Aggregates;
 using Viki.LoadRunner.Engine.Aggregates.Results;
 using Viki.LoadRunner.Engine.Aggregates.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
@@ -10,7 +11,7 @@ namespace Viki.LoadRunner.Engine.Aggregates
     public class DefaultResultsAggregator : IResultsAggregator
     {
         private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
-        private readonly Dictionary<string, AggregatedCheckpoint> _results = new Dictionary<string, AggregatedCheckpoint>();
+        private readonly Dictionary<string, CheckpointAggregate> _results = new Dictionary<string, CheckpointAggregate>();
 
 
         private readonly static Checkpoint PreviousCheckpointBase = new Checkpoint("", TimeSpan.Zero);
@@ -23,22 +24,22 @@ namespace Viki.LoadRunner.Engine.Aggregates
             foreach (Checkpoint currentCheckpoint in resultItem.Checkpoints)
             {
                 TimeSpan momentCheckpointTimeSpan = currentCheckpoint.TimePoint - previousCheckpoint.TimePoint;
-                AggregatedCheckpoint checkpointResultObject = GetCheckpointResultObject(currentCheckpoint.CheckpointName);
+                CheckpointAggregate checkpointAggregateResultObject = GetCheckpointResultObject(currentCheckpoint.CheckpointName);
 
-                checkpointResultObject.AggregateCheckpoint(momentCheckpointTimeSpan, currentCheckpoint, resultItem);
+                checkpointAggregateResultObject.AggregateCheckpoint(momentCheckpointTimeSpan, currentCheckpoint, resultItem);
                 previousCheckpoint = currentCheckpoint;
             }
         }
-
+        
         public void Reset()
         {
             _orderLearner.Reset();
             _results.Clear();
         }
 
-        private AggregatedCheckpoint GetCheckpointResultObject(string checkpointName)
+        private CheckpointAggregate GetCheckpointResultObject(string checkpointName)
         {
-            AggregatedCheckpoint result = null;
+            CheckpointAggregate result = null;
 
             if (_results.ContainsKey(checkpointName))
             {
@@ -46,7 +47,7 @@ namespace Viki.LoadRunner.Engine.Aggregates
             }
             else
             {
-                result = new AggregatedCheckpoint(checkpointName);
+                result = new CheckpointAggregate(checkpointName);
                 _results.Add(checkpointName, result); 
             }
 

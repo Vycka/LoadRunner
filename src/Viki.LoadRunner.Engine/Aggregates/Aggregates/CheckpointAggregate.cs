@@ -2,19 +2,14 @@
 using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Utils
+namespace Viki.LoadRunner.Engine.Aggregates.Aggregates
 {
-    public class AggregatedCheckpoint
+    public class CheckpointAggregate
     {
         public readonly List<Exception> Errors;
 
         public TimeSpan SummedMomentTime;
         public TimeSpan SummedTotalTime;
-
-        public DateTime FirsIterationBeginTime;
-        public DateTime LastIterationBeginTime;
-        public DateTime FirstIterationEndTime;
-        public DateTime LastIterationEndTime;
 
         public readonly string Name;
 
@@ -29,7 +24,7 @@ namespace Viki.LoadRunner.Engine.Aggregates.Utils
 
         public int Count { get; private set; }
 
-        public AggregatedCheckpoint(string name)
+        public CheckpointAggregate(string name)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
@@ -44,15 +39,10 @@ namespace Viki.LoadRunner.Engine.Aggregates.Utils
             TotalMin = TimeSpan.MaxValue;
             TotalMax = TimeSpan.MinValue;
 
-            FirsIterationBeginTime = DateTime.MaxValue;
-            FirstIterationEndTime = DateTime.MaxValue;
-            LastIterationBeginTime = DateTime.MinValue;
-            LastIterationEndTime = DateTime.MinValue;
-
             Count = 0;
         }
 
-        public void AggregateCheckpoint(TimeSpan momentDuration, Checkpoint checkpoint, TestContextResult resultContext)
+        public void AggregateCheckpoint(TimeSpan momentDuration, Checkpoint checkpoint)
         {
             Count++;
 
@@ -73,12 +63,6 @@ namespace Viki.LoadRunner.Engine.Aggregates.Utils
 
             if (TotalMax < checkpoint.TimePoint)
                 TotalMax = checkpoint.TimePoint;
-
-            if (FirsIterationBeginTime > resultContext.IterationStarted)
-                FirsIterationBeginTime = resultContext.IterationStarted;
-
-            if (LastIterationEndTime < resultContext.IterationFinished)
-                LastIterationEndTime = resultContext.IterationFinished;
         }
     }
 }

@@ -64,12 +64,12 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                     //Console.WriteLine($"Aborting {_testContext.ThreadId}");
                     _handlerThread.Abort();
 
-                    //Broadcast threads that managed to start TeardownProcess
-                    if (_executeIterationQueued && _testContext.ExecutionTime.Ticks != 0)
-                    {
-                        //Console.WriteLine($"Broadcasting {_testContext.ThreadId}");
-                        OnScenarioExecutionFinished();
-                    }
+                    ////Broadcast threads that managed to start TeardownProcess
+                    //if (_executeIterationQueued && _testContext.ExecutionTime.Ticks != 0)
+                    //{
+                    //    //Console.WriteLine($"Broadcasting {_testContext.ThreadId}");
+                    //    OnScenarioExecutionFinished();
+                    //}
                 }
             }
         }

@@ -9,7 +9,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         #region Fields
 
         private readonly List<Checkpoint> _checkpoints = new List<Checkpoint>();
-        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly Stopwatch iterationTimer = new Stopwatch();
 
         public TestContext(int threadId)
         {
@@ -29,12 +29,12 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         internal void Start()
         {
             IterationStarted = DateTime.UtcNow;
-            _stopwatch.Start();
+            iterationTimer.Start();
         }
 
         internal void Stop()
         {
-            _stopwatch.Stop();
+            iterationTimer.Stop();
             IterationFinished = DateTime.UtcNow;
         }
 
@@ -43,7 +43,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             IterartionId = iterationId;
 
             _checkpoints.Clear();
-            _stopwatch.Reset();
+            iterationTimer.Reset();
 
             IterationStarted = DateTime.MaxValue;
             IterationFinished = DateTime.MinValue;
@@ -63,11 +63,11 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             if (checkpointName == null)
                 checkpointName = $"Checkpoint #{_checkpoints.Count + 1}";
 
-            Checkpoint newCheckpoint = new Checkpoint(checkpointName, _stopwatch.Elapsed);
+            Checkpoint newCheckpoint = new Checkpoint(checkpointName, iterationTimer.Elapsed);
             _checkpoints.Add(newCheckpoint);  
         }
 
-        public TimeSpan ExecutionTime => _stopwatch.Elapsed;
+        public TimeSpan ExecutionTime => iterationTimer.Elapsed;
         public int IterartionId { get; private set; }
         public int ThreadId { get; }
 
