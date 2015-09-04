@@ -110,7 +110,7 @@ ExecutionParameters executionParameters = new ExecutionParameters(
 ```
 
 Or `IResultsAggregator` interface could be implemented, thus giving access to raw measurements
-* [Check out IResultsAggregator](src/Viki.LoadRunner.Engine/Aggregates/IResultsAggregator.cs)
+* [Check out IResultsAggregator](src/Viki.LoadRunner.Engine/Aggregators/IResultsAggregator.cs)
 
 ### *Put it all together*
 
