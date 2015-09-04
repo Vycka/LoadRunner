@@ -110,15 +110,7 @@ ExecutionParameters executionParameters = new ExecutionParameters(
 ```
 
 Or `IResultsAggregator` interface could be implemented, thus giving access to raw measurements
-```cs
-    public interface IResultsAggregator
-    {
-        /// <summary>
-        /// Results from all running threads will be poured into this one.
-        /// </summary>
-        void TestContextResultReceived(TestContextResult result);
-    }
-```
+* [Check out IResultsAggregator](blob/master/src/Viki.LoadRunner.Engine/Aggregates/IResultsAggregator.cs)
 
 ### *Put it all together*
 
