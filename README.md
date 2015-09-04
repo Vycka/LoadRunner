@@ -54,9 +54,8 @@ public class TestScenario : ILoadTestScenario
 
     public void IterationTearDown(ITestContext testContext)
     {
-        Debug.WriteLine("IterationTearDown is executed each time after ExecuteScenario iteration is finished");
+        Debug.WriteLine("IterationTearDown is executed each time after ExecuteScenario iteration is finished.");
         Debug.WriteLine("It is also executed even when IterationSetup or ExecuteScenario fails");
-        Debug.WriteLine("unless thread is terminated by finishTimeoutMilliseconds abort");
 
         if (Random.Next(100) % 25 == 0)
             throw new Exception("4% error chance for testing");
@@ -65,7 +64,6 @@ public class TestScenario : ILoadTestScenario
     public void ScenarioTearDown(ITestContext testContext)
     {
         Debug.WriteLine("ScenarioTearDown Executes once LoadTest execution is over");
-        Debug.WriteLine("(unless thread is terminated by finishTimeoutMilliseconds abort");
 
         Debug.WriteLine("Exceptions here are not handled!");
     }
@@ -96,6 +94,9 @@ ExecutionParameters executionParameters = new ExecutionParameters(
     // Once LoadTest execution finishes because of maxDuration or maxIterationsCount limit
     // Coordinating thread will wait finishTimeoutMilliseconds amount of time before 
     // terminating them with Thread.Abort()
+    //
+    // Aborted threads won't get the chance to call IterationTearDown or ScenarioTearDown
+    // neither it will broadcast TestContextResultReceived() to aggregators with the state as it is after abort.
     finishTimeoutMilliseconds: 10000
 );
 ```
