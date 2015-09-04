@@ -1,5 +1,5 @@
 ### Load/Stress test library for executing tests written in c# ###
-* NuGet: `Install-Package Viki.LoadRunner -Pre`
+* NuGet: `Install-Package Viki.LoadRunner`
 
 ## *Quick Intro*
 
@@ -15,7 +15,6 @@ public class TestScenario : ILoadTestScenario
     {
         Debug.WriteLine("ScenarioSetup Executes on thread creation");
         Debug.WriteLine("Exceptions here are not handled!");
-
     }
 
     public void IterationSetup(ITestContext testContext)
@@ -23,7 +22,7 @@ public class TestScenario : ILoadTestScenario
         Debug.WriteLine("IterationSetup is executed before each ExecuteScenario call");
 
         if (Random.Next(100) % 50 == 0)
-            throw new Exception("2% chance error in setup");
+            throw new Exception("2% error chance for testing");
     }
 
     public void ExecuteScenario(ITestContext testContext)
@@ -40,13 +39,13 @@ public class TestScenario : ILoadTestScenario
         testContext.Checkpoint("First Checkpoint");
 
         if (Random.Next(100) % 10 == 0)
-            throw new Exception("10% chance error");
+            throw new Exception("10% error chance for testing");
 
         testContext.Checkpoint("Last Checkpoint");
         Thread.Sleep(Random.Next(1000));
 
         if (Random.Next(100) % 100 == 0)
-            throw new Exception("1% chance error");
+            throw new Exception("1% error chance for testing");
     }
 
     public void IterationTearDown(ITestContext testContext)
@@ -55,7 +54,7 @@ public class TestScenario : ILoadTestScenario
         Debug.WriteLine("unless thread is terminated by finishTimeoutMilliseconds abort");
 
         if (Random.Next(100) % 25 == 0)
-            throw new Exception("4% chance error in setup");
+            throw new Exception("4% error chance for testing");
     }
 
     public void ScenarioTearDown(ITestContext testContext)
