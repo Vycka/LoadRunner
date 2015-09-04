@@ -92,7 +92,7 @@ ExecutionParameters executionParameters = new ExecutionParameters(
     maxRequestsPerSecond: Double.MaxValue,
 
     // Once LoadTest execution finishes because of maxDuration or maxIterationsCount limit
-    // Coordinating thread will wait finishTimeoutMilliseconds amount of time before 
+    // coordinating thread will wait finishTimeoutMilliseconds amount of time before 
     // terminating them with Thread.Abort()
     //
     // Aborted threads won't get the chance to call IterationTearDown or ScenarioTearDown
