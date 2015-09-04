@@ -9,12 +9,13 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         #region Fields
 
         private readonly List<Checkpoint> _checkpoints = new List<Checkpoint>();
-        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly Stopwatch iterationTimer = new Stopwatch();
 
         public TestContext(int threadId)
         {
             ThreadId = threadId;
-            IterartionId = -1;
+            
+            Reset(-1);
         }
 
         #endregion
@@ -25,33 +26,32 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         #region Internal methods
 
-        public void Start()
+        internal void Start()
         {
-            Checkpoint(Context.Checkpoint.IterationStartCheckpointName);
             IterationStarted = DateTime.UtcNow;
-            _stopwatch.Start();
+            iterationTimer.Start();
         }
 
-        public void Stop(bool createIterationEndCheckpoint = true)
+        internal void Stop()
         {
-            _stopwatch.Stop();
+            iterationTimer.Stop();
             IterationFinished = DateTime.UtcNow;
-
-            if (createIterationEndCheckpoint)
-                Checkpoint(Context.Checkpoint.IterationEndCheckpointName);
         }
 
-        public void Reset(int iterationId)
+        internal void Reset(int iterationId)
         {
             IterartionId = iterationId;
 
             _checkpoints.Clear();
-            _stopwatch.Reset();
+            iterationTimer.Reset();
+
+            IterationStarted = DateTime.MaxValue;
+            IterationFinished = DateTime.MinValue;
         }
 
-        public void LogException(Exception ex)
+        internal void SetError(Exception error)
         {
-            _checkpoints[_checkpoints.Count - 1].LogError(ex);
+            _checkpoints[_checkpoints.Count - 1].Error = error;
         }
 
         #endregion
@@ -63,10 +63,11 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             if (checkpointName == null)
                 checkpointName = $"Checkpoint #{_checkpoints.Count + 1}";
 
-            _checkpoints.Add(new Checkpoint(checkpointName, _stopwatch.Elapsed));
+            Checkpoint newCheckpoint = new Checkpoint(checkpointName, iterationTimer.Elapsed);
+            _checkpoints.Add(newCheckpoint);  
         }
 
-        public TimeSpan ExecutionTime => _stopwatch.Elapsed;
+        public TimeSpan ExecutionTime => iterationTimer.Elapsed;
         public int IterartionId { get; private set; }
         public int ThreadId { get; }
 

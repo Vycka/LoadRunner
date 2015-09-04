@@ -41,28 +41,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aggregates\HistogramResultsAggregator.cs" />
-    <Compile Include="Aggregates\AsyncResultsAggregator.cs" />
-    <Compile Include="Aggregates\DefaultResultsAggregator.cs" />
-    <Compile Include="Aggregates\IResultsAggregator.cs" />
-    <Compile Include="Aggregates\Utils\HistogramResultRow.cs" />
-    <Compile Include="Aggregates\Utils\ResultItem.cs" />
-    <Compile Include="Aggregates\Utils\DateTimeExtensions.cs" />
+    <Compile Include="Aggregators\HistogramResultsAggregator.cs" />
+    <Compile Include="Aggregators\AsyncResultsAggregator.cs" />
+    <Compile Include="Aggregators\DefaultResultsAggregator.cs" />
+    <Compile Include="Aggregators\IResultsAggregator.cs" />
+    <Compile Include="Aggregators\Results\ResultsContainer.cs" />
+    <Compile Include="Aggregators\Results\ResultItemTotals.cs" />
+    <Compile Include="Aggregators\Results\HistogramResultRow.cs" />
+    <Compile Include="Aggregators\Results\ResultItemRow.cs" />
+    <Compile Include="Aggregators\Results\ResultsMapper.cs" />
+    <Compile Include="Aggregators\Utils\UnixDateTimeExtensions.cs" />
+    <Compile Include="Aggregators\Utils\CheckpointOrderLearner.cs" />
+    <Compile Include="Aggregators\Aggregates\DefaultCheckpointAggregate.cs" />
+    <Compile Include="Aggregators\Aggregates\DefaultTestContextResultAggregate.cs" />
+    <Compile Include="LoadTestBase.cs" />
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\ITestContext.cs" />
     <Compile Include="Executor\ExecutionParameters.cs" />
     <Compile Include="Executor\Threads\ThreadCoordinator.cs" />
-    <Compile Include="ITestScenario.cs" />
+    <Compile Include="ILoadTestScenario.cs" />
     <Compile Include="Executor\Context\TestContext.cs" />
-    <Compile Include="LoadTestClient.cs" />
+    <Compile Include="LoadRunnerEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Executor\Context\TestContextResult.cs" />
     <Compile Include="Executor\Threads\TestExecutorThread.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-    <Folder Include="Strategies\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

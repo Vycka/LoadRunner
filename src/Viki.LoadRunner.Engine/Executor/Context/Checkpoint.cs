@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
@@ -9,12 +8,8 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         public const string IterationStartCheckpointName = "SYS_ITERATION_START";
         public const string IterationEndCheckpointName = "SYS_ITERATION_END";
-
-        #endregion
-
-        #region Fields
-
-        private List<Exception> _errors = null;
+        public const string IterationSetupCheckpointName = "SYS_ITERATION_SETUP";
+        public const string IterationTearDownCheckpointName = "SYS_ITERATION_TEARDOWN";
 
         #endregion
 
@@ -23,7 +18,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         public readonly string CheckpointName;
         public readonly TimeSpan TimePoint;
-        public IReadOnlyList<Exception> Errors => _errors;
+        internal Exception Error { get; set; }
 
         #endregion
 
@@ -33,14 +28,6 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         {
             CheckpointName = checkpointName;
             TimePoint = timePoint;
-        }
-
-        public void LogError(Exception ex)
-        {
-            if (_errors == null)
-                _errors = new List<Exception>();
-
-            _errors.Add(ex);
         }
 
         #endregion

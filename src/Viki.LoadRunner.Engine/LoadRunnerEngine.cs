@@ -1,27 +1,26 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using Viki.LoadRunner.Engine.Aggregates;
-using Viki.LoadRunner.Engine.Aggregates.Utils;
+using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine
 {
-    public class LoadTestClient
+    public class LoadRunnerEngine
     {
         #region Fields
 
         private readonly ExecutionParameters _parameters;
-        private readonly AsyncResultsAggregator _resultsAggregator;
+        private readonly IResultsAggregator _resultsAggregator;
         private readonly Type _iTestScenarioObjeType;
 
         #endregion
 
         #region Ctor
 
-        public LoadTestClient(ExecutionParameters parameters, Type iTestScenarioObjectType, params IResultsAggregator[] resultsAggregators)
+        public LoadRunnerEngine(ExecutionParameters parameters, Type iTestScenarioObjectType, params IResultsAggregator[] resultsAggregators)
         {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
@@ -35,9 +34,9 @@ namespace Viki.LoadRunner.Engine
 
         }
 
-        public static LoadTestClient Create<TTestScenario>(ExecutionParameters parameters, params IResultsAggregator[] resultsAggregators) where TTestScenario : ITestScenario
+        public static LoadRunnerEngine Create<TTestScenario>(ExecutionParameters parameters, params IResultsAggregator[] resultsAggregators) where TTestScenario : ILoadTestScenario
         {
-            return new LoadTestClient(parameters, typeof(TTestScenario), resultsAggregators);
+            return new LoadRunnerEngine(parameters, typeof(TTestScenario), resultsAggregators);
         }
 
         #endregion
@@ -52,16 +51,18 @@ namespace Viki.LoadRunner.Engine
                 threadCoordinator = new ThreadCoordinator(_parameters.MinThreads, _parameters.MaxThreads, _iTestScenarioObjeType);
                 threadCoordinator.ScenarioExecutionFinished += _threadCoordinator_ScenarioExecutionFinished;
 
-                _resultsAggregator.Start();
+                _resultsAggregator.Begin();
 
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
+
 
                 TimeSpan minimumDelayBetweenTests = TimeSpan.FromTicks((int)((TimeSpan.FromSeconds(1).Ticks / _parameters.MaxRequestsPerSecond) + 0.5));
                 int testIterationCount = 0;
                 TimeSpan lastExecutionQueued = TimeSpan.Zero;
 
-                while (stopwatch.Elapsed < _parameters.MaxDuration  && testIterationCount < _parameters.MaxIterationsCount)
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                while (stopwatch.Elapsed <= _parameters.MaxDuration  && testIterationCount < _parameters.MaxIterationsCount)
                 {
                     if (threadCoordinator.AvailableThreadCount == 0)
                     {
@@ -83,7 +84,7 @@ namespace Viki.LoadRunner.Engine
             {
                 threadCoordinator?.StopAndDispose(_parameters.FinishTimeoutMilliseconds);
 
-                _resultsAggregator.Stop();
+                _resultsAggregator.End();
             }
         }
 

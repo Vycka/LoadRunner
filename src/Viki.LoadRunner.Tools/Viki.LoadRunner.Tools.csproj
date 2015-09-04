@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{507429BD-41E3-456B-B602-F8AE40F885B8}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{D9237A7D-0E26-43CE-905C-6B6D913E9026}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Viki.LoadRunner.Playground</RootNamespace>
-    <AssemblyName>Viki.LoadRunner.Playground</AssemblyName>
+    <RootNamespace>Viki.LoadRunner.Tools</RootNamespace>
+    <AssemblyName>Viki.LoadRunner.Tools</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,13 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,24 +44,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Aggregators\DefaultResultsAggregatorUi.cs" />
+    <Compile Include="Aggregators\HistogramResultsAggregatorUi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReadmeDemo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <Compile Include="Windows\TimelineWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\TimelineWindow.Designer.cs">
+      <DependentUpon>TimelineWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\TotalsWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\TotalsWindow.Designer.cs">
+      <DependentUpon>TotalsWindow.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Viki.LoadRunner.Engine\Viki.LoadRunner.Engine.csproj">
       <Project>{AF9183C0-B96D-4854-96C5-3042513CF754}</Project>
       <Name>Viki.LoadRunner.Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Viki.LoadRunner.Tools\Viki.LoadRunner.Tools.csproj">
-      <Project>{d9237a7d-0e26-43ce-905c-6b6d913e9026}</Project>
-      <Name>Viki.LoadRunner.Tools</Name>
-    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

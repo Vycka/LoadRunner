@@ -4,10 +4,11 @@ using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
-using Viki.LoadRunner.Engine.Aggregates;
-using Viki.LoadRunner.Engine.Aggregates.Utils;
+using Viki.LoadRunner.Engine.Aggregators;
+using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Tools.Aggregators;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -15,34 +16,40 @@ namespace Viki.LoadRunner.Playground
     {
         static void Main(string[] args)
         {
-            DefaultResultsAggregator defaultResultsAggregator = new DefaultResultsAggregator();
-            HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 3);
+            ReadmeDemo.Run();
 
-            LoadTestClient testClient = 
-                LoadTestClient.Create<TestScenario>(
+            return;
+            DefaultResultsAggregator defaultResultsAggregator = new DefaultResultsAggregator();
+            HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 2);
+            DefaultResultsAggregatorUi defaultUi = new DefaultResultsAggregatorUi();
+            DefaultResultsAggregatorUi defaultUi2 = new DefaultResultsAggregatorUi();
+
+            LoadRunnerEngine testClient =
+                LoadRunnerEngine.Create<LoadTestScenario>(
                     new ExecutionParameters(
                         maxDuration: TimeSpan.FromSeconds(5),
-                        minThreads: 10,
-                        maxThreads: 100,
-                        maxRequestsPerSecond: 100,
-                        finishTimeoutMilliseconds: 5000,
-                        maxIterationsCount: Int32.MaxValue
+                        minThreads: 100,
+                        maxThreads: 150,
+                        maxRequestsPerSecond: 200,
+                        finishTimeoutMilliseconds: 0,
+                        maxIterationsCount: int.MaxValue
                     ),
-                    defaultResultsAggregator,
-                    histogramResultsAggregator
+                    defaultResultsAggregator, histogramResultsAggregator, defaultUi
+
                 );
 
             testClient.Run();
 
-            List<ResultItem> defaultResults = defaultResultsAggregator.GetResults().ToList();
+
+            ResultsContainer results = defaultResultsAggregator.GetResults();
             List<HistogramResultRow> histogramResults = histogramResultsAggregator.GetResults().ToList();
 
-            Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(results, Formatting.Indented));
             Console.WriteLine(JsonConvert.SerializeObject(histogramResults, Formatting.Indented));
         }
     }
 
-    public class TestScenario : ITestScenario
+    public class LoadTestScenario : ILoadTestScenario
     {
         private static readonly Random Random = new Random(42);
 
@@ -60,24 +67,28 @@ namespace Viki.LoadRunner.Playground
         public void IterationSetup(ITestContext testContext)
         {
             //Console.WriteLine($"IterationSetup {testContext.ThreadId} {testContext.IterartionId}");
+            if (Random.Next(100) % 100 == 0)
+                throw new Exception($"#### {testContext.IterartionId}");
         }
 
         public void IterationTearDown(ITestContext testContext)
         {
+            if (Random.Next(100) % 50 == 0)
+                throw new Exception($"#### {testContext.IterartionId}");
             //Console.WriteLine($"IterationTearDown {testContext.ThreadId} {testContext.IterartionId}");
         }
 
         public void ExecuteScenario(ITestContext testContext)
         {
             if (Random.Next(100) % 10 == 0)
-                throw new Exception("err");
+                throw new Exception($"@@@@ {testContext.IterartionId}");
 
-            Thread.Sleep(Random.Next(500));
+            Thread.Sleep(Random.Next(700));
             
             testContext.Checkpoint("Checkpoint AAA");
 
 
-            if (Random.Next(100) % 10 == 0)
+            if (Random.Next(100) % 50 == 0)
                 throw new Exception("err");
 
             Thread.Sleep(Random.Next(1000));

@@ -9,7 +9,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         #region Properties
 
         private readonly Thread _handlerThread;
-        private readonly ITestScenario _testScenario;
+        private readonly ILoadTestScenario _loadTestScenario;
 
         private readonly TestContext _testContext;
         private volatile bool _executeIterationQueued = false;
@@ -22,12 +22,12 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Ctor
 
-        public TestExecutorThread(ITestScenario testScenario, int threadId)
+        public TestExecutorThread(ILoadTestScenario loadTestScenario, int threadId)
         {
             _testContext = new TestContext(threadId);
             _handlerThread = new Thread(ExecuteScenarioThreadFunction);
 
-            _testScenario = testScenario;
+            _loadTestScenario = loadTestScenario;
 
             _handlerThread = new Thread(ExecuteScenarioThreadFunction);
 
@@ -57,14 +57,17 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             {
                 _stopQueued = true;
 
-                if (_handlerThread.Join(timeoutMilliseconds))
+                if (!_handlerThread.Join(timeoutMilliseconds))
                 {
+                    //Console.WriteLine($"Aborting {_testContext.ThreadId}");
                     _handlerThread.Abort();
-                }
 
-                if (_executeIterationQueued)
-                {
-                    OnScenarioExecutionFinished();
+                    ////Broadcast threads that managed to start TeardownProcess
+                    //if (_executeIterationQueued && _testContext.ExecutionTime.Ticks != 0)
+                    //{
+                    //    //Console.WriteLine($"Broadcasting {_testContext.ThreadId}");
+                    //    OnScenarioExecutionFinished();
+                    //}
                 }
             }
         }
@@ -118,7 +121,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         private void ExecuteScenarioThreadFunction()
         {
             _testContext.Reset(-1);
-            _testScenario.ScenarioSetup(_testContext);
+            _loadTestScenario.ScenarioSetup(_testContext);
 
             while (_stopQueued != true)
             {
@@ -126,18 +129,31 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 {
                     _testContext.Reset(_queuedIterationId);
                     OnScenarioExecutionStarted();
-                    
-                    bool setupSuccess = ExecuteWithExceptionHandling(() => _testScenario.IterationSetup(_testContext), _testContext);
-                    bool iterationSuccess = false;
+
+                    _testContext.Checkpoint(Checkpoint.IterationSetupCheckpointName);
+                    bool setupSuccess = ExecuteWithExceptionHandling(() => _loadTestScenario.IterationSetup(_testContext), _testContext);
+
                     if (setupSuccess)
                     {
-                        _testContext.Start();
+                        _testContext.Checkpoint(Checkpoint.IterationStartCheckpointName);
 
-                        iterationSuccess = ExecuteWithExceptionHandling(() => _testScenario.ExecuteScenario(_testContext), _testContext);
+                        _testContext.Start();
+                        bool iterationSuccess = ExecuteWithExceptionHandling(() => _loadTestScenario.ExecuteScenario(_testContext), _testContext);
+                        _testContext.Stop();
+
+                        if (iterationSuccess)
+                        {
+                            _testContext.Checkpoint(Checkpoint.IterationEndCheckpointName);
+                        }
+                    }
+                    else
+                    {
+                        _testContext.Start();
+                        _testContext.Stop();
                     }
 
-                    _testContext.Stop(iterationSuccess);
-                    ExecuteWithExceptionHandling(() => _testScenario.IterationTearDown(_testContext), _testContext);
+                    _testContext.Checkpoint(Checkpoint.IterationTearDownCheckpointName);
+                    ExecuteWithExceptionHandling(() => _loadTestScenario.IterationTearDown(_testContext), _testContext);
 
                     _executeIterationQueued = false;
                     OnScenarioExecutionFinished();
@@ -149,7 +165,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
 
             _testContext.Reset(-1);
-            _testScenario.ScenarioTearDown(_testContext);
+            _loadTestScenario.ScenarioTearDown(_testContext);
         }
 
         private static bool ExecuteWithExceptionHandling(Action action, TestContext testContext)
@@ -163,7 +179,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
             catch (Exception ex)
             {
-                testContext.LogException(ex);
+                if (ex.GetType() != typeof(ThreadAbortException))
+                    testContext.SetError(ex);
             }
 
             return result;

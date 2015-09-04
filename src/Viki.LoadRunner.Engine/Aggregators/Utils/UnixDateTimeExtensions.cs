@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Utils
+namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
-    public static class DateTimeExtensions
+    public static class UnixDateTimeExtensions
     {
         public static DateTime UnixTimeStart = new DateTime(1970, 1, 1, 0, 0, 0, 0);
 

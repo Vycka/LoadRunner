@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregates
+namespace Viki.LoadRunner.Engine.Aggregators
 {
     /// <summary>
     /// Since TestContextResultReceived call are synchronous from benchmarking threads, this class unloads processing to its own seperate thread
@@ -23,24 +23,28 @@ namespace Viki.LoadRunner.Engine.Aggregates
             _resultsAggregators = resultsAggregators;
         }
 
-        public void Start()
+        public void Begin()
         {
             _stopping = false;
 
             _processorThread = new Thread(ProcessorThreadFunction);
             _processorThread.Start();
+
+            Parallel.ForEach(_resultsAggregators, aggregator => aggregator.Begin());
         }
 
-        public void Stop()
+        public void End()
         {
             _stopping = true;
             _processorThread.Join();
+
+            Parallel.ForEach(_resultsAggregators, aggregator => aggregator.End());
         }
 
 
         public void Dispose()
         {
-            Stop();
+            End();
         }
 
         public void TestContextResultReceived(TestContextResult result)
@@ -48,15 +52,25 @@ namespace Viki.LoadRunner.Engine.Aggregates
             _processingQueue.Enqueue(result);
         }
 
+        public void Reset()
+        {
+        }
+
         private void ProcessorThreadFunction()
         {
+            bool onlyOneAggregator = _resultsAggregators.Length == 1;
+
             while (!_stopping)
             {
                 TestContextResult resultObject;
                 while (_processingQueue.TryDequeue(out resultObject))
                 {
                     TestContextResult localResultObject = resultObject;
-                    Parallel.ForEach(_resultsAggregators, aggregator => aggregator.TestContextResultReceived(localResultObject));
+
+                    if (onlyOneAggregator)
+                        _resultsAggregators[0].TestContextResultReceived(localResultObject);
+                    else
+                        Parallel.ForEach(_resultsAggregators, aggregator => aggregator.TestContextResultReceived(localResultObject));
                 }
 
                 Thread.Sleep(50);
