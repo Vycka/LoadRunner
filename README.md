@@ -11,6 +11,21 @@ public class TestScenario : ILoadTestScenario
 {
     private static readonly Random Random = new Random(42);
 
+    public void ScenarioSetup(ITestContext testContext)
+    {
+        Debug.WriteLine("ScenarioSetup Executes on thread creation");
+        Debug.WriteLine("Exceptions here are not handled!");
+
+    }
+
+    public void IterationSetup(ITestContext testContext)
+    {
+        Debug.WriteLine("IterationSetup is executed before each ExecuteScenario call");
+
+        if (Random.Next(100) % 50 == 0)
+            throw new Exception("2% chance error in setup");
+    }
+
     public void ExecuteScenario(ITestContext testContext)
     {
         Debug.WriteLine(
@@ -34,11 +49,13 @@ public class TestScenario : ILoadTestScenario
             throw new Exception("1% chance error");
     }
 
-    public void ScenarioSetup(ITestContext testContext)
+    public void IterationTearDown(ITestContext testContext)
     {
-        Debug.WriteLine("ScenarioSetup Executes on thread creation");
-        Debug.WriteLine("Exceptions here are not handled!");
+        Debug.WriteLine("IterationTearDown is executed each time after ExecuteScenario iteration is finished");
+        Debug.WriteLine("unless thread is terminated by finishTimeoutMilliseconds abort");
 
+        if (Random.Next(100) % 25 == 0)
+            throw new Exception("4% chance error in setup");
     }
 
     public void ScenarioTearDown(ITestContext testContext)
@@ -47,23 +64,6 @@ public class TestScenario : ILoadTestScenario
         Debug.WriteLine("(unless thread is terminated by finishTimeoutMilliseconds abort");
 
         Debug.WriteLine("Exceptions here are not handled!");
-    }
-
-    public void IterationSetup(ITestContext testContext)
-    {
-        Debug.WriteLine("IterationSetup is executed before each ExecuteScenario call");
-
-        if (Random.Next(100) % 50 == 0)
-            throw new Exception("2% chance error in setup");
-    }
-
-    public void IterationTearDown(ITestContext testContext)
-    {
-        Debug.WriteLine("IterationTearDown is executed each time after ExecuteScenario iteration is finished");
-        Debug.WriteLine("unless thread is terminated by finishTimeoutMilliseconds abort");
-
-        if (Random.Next(100) % 25 == 0)
-            throw new Exception("4% chance error in setup");
     }
 }
 ```
