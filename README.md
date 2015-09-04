@@ -69,7 +69,7 @@ public class TestScenario : ILoadTestScenario
     }
 }
 ```
-### *Configure Load-test runner parameters*
+### *Setup Load parameters with using ExecutionParameters*
 ```cs
 ExecutionParameters executionParameters = new ExecutionParameters(
 
