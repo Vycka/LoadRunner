@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <title>LoadRunner LoadTest Client</title>
+    <title>LoadRunner LoadTest Library</title>
     <id>Viki.LoadRunner</id>
     <version></version>
     <authors>Vytautas Klumbys</authors>
