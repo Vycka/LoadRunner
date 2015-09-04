@@ -69,7 +69,7 @@ public class TestScenario : ILoadTestScenario
     }
 }
 ```
-### *Setup Load parameters with using ExecutionParameters*
+### *Setup [LoadRunnerEngine] parameters with using [ExecutionParameters]*
 ```cs
 ExecutionParameters executionParameters = new ExecutionParameters(
 
@@ -101,7 +101,7 @@ ExecutionParameters executionParameters = new ExecutionParameters(
 );
 ```
 
-### *Choose results aggregator*
+### *Choose results [IResultsAggregator]*
 ```cs
   // This aggregation is similar to SoapUI (Like Min, Max, Avg, ...)
   DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
