@@ -53,15 +53,18 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         public IEnumerable<HistogramResultRow> GetResults()
         {
-            ResultsMapper mapper = new ResultsMapper(_orderLearner);
-            foreach (KeyValuePair<int, DefaultTestContextResultAggregate> histogramItem in _histogramItems)
+            if (_orderLearner.LearnedOrder.Count != 0)
             {
-                HistogramResultRow result = new HistogramResultRow(
-                    UnixDateTimeExtensions.UnixTimeToDateTime(histogramItem.Key),
-                    mapper.Map(histogramItem.Value, true).ToList()
-                );
+                ResultsMapper mapper = new ResultsMapper(_orderLearner);
+                foreach (KeyValuePair<int, DefaultTestContextResultAggregate> histogramItem in _histogramItems)
+                {
+                    HistogramResultRow result = new HistogramResultRow(
+                        UnixDateTimeExtensions.UnixTimeToDateTime(histogramItem.Key),
+                        mapper.Map(histogramItem.Value, true).ToList()
+                        );
 
-                yield return result;
+                    yield return result;
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Viki.LoadRunner.Engine.Aggregators.Aggregates;
 using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
@@ -18,14 +19,19 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _orderLearner.Learn(result);
             _statsAggregator.AggregateResult(result);
         }
-        
+
         public ResultsContainer GetResults()
         {
-            ResultsMapper mapper = new ResultsMapper(_orderLearner);
-            IEnumerable<ResultItemRow> resultRows = mapper.Map(_statsAggregator);
-            return new ResultsContainer(resultRows.ToList(), new ResultItemTotals(_statsAggregator));
+            ResultsContainer result = null;
+            if (_orderLearner.LearnedOrder.Count != 0)
+            {
+                ResultsMapper mapper = new ResultsMapper(_orderLearner);
+                IEnumerable<ResultItemRow> resultRows = mapper.Map(_statsAggregator);
+                result = new ResultsContainer(resultRows.ToList(), new ResultItemTotals(_statsAggregator));
+            }
+            return result;
         }
-
+    
         public void Begin()
         {
             _statsAggregator.Reset();

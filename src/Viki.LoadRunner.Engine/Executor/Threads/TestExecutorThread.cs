@@ -25,8 +25,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         public TestExecutorThread(ILoadTestScenario loadTestScenario, int threadId)
         {
             _testContext = new TestContext(threadId);
-            _handlerThread = new Thread(ExecuteScenarioThreadFunction);
-
             _loadTestScenario = loadTestScenario;
 
             _handlerThread = new Thread(ExecuteScenarioThreadFunction);
@@ -179,8 +177,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
             catch (Exception ex)
             {
-                if (ex.GetType() != typeof(ThreadAbortException))
-                    testContext.SetError(ex);
+                testContext.SetError(ex);
             }
 
             return result;
