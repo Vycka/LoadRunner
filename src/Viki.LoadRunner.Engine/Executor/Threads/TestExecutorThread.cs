@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using Viki.LoadRunner.Engine.Client;
 using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads

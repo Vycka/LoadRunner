@@ -6,9 +6,9 @@ using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Threads;
 
-namespace Viki.LoadRunner.Engine.Client
+namespace Viki.LoadRunner.Engine
 {
-    public class LoadRunner
+    public class LoadRunnerEngine
     {
         #region Fields
 
@@ -20,7 +20,7 @@ namespace Viki.LoadRunner.Engine.Client
 
         #region Ctor
 
-        public LoadRunner(ExecutionParameters parameters, Type iTestScenarioObjectType, params IResultsAggregator[] resultsAggregators)
+        public LoadRunnerEngine(ExecutionParameters parameters, Type iTestScenarioObjectType, params IResultsAggregator[] resultsAggregators)
         {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
@@ -34,9 +34,9 @@ namespace Viki.LoadRunner.Engine.Client
 
         }
 
-        public static LoadRunner Create<TTestScenario>(ExecutionParameters parameters, params IResultsAggregator[] resultsAggregators) where TTestScenario : ILoadTestScenario
+        public static LoadRunnerEngine Create<TTestScenario>(ExecutionParameters parameters, params IResultsAggregator[] resultsAggregators) where TTestScenario : ILoadTestScenario
         {
-            return new LoadRunner(parameters, typeof(TTestScenario), resultsAggregators);
+            return new LoadRunnerEngine(parameters, typeof(TTestScenario), resultsAggregators);
         }
 
         #endregion

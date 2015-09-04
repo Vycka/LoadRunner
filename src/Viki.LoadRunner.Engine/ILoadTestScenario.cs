@@ -1,6 +1,6 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Client
+namespace Viki.LoadRunner.Engine
 {
     public interface ILoadTestScenario
     {
