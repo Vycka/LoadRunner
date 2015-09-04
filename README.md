@@ -55,6 +55,7 @@ public class TestScenario : ILoadTestScenario
     public void IterationTearDown(ITestContext testContext)
     {
         Debug.WriteLine("IterationTearDown is executed each time after ExecuteScenario iteration is finished");
+        Debug.WriteLine("It is also executed even when IterationSetup or ExecuteScenario fails");
         Debug.WriteLine("unless thread is terminated by finishTimeoutMilliseconds abort");
 
         if (Random.Next(100) % 25 == 0)
