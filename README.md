@@ -3,59 +3,67 @@
 
 ## *Quick Intro*
 
-### *ITestScenario*
-Implement `ITestScenario` interface by defining test scenario for single thread instance.
-Each worker-thread will create its own `ITestScenario` instance and will keep it persistent until the test is over.
+### *ILoadTestScenario*
+Implement `ILoadTestScenario` interface by defining test scenario for single thread instance.
+Each worker-thread will create its own `ILoadTestScenario` instance and will keep it persistent until the test is over.
 ```cs
-public class TestScenario : ITestScenario
+public class TestScenario : ILoadTestScenario
 {
     private static readonly Random Random = new Random(42);
 
     public void ExecuteScenario(ITestContext testContext)
     {
-        Console.WriteLine(
+        Debug.WriteLine(
             "ExecuteScenario defines single iteration for load test scenario, " +
             "It is called after each successful IterationSetup call. " +
             "Execution time is measured only for this function" +
-            "You can use testContext.Checkpoint() function to mark points, where time should be measured"
+            "You can use testContext.Checkpoint() function to mark points, "+
+            "where time should be measured"
         );
         Thread.Sleep(Random.Next(5000));
 
         testContext.Checkpoint("First Checkpoint");
 
         if (Random.Next(100) % 10 == 0)
-            throw new Exception("random err"); 
+            throw new Exception("10% chance error");
 
         testContext.Checkpoint("Last Checkpoint");
         Thread.Sleep(Random.Next(1000));
 
         if (Random.Next(100) % 100 == 0)
-            throw new Exception("random err 2");
+            throw new Exception("1% chance error");
     }
 
     public void ScenarioSetup(ITestContext testContext)
     {
-        Console.WriteLine("ScenarioSetup Executes on thread creation");
-        Console.WriteLine("Exceptions here are not handled!");
+        Debug.WriteLine("ScenarioSetup Executes on thread creation");
+        Debug.WriteLine("Exceptions here are not handled!");
+
     }
 
     public void ScenarioTearDown(ITestContext testContext)
     {
-        Console.WriteLine("ScenarioTearDown Executes once LoadTest execution is over");
-        //(unless thread is terminated by finishTimeoutMilliseconds abort)
-        
-        Console.WriteLine("Exceptions here are not handled!");
+        Debug.WriteLine("ScenarioTearDown Executes once LoadTest execution is over");
+        Debug.WriteLine("(unless thread is terminated by finishTimeoutMilliseconds abort");
+
+        Debug.WriteLine("Exceptions here are not handled!");
     }
 
     public void IterationSetup(ITestContext testContext)
     {
-        Console.WriteLine("IterationSetup is executed before each ExecuteScenario call");
+        Debug.WriteLine("IterationSetup is executed before each ExecuteScenario call");
+
+        if (Random.Next(100) % 50 == 0)
+            throw new Exception("2% chance error in setup");
     }
 
     public void IterationTearDown(ITestContext testContext)
     {
-        Console.WriteLine("IterationTearDown is executed each time after ExecuteScenario iteration is finished");
-        //(unless thread is terminated by finishTimeoutMilliseconds abort)
+        Debug.WriteLine("IterationTearDown is executed each time after ExecuteScenario iteration is finished");
+        Debug.WriteLine("unless thread is terminated by finishTimeoutMilliseconds abort");
+
+        if (Random.Next(100) % 25 == 0)
+            throw new Exception("4% chance error in setup");
     }
 }
 ```
@@ -70,7 +78,7 @@ ExecutionParameters executionParameters = new ExecutionParameters(
     maxIterationsCount: 2000,
 
     // Minimum amount of worker-threads to precreate
-    minThreads: 1,
+    minThreads: 20,
 
     // Maximum amount of worker-threads that can be created 
     // New threads only be created if maxRequestsPerSecond speed is not achieved
@@ -79,12 +87,12 @@ ExecutionParameters executionParameters = new ExecutionParameters(
 
     // Maximum count of requests that will be created per second
     // (Unless there are no available worker-threads left)
-    maxRequestsPerSecond: 20,
+    maxRequestsPerSecond: Double.MaxValue,
 
     // Once LoadTest execution finishes because of maxDuration or maxIterationsCount limit
     // Coordinating thread will wait finishTimeoutMilliseconds amount of time before 
     // terminating them with Thread.Abort()
-    finishTimeoutMilliseconds: 60000
+    finishTimeoutMilliseconds: 10000
 );
 ```
 
@@ -110,82 +118,83 @@ Or `IResultsAggregator` interface could be implemented, thus giving access to ra
 ### *Put it all together*
 
 ```cs
-ExecutionParameters executionParameters = new ExecutionParameters(
+    ExecutionParameters executionParameters = new ExecutionParameters(
         maxDuration: TimeSpan.FromSeconds(15),
         maxIterationsCount: 2000,
-        minThreads: 1,
+        minThreads: 20,
         maxThreads: 200,
-        maxRequestsPerSecond: 20,
-        finishTimeoutMilliseconds: 60000
+        maxRequestsPerSecond: Double.MaxValue,
+        finishTimeoutMilliseconds: 10000
     );
-    
-DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
 
-// Initializing LoadTest Client
-LoadTestClient testClient = LoadTestClient.Create<TestScenario>(executionParameters,resultsAggregator);
+    DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
 
-// Run test (blocking call)
-testClient.Run();
+    // Initializing LoadTest Client
+    LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(executionParameters, resultsAggregator);
 
-// ResultItem will have all logged exceptions within LoadTest execution
-List<ResultItem> defaultResults = defaultResultsAggregator.GetResults().ToList();
-Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
+    // Run test (blocking call)
+    loadRunner.Run();
+
+    // ResultItem will have all logged exceptions within LoadTest execution
+    ResultsContainer defaultResults = resultsAggregator.GetResults();
+    Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
+
+    Console.ReadKey();
 ```
 ## *Enjoy the result*
 
-```
-[
-  {
-    "Name": "SYS_ITERATION_START",
-    "MomentMin": "00:00:00",
-    "MomentMax": "00:00:00",
-    "MomentAverage": "00:00:00",
-    "TotalMin": "00:00:00",
-    "TotalMax": "00:00:00",
-    "TotalAverage": "00:00:00",
-    "CountPerSecond": "Infinity",
-    "Count": 296,
-    "ErrorCount": 0,
-    "ErrorRate": 0.0
-  },
-  {
-    "Name": "First Checkpoint",
-    "MomentMin": "00:00:00.0100870",
-    "MomentMax": "00:00:04.9481776",
-    "MomentAverage": "00:00:02.4350000",
-    "TotalMin": "00:00:00.0100870",
-    "TotalMax": "00:00:04.9481776",
-    "TotalAverage": "00:00:02.4350000",
-    "CountPerSecond": 0.41060473783667639,
-    "Count": 296,
-    "ErrorCount": 29,
-    "ErrorRate": 0.097972972972972971
-  },
-  {
-    "Name": "Last Checkpoint",
-    "MomentMin": "00:00:00.0000012",
-    "MomentMax": "00:00:00.0000157",
-    "MomentAverage": "00:00:00",
-    "TotalMin": "00:00:00.0100900",
-    "TotalMax": "00:00:04.9481800",
-    "TotalAverage": "00:00:02.4670000",
-    "CountPerSecond": 372540.81205525325,
-    "Count": 267,
-    "ErrorCount": 3,
-    "ErrorRate": 0.011235955056179775
-  },
-  {
-    "Name": "SYS_ITERATION_END",
-    "MomentMin": "00:00:00.0000033",
-    "MomentMax": "00:00:00.9994817",
-    "MomentAverage": "00:00:00.4440000",
-    "TotalMin": "00:00:00.1087478",
-    "TotalMax": "00:00:05.6061666",
-    "TotalAverage": "00:00:02.8790000",
-    "CountPerSecond": 2.2527981406353974,
-    "Count": 296,
-    "ErrorCount": 0,
-    "ErrorRate": 0.0
+```js
+{
+  "Results": [
+    {
+      "Name": "First Checkpoint",
+      "MomentMin": "00:00:00.0020296",
+      "MomentMax": "00:00:04.9959708",
+      "MomentAverage": "00:00:02.4800000",
+      "SummedMin": "00:00:00.0020296",
+      "SummedMax": "00:00:04.9959708",
+      "SummedAverage": "00:00:02.4800000",
+      "SuccessIterationsPerSec": 56.574550654270006,
+      "Count": 1138,
+      "ErrorRatio": 0.0,
+      "ErrorCount": 0
+    },
+    {
+      "Name": "Last Checkpoint",
+      "MomentMin": "00:00:00.0000003",
+      "MomentMax": "00:00:00.0000804",
+      "MomentAverage": "00:00:00",
+      "SummedMin": "00:00:00.0020317",
+      "SummedMax": "00:00:04.9959717",
+      "SummedAverage": "00:00:02.4880000",
+      "SuccessIterationsPerSec": 51.056294834741038,
+      "Count": 1027,
+      "ErrorRatio": 0.097539543057996475,
+      "ErrorCount": 111
+    },
+    {
+      "Name": "SYS_ITERATION_END",
+      "MomentMin": "00:00:00.0000181",
+      "MomentMax": "00:00:00.9997012",
+      "MomentAverage": "00:00:00.4820000",
+      "SummedMin": "00:00:00.0799777",
+      "SummedMax": "00:00:05.8661616",
+      "SummedAverage": "00:00:02.9660000",
+      "SuccessIterationsPerSec": 50.310584588858745,
+      "Count": 1012,
+      "ErrorRatio": 0.014605647517039922,
+      "ErrorCount": 15
+    }
+  ],
+  "Totals": {
+    "TotalIterationsStartedCount": 1167,
+    "TotalSuccessfulIterationCount": 959,
+    "TotalFailedIterationCount": 208,
+    "TotalDuration": "00:00:20.1150515",
+    "IterationErrorsRatio": 0.17823479005998288,
+    "SuccessIterationsPerSec": 47.67574172007464,
+    "IterationSetupErrorCount": 29,
+    "IterationTearDownErrorCount": 53
   }
-]
+}
 ```
