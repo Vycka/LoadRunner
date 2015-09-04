@@ -23,7 +23,7 @@ namespace Viki.LoadRunner.Engine.Aggregates
             _resultsAggregators = resultsAggregators;
         }
 
-        public void Start()
+        public void Begin()
         {
             _stopping = false;
 
@@ -31,7 +31,7 @@ namespace Viki.LoadRunner.Engine.Aggregates
             _processorThread.Start();
         }
 
-        public void Stop()
+        public void End()
         {
             _stopping = true;
             _processorThread.Join();
@@ -40,7 +40,7 @@ namespace Viki.LoadRunner.Engine.Aggregates
 
         public void Dispose()
         {
-            Stop();
+            End();
         }
 
         public void TestContextResultReceived(TestContextResult result)

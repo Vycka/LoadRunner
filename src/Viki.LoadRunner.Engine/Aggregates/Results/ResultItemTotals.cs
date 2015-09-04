@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregates.Aggregates;
-using Viki.LoadRunner.Engine.Aggregates.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Aggregates.Results
@@ -13,28 +12,29 @@ namespace Viki.LoadRunner.Engine.Aggregates.Results
         private readonly List<Exception> _iterationTearDownErrors;
 
 
-        public ResultItemTotals(Dictionary<string, CheckpointAggregate> resultRows)
+        public ResultItemTotals(DefaultTestContextResultAggregate results)
         {
-            CheckpointAggregate setupRow = resultRows[Checkpoint.IterationSetupCheckpointName];
-            CheckpointAggregate tearDownRow = resultRows[Checkpoint.IterationTearDownCheckpointName];
+            DefaultCheckpointAggregate setupRow = results.CheckpointAggregates[Checkpoint.IterationSetupCheckpointName];
+            DefaultCheckpointAggregate tearDownRow = results.CheckpointAggregates[Checkpoint.IterationTearDownCheckpointName];
 
-            TotalDuration = tearDownRow.LastIterationEndTime - setupRow.FirsIterationBeginTime;
+            TotalDuration = results.IterationEndTime - results.IterationBeginTime;
 
-            TotalIterationCount = setupRow.Count;
-            TotalErrorCount = resultRows.Sum(resultItemRow => resultItemRow.Value.Errors.Count);
+            TotalIterationsStartedCount = setupRow.Count;
+            TotalFailedIterationCount = results.CheckpointAggregates.Sum(resultItemRow => resultItemRow.Value.Errors.Count);
+            TotalSuccessfulIterationCount = TotalIterationsStartedCount - TotalFailedIterationCount;
 
-            // setupRow not, use iteration begin
-            
-            AbortedThreads = TotalIterationCount - tearDownRow.Count;
 
             _iterationSetupErrors = setupRow.Errors;
             _iterationTearDownErrors = tearDownRow.Errors;
         }
 
-        public readonly int AbortedThreads;
-        public readonly int TotalIterationCount;
-        public readonly int TotalErrorCount;
-        public int IterationsErrorRate => (1 / TotalIterationCount) * TotalErrorCount;
+        public readonly int TotalIterationsStartedCount;
+        public readonly int TotalSuccessfulIterationCount;
+        public readonly int TotalFailedIterationCount;
+
+        public double IterationErrorsRatio => (1.0 / TotalIterationsStartedCount) * TotalFailedIterationCount;
+
+        public double SuccessIterationsPerSec => TotalSuccessfulIterationCount / (TotalDuration.TotalMilliseconds / 1000.0);
 
         public readonly TimeSpan TotalDuration;
 

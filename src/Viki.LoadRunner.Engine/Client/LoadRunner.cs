@@ -8,19 +8,19 @@ using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Client
 {
-    public class LoadTestClient
+    public class LoadRunner
     {
         #region Fields
 
         private readonly ExecutionParameters _parameters;
-        private readonly AsyncResultsAggregator _resultsAggregator;
+        private readonly IResultsAggregator _resultsAggregator;
         private readonly Type _iTestScenarioObjeType;
 
         #endregion
 
         #region Ctor
 
-        public LoadTestClient(ExecutionParameters parameters, Type iTestScenarioObjectType, params IResultsAggregator[] resultsAggregators)
+        public LoadRunner(ExecutionParameters parameters, Type iTestScenarioObjectType, params IResultsAggregator[] resultsAggregators)
         {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
@@ -34,9 +34,9 @@ namespace Viki.LoadRunner.Engine.Client
 
         }
 
-        public static LoadTestClient Create<TTestScenario>(ExecutionParameters parameters, params IResultsAggregator[] resultsAggregators) where TTestScenario : ILoadTestScenario
+        public static LoadRunner Create<TTestScenario>(ExecutionParameters parameters, params IResultsAggregator[] resultsAggregators) where TTestScenario : ILoadTestScenario
         {
-            return new LoadTestClient(parameters, typeof(TTestScenario), resultsAggregators);
+            return new LoadRunner(parameters, typeof(TTestScenario), resultsAggregators);
         }
 
         #endregion
@@ -51,7 +51,7 @@ namespace Viki.LoadRunner.Engine.Client
                 threadCoordinator = new ThreadCoordinator(_parameters.MinThreads, _parameters.MaxThreads, _iTestScenarioObjeType);
                 threadCoordinator.ScenarioExecutionFinished += _threadCoordinator_ScenarioExecutionFinished;
 
-                _resultsAggregator.Start();
+                _resultsAggregator.Begin();
 
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -82,7 +82,7 @@ namespace Viki.LoadRunner.Engine.Client
             {
                 threadCoordinator?.StopAndDispose(_parameters.FinishTimeoutMilliseconds);
 
-                _resultsAggregator.Stop();
+                _resultsAggregator.End();
             }
         }
 

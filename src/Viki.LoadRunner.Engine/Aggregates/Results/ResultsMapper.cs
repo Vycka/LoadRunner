@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregates.Aggregates;
 using Viki.LoadRunner.Engine.Aggregates.Utils;
+using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Aggregates.Results
 {
@@ -16,21 +17,36 @@ namespace Viki.LoadRunner.Engine.Aggregates.Results
             _orderLearner = orderLearner;
         }
 
-        public IEnumerable<ResultItemRow> Map(Dictionary<string, CheckpointAggregate> results)
+        public IEnumerable<ResultItemRow> Map(DefaultTestContextResultAggregate results, bool includeAllCheckpoints = false)
         {
-            List<CheckpointAggregate> orderedResults =
-                _orderLearner.LearnedOrder
-                .Where(results.ContainsKey)
-                .Select(checkpointName => results[checkpointName]).ToList();
-
-            int iterationCount = 0;
-            foreach (CheckpointAggregate resultItem in orderedResults.GetRange(2, orderedResults.Count - 3))
+            if (results.CheckpointAggregates.Count > 2)
             {
-                var resultItemRow = new ResultItemRow(resultItem);
-                resultItemRow.SetErrors(orderedResults[1 + iterationCount].Errors);
+                List<DefaultCheckpointAggregate> orderedResults =
+                    _orderLearner.LearnedOrder
+                        .Where(results.CheckpointAggregates.ContainsKey)
+                        .Select(checkpointName => results.CheckpointAggregates[checkpointName]).ToList();
 
-                iterationCount++;
-                yield return resultItemRow;
+                if (includeAllCheckpoints)
+                    yield return
+                        new ResultItemRow(results, results.CheckpointAggregates[Checkpoint.IterationSetupCheckpointName]);
+
+                int iterationCount = 0;
+                foreach (DefaultCheckpointAggregate resultItem in orderedResults.GetRange(2, orderedResults.Count - 3))
+                {
+                    var resultItemRow = new ResultItemRow(results, resultItem);
+                    resultItemRow.SetErrors(orderedResults[1 + iterationCount].Errors);
+
+                    iterationCount++;
+                    yield return resultItemRow;
+                }
+
+                if (includeAllCheckpoints)
+                    yield return
+                        new ResultItemRow(results, results.CheckpointAggregates[Checkpoint.IterationTearDownCheckpointName]);
+            }
+            else
+            {
+                int x = 0;
             }
         }
     }

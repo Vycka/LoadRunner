@@ -1,61 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Aggregates.Aggregates;
-using Viki.LoadRunner.Engine.Aggregates.Utils;
 
 namespace Viki.LoadRunner.Engine.Aggregates.Results
 {
     public class ResultItemRow 
     {
-        private readonly TimeSpan _summedMomentTime;
-        private readonly TimeSpan _summedTotalTime;
-
         private List<Exception> _errors;
-
-        //private readonly DateTime _firsIterationBeginTime;
-        //private readonly DateTime _lastIterationEndTime;
 
         public readonly string Name;
 
         public TimeSpan MomentMin;
         public TimeSpan MomentMax;
-        public TimeSpan MomentAverage => TimeSpan.FromMilliseconds(_summedMomentTime.TotalMilliseconds / Count);
+        public TimeSpan MomentAverage;
 
-        public TimeSpan TotalMin;
-        public TimeSpan TotalMax;
-        public TimeSpan TotalAverage => TimeSpan.FromMilliseconds(_summedTotalTime.TotalMilliseconds / Count);
+        public TimeSpan SummedMin;
+        public TimeSpan SummedMax;
+        public TimeSpan SummedAverage;
 
-        //public double ActualCountPerSecond => Count / ((_lastIterationEndTime - _firsIterationBeginTime).TotalMilliseconds / 1000.0);
+        public double SuccessIterationsPerSec;
 
         public int Count;
 
         public int ErrorCount => _errors.Count;
 
-        public ResultItemRow(CheckpointAggregate aggregator)
+        public ResultItemRow(DefaultTestContextResultAggregate testContextResultAggregate, DefaultCheckpointAggregate checkpointAggregate)
         {
-            _summedMomentTime = aggregator.SummedMomentTime;
-            _summedTotalTime = aggregator.SummedTotalTime;
+            _errors = checkpointAggregate.Errors;
 
-            //_firsIterationBeginTime = aggregator.FirsIterationBeginTime;
-            //_lastIterationEndTime = aggregator.LastIterationEndTime;
+            Count = checkpointAggregate.Count;
 
-            _errors = aggregator.Errors;
+            Name = checkpointAggregate.Name;
 
-            Name = aggregator.Name;
+            MomentMin = checkpointAggregate.MomentMin;
+            MomentMax = checkpointAggregate.MomentMax;
+            MomentAverage = TimeSpan.FromMilliseconds(checkpointAggregate.SummedMomentTime.TotalMilliseconds / Count);
 
-            MomentMin = aggregator.MomentMin;
-            MomentMax = aggregator.MomentMax;
+            SummedMin = checkpointAggregate.TotalMin;
+            SummedMax = checkpointAggregate.TotalMax;
+            SummedAverage = TimeSpan.FromMilliseconds(checkpointAggregate.SummedTotalTime.TotalMilliseconds/Count);
 
-            TotalMin = aggregator.TotalMin;
-            TotalMax = aggregator.TotalMax;
-
-            Count = aggregator.Count;
+            SuccessIterationsPerSec = Count / (testContextResultAggregate.IterationEndTime - testContextResultAggregate.IterationBeginTime).TotalMilliseconds * 1000;
         }
         
         public List<Exception> GetErrors() => _errors;
-
-        public DateTime GetFirstIterationBeginTime() => _firsIterationBeginTime;
-        public DateTime GetLastIterationEndTime() => _lastIterationEndTime;
 
         public void SetErrors(List<Exception> errors)
         {

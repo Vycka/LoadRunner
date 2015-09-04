@@ -52,8 +52,8 @@
     <Compile Include="Aggregates\Results\ResultsMapper.cs" />
     <Compile Include="Aggregates\Utils\UnixDateTimeExtensions.cs" />
     <Compile Include="Aggregates\Utils\CheckpointOrderLearner.cs" />
-    <Compile Include="Aggregates\Aggregates\CheckpointAggregate.cs" />
-    <Compile Include="Aggregates\Aggregates\TestContextResultAggregate.cs" />
+    <Compile Include="Aggregates\Aggregates\DefaultCheckpointAggregate.cs" />
+    <Compile Include="Aggregates\Aggregates\DefaultTestContextResultAggregate.cs" />
     <Compile Include="Client\LoadTestBase.cs" />
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\ITestContext.cs" />
@@ -61,7 +61,7 @@
     <Compile Include="Executor\Threads\ThreadCoordinator.cs" />
     <Compile Include="Client\ILoadTestScenario.cs" />
     <Compile Include="Executor\Context\TestContext.cs" />
-    <Compile Include="Client\LoadTestClient.cs" />
+    <Compile Include="Client\LoadRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Executor\Context\TestContextResult.cs" />
     <Compile Include="Executor\Threads\TestExecutorThread.cs" />

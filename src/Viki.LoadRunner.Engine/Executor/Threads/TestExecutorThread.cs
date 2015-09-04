@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using Viki.LoadRunner.Engine.Client;
 using Viki.LoadRunner.Engine.Executor.Context;
@@ -147,6 +146,11 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                         {
                             _testContext.Checkpoint(Checkpoint.IterationEndCheckpointName);
                         }
+                    }
+                    else
+                    {
+                        _testContext.Start();
+                        _testContext.Stop();
                     }
 
                     _testContext.Checkpoint(Checkpoint.IterationTearDownCheckpointName);

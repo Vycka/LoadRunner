@@ -4,7 +4,7 @@ using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Aggregates.Aggregates
 {
-    public class CheckpointAggregate
+    public class DefaultCheckpointAggregate
     {
         public readonly List<Exception> Errors;
 
@@ -24,7 +24,7 @@ namespace Viki.LoadRunner.Engine.Aggregates.Aggregates
 
         public int Count { get; private set; }
 
-        public CheckpointAggregate(string name)
+        public DefaultCheckpointAggregate(string name)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));

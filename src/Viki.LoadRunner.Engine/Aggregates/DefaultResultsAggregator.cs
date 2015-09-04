@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregates.Aggregates;
 using Viki.LoadRunner.Engine.Aggregates.Results;
@@ -11,53 +10,31 @@ namespace Viki.LoadRunner.Engine.Aggregates
     public class DefaultResultsAggregator : IResultsAggregator
     {
         private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
-        private readonly Dictionary<string, CheckpointAggregate> _results = new Dictionary<string, CheckpointAggregate>();
+        private readonly DefaultTestContextResultAggregate _statsAggregator = new DefaultTestContextResultAggregate();
 
 
-        private readonly static Checkpoint PreviousCheckpointBase = new Checkpoint("", TimeSpan.Zero);
-
-        public void TestContextResultReceived(TestContextResult resultItem)
+        public void TestContextResultReceived(TestContextResult result)
         {
-            _orderLearner.Learn(resultItem);
-
-            Checkpoint previousCheckpoint = PreviousCheckpointBase;
-            foreach (Checkpoint currentCheckpoint in resultItem.Checkpoints)
-            {
-                TimeSpan momentCheckpointTimeSpan = currentCheckpoint.TimePoint - previousCheckpoint.TimePoint;
-                CheckpointAggregate checkpointAggregateResultObject = GetCheckpointResultObject(currentCheckpoint.CheckpointName);
-
-                checkpointAggregateResultObject.AggregateCheckpoint(momentCheckpointTimeSpan, currentCheckpoint, resultItem);
-                previousCheckpoint = currentCheckpoint;
-            }
+            _orderLearner.Learn(result);
+            _statsAggregator.AggregateResult(result);
         }
         
-        public void Reset()
-        {
-            _orderLearner.Reset();
-            _results.Clear();
-        }
-
-        private CheckpointAggregate GetCheckpointResultObject(string checkpointName)
-        {
-            CheckpointAggregate result = null;
-
-            if (_results.ContainsKey(checkpointName))
-            {
-                result = _results[checkpointName];
-            }
-            else
-            {
-                result = new CheckpointAggregate(checkpointName);
-                _results.Add(checkpointName, result); 
-            }
-
-            return result;
-        }
         public ResultsContainer GetResults()
         {
             ResultsMapper mapper = new ResultsMapper(_orderLearner);
-            IEnumerable<ResultItemRow> resultRows = mapper.Map(_results);
-            return new ResultsContainer(resultRows.ToList(), new ResultItemTotals(_results));
+            IEnumerable<ResultItemRow> resultRows = mapper.Map(_statsAggregator);
+            return new ResultsContainer(resultRows.ToList(), new ResultItemTotals(_statsAggregator));
+        }
+
+        public void Begin()
+        {
+            _statsAggregator.Reset();
+            _orderLearner.Reset();
+        }
+
+        public void End()
+        {
+
         }
     }
 }
