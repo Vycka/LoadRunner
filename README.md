@@ -31,22 +31,26 @@ public class TestScenario : ILoadTestScenario
             "ExecuteScenario defines single iteration for load test scenario, " +
             "It is called after each successful IterationSetup call. " +
             "Execution time is measured only for this function" +
-            "You can use testContext.Checkpoint() function to mark points, "+
+            "You can use testContext.Checkpoint() function to mark points, " +
             "where time should be measured"
         );
         Thread.Sleep(Random.Next(5000));
 
+        // [Iteration Begin Checkpoint] -- [First Checkpoint]
         testContext.Checkpoint("First Checkpoint");
 
         if (Random.Next(100) % 10 == 0)
             throw new Exception("10% error chance for testing");
 
+        // [First Checkpoint] -- [Last Checkpoint]
         testContext.Checkpoint("Last Checkpoint");
+
         Thread.Sleep(Random.Next(1000));
 
         if (Random.Next(100) % 100 == 0)
             throw new Exception("1% error chance for testing");
     }
+    // [Last Checkpoint] -- [SYS_ITERATION_END]
 
     public void IterationTearDown(ITestContext testContext)
     {
