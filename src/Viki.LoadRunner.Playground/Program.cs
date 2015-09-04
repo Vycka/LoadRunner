@@ -16,6 +16,9 @@ namespace Viki.LoadRunner.Playground
     {
         static void Main(string[] args)
         {
+            ReadmeDemo.Run();
+
+            return;
             DefaultResultsAggregator defaultResultsAggregator = new DefaultResultsAggregator();
             HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 2);
             DefaultResultsAggregatorUi defaultUi = new DefaultResultsAggregatorUi();

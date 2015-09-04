@@ -53,14 +53,16 @@ namespace Viki.LoadRunner.Engine
 
                 _resultsAggregator.Begin();
 
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
+
 
                 TimeSpan minimumDelayBetweenTests = TimeSpan.FromTicks((int)((TimeSpan.FromSeconds(1).Ticks / _parameters.MaxRequestsPerSecond) + 0.5));
                 int testIterationCount = 0;
                 TimeSpan lastExecutionQueued = TimeSpan.Zero;
 
-                while (stopwatch.Elapsed < _parameters.MaxDuration  && testIterationCount < _parameters.MaxIterationsCount)
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                while (stopwatch.Elapsed <= _parameters.MaxDuration  && testIterationCount < _parameters.MaxIterationsCount)
                 {
                     if (threadCoordinator.AvailableThreadCount == 0)
                     {

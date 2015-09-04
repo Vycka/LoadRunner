@@ -19,10 +19,10 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
         public TimeSpan SummedAverage;
 
         public double SuccessIterationsPerSec;
-
+        public double ErrorRatio => 1.0 / (Count + ErrorCount) * ErrorCount;
         public int Count;
-
         public int ErrorCount => _errors.Count;
+
 
         public ResultItemRow(DefaultTestContextResultAggregate testContextResultAggregate, DefaultCheckpointAggregate checkpointAggregate)
         {

@@ -11,7 +11,7 @@ namespace Viki.LoadRunner.Engine.Executor
         public readonly int MinThreads;
         public readonly int MaxThreads;
 
-        public ExecutionParameters(TimeSpan maxDuration, int minThreads = 10, int maxThreads = 10, double maxRequestsPerSecond = 10, int finishTimeoutMilliseconds = 180000, int maxIterationsCount = Int32.MaxValue)
+        public ExecutionParameters(TimeSpan maxDuration, int minThreads = 10, int maxThreads = 10, double maxRequestsPerSecond = Double.MaxValue, int finishTimeoutMilliseconds = 180000, int maxIterationsCount = Int32.MaxValue)
         {
             MaxDuration = maxDuration;
             MaxRequestsPerSecond = maxRequestsPerSecond;
