@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Utils
+namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
     public static class UnixDateTimeExtensions
     {

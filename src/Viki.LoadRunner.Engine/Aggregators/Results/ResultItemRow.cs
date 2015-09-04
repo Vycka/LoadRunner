@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Viki.LoadRunner.Engine.Aggregates.Aggregates;
+using Viki.LoadRunner.Engine.Aggregators.Aggregates;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Results
+namespace Viki.LoadRunner.Engine.Aggregators.Results
 {
     public class ResultItemRow 
     {

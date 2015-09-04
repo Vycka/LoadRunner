@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Utils
+namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
     public class CheckpointOrderLearner
     {

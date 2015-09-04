@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using Viki.LoadRunner.Engine.Aggregates;
+using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Threads;

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
-using Viki.LoadRunner.Engine.Aggregates;
-using Viki.LoadRunner.Engine.Aggregates.Results;
+using Viki.LoadRunner.Engine.Aggregators;
+using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Tools.Aggregators;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -17,6 +18,8 @@ namespace Viki.LoadRunner.Playground
         {
             DefaultResultsAggregator defaultResultsAggregator = new DefaultResultsAggregator();
             HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 2);
+            DefaultResultsAggregatorUi defaultUi = new DefaultResultsAggregatorUi();
+            DefaultResultsAggregatorUi defaultUi2 = new DefaultResultsAggregatorUi();
 
             LoadRunnerEngine testClient =
                 LoadRunnerEngine.Create<LoadTestScenario>(
@@ -28,8 +31,8 @@ namespace Viki.LoadRunner.Playground
                         finishTimeoutMilliseconds: 0,
                         maxIterationsCount: int.MaxValue
                     ),
-                    defaultResultsAggregator, histogramResultsAggregator
-                    
+                    defaultResultsAggregator, histogramResultsAggregator, defaultUi
+
                 );
 
             testClient.Run();

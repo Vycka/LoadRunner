@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregates
+namespace Viki.LoadRunner.Engine.Aggregators
 {
     /// <summary>
     /// Since TestContextResultReceived call are synchronous from benchmarking threads, this class unloads processing to its own seperate thread
@@ -29,12 +29,16 @@ namespace Viki.LoadRunner.Engine.Aggregates
 
             _processorThread = new Thread(ProcessorThreadFunction);
             _processorThread.Start();
+
+            Parallel.ForEach(_resultsAggregators, aggregator => aggregator.Begin());
         }
 
         public void End()
         {
             _stopping = true;
             _processorThread.Join();
+
+            Parallel.ForEach(_resultsAggregators, aggregator => aggregator.End());
         }
 
 

@@ -1,6 +1,6 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregates
+namespace Viki.LoadRunner.Engine.Aggregators
 {
     public interface IResultsAggregator
     {

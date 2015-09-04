@@ -41,19 +41,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aggregates\HistogramResultsAggregator.cs" />
-    <Compile Include="Aggregates\AsyncResultsAggregator.cs" />
-    <Compile Include="Aggregates\DefaultResultsAggregator.cs" />
-    <Compile Include="Aggregates\IResultsAggregator.cs" />
-    <Compile Include="Aggregates\Results\ResultsContainer.cs" />
-    <Compile Include="Aggregates\Results\ResultItemTotals.cs" />
-    <Compile Include="Aggregates\Results\HistogramResultRow.cs" />
-    <Compile Include="Aggregates\Results\ResultItemRow.cs" />
-    <Compile Include="Aggregates\Results\ResultsMapper.cs" />
-    <Compile Include="Aggregates\Utils\UnixDateTimeExtensions.cs" />
-    <Compile Include="Aggregates\Utils\CheckpointOrderLearner.cs" />
-    <Compile Include="Aggregates\Aggregates\DefaultCheckpointAggregate.cs" />
-    <Compile Include="Aggregates\Aggregates\DefaultTestContextResultAggregate.cs" />
+    <Compile Include="Aggregators\HistogramResultsAggregator.cs" />
+    <Compile Include="Aggregators\AsyncResultsAggregator.cs" />
+    <Compile Include="Aggregators\DefaultResultsAggregator.cs" />
+    <Compile Include="Aggregators\IResultsAggregator.cs" />
+    <Compile Include="Aggregators\Results\ResultsContainer.cs" />
+    <Compile Include="Aggregators\Results\ResultItemTotals.cs" />
+    <Compile Include="Aggregators\Results\HistogramResultRow.cs" />
+    <Compile Include="Aggregators\Results\ResultItemRow.cs" />
+    <Compile Include="Aggregators\Results\ResultsMapper.cs" />
+    <Compile Include="Aggregators\Utils\UnixDateTimeExtensions.cs" />
+    <Compile Include="Aggregators\Utils\CheckpointOrderLearner.cs" />
+    <Compile Include="Aggregators\Aggregates\DefaultCheckpointAggregate.cs" />
+    <Compile Include="Aggregators\Aggregates\DefaultTestContextResultAggregate.cs" />
     <Compile Include="LoadTestBase.cs" />
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\ITestContext.cs" />

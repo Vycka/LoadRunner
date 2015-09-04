@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Viki.LoadRunner.Engine.Aggregates.Aggregates;
-using Viki.LoadRunner.Engine.Aggregates.Results;
-using Viki.LoadRunner.Engine.Aggregates.Utils;
+using Viki.LoadRunner.Engine.Aggregators.Aggregates;
+using Viki.LoadRunner.Engine.Aggregators.Results;
+using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregates
+namespace Viki.LoadRunner.Engine.Aggregators
 {
     public class HistogramResultsAggregator : IResultsAggregator
     {

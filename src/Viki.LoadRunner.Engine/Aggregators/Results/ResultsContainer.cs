@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Results
+namespace Viki.LoadRunner.Engine.Aggregators.Results
 {
     public class ResultsContainer
     {

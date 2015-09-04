@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregates.Aggregates
+namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
 {
     public class DefaultTestContextResultAggregate
     {
