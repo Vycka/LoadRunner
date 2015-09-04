@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 {
     /// <summary>
     /// Since TestContextResultReceived call are synchronous from benchmarking threads, this class unloads processing to its own seperate thread
-    /// It's already used in LoadTestClient, so no need to reuse it again.
+    /// It's already used in LoadRunnerEngine, so no need to reuse it again.
     /// </summary>
     internal class AsyncResultsAggregator : IResultsAggregator, IDisposable
     {
