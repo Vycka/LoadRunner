@@ -101,7 +101,7 @@ ExecutionParameters executionParameters = new ExecutionParameters(
 );
 ```
 
-### *Choose results [IResultsAggregator]*
+### *Choose your [IResultsAggregator]*
 ```cs
   // This aggregation is similar to SoapUI (Like Min, Max, Avg, ...)
   DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
