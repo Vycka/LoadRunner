@@ -6,7 +6,7 @@
 ### *ILoadTestScenario*
 Implement `ILoadTestScenario` interface by defining test scenario for single thread instance.
 Each worker-thread will create its own `ILoadTestScenario` instance and will keep it persistent until the test is over.
- * *Protip*: If you are planning to use things like WebRequest for API tests, don't forget to lift the connection limit in .NET (`<connectionManagement><add address = "*" maxconnection = "100" /></connectionManagement>`)
+ * If you are planning to use things like `WebRequest` for API tests, don't forget to lift the connection limit in .NET (`<connectionManagement><add address = "*" maxconnection = "100" /></connectionManagement>`)
 ```cs
 public class TestScenario : ILoadTestScenario
 {
