@@ -13,11 +13,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
 
         public TimeSpan MomentMin;
         public TimeSpan MomentMax;
-        public TimeSpan MomentAverage;
+        public TimeSpan MomentAvg;
 
         public TimeSpan SummedMin;
         public TimeSpan SummedMax;
-        public TimeSpan SummedAverage;
+        public TimeSpan SummedAvg;
 
         public double SuccessIterationsPerSec;
         public double ErrorRatio => Count == 0 ? 1.0 : 1.0 / (Count + ErrorCount) * ErrorCount;
@@ -34,11 +34,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
 
             MomentMin = copyStatsFrom.MomentMin;
             MomentMax = copyStatsFrom.MomentMax;
-            MomentAverage = copyStatsFrom.MomentAverage;
+            MomentAvg = copyStatsFrom.MomentAvg;
 
             SummedMin = copyStatsFrom.SummedMin;
             SummedMax = copyStatsFrom.SummedMax;
-            SummedAverage = copyStatsFrom.SummedAverage;
+            SummedAvg = copyStatsFrom.SummedAvg;
 
             SuccessIterationsPerSec = copyStatsFrom.SuccessIterationsPerSec;
         }
@@ -54,11 +54,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
 
             MomentMin = checkpointAggregate.MomentMin;
             MomentMax = checkpointAggregate.MomentMax;
-            MomentAverage = TimeSpan.FromMilliseconds(checkpointAggregate.SummedMomentTime.TotalMilliseconds / _countDiv);
+            MomentAvg = TimeSpan.FromMilliseconds(checkpointAggregate.SummedMomentTime.TotalMilliseconds / _countDiv);
 
             SummedMin = checkpointAggregate.TotalMin;
             SummedMax = checkpointAggregate.TotalMax;
-            SummedAverage = TimeSpan.FromMilliseconds(checkpointAggregate.SummedTotalTime.TotalMilliseconds / _countDiv);
+            SummedAvg = TimeSpan.FromMilliseconds(checkpointAggregate.SummedTotalTime.TotalMilliseconds / _countDiv);
 
             SuccessIterationsPerSec = Count / (testContextResultAggregate.IterationEndTime - testContextResultAggregate.IterationBeginTime).TotalMilliseconds * 1000;
         }

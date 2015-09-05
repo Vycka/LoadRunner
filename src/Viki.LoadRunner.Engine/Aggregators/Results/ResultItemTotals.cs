@@ -26,6 +26,8 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
 
             _iterationSetupErrors = setupRow.Errors;
             _iterationTearDownErrors = tearDownRow.Errors;
+
+            AverageWorkingThreads = results.WorkingThreadsAvg;
         }
 
         public readonly int TotalIterationsStartedCount;
@@ -43,5 +45,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
 
         public int IterationSetupErrorCount => _iterationSetupErrors.Count;
         public int IterationTearDownErrorCount => _iterationTearDownErrors.Count;
+
+        public readonly double AverageWorkingThreads;
     }
 }

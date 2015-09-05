@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using Viki.LoadRunner.Engine.Aggregators.Aggregates;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Results
 {
-    [Serializable]
     public class HistogramResultRow
     {
         private readonly List<ResultItemRow> _resultItems;
-            
-        [DataMember]
+
         public readonly DateTime TimePoint;
-        [DataMember]
+        public readonly double CreatedThreads;
+        public readonly double WorkingThreads;
+
         public IReadOnlyList<ResultItemRow> ResultItems => _resultItems;
 
-
-        public HistogramResultRow(DateTime timePoint, List<ResultItemRow> resultItems)
+        public HistogramResultRow(DefaultTestContextResultAggregate resultsAggregate, DateTime timePoint, List<ResultItemRow> resultItems)
         {
+            CreatedThreads = resultsAggregate.CreatedThreadsAvg;
+            WorkingThreads = resultsAggregate.WorkingThreadsAvg;
+
             TimePoint = timePoint;
             _resultItems = resultItems;
         }

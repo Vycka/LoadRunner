@@ -28,7 +28,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         #region Properties
 
         public int AvailableThreadCount => (_maxThreads - _allThreads.Count) + _availableThreads.Count;
-        
+        public int CreatedThreadCount => _allThreads.Count;
+        public int IdleThreadCount => _availableThreads.Count;
 
         #endregion
 
@@ -172,6 +173,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
                 if (!_disposing)
                 {
+                    result.SetInternalMetadata(CreatedThreadCount, CreatedThreadCount - IdleThreadCount + 1);
                     OnScenarioExecutionFinished(result);
                 }
             }));

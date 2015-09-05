@@ -61,9 +61,10 @@ namespace Viki.LoadRunner.Engine.Aggregators
                 foreach (KeyValuePair<int, DefaultTestContextResultAggregate> histogramItem in _histogramItems)
                 {
                     HistogramResultRow result = new HistogramResultRow(
+                        histogramItem.Value,
                         UnixDateTimeExtensions.UnixTimeToDateTime(histogramItem.Key),
                         mapper.Map(histogramItem.Value, true).ToList()
-                        );
+                    );
 
                     yield return result;
                 }

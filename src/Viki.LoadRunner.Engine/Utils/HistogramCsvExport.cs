@@ -10,6 +10,8 @@ namespace Viki.LoadRunner.Engine.Utils
 {
     public static class HistogramCsvExport
     {
+        public static int DoublePrecision = 3;
+
         public static void Export(IEnumerable<HistogramResultRow> results, string csvFilePath)
         {
             if (csvFilePath == null) throw new ArgumentNullException(nameof(csvFilePath));
@@ -25,6 +27,8 @@ namespace Viki.LoadRunner.Engine.Utils
             DataTable dataTable = new DataTable();
 
             dataTable.Columns.Add("TimeStamp");
+            dataTable.Columns.Add("WorkingThreadsAvg");
+            dataTable.Columns.Add("CreatedThreadsAvg");
 
             foreach (HistogramResultRow histogramResultRow in results)
             {
@@ -32,6 +36,8 @@ namespace Viki.LoadRunner.Engine.Utils
                 DataRow row = dataTable.NewRow();
 
                 row["TimeStamp"] = histogramResultRow.TimePoint.ToUnixTime();
+                row["WorkingThreadsAvg"] = Math.Round(histogramResultRow.WorkingThreads, DoublePrecision);
+                row["CreatedThreadsAvg"] = Math.Round(histogramResultRow.CreatedThreads, DoublePrecision);
 
                 AddResultItemRowValues(row, histogramResultRow.ResultItems);
 
@@ -46,18 +52,23 @@ namespace Viki.LoadRunner.Engine.Utils
         {
             foreach (ResultItemRow resultItemRow in resultItemRows)
             {
-                AddColumnIfNeeded(dataTable, resultItemRow.Name, "MomentMin");
-                AddColumnIfNeeded(dataTable, resultItemRow.Name, "MomentMax");
-                AddColumnIfNeeded(dataTable, resultItemRow.Name, "MomentAverage");
+                string resultItemName = resultItemRow.Name.Replace("SYS_ITERATION_", "SYS_IT_");
 
-                AddColumnIfNeeded(dataTable, resultItemRow.Name, "SummedMin");
-                AddColumnIfNeeded(dataTable, resultItemRow.Name, "SummedMax");
-                AddColumnIfNeeded(dataTable, resultItemRow.Name, "SummedAverage");
+                if (resultItemName != "SYS_IT_SETUP")
+                {
+                    AddColumnIfNeeded(dataTable, resultItemName, "MomentMin");
+                    AddColumnIfNeeded(dataTable, resultItemName, "MomentAvg");
+                    AddColumnIfNeeded(dataTable, resultItemName, "MomentMax");
 
-                AddColumnIfNeeded(dataTable, resultItemRow.Name, "SuccessIterationsPerSec");
-                AddColumnIfNeeded(dataTable, resultItemRow.Name, "ErrorRatio");
-                AddColumnIfNeeded(dataTable, resultItemRow.Name, "Count");
-                AddColumnIfNeeded(dataTable, resultItemRow.Name, "ErrorCount");
+                    AddColumnIfNeeded(dataTable, resultItemName, "SummedMin");
+                    AddColumnIfNeeded(dataTable, resultItemName, "SummedAvg");
+                    AddColumnIfNeeded(dataTable, resultItemName, "SummedMax");
+                }
+
+                AddColumnIfNeeded(dataTable, resultItemName, "SuccessIterationsPerSec");
+                AddColumnIfNeeded(dataTable, resultItemName, "ErrorRatio");
+                AddColumnIfNeeded(dataTable, resultItemName, "Count");
+                AddColumnIfNeeded(dataTable, resultItemName, "ErrorCount");
             }
         }
 
@@ -73,18 +84,22 @@ namespace Viki.LoadRunner.Engine.Utils
         {
             foreach (ResultItemRow resultRow in resultItemRows)
             {
-                row[BuildColumnName(resultRow.Name, "MomentMin")] = (long)resultRow.MomentMin.TotalMilliseconds;
-                row[BuildColumnName(resultRow.Name, "MomentMax")] = (long)resultRow.MomentMax.TotalMilliseconds;
-                row[BuildColumnName(resultRow.Name, "MomentAverage")] = (long)resultRow.MomentAverage.TotalMilliseconds;
+                string resultItemName = resultRow.Name.Replace("SYS_ITERATION_", "SYS_IT_");
 
-                row[BuildColumnName(resultRow.Name, "SummedMin")] = (long)resultRow.SummedMin.TotalMilliseconds;
-                row[BuildColumnName(resultRow.Name, "SummedMax")] = (long)resultRow.SummedMax.TotalMilliseconds;
-                row[BuildColumnName(resultRow.Name, "SummedAverage")] = (long)resultRow.SummedAverage.TotalMilliseconds;
+                if (resultItemName != "SYS_IT_SETUP")
+                {
+                    row[BuildColumnName(resultItemName, "MomentMin")] = (long) resultRow.MomentMin.TotalMilliseconds;
+                    row[BuildColumnName(resultItemName, "MomentMax")] = (long) resultRow.MomentMax.TotalMilliseconds;
+                    row[BuildColumnName(resultItemName, "MomentAvg")] = (long) resultRow.MomentAvg.TotalMilliseconds;
 
-                row[BuildColumnName(resultRow.Name, "SuccessIterationsPerSec")] = resultRow.SuccessIterationsPerSec;
-                row[BuildColumnName(resultRow.Name, "ErrorRatio")] = resultRow.ErrorRatio;
-                row[BuildColumnName(resultRow.Name, "Count")] = resultRow.Count;
-                row[BuildColumnName(resultRow.Name, "ErrorCount")] = resultRow.ErrorCount;
+                    row[BuildColumnName(resultItemName, "SummedMin")] = (long) resultRow.SummedMin.TotalMilliseconds;
+                    row[BuildColumnName(resultItemName, "SummedMax")] = (long) resultRow.SummedMax.TotalMilliseconds;
+                    row[BuildColumnName(resultItemName, "SummedAvg")] = (long) resultRow.SummedAvg.TotalMilliseconds;
+                }
+                row[BuildColumnName(resultItemName, "SuccessIterationsPerSec")] = Math.Round(resultRow.SuccessIterationsPerSec, DoublePrecision);
+                row[BuildColumnName(resultItemName, "ErrorRatio")] = Math.Round(resultRow.ErrorRatio, DoublePrecision);
+                row[BuildColumnName(resultItemName, "Count")] = resultRow.Count;
+                row[BuildColumnName(resultItemName, "ErrorCount")] = resultRow.ErrorCount;
             }
         }
 

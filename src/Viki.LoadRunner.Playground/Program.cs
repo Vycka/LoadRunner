@@ -27,7 +27,7 @@ namespace Viki.LoadRunner.Playground
             LoadRunnerEngine testClient =
                 LoadRunnerEngine.Create<LoadTestScenario>(
                     new ExecutionParameters(
-                        maxDuration: TimeSpan.FromSeconds(10),
+                        maxDuration: TimeSpan.FromSeconds(5),
                         minThreads: 100,
                         maxThreads: 150,
                         maxRequestsPerSecond: 200,

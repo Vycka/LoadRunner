@@ -6,15 +6,23 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
 {
     public class DefaultTestContextResultAggregate
     {
+        private uint _summedWorkingThreads = 0;
+        private uint _summedCreatedThreads = 0;
+        private uint _threadAggregationCount = 0;
+
         public readonly Dictionary<string, DefaultCheckpointAggregate> CheckpointAggregates = new Dictionary<string, DefaultCheckpointAggregate>();
         private readonly static Checkpoint PreviousCheckpointBase = new Checkpoint("", TimeSpan.Zero);
 
         public DateTime IterationBeginTime { get; private set; } = DateTime.MaxValue;
         public DateTime IterationEndTime { get; private set; } = DateTime.MinValue;
 
+        public double WorkingThreadsAvg => _summedWorkingThreads  / (double)_threadAggregationCount;
+        public double CreatedThreadsAvg => _summedCreatedThreads/(double) _threadAggregationCount;
+
         public void AggregateResult(TestContextResult result)
         {
             MapIterationTime(result);
+            AggregateThreadCounts(result);
 
             Checkpoint previousCheckpoint = PreviousCheckpointBase;
             foreach (Checkpoint currentCheckpoint in result.Checkpoints)
@@ -36,6 +44,14 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
                 IterationEndTime = result.IterationFinished;
         }
 
+        private void AggregateThreadCounts(TestContextResult result)
+        {
+            _summedCreatedThreads += (uint) result.CreatedThreads;
+            _summedWorkingThreads += (uint) result.WorkingThreads;
+
+            _threadAggregationCount++;
+        }
+
         private DefaultCheckpointAggregate GetCheckpointAggregate(string checkpointName)
         {
             DefaultCheckpointAggregate result;
@@ -51,6 +67,13 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
         public void Reset()
         {
             CheckpointAggregates.Clear();
+
+            _summedCreatedThreads = 0;
+            _summedWorkingThreads = 0;
+            _threadAggregationCount = 0;
+
+            IterationBeginTime  = DateTime.MaxValue;
+            IterationEndTime  = DateTime.MinValue;
         }
     }
 }

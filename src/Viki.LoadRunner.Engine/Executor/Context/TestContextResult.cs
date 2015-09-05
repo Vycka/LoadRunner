@@ -12,6 +12,9 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         public readonly DateTime IterationStarted;
         public readonly DateTime IterationFinished;
 
+        public int CreatedThreads { get; private set; }
+        public int WorkingThreads { get; private set; }
+
         public TestContextResult(TestContext testContext)
         {
             Checkpoints = testContext.LoggedCheckpoints.ToArray();
@@ -21,6 +24,12 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
             IterationStarted = testContext.IterationStarted;
             IterationFinished = testContext.IterationFinished;
+        }
+
+        internal void SetInternalMetadata(int createdThreads, int workingThreads)
+        {
+            CreatedThreads = createdThreads;
+            WorkingThreads = workingThreads;
         }
     }
 }
