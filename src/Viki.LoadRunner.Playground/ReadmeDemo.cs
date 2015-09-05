@@ -16,9 +16,9 @@ namespace Viki.LoadRunner.Playground
         {
             ExecutionParameters executionParameters = new ExecutionParameters(
                 maxDuration: TimeSpan.FromSeconds(15),
-                maxIterationsCount: 2000,
-                minThreads: 20,
-                maxThreads: 200,
+                maxIterationsCount: 5000,
+                minThreads: 1,
+                maxThreads: 1,
                 maxRequestsPerSecond: Double.MaxValue,
                 finishTimeoutMilliseconds: 10000
             );
@@ -47,6 +47,8 @@ namespace Viki.LoadRunner.Playground
         {
             Debug.WriteLine("ScenarioSetup Executes on thread creation");
             Debug.WriteLine("Exceptions here are not handled!");
+
+            //throw new Exception("2% error chance for testing");
         }
 
         public void IterationSetup(ITestContext testContext)
@@ -98,6 +100,7 @@ namespace Viki.LoadRunner.Playground
             Debug.WriteLine("ScenarioTearDown Executes once LoadTest execution is over");
 
             Debug.WriteLine("Exceptions here are not handled!");
+            throw new Exception("2% error chance for testing");
         }
     }
 }

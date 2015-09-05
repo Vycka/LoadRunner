@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
@@ -9,7 +8,6 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         #region Fields
 
         private readonly List<Checkpoint> _checkpoints = new List<Checkpoint>();
-        private readonly Stopwatch iterationTimer = new Stopwatch();
 
         public TestContext(int threadId)
         {
@@ -29,12 +27,10 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         internal void Start()
         {
             IterationStarted = DateTime.UtcNow;
-            iterationTimer.Start();
         }
 
         internal void Stop()
         {
-            iterationTimer.Stop();
             IterationFinished = DateTime.UtcNow;
         }
 
@@ -43,7 +39,6 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             IterartionId = iterationId;
 
             _checkpoints.Clear();
-            iterationTimer.Reset();
 
             IterationStarted = DateTime.MaxValue;
             IterationFinished = DateTime.MinValue;
@@ -63,11 +58,22 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             if (checkpointName == null)
                 checkpointName = $"Checkpoint #{_checkpoints.Count + 1}";
 
-            Checkpoint newCheckpoint = new Checkpoint(checkpointName, iterationTimer.Elapsed);
+            Checkpoint newCheckpoint = new Checkpoint(checkpointName, ExecutionTime);
             _checkpoints.Add(newCheckpoint);  
         }
 
-        public TimeSpan ExecutionTime => iterationTimer.Elapsed;
+        public TimeSpan ExecutionTime
+        {
+            get
+            {
+                if (IterationFinished != DateTime.MinValue)
+                    return IterationFinished - IterationStarted;
+                if (IterationStarted != DateTime.MaxValue)
+                    return DateTime.UtcNow - IterationStarted;
+
+                return TimeSpan.Zero;
+            }
+        }
         public int IterartionId { get; private set; }
         public int ThreadId { get; }
 

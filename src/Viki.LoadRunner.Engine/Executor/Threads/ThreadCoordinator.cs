@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
@@ -11,18 +15,20 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         private readonly int _maxThreads;
         private readonly Type _testScenarioType;
 
-        private ConcurrentBag<TestExecutorThread> _allThreads = new ConcurrentBag<TestExecutorThread>(); 
-        private ConcurrentQueue<TestExecutorThread> _availableThreads = new ConcurrentQueue<TestExecutorThread>();
+        private readonly ConcurrentBag<TestExecutorThread> _allThreads = new ConcurrentBag<TestExecutorThread>(); 
+        private readonly ConcurrentQueue<TestExecutorThread> _availableThreads = new ConcurrentQueue<TestExecutorThread>();
+        private readonly ConcurrentBag<Exception> _threadErrors = new ConcurrentBag<Exception>();
 
-
-        private bool _disposing = false;
-        private int _nextIterationId = 0;
+        private bool _disposing;
+        private int _nextIterationId = 1;
+        private int _nextThreadId = 1;
 
         #endregion
 
         #region Properties
 
         public int AvailableThreadCount => (_maxThreads - _allThreads.Count) + _availableThreads.Count;
+        
 
         #endregion
 
@@ -38,14 +44,14 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             _maxThreads = maxThreads;
             _testScenarioType = testScenarioType;
 
-            InitializeThreads(minThreads);
+            InitializeThreads(minThreads, true);
         }
 
         #endregion
 
         #region Methods
 
-        public bool ExecuteTestScenario()
+        public bool TryRunSingleIteration()
         {
             bool result = false;
             TestExecutorThread thread = GetFreeThread();
@@ -71,18 +77,51 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             
         }
 
-        private void InitializeThreads(int threadCount)
+        private void InitializeThreads(int threadCount, bool blockingScenarioSetup = false)
+        {
+            List<TestExecutorThread> newThreads = CreateThreads(threadCount).ToList();
+
+            foreach (TestExecutorThread newThread in newThreads)
+            {
+                newThread.ScenarioExecutionFinished += ExecutorThread_ScenarioExecutionFinished;
+                newThread.ThreadFailed += ExecutorThread_ThreadFailed;
+                newThread.ScenarioSetupSucceeded += NewThread_ScenarioSetupSucceeded;
+
+                newThread.StartThread();
+
+                _allThreads.Add(newThread);
+            }
+
+            if (blockingScenarioSetup)
+            {
+                while (newThreads.Any(t => t.IsAlive && t.ScenarioInitialized == false))
+                {
+                    Thread.Sleep(50);
+                }
+            }
+        }
+
+        private void NewThread_ScenarioSetupSucceeded(TestExecutorThread sender)
+        {
+            _availableThreads.Enqueue(sender);
+        }
+
+        private IEnumerable<TestExecutorThread> CreateThreads(int threadCount)
         {
             for (int i = 0; i < threadCount; i++)
             {
-                int nextThreadId = _allThreads.Count + 1;
                 var testScenarioInstance = (ILoadTestScenario)Activator.CreateInstance(_testScenarioType);
-                var executorThread = new TestExecutorThread(testScenarioInstance, nextThreadId);
+                yield return new TestExecutorThread(testScenarioInstance, _nextThreadId++);
+            }
+        }
 
-                executorThread.ScenarioExecutionFinished += ExecutorThread_ScenarioExecutionFinished;
-
-                _availableThreads.Enqueue(executorThread);
-                _allThreads.Add(executorThread);
+        public void AssertThreadErrors()
+        {
+            if (_threadErrors.Count != 0)
+            {
+                Exception resultError;
+                _threadErrors.TryTake(out resultError);
+                throw resultError;
             }
         }
 
@@ -98,9 +137,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             {
                 testExecutorThread.Dispose();
             }
-
-            _allThreads = null;
-            _availableThreads = null;
         }
 
         public void StopAndDispose(int timeoutMilliseconds)
@@ -130,12 +166,28 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         private void ExecutorThread_ScenarioExecutionFinished(TestExecutorThread sender, TestContextResult result)
         {
-            _availableThreads.Enqueue(sender);
-
-            if (!_disposing)
+            Parallel.Invoke((() =>
             {
-                OnScenarioExecutionFinished(result);
-            }
+                _availableThreads.Enqueue(sender);
+
+                if (!_disposing)
+                {
+                    OnScenarioExecutionFinished(result);
+                }
+            }));
+        }
+
+        private void ExecutorThread_ThreadFailed(TestExecutorThread sender, TestContextResult result, Exception ex)
+        {
+            Parallel.Invoke((() =>
+            {
+                sender.QueueStopThreadAsync();
+
+                _threadErrors.Add(ex);
+
+                TestExecutorThread failedThread;
+                _allThreads.TryTake(out failedThread);
+            }));
         }
 
         public delegate void ScenarioExecutionFinishedEvent(object sender, TestContextResult result);

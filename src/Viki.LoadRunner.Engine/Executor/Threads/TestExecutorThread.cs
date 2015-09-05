@@ -12,11 +12,14 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         private readonly ILoadTestScenario _loadTestScenario;
 
         private readonly TestContext _testContext;
-        private volatile bool _executeIterationQueued = false;
+        private volatile bool _executeIterationQueued;
         private volatile int _queuedIterationId = -1;
-        private volatile bool _stopQueued = false;
+        private volatile bool _stopQueued;
 
+
+        public bool ScenarioInitialized { get; private set; }
         public int ThreadId => _testContext.ThreadId;
+        public bool IsAlive => _handlerThread.IsAlive;
 
         #endregion
 
@@ -28,8 +31,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             _loadTestScenario = loadTestScenario;
 
             _handlerThread = new Thread(ExecuteScenarioThreadFunction);
-
-            _handlerThread.Start();
         }
 
         #endregion
@@ -38,7 +39,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         public void StartThread()
         {
-            if (_handlerThread.IsAlive)
+            if (IsAlive)
                 throw new Exception("TestScenarioThread already started");
 
             _handlerThread.Start();
@@ -72,7 +73,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         
         public void QueueIteration(int iteration)
         {
-            if (!_handlerThread.IsAlive)
+            if (!IsAlive)
                 throw new Exception("TestScenarioThread is not started");
 
             if (_executeIterationQueued)
@@ -87,12 +88,12 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         #region Events
 
 
-        public delegate void ScenarioExecutionStartedEvent(TestExecutorThread sender);
-        public event ScenarioExecutionStartedEvent ScenarioExecutionStarted;
+        public delegate void ScenarioSetupSucceededEvent(TestExecutorThread sender);
+        public event ScenarioSetupSucceededEvent ScenarioSetupSucceeded;
 
-        private void OnScenarioExecutionStarted()
+        private void OnScenarioSetupSucceeded()
         {
-            ScenarioExecutionStarted?.Invoke(this);
+            ScenarioSetupSucceeded?.Invoke(this);
         }
 
         public delegate void ScenarioExecutionFinishedEvent(TestExecutorThread sender, TestContextResult result);
@@ -103,13 +104,21 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             ScenarioExecutionFinished?.Invoke(this, new TestContextResult(_testContext));
         }
 
+        public delegate void ThreadFailedEvent(TestExecutorThread sender, TestContextResult result, Exception ex);
+        public event ThreadFailedEvent ThreadFailed;
+
+        private void OnThreadFailed(Exception ex)
+        {
+            ThreadFailed?.Invoke(this, new TestContextResult(_testContext), ex);
+        }
+
         #endregion
 
         #region IDisposable
 
         public void Dispose()
         {
-            StopThread(1000);
+            StopThread(0);
         }
 
         #endregion
@@ -118,52 +127,73 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         private void ExecuteScenarioThreadFunction()
         {
-            _testContext.Reset(-1);
-            _loadTestScenario.ScenarioSetup(_testContext);
-
-            while (_stopQueued != true)
+            try
             {
-                if (_executeIterationQueued)
+                ExecuteScenarioSetup();
+
+                while (_stopQueued == false || _executeIterationQueued)
                 {
-                    _testContext.Reset(_queuedIterationId);
-                    OnScenarioExecutionStarted();
-
-                    _testContext.Checkpoint(Checkpoint.IterationSetupCheckpointName);
-                    bool setupSuccess = ExecuteWithExceptionHandling(() => _loadTestScenario.IterationSetup(_testContext), _testContext);
-
-                    if (setupSuccess)
+                    if (_executeIterationQueued)
                     {
-                        _testContext.Checkpoint(Checkpoint.IterationStartCheckpointName);
+                        _testContext.Reset(_queuedIterationId);
+                        //OnScenarioExecutionStarted();
 
-                        _testContext.Start();
-                        bool iterationSuccess = ExecuteWithExceptionHandling(() => _loadTestScenario.ExecuteScenario(_testContext), _testContext);
-                        _testContext.Stop();
+                        _testContext.Checkpoint(Checkpoint.IterationSetupCheckpointName);
+                        bool setupSuccess = ExecuteWithExceptionHandling(() => _loadTestScenario.IterationSetup(_testContext), _testContext);
 
-                        if (iterationSuccess)
+                        if (setupSuccess)
                         {
-                            _testContext.Checkpoint(Checkpoint.IterationEndCheckpointName);
+                            _testContext.Checkpoint(Checkpoint.IterationStartCheckpointName);
+
+                            _testContext.Start();
+                            bool iterationSuccess = ExecuteWithExceptionHandling(() => _loadTestScenario.ExecuteScenario(_testContext), _testContext);
+                            _testContext.Stop();
+
+                            if (iterationSuccess)
+                            {
+                                _testContext.Checkpoint(Checkpoint.IterationEndCheckpointName);
+                            }
                         }
+                        else
+                        {
+                            _testContext.Start();
+                            _testContext.Stop();
+                        }
+
+                        _testContext.Checkpoint(Checkpoint.IterationTearDownCheckpointName);
+                        ExecuteWithExceptionHandling(() => _loadTestScenario.IterationTearDown(_testContext), _testContext);
+
+                        _executeIterationQueued = false;
+                        OnScenarioExecutionFinished();
                     }
                     else
                     {
-                        _testContext.Start();
-                        _testContext.Stop();
+                        Thread.Sleep(1);
                     }
-
-                    _testContext.Checkpoint(Checkpoint.IterationTearDownCheckpointName);
-                    ExecuteWithExceptionHandling(() => _loadTestScenario.IterationTearDown(_testContext), _testContext);
-
-                    _executeIterationQueued = false;
-                    OnScenarioExecutionFinished();
                 }
-                else
+
+                _testContext.Reset(-1);
+                _loadTestScenario.ScenarioTearDown(_testContext);
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType() != typeof(ThreadAbortException))
                 {
-                    Thread.Sleep(1);
+                    OnThreadFailed(ex);
                 }
             }
 
-            _testContext.Reset(-1);
-            _loadTestScenario.ScenarioTearDown(_testContext);
+        }
+
+        private void ExecuteScenarioSetup()
+        {
+            if (ScenarioInitialized == false)
+            { 
+                _testContext.Reset(-1);
+                _loadTestScenario.ScenarioSetup(_testContext);
+                ScenarioInitialized = true;
+                OnScenarioSetupSucceeded();
+            }
         }
 
         private static bool ExecuteWithExceptionHandling(Action action, TestContext testContext)

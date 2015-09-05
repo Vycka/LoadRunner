@@ -44,10 +44,6 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
                     yield return
                         new ResultItemRow(results, results.CheckpointAggregates[Checkpoint.IterationTearDownCheckpointName]);
             }
-            else
-            {
-                int x = 0;
-            }
         }
     }
 }

@@ -53,38 +53,45 @@ namespace Viki.LoadRunner.Engine
 
                 _resultsAggregator.Begin();
 
-
-
                 TimeSpan minimumDelayBetweenTests = TimeSpan.FromTicks((int)((TimeSpan.FromSeconds(1).Ticks / _parameters.MaxRequestsPerSecond) + 0.5));
                 int testIterationCount = 0;
                 TimeSpan lastExecutionQueued = TimeSpan.Zero;
+                TimeSpan elapsedTime = TimeSpan.Zero - minimumDelayBetweenTests;
 
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-
-                while (stopwatch.Elapsed <= _parameters.MaxDuration  && testIterationCount < _parameters.MaxIterationsCount)
+                DateTime testBeginTime = DateTime.UtcNow;
+                while (elapsedTime <= _parameters.MaxDuration && testIterationCount < _parameters.MaxIterationsCount)
                 {
+                    threadCoordinator.AssertThreadErrors();
+
                     if (threadCoordinator.AvailableThreadCount == 0)
                     {
                         Thread.Sleep(1);
                         continue;
                     }
 
-                    if (stopwatch.Elapsed - lastExecutionQueued >= minimumDelayBetweenTests)
+                    if (elapsedTime - lastExecutionQueued >= minimumDelayBetweenTests && threadCoordinator.AvailableThreadCount > 0)
                     {
-                        lastExecutionQueued = stopwatch.Elapsed;
-
-                        threadCoordinator.ExecuteTestScenario();
-
-                        testIterationCount++;
+                        if (threadCoordinator.TryRunSingleIteration())
+                        {
+                            lastExecutionQueued = elapsedTime;
+                            testIterationCount++;
+                        }
                     }
+                    else
+                    {
+                        Thread.Sleep(1);
+                    }
+
+                    elapsedTime = DateTime.UtcNow - testBeginTime;
                 }
+                
             }
             finally
             {
                 threadCoordinator?.StopAndDispose(_parameters.FinishTimeoutMilliseconds);
-
                 _resultsAggregator.End();
+
+                threadCoordinator?.AssertThreadErrors();
             }
         }
 

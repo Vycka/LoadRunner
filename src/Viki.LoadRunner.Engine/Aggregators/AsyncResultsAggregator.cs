@@ -60,7 +60,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         {
             bool onlyOneAggregator = _resultsAggregators.Length == 1;
 
-            while (!_stopping)
+            while (!_stopping || _processingQueue.IsEmpty == false)
             {
                 TestContextResult resultObject;
                 while (_processingQueue.TryDequeue(out resultObject))
@@ -71,6 +71,8 @@ namespace Viki.LoadRunner.Engine.Aggregators
                         _resultsAggregators[0].TestContextResultReceived(localResultObject);
                     else
                         Parallel.ForEach(_resultsAggregators, aggregator => aggregator.TestContextResultReceived(localResultObject));
+
+                    //Console.WriteLine(localResultObject.ThreadId + " " + localResultObject.IterationId);
                 }
 
                 Thread.Sleep(50);
