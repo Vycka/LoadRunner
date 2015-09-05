@@ -6,10 +6,10 @@ using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Results;
-using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Parameters;
+using Viki.LoadRunner.Engine.Strategies.Threading;
 using Viki.LoadRunner.Engine.Utils;
-using Viki.LoadRunner.Tools.Aggregators;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -26,17 +26,18 @@ namespace Viki.LoadRunner.Playground
 
             LoadRunnerEngine testClient =
                 LoadRunnerEngine.Create<LoadTestScenario>(
-                    new ExecutionParameters(
-                        maxDuration: TimeSpan.FromSeconds(5),
-                        minThreads: 100,
-                        maxThreads: 150,
-                        maxRequestsPerSecond: 200,
-                        finishTimeoutMilliseconds: 0,
+                    new LoadRunnerParameters(
+                        maxDuration: TimeSpan.FromSeconds(30),
+                        maxRequestsPerSecond: Double.MaxValue,
+                        finishTimeoutMilliseconds: 10000,
                         maxIterationsCount: int.MaxValue
-                    ),
+                        )
+                    {
+                        ThreadingStrategy = new IncrementalThreading(TimeSpan.FromSeconds(5), 10, 10)
+                    },
                     defaultResultsAggregator, histogramResultsAggregator
-
                 );
+                
 
             testClient.Run();
 

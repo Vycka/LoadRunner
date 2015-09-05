@@ -7,6 +7,7 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Parameters;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -14,11 +15,9 @@ namespace Viki.LoadRunner.Playground
     {
         public static void Run()
         {
-            ExecutionParameters executionParameters = new ExecutionParameters(
+            LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters(
                 maxDuration: TimeSpan.FromSeconds(15),
                 maxIterationsCount: 5000,
-                minThreads: 1,
-                maxThreads: 1,
                 maxRequestsPerSecond: Double.MaxValue,
                 finishTimeoutMilliseconds: 10000
             );
@@ -26,7 +25,7 @@ namespace Viki.LoadRunner.Playground
             DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
 
             // Initializing LoadTest Client
-            LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(executionParameters, resultsAggregator);
+            LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(loadRunnerParameters, resultsAggregator);
 
             // Run test (blocking call)
             loadRunner.Run();

@@ -29,6 +29,7 @@ namespace Viki.LoadRunner.Engine.Utils
             dataTable.Columns.Add("TimeStamp");
             dataTable.Columns.Add("WorkingThreadsAvg");
             dataTable.Columns.Add("CreatedThreadsAvg");
+            dataTable.Columns.Add("TotalErrors");
 
             foreach (HistogramResultRow histogramResultRow in results)
             {
@@ -38,6 +39,7 @@ namespace Viki.LoadRunner.Engine.Utils
                 row["TimeStamp"] = histogramResultRow.TimePoint.ToUnixTime();
                 row["WorkingThreadsAvg"] = Math.Round(histogramResultRow.WorkingThreads, DoublePrecision);
                 row["CreatedThreadsAvg"] = Math.Round(histogramResultRow.CreatedThreads, DoublePrecision);
+                row["TotalErrors"] = histogramResultRow.ResultItems.Sum(r => r.ErrorCount);
 
                 AddResultItemRowValues(row, histogramResultRow.ResultItems);
 
