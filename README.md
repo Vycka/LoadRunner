@@ -108,11 +108,11 @@ ExecutionParameters executionParameters = new ExecutionParameters(
   // This aggregation is similar to SoapUI (Like Min, Max, Avg, ...)
   DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
   // This one aggregates same results as DefaultResultsAggregator, but splits into time-based histogram
+  
   HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 3);
 ```
 
-Or `IResultsAggregator` interface could be implemented, thus giving access to raw measurements
-* [Check out IResultsAggregator](src/Viki.LoadRunner.Engine/Aggregators/IResultsAggregator.cs)
+* Histogram results can be exported to CSV using `HistogramCsvExport` util.
 
 ### *Put it all together*
 
