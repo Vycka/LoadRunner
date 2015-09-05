@@ -20,7 +20,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
             TotalDuration = results.IterationEndTime - results.IterationBeginTime;
 
             TotalIterationsStartedCount = setupRow.Count;
-            TotalFailedIterationCount = results.CheckpointAggregates.Sum(resultItemRow => resultItemRow.Value.Errors.Count);
+            TotalFailedIterationCount = results.CheckpointAggregates.Sum(resultItemRow => resultItemRow.Value.Errors.Count) - tearDownRow.Errors.Count;
             TotalSuccessfulIterationCount = TotalIterationsStartedCount - TotalFailedIterationCount;
 
 

@@ -8,6 +8,7 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Utils;
 using Viki.LoadRunner.Tools.Aggregators;
 
 namespace Viki.LoadRunner.Playground
@@ -16,25 +17,24 @@ namespace Viki.LoadRunner.Playground
     {
         static void Main(string[] args)
         {
-            ReadmeDemo.Run();
+            //ReadmeDemo.Run();
 
-            return;
+            //return;
             DefaultResultsAggregator defaultResultsAggregator = new DefaultResultsAggregator();
             HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 2);
-            DefaultResultsAggregatorUi defaultUi = new DefaultResultsAggregatorUi();
-            DefaultResultsAggregatorUi defaultUi2 = new DefaultResultsAggregatorUi();
+
 
             LoadRunnerEngine testClient =
                 LoadRunnerEngine.Create<LoadTestScenario>(
                     new ExecutionParameters(
-                        maxDuration: TimeSpan.FromSeconds(5),
+                        maxDuration: TimeSpan.FromSeconds(10),
                         minThreads: 100,
                         maxThreads: 150,
                         maxRequestsPerSecond: 200,
                         finishTimeoutMilliseconds: 0,
                         maxIterationsCount: int.MaxValue
                     ),
-                    defaultResultsAggregator, histogramResultsAggregator, defaultUi
+                    defaultResultsAggregator, histogramResultsAggregator
 
                 );
 
@@ -45,7 +45,7 @@ namespace Viki.LoadRunner.Playground
             List<HistogramResultRow> histogramResults = histogramResultsAggregator.GetResults().ToList();
 
             Console.WriteLine(JsonConvert.SerializeObject(results, Formatting.Indented));
-            Console.WriteLine(JsonConvert.SerializeObject(histogramResults, Formatting.Indented));
+            HistogramCsvExport.Export(histogramResults, "d:\\exportTest.csv");
         }
     }
 

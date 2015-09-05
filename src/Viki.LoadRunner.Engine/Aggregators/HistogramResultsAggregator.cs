@@ -15,6 +15,8 @@ namespace Viki.LoadRunner.Engine.Aggregators
         private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
         private readonly Dictionary<int, DefaultTestContextResultAggregate> _histogramItems = new Dictionary<int, DefaultTestContextResultAggregate>();
 
+        public IReadOnlyList<string> CheckpointsOorder => _orderLearner.LearnedOrder; 
+
         public HistogramResultsAggregator(int aggregationStepSeconds = 1)
         {
             _aggregationStepSeconds = aggregationStepSeconds;

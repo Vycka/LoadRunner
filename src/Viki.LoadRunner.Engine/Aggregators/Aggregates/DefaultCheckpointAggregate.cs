@@ -31,7 +31,8 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
             Name = name;
 
             Errors = new List<Exception>();
-            SummedMomentTime = new TimeSpan();
+            SummedMomentTime = TimeSpan.Zero;
+            SummedTotalTime = TimeSpan.Zero;
 
             MomentMin = TimeSpan.MaxValue;
             MomentMax = TimeSpan.MinValue;
@@ -39,6 +40,27 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
             TotalMax = TimeSpan.MinValue;
 
             Count = 0;
+        }
+
+        public DefaultCheckpointAggregate(string name, DefaultCheckpointAggregate copyStatsFrom)
+        {
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            if (copyStatsFrom == null)
+                throw new ArgumentNullException(nameof(copyStatsFrom));
+
+            Name = name;
+
+            Errors = copyStatsFrom.Errors;
+            SummedMomentTime = copyStatsFrom.SummedMomentTime;
+            SummedTotalTime = copyStatsFrom.SummedTotalTime;
+
+            MomentMin = copyStatsFrom.MomentMin;
+            MomentMax = copyStatsFrom.MomentMax;
+            TotalMin = copyStatsFrom.TotalMin;
+            TotalMax = copyStatsFrom.TotalMax;
+
+            Count = copyStatsFrom.Count;
         }
 
         public void AggregateCheckpoint(TimeSpan momentDuration, Checkpoint checkpoint)

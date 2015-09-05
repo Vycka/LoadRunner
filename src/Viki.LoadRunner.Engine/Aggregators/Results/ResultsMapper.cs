@@ -19,18 +19,34 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
 
         public IEnumerable<ResultItemRow> Map(DefaultTestContextResultAggregate results, bool includeAllCheckpoints = false)
         {
-            if (results.CheckpointAggregates.Count > 2)
+            IEnumerable<string> resultsOrder = _orderLearner.LearnedOrder;
+
+            List<DefaultCheckpointAggregate> orderedResults =
+                resultsOrder
+                    .Where(results.CheckpointAggregates.ContainsKey)
+                    .Select(checkpointName => results.CheckpointAggregates[checkpointName]).ToList();
+
+            if (includeAllCheckpoints)
+                yield return
+                    new ResultItemRow(results, results.CheckpointAggregates[Checkpoint.IterationSetupCheckpointName]);
+
+            int iterationCount = 0;
+            if (results.CheckpointAggregates.ContainsKey(Checkpoint.IterationEndCheckpointName))
             {
-                List<DefaultCheckpointAggregate> orderedResults =
-                    _orderLearner.LearnedOrder
-                        .Where(results.CheckpointAggregates.ContainsKey)
-                        .Select(checkpointName => results.CheckpointAggregates[checkpointName]).ToList();
+                foreach (DefaultCheckpointAggregate resultItem in orderedResults.GetRange(2, orderedResults.Count - 3))
+                {
+                    var resultItemRow = new ResultItemRow(results, resultItem);
+                    resultItemRow.SetErrors(orderedResults[1 + iterationCount].Errors);
 
-                if (includeAllCheckpoints)
-                    yield return
-                        new ResultItemRow(results, results.CheckpointAggregates[Checkpoint.IterationSetupCheckpointName]);
-
-                int iterationCount = 0;
+                    iterationCount++;
+                    yield return resultItemRow;
+                }
+            }
+            else if (
+                results.CheckpointAggregates.ContainsKey(Checkpoint.IterationStartCheckpointName)
+                && results.CheckpointAggregates.ContainsKey(Checkpoint.IterationEndCheckpointName) == false
+                )
+            {
                 foreach (DefaultCheckpointAggregate resultItem in orderedResults.GetRange(2, orderedResults.Count - 3))
                 {
                     var resultItemRow = new ResultItemRow(results, resultItem);
@@ -40,10 +56,22 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
                     yield return resultItemRow;
                 }
 
-                if (includeAllCheckpoints)
-                    yield return
-                        new ResultItemRow(results, results.CheckpointAggregates[Checkpoint.IterationTearDownCheckpointName]);
+                ResultItemRow iterationEndRow = new ResultItemRow(
+                    Checkpoint.IterationEndCheckpointName,
+                    new ResultItemRow(results, orderedResults[orderedResults.Count - 2])
+                )
+                {
+                    Count = 0,
+                    SuccessIterationsPerSec = 0
+                };
+
+
+                yield return iterationEndRow;
             }
+
+            if (includeAllCheckpoints)
+                yield return
+                    new ResultItemRow(results, results.CheckpointAggregates[Checkpoint.IterationTearDownCheckpointName]);
         }
     }
 }
