@@ -112,7 +112,7 @@ ExecutionParameters executionParameters = new ExecutionParameters(
   HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 3);
 ```
 
-* Histogram results can be exported to CSV using `HistogramCsvExport` util.
+* Histogram results can be exported to CSV using [HistogramCsvExport](src/Viki.LoadRunner.Engine/Utils/HistogramCsvExport.cs) util.
 
 ### *Put it all together*
 
