@@ -121,28 +121,21 @@ LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
 ### *Put it all together*
 
 ```cs
-    ExecutionParameters executionParameters = new ExecutionParameters(
-        maxDuration: TimeSpan.FromSeconds(15),
-        maxIterationsCount: 2000,
-        minThreads: 20,
-        maxThreads: 200,
-        maxRequestsPerSecond: Double.MaxValue,
-        finishTimeoutMilliseconds: 10000
-    );
-
-    DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
-
-    // Initializing LoadTest Client
-    LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(executionParameters, resultsAggregator);
-
-    // Run test (blocking call)
-    loadRunner.Run();
-
-    // ResultItem will have all logged exceptions within LoadTest execution
-    ResultsContainer defaultResults = resultsAggregator.GetResults();
-    Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
-
-    Console.ReadKey();
+  // Initialize parameters
+  LoadRunnerParameters parameters = new LoadRunnerParameters();
+  
+  // Initialize aggregator
+  DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
+  
+  // Initializing LoadTest Client
+  LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(parameters, resultsAggregator);
+  
+  // Run test (blocking call)
+  loadRunner.Run();
+  
+  // ResultItem will have all logged exceptions within LoadTest execution
+  ResultsContainer defaultResults = resultsAggregator.GetResults();
+  Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
 ```
 ## *Enjoy the result*
 
