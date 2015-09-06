@@ -12,6 +12,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
     {
         private readonly int _aggregationStepSeconds;
 
+
+        private long _testBeginTimeMs;
+        
         private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
         private readonly Dictionary<int, DefaultTestContextResultAggregate> _histogramItems = new Dictionary<int, DefaultTestContextResultAggregate>();
 
@@ -46,9 +49,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         private int GetHistogramRowTimeSlot(DateTime requestTime)
         {
-            double unixTime = requestTime.ToUnixTimeMs() / 1000.0;
+            double iterationEndTime = (requestTime.ToUnixTimeMs() - _testBeginTimeMs) / 1000.0;
 
-            var resultTimeSlot = ((int)(unixTime / _aggregationStepSeconds)) * _aggregationStepSeconds;
+            var resultTimeSlot = ((int)(iterationEndTime / _aggregationStepSeconds)) * _aggregationStepSeconds;
 
             return resultTimeSlot;
         }
@@ -72,8 +75,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
         }
 
 
-        public void Begin()
+        public void Begin(DateTime testBeginTime)
         {
+            _testBeginTimeMs = testBeginTime.ToUnixTimeMs();
             _histogramItems.Clear();
         }
 

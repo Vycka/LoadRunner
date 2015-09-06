@@ -59,13 +59,15 @@ namespace Viki.LoadRunner.Engine
                 _threadCoordinator.ScenarioExecutionFinished += _threadCoordinator_ScenarioExecutionFinished;
                 _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.InitialThreadCount);
 
-                _resultsAggregator.Begin();
+                
 
                 int testIterationCount = 0;
                 TimeSpan lastExecutionQueued = TimeSpan.FromSeconds(-10);
 
                 _testElapsedTime = TimeSpan.Zero;
                 _testBeginTime = DateTime.UtcNow;
+                _resultsAggregator.Begin(_testBeginTime);
+
 
                 while (_testElapsedTime <= _parameters.Limits.MaxDuration && testIterationCount < _parameters.Limits.MaxIterationsCount)
                 {

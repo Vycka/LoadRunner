@@ -1,4 +1,5 @@
-﻿using Viki.LoadRunner.Engine.Executor.Context;
+﻿using System;
+using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
@@ -14,7 +15,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// Signals aggregator, that new test execution is about to begin
         /// So aggregator can reset stats if needed.
         /// </summary>
-        void Begin();
+        void Begin(DateTime testBeginTime);
 
         /// <summary>
         /// Signals aggregator, that new test execution is ended and stats aggregation is finished

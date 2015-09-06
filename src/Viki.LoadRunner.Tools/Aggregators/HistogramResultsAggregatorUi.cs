@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Context;
@@ -15,7 +16,7 @@ namespace Viki.LoadRunner.Tools.Aggregators
         {
         }
 
-        public void Begin()
+        public void Begin(DateTime testBeginTime)
         {
             _windowThread = new Thread((() => Application.Run(_totalsWindow)));
             _windowThread.Start();

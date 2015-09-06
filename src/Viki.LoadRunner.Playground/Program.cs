@@ -18,9 +18,9 @@ namespace Viki.LoadRunner.Playground
     {
         static void Main()
         {
-            ReadmeDemo.Run();
+            //ReadmeDemo.Run();
 
-            return;
+            //return;
             DefaultResultsAggregator defaultResultsAggregator = new DefaultResultsAggregator();
             HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 5);
             
@@ -30,11 +30,11 @@ namespace Viki.LoadRunner.Playground
                     {
                         Limits = new ExecutionLimits
                         {
-                            MaxDuration = TimeSpan.FromSeconds(35),
+                            MaxDuration = TimeSpan.FromSeconds(60),
                             MaxIterationsCount = Int32.MaxValue,
                             FinishTimeout = TimeSpan.FromSeconds(60)
                         },
-                        ThreadingStrategy = new IncrementalThreading(100, TimeSpan.FromSeconds(10), -20),
+                        ThreadingStrategy = new IncrementalThreading(15, TimeSpan.FromSeconds(10), 15),
                         SpeedStrategy = new FixedSpeed()
                     },
                     defaultResultsAggregator, histogramResultsAggregator

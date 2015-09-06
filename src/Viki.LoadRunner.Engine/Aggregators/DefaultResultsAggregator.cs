@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Viki.LoadRunner.Engine.Aggregators.Aggregates;
 using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
@@ -32,7 +32,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             return result;
         }
     
-        public void Begin()
+        public void Begin(DateTime testBeginTime)
         {
             _statsAggregator.Reset();
             _orderLearner.Reset();
