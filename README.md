@@ -16,6 +16,8 @@ public class TestScenario : ILoadTestScenario
     {
         Debug.WriteLine("ScenarioSetup Executes on thread creation");
         Debug.WriteLine("Exceptions here are not handled!");
+
+        //throw new Exception("2% error chance for testing");
     }
 
     public void IterationSetup(ITestContext testContext)
@@ -35,7 +37,7 @@ public class TestScenario : ILoadTestScenario
             "You can use testContext.Checkpoint() function to mark points, " +
             "where time should be measured"
         );
-        Thread.Sleep(Random.Next(5000));
+        Thread.Sleep(Random.Next(4000));
 
         // [Iteration Begin Checkpoint] -- [First Checkpoint]
         testContext.Checkpoint("First Checkpoint");
@@ -72,35 +74,37 @@ public class TestScenario : ILoadTestScenario
 ```
 ### *Setup [LoadRunnerEngine] parameters with using [ExecutionParameters]*
 ```cs
-ExecutionParameters executionParameters = new ExecutionParameters(
+// LoadRunnerParameters initializes defaults shown below
+LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
+{
+    Limits = new ExecutionLimits
+    {
+        // Maximum LoadTest duration threshold, after which test is stopped
+        MaxDuration = TimeSpan.FromSeconds(30),
+        // Maximum executet iterations count threshold, after which test is stopped
+        MaxIterationsCount = Int32.MaxValue,
 
-    // Maximum LoadTest duration (after it load test stops)
-    maxDuration: TimeSpan.FromSeconds(15),
+        // Once LoadTest execution finishes because of [maxDuration] or [maxIterationsCount] limit
+        // coordinating thread will wait [FinishTimeout] amount of time before 
+        // terminating them with Thread.Abort()
+        //
+        // Aborted threads won't get the chance to call IterationTearDown() or ScenarioTearDown()
+        // neither it will broadcast TestContextResultReceived() to aggregators with the state as it is after abort.
+        FinishTimeout = TimeSpan.FromSeconds(60)
+    },
 
-    // Maximum iteratations count (after it load test stops)
-    maxIterationsCount: 2000,
+    // [ISpeedStrategy] defines maximum allowed load by dampening executed Iterations per second count
+    // * Other existing version of [ISpeedStrategy]
+    //    - IncremantalSpeed(initialRequestsPerSec: 1.0, increasePeriod: TimeSpan.FromSeconds(10), increaseStep: 3.0)
+    SpeedStrategy = new FixedSpeed(maxIterationsPerSec: Double.MaxValue),
 
-    // Minimum amount of worker-threads to precreate
-    // Keep in mind, that slow ScenarioSetup time will slow down new thread creation
-    minThreads: 20,
-
-    // Maximum amount of worker-threads that can be created 
-    // New threads only be created if maxRequestsPerSecond speed is not achieved
-    // with current amount of threads          
-    maxThreads: 200,
-
-    // Maximum count of requests that will be created per second
-    // (Unless there are no available worker-threads left)
-    maxRequestsPerSecond: Double.MaxValue,
-
-    // Once LoadTest execution finishes because of [maxDuration] or [maxIterationsCount] limit
-    // coordinating thread will wait [finishTimeoutMilliseconds] amount of time before 
-    // terminating them with Thread.Abort()
-    //
-    // Aborted threads won't get the chance to call IterationTearDown() or ScenarioTearDown()
-    // neither it will broadcast TestContextResultReceived() to aggregators with the state as it is after abort.
-    finishTimeoutMilliseconds: 10000
-);
+    //[IThreadingStrategy] defines allowed worker thread count
+    // * SemiAutoThreading initializes [minThreadCount] at begining
+    // It will be increased if not enough threads are available to reach [ISpeedStrategy] limits 
+    // * Other existing version of [ISpeedStrategy]
+    //   - IncrementalThreading(initialThreadcount: 10, increasePeriod: TimeSpan.FromSeconds(10), increaseBatchSize: 5)
+    ThreadingStrategy = new SemiAutoThreading(minThreadCount: 10, maxThreadCount: 10)
+};
 ```
 
 ### *Choose your [IResultsAggregator]*
@@ -147,53 +151,54 @@ ExecutionParameters executionParameters = new ExecutionParameters(
   "Results": [
     {
       "Name": "First Checkpoint",
-      "MomentMin": "00:00:00.0020296",
-      "MomentMax": "00:00:04.9959708",
-      "MomentAverage": "00:00:02.4800000",
-      "SummedMin": "00:00:00.0020296",
-      "SummedMax": "00:00:04.9959708",
-      "SummedAverage": "00:00:02.4800000",
-      "SuccessIterationsPerSec": 56.574550654270006,
-      "Count": 1138,
+      "MomentMin": "00:00:00.0151666",
+      "MomentMax": "00:00:03.9400971",
+      "MomentAvg": "00:00:01.9450000",
+      "SummedMin": "00:00:00.0161491",
+      "SummedMax": "00:00:03.9400971",
+      "SummedAvg": "00:00:01.9460000",
+      "SuccessIterationsPerSec": 3.897076831011435,
+      "Count": 132,
       "ErrorRatio": 0.0,
       "ErrorCount": 0
     },
     {
       "Name": "Last Checkpoint",
-      "MomentMin": "00:00:00.0000003",
-      "MomentMax": "00:00:00.0000804",
-      "MomentAverage": "00:00:00",
-      "SummedMin": "00:00:00.0020317",
-      "SummedMax": "00:00:04.9959717",
-      "SummedAverage": "00:00:02.4880000",
-      "SuccessIterationsPerSec": 51.056294834741038,
-      "Count": 1027,
-      "ErrorRatio": 0.097539543057996475,
-      "ErrorCount": 111
+      "MomentMin": "00:00:00",
+      "MomentMax": "00:00:00",
+      "MomentAvg": "00:00:00",
+      "SummedMin": "00:00:00.0161491",
+      "SummedMax": "00:00:03.9400971",
+      "SummedAvg": "00:00:01.9330000",
+      "SuccessIterationsPerSec": 3.5723204284271488,
+      "Count": 121,
+      "ErrorRatio": 0.083333333333333343,
+      "ErrorCount": 11
     },
     {
       "Name": "SYS_ITERATION_END",
-      "MomentMin": "00:00:00.0000181",
-      "MomentMax": "00:00:00.9997012",
-      "MomentAverage": "00:00:00.4820000",
-      "SummedMin": "00:00:00.0799777",
-      "SummedMax": "00:00:05.8661616",
-      "SummedAverage": "00:00:02.9660000",
-      "SuccessIterationsPerSec": 50.310584588858745,
-      "Count": 1012,
-      "ErrorRatio": 0.014605647517039922,
-      "ErrorCount": 15
+      "MomentMin": "00:00:00.0019844",
+      "MomentMax": "00:00:00.9949691",
+      "MomentAvg": "00:00:00.4980000",
+      "SummedMin": "00:00:00.2472860",
+      "SummedMax": "00:00:04.6650285",
+      "SummedAvg": "00:00:02.4470000",
+      "SuccessIterationsPerSec": 3.5427971191013041,
+      "Count": 120,
+      "ErrorRatio": 0.0082644628099173556,
+      "ErrorCount": 1
     }
   ],
   "Totals": {
-    "TotalIterationsStartedCount": 1167,
-    "TotalSuccessfulIterationCount": 959,
-    "TotalFailedIterationCount": 208,
-    "TotalDuration": "00:00:20.1150515",
-    "IterationErrorsRatio": 0.17823479005998288,
-    "SuccessIterationsPerSec": 47.67574172007464,
-    "IterationSetupErrorCount": 29,
-    "IterationTearDownErrorCount": 53
+    "TotalIterationsStartedCount": 134,
+    "TotalSuccessfulIterationCount": 120,
+    "TotalFailedIterationCount": 14,
+    "TotalDuration": "00:00:33.8715416",
+    "AverageWorkingThreads": 10.664179104477611,
+    "IterationErrorsRatio": 0.1044776119402985,
+    "SuccessIterationsPerSec": 3.5427971191013041,
+    "IterationSetupErrorCount": 2,
+    "IterationTearDownErrorCount": 5
   }
 }
 ```
