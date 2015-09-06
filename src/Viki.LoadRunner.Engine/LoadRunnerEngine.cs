@@ -49,7 +49,7 @@ namespace Viki.LoadRunner.Engine
 
         #endregion
 
-        #region Methods
+        #region Run() Stuff
 
         public void Run()
         {
@@ -60,7 +60,8 @@ namespace Viki.LoadRunner.Engine
                 _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.InitialThreadCount, true);
                 
                 int testIterationCount = 0;
-                TimeSpan lastExecutionQueued = TimeSpan.FromSeconds(-10);
+                TimeSpan executionEnqueueThreshold = TimeSpan.Zero;
+
                 _testElapsedTime = TimeSpan.Zero;
                 _testBeginTime = DateTime.UtcNow;
                 _resultsAggregator.Begin(_testBeginTime);
@@ -81,13 +82,11 @@ namespace Viki.LoadRunner.Engine
                         continue;
                     }
 
-                    TimeSpan delayBetweenIterations = _parameters.SpeedStrategy.GetDelayBetweenIterations(_testElapsedTime);
-
-                    if (_testElapsedTime - lastExecutionQueued > delayBetweenIterations && _threadCoordinator.IdleThreadCount > 0)
+                    if (_testElapsedTime >= executionEnqueueThreshold && _threadCoordinator.IdleThreadCount > 0)
                     {
                         if (_threadCoordinator.TryRunSingleIteration())
                         {
-                            lastExecutionQueued = _testElapsedTime;
+                            executionEnqueueThreshold = CalculateNextExecutionTime(executionEnqueueThreshold);
                             testIterationCount++;
                         }
                     }
@@ -107,6 +106,20 @@ namespace Viki.LoadRunner.Engine
 
                 _threadCoordinator?.AssertThreadErrors();
             }
+        }
+
+        private TimeSpan CalculateNextExecutionTime(TimeSpan lastExecutionEnqueueThreshold)
+        {
+            TimeSpan result;
+
+            TimeSpan delayBetweenIterations = _parameters.SpeedStrategy.GetDelayBetweenIterations(_testElapsedTime);
+
+            if (lastExecutionEnqueueThreshold.Ticks + (delayBetweenIterations.Ticks * 3) > _testElapsedTime.Ticks)
+                result = lastExecutionEnqueueThreshold + delayBetweenIterations;
+            else
+                result = _testElapsedTime;
+
+            return result;
         }
 
         #endregion

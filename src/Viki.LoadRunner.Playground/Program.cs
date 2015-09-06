@@ -34,8 +34,8 @@ namespace Viki.LoadRunner.Playground
                             MaxIterationsCount = Int32.MaxValue,
                             FinishTimeout = TimeSpan.FromSeconds(60)
                         },
-                        ThreadingStrategy = new IncrementalThreading(15, TimeSpan.FromSeconds(10), 15),
-                        SpeedStrategy = new FixedSpeed()
+                        ThreadingStrategy = new IncrementalThreading(30, TimeSpan.FromSeconds(10), 15),
+                        SpeedStrategy = new FixedSpeed(50)
                     },
                     defaultResultsAggregator, histogramResultsAggregator
                 );
@@ -91,10 +91,10 @@ namespace Viki.LoadRunner.Playground
             //testContext.Checkpoint("Checkpoint AAA");
 
 
-            if (Random.Next(100) % 50 == 0)
-                throw new Exception("err");
+            //if (Random.Next(100) % 50 == 0)
+            //    throw new Exception("err");
 
-            Thread.Sleep(Random.Next(1000));
+            Thread.Sleep(Random.Next(100));
         }
     }
 }
