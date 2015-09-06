@@ -72,7 +72,7 @@ public class TestScenario : ILoadTestScenario
     }
 }
 ```
-### *Setup [LoadRunnerEngine] parameters with using [ExecutionParameters]*
+### *Setup [LoadRunnerEngine] parameters with using [LoadRunnerParameters]*
 ```cs
 // LoadRunnerParameters initializes defaults shown below
 LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
@@ -81,6 +81,7 @@ LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
     {
         // Maximum LoadTest duration threshold, after which test is stopped
         MaxDuration = TimeSpan.FromSeconds(30),
+        
         // Maximum executet iterations count threshold, after which test is stopped
         MaxIterationsCount = Int32.MaxValue,
 
