@@ -72,7 +72,7 @@ public class TestScenario : ILoadTestScenario
     }
 }
 ```
-### *Setup [LoadRunnerEngine] parameters with using [LoadRunnerParameters]*
+### *Setup [LoadRunnerEngine] parameters with [LoadRunnerParameters]*
 ```cs
 // LoadRunnerParameters initializes defaults shown below
 LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
