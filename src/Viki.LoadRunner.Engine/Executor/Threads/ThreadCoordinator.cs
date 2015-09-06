@@ -15,6 +15,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         private readonly Type _testScenarioType;
 
         private readonly ConcurrentDictionary<int, TestExecutorThread> _allThreads = new ConcurrentDictionary<int, TestExecutorThread>();
+        private readonly ConcurrentDictionary<int, TestExecutorThread> _initializedThreads = new ConcurrentDictionary<int, TestExecutorThread>();
         private readonly ConcurrentQueue<TestExecutorThread> _availableThreads = new ConcurrentQueue<TestExecutorThread>();
         private readonly ConcurrentBag<Exception> _threadErrors = new ConcurrentBag<Exception>();
 
@@ -155,6 +156,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         private void NewThread_ScenarioSetupSucceeded(TestExecutorThread sender)
         {
             _availableThreads.Enqueue(sender);
+            _initializedThreads.TryAdd(sender.ThreadId, sender);
         }
 
         private void ExecutorThread_ScenarioExecutionFinished(TestExecutorThread sender, TestContextResult result)
@@ -164,16 +166,14 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 if (!_disposing)
                 {
 
-                    result.SetInternalMetadata(CreatedThreadCount, CreatedThreadCount - IdleThreadCount);
+                    result.SetInternalMetadata(CreatedThreadCount, _initializedThreads.Count - IdleThreadCount);
 
                     bool stopThisThread = OnScenarioExecutionFinished(result);
                     if (stopThisThread)
                     {
-                        TestExecutorThread removedThread;
-                        _allThreads.TryRemove(sender.ThreadId, out removedThread);
-                        removedThread.QueueStopThreadAsync();
+                        TryRemoveThread(sender.ThreadId);
                     }
-                    else
+                    else if (!sender.QueuedToStop)
                         _availableThreads.Enqueue(sender);
                 }
             }));
@@ -183,10 +183,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         {
             Parallel.Invoke((() =>
             {
-                TestExecutorThread failedThread;
-                _allThreads.TryRemove(sender.ThreadId, out failedThread);
-
-                sender.QueueStopThreadAsync();
+                TryRemoveThread(sender.ThreadId);
 
                 _threadErrors.Add(ex);
             }));
@@ -201,6 +198,17 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             ScenarioExecutionFinished?.Invoke(this, result, out stopThisThread);
 
             return stopThisThread;
+        }
+
+        private void TryRemoveThread(int threadId)
+        {
+            TestExecutorThread removedThread;
+
+            _allThreads.TryRemove(threadId, out removedThread);
+
+            removedThread.QueueStopThreadAsync();
+
+            _initializedThreads.TryRemove(threadId, out removedThread);
         }
 
         #endregion

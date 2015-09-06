@@ -16,7 +16,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         private volatile int _queuedIterationId = -1;
         private volatile bool _stopQueued;
 
-
+        public bool QueuedToStop => _stopQueued;
         public bool ScenarioInitialized { get; private set; }
         public int ThreadId => _testContext.ThreadId;
         public bool IsAlive => _handlerThread.IsAlive;

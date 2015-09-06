@@ -16,8 +16,8 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
         public DateTime IterationBeginTime { get; private set; } = DateTime.MaxValue;
         public DateTime IterationEndTime { get; private set; } = DateTime.MinValue;
 
-        public double WorkingThreadsAvg => _summedWorkingThreads  / (double)_threadAggregationCount;
-        public double CreatedThreadsAvg => _summedCreatedThreads/(double) _threadAggregationCount;
+        public double WorkingThreadsAvg => _summedWorkingThreads / (double) _threadAggregationCount;
+        public double CreatedThreadsAvg => _summedCreatedThreads / (double) _threadAggregationCount;
 
         public void AggregateResult(TestContextResult result)
         {
