@@ -138,7 +138,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                         _testContext.Reset(_queuedIterationId);
 
                         _testContext.Checkpoint(Checkpoint.IterationSetupCheckpointName);
-                        _testContext.Start();
                         bool setupSuccess = ExecuteWithExceptionHandling(() => _loadTestScenario.IterationSetup(_testContext), _testContext);
 
                         if (setupSuccess)
