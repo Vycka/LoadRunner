@@ -164,7 +164,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 if (!_disposing)
                 {
 
-                    result.SetInternalMetadata(CreatedThreadCount, CreatedThreadCount - IdleThreadCount + 1);
+                    result.SetInternalMetadata(CreatedThreadCount, CreatedThreadCount - IdleThreadCount);
 
                     bool stopThisThread = OnScenarioExecutionFinished(result);
                     if (stopThisThread)

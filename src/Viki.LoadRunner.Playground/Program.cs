@@ -70,14 +70,14 @@ namespace Viki.LoadRunner.Playground
         public void IterationSetup(ITestContext testContext)
         {
             //Console.WriteLine($"IterationSetup {testContext.ThreadId} {testContext.IterartionId}");
-            if (Random.Next(100) % 100 == 0)
-                throw new Exception($"#### {testContext.IterartionId}");
+            //if (Random.Next(100) % 100 == 0)
+            //    throw new Exception($"#### {testContext.IterartionId}");
         }
 
         public void IterationTearDown(ITestContext testContext)
         {
-            if (Random.Next(100) % 50 == 0)
-                throw new Exception($"#### {testContext.IterartionId}");
+            //if (Random.Next(100) % 50 == 0)
+            //    throw new Exception($"#### {testContext.IterartionId}");
             //Console.WriteLine($"IterationTearDown {testContext.ThreadId} {testContext.IterartionId}");
         }
 
