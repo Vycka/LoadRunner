@@ -6,7 +6,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
     {
         private readonly TimeSpan _increasePeriod;
 
-        public IncrementalThreading(TimeSpan increasePeriod, int increaseBatchSize, int initialThreadcount)
+        public IncrementalThreading(int initialThreadcount, TimeSpan increasePeriod, int increaseBatchSize)
         {
             InitialThreadCount = initialThreadcount;
             _increasePeriod = increasePeriod;

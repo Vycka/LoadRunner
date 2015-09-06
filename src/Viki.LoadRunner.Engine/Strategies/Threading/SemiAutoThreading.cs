@@ -8,6 +8,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
 
         public SemiAutoThreading(int minThreadCount, int maxThreadCount)
         {
+            if (minThreadCount > maxThreadCount)
+                throw new Exception("minThreadCount must lower than or equal to maxThreadCount");
+
             InitialThreadCount = minThreadCount;
             _maxThreadCount = maxThreadCount;
         }

@@ -15,6 +15,14 @@ namespace Viki.LoadRunner.Engine
         private readonly IResultsAggregator _resultsAggregator;
         private readonly Type _iTestScenarioObjeType;
 
+        #region Run() globals
+
+        private DateTime _testBeginTime;
+        private TimeSpan _testElapsedTime;
+        private ThreadCoordinator _threadCoordinator;
+
+        #endregion
+
         #endregion
 
         #region Ctor
@@ -33,7 +41,8 @@ namespace Viki.LoadRunner.Engine
 
         }
 
-        public static LoadRunnerEngine Create<TTestScenario>(LoadRunnerParameters parameters, params IResultsAggregator[] resultsAggregators) where TTestScenario : ILoadTestScenario
+        public static LoadRunnerEngine Create<TTestScenario>(LoadRunnerParameters parameters, params IResultsAggregator[] resultsAggregators) 
+            where TTestScenario : ILoadTestScenario
         {
             return new LoadRunnerEngine(parameters, typeof(TTestScenario), resultsAggregators);
         }
@@ -44,42 +53,43 @@ namespace Viki.LoadRunner.Engine
 
         public void Run()
         {
-            ThreadCoordinator threadCoordinator = null;
             try
             {
-                threadCoordinator = new ThreadCoordinator(_iTestScenarioObjeType);
-                threadCoordinator.ScenarioExecutionFinished += _threadCoordinator_ScenarioExecutionFinished;
-                threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.InitialThreadCount);
+                _threadCoordinator = new ThreadCoordinator(_iTestScenarioObjeType);
+                _threadCoordinator.ScenarioExecutionFinished += _threadCoordinator_ScenarioExecutionFinished;
+                _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.InitialThreadCount);
 
                 _resultsAggregator.Begin();
 
-                TimeSpan minimumDelayBetweenTests = TimeSpan.FromTicks((int)((TimeSpan.FromSeconds(1).Ticks / _parameters.MaxRequestsPerSecond) + 0.5));
                 int testIterationCount = 0;
-                TimeSpan lastExecutionQueued = TimeSpan.Zero;
-                TimeSpan elapsedTime = TimeSpan.Zero;
+                TimeSpan lastExecutionQueued = TimeSpan.FromSeconds(-10);
 
-                DateTime testBeginTime = DateTime.UtcNow;
-                while (elapsedTime <= _parameters.MaxDuration && testIterationCount < _parameters.MaxIterationsCount)
+                _testElapsedTime = TimeSpan.Zero;
+                _testBeginTime = DateTime.UtcNow;
+
+                while (_testElapsedTime <= _parameters.Limits.MaxDuration && testIterationCount < _parameters.Limits.MaxIterationsCount)
                 {
-                    threadCoordinator.AssertThreadErrors();
+                    _threadCoordinator.AssertThreadErrors();
 
-                    if (threadCoordinator.IdleThreadCount == 0)
+                    if (_threadCoordinator.IdleThreadCount == 0)
                     {
-                        int allowedThreadCount = _parameters.ThreadingStrategy.GetAllowedThreadCount(elapsedTime);
+                        int allowedThreadCount = _parameters.ThreadingStrategy.GetAllowedThreadCount(_testElapsedTime);
 
-                        if (allowedThreadCount > threadCoordinator.CreatedThreadCount)
-                            threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.ThreadCreateBatchSize);
+                        if (allowedThreadCount > _threadCoordinator.CreatedThreadCount)
+                            _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.ThreadCreateBatchSize);
                         else
                             Thread.Sleep(1);
 
                         continue;
                     }
 
-                    if (elapsedTime - lastExecutionQueued >= minimumDelayBetweenTests && threadCoordinator.IdleThreadCount > 0)
+                    TimeSpan delayBetweenIterations = _parameters.SpeedStrategy.GetDelayBetweenIterations(_testElapsedTime);
+
+                    if (_testElapsedTime - lastExecutionQueued > delayBetweenIterations && _threadCoordinator.IdleThreadCount > 0)
                     {
-                        if (threadCoordinator.TryRunSingleIteration())
+                        if (_threadCoordinator.TryRunSingleIteration())
                         {
-                            lastExecutionQueued = elapsedTime;
+                            lastExecutionQueued = _testElapsedTime;
                             testIterationCount++;
                         }
                     }
@@ -88,16 +98,16 @@ namespace Viki.LoadRunner.Engine
                         Thread.Sleep(1);
                     }
 
-                    elapsedTime = DateTime.UtcNow - testBeginTime;
+                    _testElapsedTime = DateTime.UtcNow - _testBeginTime;
                 }
                 
             }
             finally
             {
-                threadCoordinator?.StopAndDispose(_parameters.FinishTimeoutMilliseconds);
+                _threadCoordinator?.StopAndDispose((int)_parameters.Limits.FinishTimeout.TotalMilliseconds);
                 _resultsAggregator.End();
 
-                threadCoordinator?.AssertThreadErrors();
+                _threadCoordinator?.AssertThreadErrors();
             }
         }
 
@@ -109,9 +119,9 @@ namespace Viki.LoadRunner.Engine
         {
             _resultsAggregator.TestContextResultReceived(result);
 
-            // TODO: stop overhead threads if needed
+            int allowedThreadCount = _parameters.ThreadingStrategy.GetAllowedThreadCount(_testElapsedTime);
 
-            stopThisThread = false;
+            stopThisThread = _threadCoordinator.CreatedThreadCount > allowedThreadCount;
         }
 
         #endregion

@@ -57,6 +57,7 @@
     <Compile Include="LoadTestBase.cs" />
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\ITestContext.cs" />
+    <Compile Include="Parameters\ExecutionLimits.cs" />
     <Compile Include="Parameters\LoadRunnerParameters.cs" />
     <Compile Include="Executor\Threads\ThreadCoordinator.cs" />
     <Compile Include="ILoadTestScenario.cs" />
@@ -65,7 +66,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Executor\Context\TestContextResult.cs" />
     <Compile Include="Executor\Threads\TestExecutorThread.cs" />
+    <Compile Include="Strategies\ISpeedStrategy.cs" />
     <Compile Include="Strategies\IThreadingStrategy.cs" />
+    <Compile Include="Strategies\Speed\FixedSpeed.cs" />
+    <Compile Include="Strategies\Speed\IncrementalSpeed.cs" />
     <Compile Include="Strategies\Threading\IncrementalThreading.cs" />
     <Compile Include="Strategies\Threading\SemiAutoThreading.cs" />
     <Compile Include="Utils\HistogramCsvExport.cs" />

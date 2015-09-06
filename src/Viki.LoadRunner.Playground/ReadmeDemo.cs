@@ -5,9 +5,10 @@ using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Results;
-using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Parameters;
+using Viki.LoadRunner.Engine.Strategies.Speed;
+using Viki.LoadRunner.Engine.Strategies.Threading;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -15,17 +16,48 @@ namespace Viki.LoadRunner.Playground
     {
         public static void Run()
         {
-            LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters(
-                maxDuration: TimeSpan.FromSeconds(15),
-                maxIterationsCount: 5000,
-                maxRequestsPerSecond: Double.MaxValue,
-                finishTimeoutMilliseconds: 10000
-            );
 
+            // LoadRunnerParameters initializes defaults shown below
+            LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
+            {
+                Limits = new ExecutionLimits
+                {
+                    // Maximum LoadTest duration threshold, after which test is stopped
+                    MaxDuration = TimeSpan.FromSeconds(30),
+
+                    // Maximum executet iterations count threshold, after which test is stopped
+                    MaxIterationsCount = Int32.MaxValue,
+
+                    // Once LoadTest execution finishes because of [maxDuration] or [maxIterationsCount] limit
+                    // coordinating thread will wait [FinishTimeout] amount of time before 
+                    // terminating them with Thread.Abort()
+                    //
+                    // Aborted threads won't get the chance to call IterationTearDown() or ScenarioTearDown()
+                    // neither it will broadcast TestContextResultReceived() to aggregators with the state as it is after abort.
+                    FinishTimeout = TimeSpan.FromSeconds(60)
+                },
+
+                // [ISpeedStrategy] defines maximum allowed load by dampening executed Iterations per second count
+                // * Other existing version of [ISpeedStrategy]
+                //    - IncremantalSpeed(initialRequestsPerSec: 1.0, increasePeriod: TimeSpan.FromSeconds(10), increaseStep: 3.0)
+                SpeedStrategy = new FixedSpeed(maxIterationsPerSec: Double.MaxValue),
+
+                //[IThreadingStrategy] defines allowed worker thread count
+                // * SemiAutoThreading initializes [minThreadCount] at begining
+                // It will be increased if not enough threads are available to reach [ISpeedStrategy] limits 
+                // * Other existing version of [ISpeedStrategy]
+                //   - IncrementalThreading(initialThreadcount: 10, increasePeriod: TimeSpan.FromSeconds(10), increaseBatchSize: 5)
+                ThreadingStrategy = new SemiAutoThreading(minThreadCount: 10, maxThreadCount: 10)
+            };
+
+            // Initialize parameters
+            LoadRunnerParameters parameters = new LoadRunnerParameters();
+
+            // Initialize aggregator
             DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
 
             // Initializing LoadTest Client
-            LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(loadRunnerParameters, resultsAggregator);
+            LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(parameters, resultsAggregator);
 
             // Run test (blocking call)
             loadRunner.Run();
@@ -67,7 +99,7 @@ namespace Viki.LoadRunner.Playground
                 "You can use testContext.Checkpoint() function to mark points, " +
                 "where time should be measured"
             );
-            Thread.Sleep(Random.Next(5000));
+            Thread.Sleep(Random.Next(4000));
 
             // [Iteration Begin Checkpoint] -- [First Checkpoint]
             testContext.Checkpoint("First Checkpoint");
@@ -99,7 +131,6 @@ namespace Viki.LoadRunner.Playground
             Debug.WriteLine("ScenarioTearDown Executes once LoadTest execution is over");
 
             Debug.WriteLine("Exceptions here are not handled!");
-            throw new Exception("2% error chance for testing");
         }
     }
 }

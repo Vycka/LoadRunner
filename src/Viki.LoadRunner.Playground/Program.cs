@@ -8,6 +8,7 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Parameters;
+using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 using Viki.LoadRunner.Engine.Utils;
 
@@ -15,25 +16,26 @@ namespace Viki.LoadRunner.Playground
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            //ReadmeDemo.Run();
+            ReadmeDemo.Run();
 
-            //return;
+            return;
             DefaultResultsAggregator defaultResultsAggregator = new DefaultResultsAggregator();
-            HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 2);
-
-
+            HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 5);
+            
             LoadRunnerEngine testClient =
                 LoadRunnerEngine.Create<LoadTestScenario>(
-                    new LoadRunnerParameters(
-                        maxDuration: TimeSpan.FromSeconds(30),
-                        maxRequestsPerSecond: Double.MaxValue,
-                        finishTimeoutMilliseconds: 10000,
-                        maxIterationsCount: int.MaxValue
-                        )
+                    new LoadRunnerParameters
                     {
-                        ThreadingStrategy = new IncrementalThreading(TimeSpan.FromSeconds(5), 10, 10)
+                        Limits = new ExecutionLimits
+                        {
+                            MaxDuration = TimeSpan.FromSeconds(35),
+                            MaxIterationsCount = Int32.MaxValue,
+                            FinishTimeout = TimeSpan.FromSeconds(60)
+                        },
+                        ThreadingStrategy = new IncrementalThreading(100, TimeSpan.FromSeconds(10), -20),
+                        SpeedStrategy = new FixedSpeed()
                     },
                     defaultResultsAggregator, histogramResultsAggregator
                 );
@@ -81,12 +83,12 @@ namespace Viki.LoadRunner.Playground
 
         public void ExecuteScenario(ITestContext testContext)
         {
-            if (Random.Next(100) % 10 == 0)
-                throw new Exception($"@@@@ {testContext.IterartionId}");
+            //if (Random.Next(100) % 10 == 0)
+            //    throw new Exception($"@@@@ {testContext.IterartionId}");
 
-            Thread.Sleep(Random.Next(700));
+            //Thread.Sleep(Random.Next(700));
             
-            testContext.Checkpoint("Checkpoint AAA");
+            //testContext.Checkpoint("Checkpoint AAA");
 
 
             if (Random.Next(100) % 50 == 0)
