@@ -70,11 +70,6 @@ namespace Viki.LoadRunner.Engine
                 {
                     _threadCoordinator.AssertThreadErrors();
 
-                    if (_threadCoordinator.IdleThreadCount == 0)
-                    {
-                        TryIncreaseWorkerThreadCount();
-                    }
-
                     if (_testElapsedTime >= executionEnqueueThreshold && _threadCoordinator.IdleThreadCount > 0)
                     {
                         if (_threadCoordinator.TryRunSingleIteration())
@@ -89,6 +84,11 @@ namespace Viki.LoadRunner.Engine
                     }
 
                     _testElapsedTime = DateTime.UtcNow - _testBeginTime;
+
+                    if (_threadCoordinator.IdleThreadCount == 0)
+                    {
+                        TryIncreaseWorkerThreadCount();
+                    }
                 }
                 
             }
@@ -107,8 +107,6 @@ namespace Viki.LoadRunner.Engine
 
             if (allowedThreadCount > _threadCoordinator.CreatedThreadCount)
                 _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.ThreadCreateBatchSize);
-            else
-                Thread.Sleep(1);
         }
 
         private TimeSpan CalculateNextExecutionTime(TimeSpan lastExecutionEnqueueThreshold)
