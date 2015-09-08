@@ -72,11 +72,9 @@ namespace Viki.LoadRunner.Engine
 
                     if (_testElapsedTime >= executionEnqueueThreshold && _threadCoordinator.IdleThreadCount > 0)
                     {
-                        if (_threadCoordinator.TryRunSingleIteration())
-                        {
-                            executionEnqueueThreshold = CalculateNextExecutionTime(executionEnqueueThreshold);
-                            testIterationCount++;
-                        }
+                        _threadCoordinator.EnqueueSingleIteration();
+                        executionEnqueueThreshold = CalculateNextExecutionTime(executionEnqueueThreshold);
+                        testIterationCount++;
                     }
                     else
                     {

@@ -46,10 +46,19 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Methods
 
-        public bool TryRunSingleIteration()
+        public void EnqueueSingleIteration()
+        {
+            TestExecutorThread thread = DequeueFreeThread();
+            if (thread == null)
+                throw new InvalidOperationException("Tried to Enqueue iteration without free threads");
+
+            thread.QueueIteration(_nextIterationId++);
+        }
+
+        public bool TryEnqueueSingleIteration()
         {
             bool result = false;
-            TestExecutorThread thread = GetFreeThread();
+            TestExecutorThread thread = DequeueFreeThread();
 
             if (thread != null)
             {
@@ -60,11 +69,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             return result;
         }
 
-        private TestExecutorThread GetFreeThread()
+        private TestExecutorThread DequeueFreeThread()
         {
-            if (_availableThreads.Count == 0)
-                return null;
-
             TestExecutorThread result;
             _availableThreads.TryDequeue(out result);
 
