@@ -72,14 +72,7 @@ namespace Viki.LoadRunner.Engine
 
                     if (_threadCoordinator.IdleThreadCount == 0)
                     {
-                        int allowedThreadCount = _parameters.ThreadingStrategy.GetAllowedThreadCount(_testElapsedTime);
-
-                        if (allowedThreadCount > _threadCoordinator.CreatedThreadCount)
-                            _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.ThreadCreateBatchSize);
-                        else
-                            Thread.Sleep(1);
-
-                        continue;
+                        TryIncreaseWorkerThreadCount();
                     }
 
                     if (_testElapsedTime >= executionEnqueueThreshold && _threadCoordinator.IdleThreadCount > 0)
@@ -106,6 +99,16 @@ namespace Viki.LoadRunner.Engine
 
                 _threadCoordinator?.AssertThreadErrors();
             }
+        }
+
+        private void TryIncreaseWorkerThreadCount()
+        {
+            int allowedThreadCount = _parameters.ThreadingStrategy.GetAllowedThreadCount(_testElapsedTime);
+
+            if (allowedThreadCount > _threadCoordinator.CreatedThreadCount)
+                _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.ThreadCreateBatchSize);
+            else
+                Thread.Sleep(1);
         }
 
         private TimeSpan CalculateNextExecutionTime(TimeSpan lastExecutionEnqueueThreshold)
