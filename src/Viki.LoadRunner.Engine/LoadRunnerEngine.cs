@@ -70,7 +70,7 @@ namespace Viki.LoadRunner.Engine
                 {
                     _threadCoordinator.AssertThreadErrors();
 
-                    if (_testElapsedTime >= executionEnqueueThreshold && _threadCoordinator.IdleThreadCount > 0)
+                    if (_threadCoordinator.IdleThreadCount > 0 && _testElapsedTime >= executionEnqueueThreshold)
                     {
                         _threadCoordinator.EnqueueSingleIteration();
                         executionEnqueueThreshold = CalculateNextExecutionTime(executionEnqueueThreshold);
@@ -88,14 +88,14 @@ namespace Viki.LoadRunner.Engine
                         TryIncreaseWorkerThreadCount();
                     }
                 }
-                
             }
             finally
             {
                 _threadCoordinator?.StopAndDispose((int)_parameters.Limits.FinishTimeout.TotalMilliseconds);
                 _resultsAggregator.End();
-
                 _threadCoordinator?.AssertThreadErrors();
+
+                _threadCoordinator = null;
             }
         }
 
