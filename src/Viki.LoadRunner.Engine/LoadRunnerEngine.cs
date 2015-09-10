@@ -68,25 +68,45 @@ namespace Viki.LoadRunner.Engine
                 
                 while (_testElapsedTime <= _parameters.Limits.MaxDuration && testIterationCount < _parameters.Limits.MaxIterationsCount)
                 {
+                    _testElapsedTime = DateTime.UtcNow - _testBeginTime;
+
                     _threadCoordinator.AssertThreadErrors();
 
-                    if (_threadCoordinator.IdleThreadCount > 0 && _testElapsedTime >= executionEnqueueThreshold)
+                    if (_threadCoordinator.IdleThreadCount > 0)
                     {
-                        _threadCoordinator.EnqueueSingleIteration();
-                        executionEnqueueThreshold = CalculateNextExecutionTime(executionEnqueueThreshold);
-                        testIterationCount++;
+                        if (_testElapsedTime >= executionEnqueueThreshold)
+                        {
+                            _threadCoordinator.EnqueueSingleIteration();
+                            executionEnqueueThreshold = CalculateNextExecutionTime(executionEnqueueThreshold);
+                            testIterationCount++;
+                        }
                     }
                     else
                     {
+                        TryIncreaseWorkerThreadCount();
                         Thread.Sleep(1);
                     }
 
-                    _testElapsedTime = DateTime.UtcNow - _testBeginTime;
 
-                    if (_threadCoordinator.IdleThreadCount == 0)
-                    {
-                        TryIncreaseWorkerThreadCount();
-                    }
+                    //_threadCoordinator.AssertThreadErrors();
+
+                    //if (_threadCoordinator.IdleThreadCount > 0 && _testElapsedTime >= executionEnqueueThreshold)
+                    //{
+                    //    _threadCoordinator.EnqueueSingleIteration();
+                    //    executionEnqueueThreshold = CalculateNextExecutionTime(executionEnqueueThreshold);
+                    //    testIterationCount++;
+                    //}
+                    //else
+                    //{
+                    //    Thread.Sleep(1);
+                    //}
+
+                    //_testElapsedTime = DateTime.UtcNow - _testBeginTime;
+
+                    //if (_threadCoordinator.IdleThreadCount == 0)
+                    //{
+                    //    TryIncreaseWorkerThreadCount();
+                    //}
                 }
             }
             finally
