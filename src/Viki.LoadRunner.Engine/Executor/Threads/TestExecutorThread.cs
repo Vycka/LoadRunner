@@ -129,13 +129,15 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         {
             try
             {
+                int threadIterationId = 0;
+
                 ExecuteScenarioSetup();
 
                 while (_stopQueued == false || _executeIterationQueued)
                 {
                     if (_executeIterationQueued)
                     {
-                        _testContext.Reset(_queuedIterationId);
+                        _testContext.Reset(threadIterationId++, _queuedIterationId);
 
                         _testContext.Checkpoint(Checkpoint.IterationSetupCheckpointName);
                         bool setupSuccess = ExecuteWithExceptionHandling(() => _loadTestScenario.IterationSetup(_testContext), _testContext);
@@ -171,7 +173,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                     }
                 }
 
-                _testContext.Reset(-1);
+                _testContext.Reset(-1,-1);
                 _loadTestScenario.ScenarioTearDown(_testContext);
             }
             catch (Exception ex)
@@ -188,7 +190,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         {
             if (ScenarioInitialized == false)
             { 
-                _testContext.Reset(-1);
+                _testContext.Reset(-1,-1);
                 _loadTestScenario.ScenarioSetup(_testContext);
                 ScenarioInitialized = true;
                 OnScenarioSetupSucceeded();

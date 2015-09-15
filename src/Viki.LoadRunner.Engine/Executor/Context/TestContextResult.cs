@@ -8,7 +8,8 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         public readonly Checkpoint[] Checkpoints;
 
         public readonly int ThreadId;
-        public readonly int IterationId;
+        public readonly int GlobalIterationId;
+        public readonly int ThreadIterationId;
         public readonly DateTime IterationStarted;
         public readonly DateTime IterationFinished;
 
@@ -20,7 +21,8 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             Checkpoints = testContext.LoggedCheckpoints.ToArray();
 
             ThreadId = testContext.ThreadId;
-            IterationId = testContext.IterartionId;
+            GlobalIterationId = testContext.GlobalIterationId;
+            ThreadIterationId = testContext.ThreadIterationId;
 
             IterationStarted = testContext.IterationStarted;
             IterationFinished = testContext.IterationFinished;

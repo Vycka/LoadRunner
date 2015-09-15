@@ -11,25 +11,28 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         void Checkpoint(string checkpointName = null);
 
         /// <summary>
-        /// Current execution time
+        /// Current timer value of the currently going on iteration.
         /// </summary>
         TimeSpan ExecutionTime { get; }
 
         /// <summary>
-        /// Unique execution number
+        /// Unique Iteration ID withing all worker-threads (Starts from zero)
+        /// [Tip: If scenario fits - this reference ID can be used as index for test-data datasources]
         /// </summary>
-        int IterartionId { get; }
+        int GlobalIterationId { get; }
 
+        /// <summary>
+        /// Unique Iteration ID withing current instance of ILoadTestScenario (Starts from zero)
+        /// [Tip: If scenario fits - this reference ID can be used as index for test-data datasources]
+        /// </summary>
+        int ThreadIterationId { get; }
+
+        /// <summary>
+        /// Unique worker-thread ID. It will stay the same throughout all ILoadTestScenario instance lifetime (Starts from zero)
+        /// [Tip: If scenario fits - this reference ID can be used as index for test-data datasources]
+        /// </summary>
         int ThreadId { get; }
 
-        ///// <summary>
-        ///// Get list of currently logged time checkpoints within this iteration
-        ///// </summary>
-        //IReadOnlyList<Checkpoint> LoggedCheckpoints { get; }
 
-        ///// <summary>
-        ///// Get list of currently logged exceptions caught within this iteration
-        ///// </summary>
-        //IReadOnlyList<Exception> LoggedExceptions { get; }
     }
 }

@@ -20,8 +20,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         private readonly ConcurrentBag<Exception> _threadErrors = new ConcurrentBag<Exception>();
 
         private bool _disposing;
-        private int _nextIterationId = 1;
-        private int _nextThreadId = 1;
+        private int _nextIterationId = 0;
+        private int _nextThreadId = 0;
 
         #endregion
 
@@ -194,13 +194,13 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }));
         }
 
-        public delegate void ScenarioExecutionFinishedEvent(ThreadCoordinator sender, TestContextResult result, out bool stopThisThread);
-        public event ScenarioExecutionFinishedEvent ScenarioExecutionFinished;
+        public delegate void ScenarioExecutionFinishedEvent(TestContextResult result, out bool stopThisThread);
+        public event ScenarioExecutionFinishedEvent ScenarioIterationFinished;
 
         private bool OnScenarioExecutionFinished(TestContextResult result)
         {
             bool stopThisThread = false;
-            ScenarioExecutionFinished?.Invoke(this, result, out stopThisThread);
+            ScenarioIterationFinished?.Invoke(result, out stopThisThread);
 
             return stopThisThread;
         }

@@ -56,7 +56,7 @@ namespace Viki.LoadRunner.Engine
             try
             {
                 _threadCoordinator = new ThreadCoordinator(_iTestScenarioObjeType);
-                _threadCoordinator.ScenarioExecutionFinished += _threadCoordinator_ScenarioExecutionFinished;
+                _threadCoordinator.ScenarioIterationFinished += _threadCoordinator_ScenarioIterationFinished;
                 _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.InitialThreadCount, true);
                 
                 int testIterationCount = 0;
@@ -86,27 +86,6 @@ namespace Viki.LoadRunner.Engine
                         TryIncreaseWorkerThreadCount();
                         Thread.Sleep(1);
                     }
-
-
-                    //_threadCoordinator.AssertThreadErrors();
-
-                    //if (_threadCoordinator.IdleThreadCount > 0 && _testElapsedTime >= executionEnqueueThreshold)
-                    //{
-                    //    _threadCoordinator.EnqueueSingleIteration();
-                    //    executionEnqueueThreshold = CalculateNextExecutionTime(executionEnqueueThreshold);
-                    //    testIterationCount++;
-                    //}
-                    //else
-                    //{
-                    //    Thread.Sleep(1);
-                    //}
-
-                    //_testElapsedTime = DateTime.UtcNow - _testBeginTime;
-
-                    //if (_threadCoordinator.IdleThreadCount == 0)
-                    //{
-                    //    TryIncreaseWorkerThreadCount();
-                    //}
                 }
             }
             finally
@@ -145,7 +124,7 @@ namespace Viki.LoadRunner.Engine
 
         #region Events
 
-        private void _threadCoordinator_ScenarioExecutionFinished(ThreadCoordinator sender, TestContextResult result, out bool stopThisThread)
+        private void _threadCoordinator_ScenarioIterationFinished(TestContextResult result, out bool stopThisThread)
         {
             _resultsAggregator.TestContextResultReceived(result);
 

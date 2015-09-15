@@ -13,7 +13,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         {
             ThreadId = threadId;
             
-            Reset(-1);
+            Reset(-1,-1);
         }
 
         #endregion
@@ -34,9 +34,10 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             IterationFinished = DateTime.UtcNow;
         }
 
-        internal void Reset(int iterationId)
+        internal void Reset(int threadIterationId, int globalIterationId)
         {
-            IterartionId = iterationId;
+            GlobalIterationId = globalIterationId;
+            ThreadIterationId = threadIterationId;
 
             _checkpoints.Clear();
 
@@ -74,8 +75,9 @@ namespace Viki.LoadRunner.Engine.Executor.Context
                 return TimeSpan.Zero;
             }
         }
-        public int IterartionId { get; private set; }
+        public int GlobalIterationId { get; private set; }
         public int ThreadId { get; }
+        public int ThreadIterationId { get; private set; }
 
         #endregion
     }
