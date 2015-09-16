@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
@@ -167,35 +166,29 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         private void ExecutorThread_ScenarioExecutionFinished(TestExecutorThread sender, TestContextResult result)
         {
-            Parallel.Invoke((() =>
+            if (!_disposing)
             {
-                if (!_disposing)
-                {
-                    result.SetInternalMetadata(CreatedThreadCount, _initializedThreads.Count - IdleThreadCount);
+                result.SetInternalMetadata(CreatedThreadCount, _initializedThreads.Count - IdleThreadCount);
 
-                    bool stopThisThread = OnScenarioExecutionFinished(result);
-                    if (stopThisThread)
-                    {
-                        TryRemoveThread(sender.ThreadId);
-                    }
-                    else if (!sender.QueuedToStop)
-                        _availableThreads.Enqueue(sender);
+                bool stopThisThread = OnScenarioExecutionFinished(result);
+                if (stopThisThread)
+                {
+                    TryRemoveThread(sender.ThreadId);
                 }
-            }));
+                else if (!sender.QueuedToStop)
+                    _availableThreads.Enqueue(sender);
+            }
         }
 
         private void ExecutorThread_ThreadFailed(TestExecutorThread sender, TestContextResult result, Exception ex)
         {
-            Parallel.Invoke((() =>
-            {
                 TryRemoveThread(sender.ThreadId);
 
                 _threadErrors.Add(ex);
-            }));
         }
 
-        public delegate void ScenarioExecutionFinishedEvent(TestContextResult result, out bool stopThisThread);
-        public event ScenarioExecutionFinishedEvent ScenarioIterationFinished;
+        public delegate void ScenarioExecutionFinishedEventHandler(TestContextResult result, out bool stopThisThread);
+        public event ScenarioExecutionFinishedEventHandler ScenarioIterationFinished;
 
         private bool OnScenarioExecutionFinished(TestContextResult result)
         {

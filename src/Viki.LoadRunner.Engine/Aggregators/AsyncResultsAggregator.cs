@@ -56,6 +56,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         {
         }
 
+        // TODO: if aggregator fails, exception won't be detected
         private void ProcessorThreadFunction()
         {
             bool onlyOneAggregator = _resultsAggregators.Length == 1;
