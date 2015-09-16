@@ -108,16 +108,13 @@ namespace Viki.LoadRunner.Engine
 
         private TimeSpan CalculateNextExecutionTime(TimeSpan lastExecutionEnqueueThreshold)
         {
-            TimeSpan result;
-
             TimeSpan delayBetweenIterations = _parameters.SpeedStrategy.GetDelayBetweenIterations(_testElapsedTime);
 
-            if (lastExecutionEnqueueThreshold.Ticks + (delayBetweenIterations.Ticks * 3) > _testElapsedTime.Ticks)
-                result = lastExecutionEnqueueThreshold + delayBetweenIterations;
-            else
-                result = _testElapsedTime;
+            TimeSpan nextExecutionTime = lastExecutionEnqueueThreshold + delayBetweenIterations;
+            if (nextExecutionTime < _testElapsedTime)
+                nextExecutionTime = _testElapsedTime;
 
-            return result;
+            return nextExecutionTime;
         }
 
         #endregion

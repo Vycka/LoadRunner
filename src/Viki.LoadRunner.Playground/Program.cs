@@ -30,7 +30,7 @@ namespace Viki.LoadRunner.Playground
                     {
                         Limits = new ExecutionLimits
                         {
-                            MaxDuration = TimeSpan.FromSeconds(60),
+                            MaxDuration = TimeSpan.FromSeconds(10),
                             MaxIterationsCount = Int32.MaxValue,
                             FinishTimeout = TimeSpan.FromSeconds(60)
                         },
@@ -58,43 +58,45 @@ namespace Viki.LoadRunner.Playground
 
         public void ScenarioSetup(ITestContext testContext)
         {
-            Console.WriteLine($"ScenarioSetup {testContext.ThreadId}");
+            Console.WriteLine($"ScenarioSetup {testContext.ThreadId} {testContext.ThreadIterationId} {testContext.GlobalIterationId}");
         }
 
         public void ScenarioTearDown(ITestContext testContext)
         {
             
-            Console.WriteLine($"ScenarioTearDown {testContext.ThreadId}");
+            Console.WriteLine($"ScenarioTearDown {testContext.ThreadId} {testContext.ThreadIterationId} {testContext.GlobalIterationId}");
         }
 
         public void IterationSetup(ITestContext testContext)
         {
-            //Console.WriteLine($"IterationSetup {testContext.ThreadId} {testContext.IterartionId}");
+            Console.WriteLine($"IterationSetup {testContext.ThreadId} {testContext.ThreadId} {testContext.ThreadIterationId} {testContext.GlobalIterationId}");
             //if (Random.Next(100) % 100 == 0)
-            //    throw new Exception($"#### {testContext.IterartionId}");
+            //    throw new Exception($"#### {testContext.ThreadId} {testContext.ThreadIterationId} {testContext.GlobalIterationId}");
         }
 
         public void IterationTearDown(ITestContext testContext)
         {
             //if (Random.Next(100) % 50 == 0)
             //    throw new Exception($"#### {testContext.IterartionId}");
-            //Console.WriteLine($"IterationTearDown {testContext.ThreadId} {testContext.IterartionId}");
+            Console.WriteLine($"IterationTearDown {testContext.ThreadId} {testContext.ThreadIterationId} {testContext.GlobalIterationId}");
         }
 
         public void ExecuteScenario(ITestContext testContext)
         {
+            Console.WriteLine($"ExecuteScenario {testContext.ThreadId} {testContext.ThreadIterationId} {testContext.GlobalIterationId}");
+
             //if (Random.Next(100) % 10 == 0)
             //    throw new Exception($"@@@@ {testContext.IterartionId}");
 
             //Thread.Sleep(Random.Next(700));
-            
+
             //testContext.Checkpoint("Checkpoint AAA");
 
 
             //if (Random.Next(100) % 50 == 0)
             //    throw new Exception("err");
 
-            Thread.Sleep(Random.Next(100));
+            Thread.Sleep(Random.Next(50) + 50);
         }
     }
 }
