@@ -25,7 +25,7 @@ namespace Viki.LoadRunner.Playground
                     // Maximum LoadTest duration threshold, after which test is stopped
                     MaxDuration = TimeSpan.FromSeconds(30),
 
-                    // Maximum executet iterations count threshold, after which test is stopped
+                    // Maximum executed iterations count threshold, after which test is stopped
                     MaxIterationsCount = Int32.MaxValue,
 
                     // Once LoadTest execution finishes because of [maxDuration] or [maxIterationsCount] limit
