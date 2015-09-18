@@ -15,19 +15,12 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         private readonly ConcurrentDictionary<int, TestExecutorThread> _allThreads = new ConcurrentDictionary<int, TestExecutorThread>();
         private readonly ConcurrentDictionary<int, TestExecutorThread> _initializedThreads = new ConcurrentDictionary<int, TestExecutorThread>();
-        private readonly ConcurrentQueue<TestExecutorThread> _availableThreads = new ConcurrentQueue<TestExecutorThread>();
+        private readonly ConcurrentQueue<TestExecutorThread> _idleThreads = new ConcurrentQueue<TestExecutorThread>();
         private readonly ConcurrentBag<Exception> _threadErrors = new ConcurrentBag<Exception>();
 
         private bool _disposing;
-        private int _nextIterationId = 0;
-        private int _nextThreadId = 0;
-
-        #endregion
-
-        #region Properties
-
-        public int CreatedThreadCount => _allThreads.Count;
-        public int IdleThreadCount => _availableThreads.Count;
+        private int _nextIterationId;
+        private int _nextThreadId;
 
         #endregion
 
@@ -68,10 +61,22 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             return result;
         }
 
+        public void StopWorkersAsync(int threadCount)
+        {
+            for (int i = 0; i < threadCount; i++)
+            {
+                TryRemoveThread(_allThreads.Keys.First());
+            }
+        }
+
         private TestExecutorThread DequeueFreeThread()
         {
             TestExecutorThread result;
-            _availableThreads.TryDequeue(out result);
+            do
+            {
+                _idleThreads.TryDequeue(out result);
+            } while (result != null && result.QueuedToStop == true);
+            
 
             return result;
         }
@@ -99,6 +104,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 }
             }
         }
+
+        public WorkerThreadStats BuildWorkerThreadStats() => new WorkerThreadStats(_allThreads.Count, _initializedThreads.Count, _idleThreads.Count);
 
         private IEnumerable<TestExecutorThread> CreateThreads(int threadCount)
         {
@@ -160,42 +167,42 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         private void NewThread_ScenarioSetupSucceeded(TestExecutorThread sender)
         {
-            _availableThreads.Enqueue(sender);
-            _initializedThreads.TryAdd(sender.ThreadId, sender);
+            if (!_disposing && !sender.QueuedToStop)
+            {
+                _idleThreads.Enqueue(sender);
+                _initializedThreads.TryAdd(sender.ThreadId, sender);
+            }
         }
 
         private void ExecutorThread_ScenarioExecutionFinished(TestExecutorThread sender, TestContextResult result)
         {
             if (!_disposing)
             {
-                result.SetInternalMetadata(CreatedThreadCount, _initializedThreads.Count - IdleThreadCount);
+                result.SetInternalMetadata(_allThreads.Count, _initializedThreads.Count - _idleThreads.Count);
 
-                bool stopThisThread = OnScenarioExecutionFinished(result);
-                if (stopThisThread)
-                {
-                    TryRemoveThread(sender.ThreadId);
-                }
-                else if (!sender.QueuedToStop)
-                    _availableThreads.Enqueue(sender);
+                OnScenarioExecutionFinished(result);
+
+                if (!sender.QueuedToStop)
+                    _idleThreads.Enqueue(sender);
             }
         }
 
         private void ExecutorThread_ThreadFailed(TestExecutorThread sender, TestContextResult result, Exception ex)
         {
+            if (!_disposing)
+            {
                 TryRemoveThread(sender.ThreadId);
 
                 _threadErrors.Add(ex);
+            }
         }
 
-        public delegate void ScenarioExecutionFinishedEventHandler(TestContextResult result, out bool stopThisThread);
+        public delegate void ScenarioExecutionFinishedEventHandler(TestContextResult result);
         public event ScenarioExecutionFinishedEventHandler ScenarioIterationFinished;
 
-        private bool OnScenarioExecutionFinished(TestContextResult result)
+        private void OnScenarioExecutionFinished(TestContextResult result)
         {
-            bool stopThisThread = false;
-            ScenarioIterationFinished?.Invoke(result, out stopThisThread);
-
-            return stopThisThread;
+            ScenarioIterationFinished?.Invoke(result);
         }
 
         private void TryRemoveThread(int threadId)
@@ -210,5 +217,24 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         }
 
         #endregion
+    }
+
+    public struct WorkerThreadStats
+    {
+        private readonly int _createdThreadCount;
+        private readonly int _initializedTheadCount;
+        private readonly int _readyThreadCount;
+
+        public int CreatedThreadCount => _createdThreadCount;
+        public int WorkingThreadCount => _initializedTheadCount - _readyThreadCount;
+        public int InitializedThreadCount => _initializedTheadCount;
+        public int ReadyThreadCount => _readyThreadCount;
+
+        public WorkerThreadStats(int createdThreadCount, int initializedTheadCount, int readyThreadCount)
+        {
+            _createdThreadCount = createdThreadCount;
+            _initializedTheadCount = initializedTheadCount;
+            _readyThreadCount = readyThreadCount;
+        }
     }
 }

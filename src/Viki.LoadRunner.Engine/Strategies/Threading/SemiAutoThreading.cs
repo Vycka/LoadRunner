@@ -1,4 +1,5 @@
 ﻿using System;
+using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
@@ -19,9 +20,20 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
 
         public int ThreadCreateBatchSize { get; } = 1;
 
-        public int GetAllowedThreadCount(TimeSpan testExecutionTime)
+        public int GetAllowedMaxWorkingThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
         {
             return _maxThreadCount;
+        }
+
+        public int GetAllowedCreatedThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
+        {
+            if (
+                workerThreadStats.CreatedThreadCount < _maxThreadCount &&
+                workerThreadStats.InitializedThreadCount == workerThreadStats.WorkingThreadCount
+            )
+                return workerThreadStats.CreatedThreadCount + 1;
+            else
+                return workerThreadStats.CreatedThreadCount;
         }
     }
 }
