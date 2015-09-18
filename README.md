@@ -2,7 +2,7 @@
 * NuGet: `Install-Package Viki.LoadRunner`
 
 ## *Quick Intro*
-
+Quickintro is based for 0.1.5.* version. Latest is 0.1.6, until readme.md is updated, try follow this commit https://github.com/Vycka/LoadRunner/commit/65e53f7acd6a394bb529a251ef6086884e6185aa
 ### *ILoadTestScenario*
 Implement `ILoadTestScenario` interface by defining test scenario for single thread instance.
 Each worker-thread will create its own `ILoadTestScenario` instance and will keep it persistent until working-thread is stopped.
