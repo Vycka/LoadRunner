@@ -96,12 +96,12 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             ScenarioSetupSucceeded?.Invoke(this);
         }
 
-        public delegate void ScenarioExecutionFinishedEvent(TestExecutorThread sender, TestContextResult result);
-        public event ScenarioExecutionFinishedEvent ScenarioExecutionFinished;
+        public delegate void ScenarioIterationFinishedEvent(TestExecutorThread sender, TestContextResult result);
+        public event ScenarioIterationFinishedEvent ScenarioIterationFinished;
 
-        private void OnScenarioExecutionFinished()
+        private void OnScenarioIterationFinished()
         {
-            ScenarioExecutionFinished?.Invoke(this, new TestContextResult(_testContext));
+            ScenarioIterationFinished?.Invoke(this, new TestContextResult(_testContext));
         }
 
         public delegate void ThreadFailedEvent(TestExecutorThread sender, TestContextResult result, Exception ex);
@@ -165,7 +165,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                         ExecuteWithExceptionHandling(() => _loadTestScenario.IterationTearDown(_testContext), _testContext);
 
                         _executeIterationQueued = false;
-                        OnScenarioExecutionFinished();
+                        OnScenarioIterationFinished();
                     }
                     else
                     {

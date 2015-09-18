@@ -12,10 +12,10 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
         private readonly List<Exception> _iterationTearDownErrors;
 
 
-        public ResultItemTotals(DefaultTestContextResultAggregate results)
+        public ResultItemTotals(TestContextResultAggregate results)
         {
-            DefaultCheckpointAggregate setupRow = results.CheckpointAggregates[Checkpoint.IterationSetupCheckpointName];
-            DefaultCheckpointAggregate tearDownRow = results.CheckpointAggregates[Checkpoint.IterationTearDownCheckpointName];
+            CheckpointAggregate setupRow = results.CheckpointAggregates[Checkpoint.IterationSetupCheckpointName];
+            CheckpointAggregate tearDownRow = results.CheckpointAggregates[Checkpoint.IterationTearDownCheckpointName];
 
             TotalDuration = results.IterationEndTime - results.IterationBeginTime;
 

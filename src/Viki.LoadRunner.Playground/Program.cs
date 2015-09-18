@@ -6,9 +6,9 @@ using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Results;
+using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Parameters;
-using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 using Viki.LoadRunner.Engine.Utils;
 
@@ -20,9 +20,13 @@ namespace Viki.LoadRunner.Playground
         {
             //ReadmeDemo.Run();
 
+            string[] nameAggregates = new[] {"AAA", "BBB", "CCC"};
+
             //return;
             TotalsResultsAggregator defaultResultsAggregator = new TotalsResultsAggregator();
-            HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 3);
+            TimeHistogramResultsAggregator histogramResultsAggregator = new TimeHistogramResultsAggregator(aggregationStepSeconds: 3);
+            ThreadHistogramResultsAggregator threadHistogramResultsAggregator = new ThreadHistogramResultsAggregator();
+            HistogramResultsAggregator customAggregator = new HistogramResultsAggregator(result => nameAggregates[result.ThreadId % nameAggregates.Length]);
             
             LoadRunnerEngine testClient =
                 LoadRunnerEngine.Create<LoadTestScenario>(
@@ -37,7 +41,7 @@ namespace Viki.LoadRunner.Playground
                         ThreadingStrategy = new IncrementalWorkingThreadCount(40, 1, TimeSpan.FromSeconds(3), 3),
                         //SpeedStrategy = new IncrementalSpeed(10, TimeSpan.FromSeconds(9), 20)
                     },
-                    defaultResultsAggregator, histogramResultsAggregator
+                    defaultResultsAggregator, histogramResultsAggregator, threadHistogramResultsAggregator, customAggregator
                 );
                 
 
@@ -49,6 +53,8 @@ namespace Viki.LoadRunner.Playground
 
             Console.WriteLine(JsonConvert.SerializeObject(results, Formatting.Indented));
             HistogramCsvExport.Export(histogramResults, "d:\\exportTest.csv");
+            HistogramCsvExport.Export(threadHistogramResultsAggregator.GetResults(), "d:\\threadExportTest.csv");
+            HistogramCsvExport.Export(customAggregator.GetResults(), "d:\\customExportTest.csv");
         }
     }
 

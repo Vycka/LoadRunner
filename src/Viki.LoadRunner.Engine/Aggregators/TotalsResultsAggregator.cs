@@ -11,7 +11,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     public class TotalsResultsAggregator : IResultsAggregator
     {
         private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
-        private readonly DefaultTestContextResultAggregate _statsAggregator = new DefaultTestContextResultAggregate();
+        private readonly TestContextResultAggregate _statsAggregator = new TestContextResultAggregate();
 
 
         public void TestContextResultReceived(TestContextResult result)

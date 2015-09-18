@@ -17,11 +17,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
             _orderLearner = orderLearner;
         }
 
-        public IEnumerable<ResultItemRow> Map(DefaultTestContextResultAggregate results, bool includeAllCheckpoints = false)
+        public IEnumerable<ResultItemRow> Map(TestContextResultAggregate results, bool includeAllCheckpoints = false)
         {
             IEnumerable<string> resultsOrder = _orderLearner.LearnedOrder;
 
-            List<DefaultCheckpointAggregate> orderedResults =
+            List<CheckpointAggregate> orderedResults =
                 resultsOrder
                     .Where(results.CheckpointAggregates.ContainsKey)
                     .Select(checkpointName => results.CheckpointAggregates[checkpointName]).ToList();
@@ -33,7 +33,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
             int iterationCount = 0;
             if (results.CheckpointAggregates.ContainsKey(Checkpoint.IterationEndCheckpointName))
             {
-                foreach (DefaultCheckpointAggregate resultItem in orderedResults.GetRange(2, orderedResults.Count - 3))
+                foreach (CheckpointAggregate resultItem in orderedResults.GetRange(2, orderedResults.Count - 3))
                 {
                     var resultItemRow = new ResultItemRow(results, resultItem);
                     resultItemRow.SetErrors(orderedResults[1 + iterationCount].Errors);
@@ -47,7 +47,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
                 && results.CheckpointAggregates.ContainsKey(Checkpoint.IterationEndCheckpointName) == false
                 )
             {
-                foreach (DefaultCheckpointAggregate resultItem in orderedResults.GetRange(2, orderedResults.Count - 3))
+                foreach (CheckpointAggregate resultItem in orderedResults.GetRange(2, orderedResults.Count - 3))
                 {
                     var resultItemRow = new ResultItemRow(results, resultItem);
                     resultItemRow.SetErrors(orderedResults[1 + iterationCount].Errors);

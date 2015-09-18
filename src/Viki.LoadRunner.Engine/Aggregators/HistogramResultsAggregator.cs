@@ -10,50 +10,45 @@ namespace Viki.LoadRunner.Engine.Aggregators
 {
     public class HistogramResultsAggregator : IResultsAggregator
     {
-        private readonly int _aggregationStepSeconds;
-
-
-        private long _testBeginTimeMs;
+        protected Func<TestContextResult, object> _groupByKeyCalculatorFunction;
         
         private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
-        private readonly Dictionary<int, DefaultTestContextResultAggregate> _histogramItems = new Dictionary<int, DefaultTestContextResultAggregate>();
+        private readonly Dictionary<object, TestContextResultAggregate> _histogramItems = new Dictionary<object, TestContextResultAggregate>();
 
         public IReadOnlyList<string> CheckpointsOorder => _orderLearner.LearnedOrder; 
 
-        public HistogramResultsAggregator(int aggregationStepSeconds = 1)
+        public HistogramResultsAggregator(Func<TestContextResult, object> groupByKeyCalculatorFunction)
         {
-            _aggregationStepSeconds = aggregationStepSeconds;
+            if (groupByKeyCalculatorFunction == null)
+                throw new ArgumentNullException(nameof(groupByKeyCalculatorFunction));
+
+            _groupByKeyCalculatorFunction = groupByKeyCalculatorFunction;
+        }
+
+        protected HistogramResultsAggregator()
+        {
         }
 
         public void TestContextResultReceived(TestContextResult result)
         {
             _orderLearner.Learn(result);
 
-            int histogramRowTimeSlot = GetHistogramRowTimeSlot(result.IterationFinished);
-            DefaultTestContextResultAggregate histogramRowAggregate = GetHistogramRow(histogramRowTimeSlot);
+            object groupByKey = _groupByKeyCalculatorFunction(result);
+            TestContextResultAggregate histogramRowAggregate = GetHistogramRow(groupByKey);
             histogramRowAggregate.AggregateResult(result);
         }
 
 
-        private DefaultTestContextResultAggregate GetHistogramRow(int timeslot)
+        private TestContextResultAggregate GetHistogramRow(object aggregateSlot)
         {
-            DefaultTestContextResultAggregate result = null;
-            if (!_histogramItems.TryGetValue(timeslot, out result))
+            TestContextResultAggregate result = null;
+            if (!_histogramItems.TryGetValue(aggregateSlot, out result))
             {
-                result = new DefaultTestContextResultAggregate();
-                _histogramItems.Add(timeslot, result);
+                result = new TestContextResultAggregate();
+                _histogramItems.Add(aggregateSlot, result);
             }
 
             return result;
-        }
-
-        private int GetHistogramRowTimeSlot(DateTime requestTime)
-        {
-            double iterationEndTime = (requestTime.ToUnixTimeMs() - _testBeginTimeMs) / 1000.0;
-
-            var resultTimeSlot = ((int)(iterationEndTime / _aggregationStepSeconds)) * _aggregationStepSeconds;
-
-            return resultTimeSlot;
         }
 
         public IEnumerable<HistogramResultRow> GetResults()
@@ -61,11 +56,11 @@ namespace Viki.LoadRunner.Engine.Aggregators
             if (_orderLearner.LearnedOrder.Count != 0)
             {
                 ResultsMapper mapper = new ResultsMapper(_orderLearner);
-                foreach (KeyValuePair<int, DefaultTestContextResultAggregate> histogramItem in _histogramItems)
+                foreach (KeyValuePair<object, TestContextResultAggregate> histogramItem in _histogramItems)
                 {
                     HistogramResultRow result = new HistogramResultRow(
+                        histogramItem.Key,
                         histogramItem.Value,
-                        UnixDateTimeExtensions.UnixTimeToDateTime(histogramItem.Key),
                         mapper.Map(histogramItem.Value, true).ToList()
                     );
 
@@ -75,9 +70,8 @@ namespace Viki.LoadRunner.Engine.Aggregators
         }
 
 
-        public void Begin(DateTime testBeginTime)
+        public virtual void Begin(DateTime testBeginTime)
         {
-            _testBeginTimeMs = testBeginTime.ToUnixTimeMs();
             _histogramItems.Clear();
         }
 

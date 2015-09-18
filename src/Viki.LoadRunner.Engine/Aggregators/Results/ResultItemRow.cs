@@ -44,7 +44,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
         }
 
 
-        public ResultItemRow(DefaultTestContextResultAggregate testContextResultAggregate, DefaultCheckpointAggregate checkpointAggregate)
+        public ResultItemRow(TestContextResultAggregate testContextResultAggregate, CheckpointAggregate checkpointAggregate)
         {
             _errors = checkpointAggregate.Errors;
 

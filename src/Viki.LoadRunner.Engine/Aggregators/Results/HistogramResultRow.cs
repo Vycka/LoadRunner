@@ -8,18 +8,18 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
     {
         private readonly List<ResultItemRow> _resultItems;
 
-        public readonly DateTime TimePoint;
+        public readonly object GroupByKey;
         public readonly double CreatedThreads;
         public readonly double WorkingThreads;
 
         public IReadOnlyList<ResultItemRow> ResultItems => _resultItems;
 
-        public HistogramResultRow(DefaultTestContextResultAggregate resultsAggregate, DateTime timePoint, List<ResultItemRow> resultItems)
+        public HistogramResultRow(object groupByKey, TestContextResultAggregate resultsAggregate, List<ResultItemRow> resultItems)
         {
             CreatedThreads = resultsAggregate.CreatedThreadsAvg;
             WorkingThreads = resultsAggregate.WorkingThreadsAvg;
 
-            TimePoint = timePoint;
+            GroupByKey = groupByKey;
             _resultItems = resultItems;
         }
     }

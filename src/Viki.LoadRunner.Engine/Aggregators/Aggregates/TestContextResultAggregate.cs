@@ -4,13 +4,13 @@ using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
 {
-    public class DefaultTestContextResultAggregate
+    public class TestContextResultAggregate
     {
         private uint _summedWorkingThreads = 0;
         private uint _summedCreatedThreads = 0;
         private uint _threadAggregationCount = 0;
 
-        public readonly Dictionary<string, DefaultCheckpointAggregate> CheckpointAggregates = new Dictionary<string, DefaultCheckpointAggregate>();
+        public readonly Dictionary<string, CheckpointAggregate> CheckpointAggregates = new Dictionary<string, CheckpointAggregate>();
         private readonly static Checkpoint PreviousCheckpointBase = new Checkpoint("", TimeSpan.Zero);
 
         public DateTime IterationBeginTime { get; private set; } = DateTime.MaxValue;
@@ -28,7 +28,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
             foreach (Checkpoint currentCheckpoint in result.Checkpoints)
             {
                 TimeSpan momentCheckpointTimeSpan = currentCheckpoint.TimePoint - previousCheckpoint.TimePoint;
-                DefaultCheckpointAggregate checkpointAggregateResultObject = GetCheckpointAggregate(currentCheckpoint.CheckpointName);
+                CheckpointAggregate checkpointAggregateResultObject = GetCheckpointAggregate(currentCheckpoint.CheckpointName);
 
                 checkpointAggregateResultObject.AggregateCheckpoint(momentCheckpointTimeSpan, currentCheckpoint);
                 previousCheckpoint = currentCheckpoint;
@@ -52,12 +52,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
             _threadAggregationCount++;
         }
 
-        private DefaultCheckpointAggregate GetCheckpointAggregate(string checkpointName)
+        private CheckpointAggregate GetCheckpointAggregate(string checkpointName)
         {
-            DefaultCheckpointAggregate result;
+            CheckpointAggregate result;
             if (!CheckpointAggregates.TryGetValue(checkpointName, out result))
             {
-                result = new DefaultCheckpointAggregate(checkpointName);
+                result = new CheckpointAggregate(checkpointName);
                 CheckpointAggregates.Add(checkpointName, result);
             }
 

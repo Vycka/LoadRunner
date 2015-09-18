@@ -87,7 +87,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
             foreach (TestExecutorThread newThread in newThreads)
             {
-                newThread.ScenarioExecutionFinished += ExecutorThread_ScenarioExecutionFinished;
+                newThread.ScenarioIterationFinished += ExecutorThreadScenarioIterationFinished;
                 newThread.ThreadFailed += ExecutorThread_ThreadFailed;
                 newThread.ScenarioSetupSucceeded += NewThread_ScenarioSetupSucceeded;
 
@@ -174,7 +174,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
         }
 
-        private void ExecutorThread_ScenarioExecutionFinished(TestExecutorThread sender, TestContextResult result)
+        private void ExecutorThreadScenarioIterationFinished(TestExecutorThread sender, TestContextResult result)
         {
             if (!_disposing)
             {

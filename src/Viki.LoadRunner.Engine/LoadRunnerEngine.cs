@@ -13,7 +13,7 @@ namespace Viki.LoadRunner.Engine
 
         private readonly LoadRunnerParameters _parameters;
         private readonly IResultsAggregator _resultsAggregator;
-        private readonly Type _iTestScenarioObjeType;
+        private readonly Type _iTestScenarioObjectType;
 
         #region Run() globals
 
@@ -35,10 +35,9 @@ namespace Viki.LoadRunner.Engine
                 throw new ArgumentNullException(nameof(iTestScenarioObjectType));
 
             _parameters = parameters;
-            _iTestScenarioObjeType = iTestScenarioObjectType;
+            _iTestScenarioObjectType = iTestScenarioObjectType;
 
             _resultsAggregator = new AsyncResultsAggregator(resultsAggregators);
-
         }
 
         public static LoadRunnerEngine Create<TTestScenario>(LoadRunnerParameters parameters, params IResultsAggregator[] resultsAggregators) 
@@ -55,7 +54,7 @@ namespace Viki.LoadRunner.Engine
         {
             try
             {
-                _threadCoordinator = new ThreadCoordinator(_iTestScenarioObjeType);
+                _threadCoordinator = new ThreadCoordinator(_iTestScenarioObjectType);
                 _threadCoordinator.ScenarioIterationFinished += _threadCoordinator_ScenarioIterationFinished;
                 _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.InitialThreadCount, true);
                 

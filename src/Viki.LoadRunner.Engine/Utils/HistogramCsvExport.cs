@@ -26,7 +26,7 @@ namespace Viki.LoadRunner.Engine.Utils
         {
             DataTable dataTable = new DataTable();
 
-            dataTable.Columns.Add("TimeStamp");
+            dataTable.Columns.Add("Key");
             dataTable.Columns.Add("WorkingThreadsAvg");
             dataTable.Columns.Add("CreatedThreadsAvg");
             dataTable.Columns.Add("TotalErrors");
@@ -36,7 +36,7 @@ namespace Viki.LoadRunner.Engine.Utils
                 AddMissingResultItemRowColumns(dataTable, histogramResultRow.ResultItems);
                 DataRow row = dataTable.NewRow();
 
-                row["TimeStamp"] = histogramResultRow.TimePoint.ToUnixTime();
+                row["Key"] = histogramResultRow.GroupByKey;
                 row["WorkingThreadsAvg"] = Math.Round(histogramResultRow.WorkingThreads, DoublePrecision);
                 row["CreatedThreadsAvg"] = Math.Round(histogramResultRow.CreatedThreads, DoublePrecision);
                 row["TotalErrors"] = histogramResultRow.ResultItems.Sum(r => r.ErrorCount);
