@@ -5,12 +5,18 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
     public class IncrementalThreadCount : IThreadingStrategy
     {
-        private readonly TimeSpan _increasePeriod;
+        private readonly TimeSpan _increaseTimePeriod;
 
-        public IncrementalThreadCount(int initialThreadcount, TimeSpan increasePeriod, int increaseBatchSize)
+        /// <summary>
+        /// Increases Created and working thread count periodically within execution of LoadTest
+        /// </summary>
+        /// <param name="initialThreadcount">Initial Created thread count</param>
+        /// <param name="increaseTimePeriod">Delay before increasing created thread count by [increaseBatchSize]</param>
+        /// <param name="increaseBatchSize">Amount of threads to create after each [increaseTimePeriod] time is reached</param>
+        public IncrementalThreadCount(int initialThreadcount, TimeSpan increaseTimePeriod, int increaseBatchSize)
         {
             InitialThreadCount = initialThreadcount;
-            _increasePeriod = increasePeriod;
+            _increaseTimePeriod = increaseTimePeriod;
             ThreadCreateBatchSize = increaseBatchSize;
         }
 
@@ -24,7 +30,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
 
         public int GetAllowedCreatedThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
         {
-            return (((int)(testExecutionTime.TotalMilliseconds / _increasePeriod.TotalMilliseconds)) * ThreadCreateBatchSize) + InitialThreadCount;
+            return (((int)(testExecutionTime.TotalMilliseconds / _increaseTimePeriod.TotalMilliseconds)) * ThreadCreateBatchSize) + InitialThreadCount;
         }
     }
 }

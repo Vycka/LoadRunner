@@ -24,8 +24,11 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         int GetAllowedMaxWorkingThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats);
 
+        // TODO: Bug: infinite timeout on threads, which were stopped in the middle of test, won't be aborted, since they wont exist in _allThreads (if they fail to finish them selves)
         /// <summary>
-        /// Max allows cread thread count
+        /// Get Allowed count of threads to be created
+        /// * Increasing its value, new threads will be created.
+        /// * Decreasing its value, existing threads will be stopped and disposed
         /// </summary>
         int GetAllowedCreatedThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats);
     }
