@@ -47,14 +47,14 @@ namespace Viki.LoadRunner.Playground
                 // It will be increased if not enough threads are available to reach [ISpeedStrategy] limits 
                 // * Other existing version of [ISpeedStrategy]
                 //   - IncrementalThreading(initialThreadcount: 10, increasePeriod: TimeSpan.FromSeconds(10), increaseBatchSize: 5)
-                ThreadingStrategy = new SemiAutoThreading(minThreadCount: 10, maxThreadCount: 10)
+                ThreadingStrategy = new SemiAutoThreadCount(minThreadCount: 10, maxThreadCount: 10)
             };
 
             // Initialize parameters
             LoadRunnerParameters parameters = new LoadRunnerParameters();
 
             // Initialize aggregator
-            DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
+            TotalsResultsAggregator resultsAggregator = new TotalsResultsAggregator();
 
             // Initializing LoadTest Client
             LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(parameters, resultsAggregator);

@@ -3,11 +3,11 @@ using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
-    public class IncrementalThreading : IThreadingStrategy
+    public class IncrementalThreadCount : IThreadingStrategy
     {
         private readonly TimeSpan _increasePeriod;
 
-        public IncrementalThreading(int initialThreadcount, TimeSpan increasePeriod, int increaseBatchSize)
+        public IncrementalThreadCount(int initialThreadcount, TimeSpan increasePeriod, int increaseBatchSize)
         {
             InitialThreadCount = initialThreadcount;
             _increasePeriod = increasePeriod;

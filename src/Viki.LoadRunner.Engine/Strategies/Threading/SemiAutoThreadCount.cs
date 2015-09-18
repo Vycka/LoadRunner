@@ -3,11 +3,11 @@ using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
-    public class SemiAutoThreading : IThreadingStrategy
+    public class SemiAutoThreadCount : IThreadingStrategy
     {
         private readonly int _maxThreadCount;
 
-        public SemiAutoThreading(int minThreadCount, int maxThreadCount)
+        public SemiAutoThreadCount(int minThreadCount, int maxThreadCount)
         {
             if (minThreadCount > maxThreadCount)
                 throw new Exception("minThreadCount must lower than or equal to maxThreadCount");

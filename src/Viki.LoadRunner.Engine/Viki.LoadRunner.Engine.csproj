@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="Aggregators\HistogramResultsAggregator.cs" />
     <Compile Include="Aggregators\AsyncResultsAggregator.cs" />
-    <Compile Include="Aggregators\DefaultResultsAggregator.cs" />
+    <Compile Include="Aggregators\TotalsResultsAggregator.cs" />
     <Compile Include="Aggregators\IResultsAggregator.cs" />
     <Compile Include="Aggregators\Results\ResultsContainer.cs" />
     <Compile Include="Aggregators\Results\ResultItemTotals.cs" />
@@ -70,8 +70,9 @@
     <Compile Include="Strategies\IThreadingStrategy.cs" />
     <Compile Include="Strategies\Speed\FixedSpeed.cs" />
     <Compile Include="Strategies\Speed\IncrementalSpeed.cs" />
-    <Compile Include="Strategies\Threading\IncrementalThreading.cs" />
-    <Compile Include="Strategies\Threading\SemiAutoThreading.cs" />
+    <Compile Include="Strategies\Threading\IncrementalThreadCount.cs" />
+    <Compile Include="Strategies\Threading\IncrementalWorkingThreadCount.cs" />
+    <Compile Include="Strategies\Threading\SemiAutoThreadCount.cs" />
     <Compile Include="Utils\HistogramCsvExport.cs" />
   </ItemGroup>
   <ItemGroup />
