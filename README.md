@@ -3,7 +3,7 @@
 
 ## *Quick Intro*
 * Quickintro is based for 0.1.5.* version. Latest is 0.1.6, until readme.md is updated, try follow this commit https://github.com/Vycka/LoadRunner/commit/65e53f7acd6a394bb529a251ef6086884e6185aa
- * If you are planning to use things like `WebRequest` for API tests, don't forget to lift the connection limit in .NET (`<connectionManagement><add address = "*" maxconnection = "100" /></connectionManagement>`)
+* If you are planning to use things like `WebRequest` for API tests, don't forget to lift the connection limit in .NET (`<connectionManagement><add address = "*" maxconnection = "100" /></connectionManagement>`)
 
 ### *ILoadTestScenario*
 Implement `ILoadTestScenario` interface by defining test scenario for single thread instance.
