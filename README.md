@@ -75,7 +75,7 @@ LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
   ResultsContainer results = resultsAggregator.GetResults();
   Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
 ```
-## *Enjoy the result*
+### *Enjoy the result*
 
 ```js
 {
