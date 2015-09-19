@@ -46,7 +46,7 @@ LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
 ```
 
 ### *Choose your [IResultsAggregator]*
-* Read more about available [IResultsAggregator's](/../../wiki/IResultsAggregator)
+* [Read more about available IResultsAggregator's](/../../wiki/IResultsAggregator)
 ```cs
   // This aggregation is similar to SoapUI (Like Min, Max, Avg, ...)
   TotalsResultsAggregator resultsAggregator = new TotalsResultsAggregator();
