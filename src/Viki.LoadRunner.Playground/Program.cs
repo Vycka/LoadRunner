@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Results;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Strategies.Threading;
