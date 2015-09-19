@@ -36,11 +36,7 @@ LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
     //    - IncremantalSpeed(initialRequestsPerSec: 1.0, increasePeriod: TimeSpan.FromSeconds(10), increaseStep: 3.0)
     SpeedStrategy = new FixedSpeed(maxIterationsPerSec: Double.MaxValue),
 
-    //[IThreadingStrategy] defines allowed worker thread count
-    // * SemiAutoThreading initializes [minThreadCount] at begining
-    // It will be increased if not enough threads are available to reach [ISpeedStrategy] limits 
-    // * Other existing version of [ISpeedStrategy]
-    //   - IncrementalThreading(initialThreadcount: 10, increasePeriod: TimeSpan.FromSeconds(10), increaseBatchSize: 5)
+    // [IThreadingStrategy] defines allowed worker thread count
     ThreadingStrategy = new SemiAutoThreading(minThreadCount: 10, maxThreadCount: 10)
 };
 ```
