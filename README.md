@@ -45,10 +45,10 @@ LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
 * [Read more about available IResultsAggregator's](/../../wiki/IResultsAggregator)
 ```cs
   // This aggregation is similar to SoapUI (Like Min, Max, Avg, ...)
-  TotalsResultsAggregator resultsAggregator = new TotalsResultsAggregator();
+  var resultsAggregator = new TotalsResultsAggregator();
   
-  // This one aggregates same results as DefaultResultsAggregator, but splits into time-based histogram
-  HistogramResultsAggregator histogramResultsAggregator = new TimeHistogramResultsAggregator(TimeSpan.FromSeconds(3));
+  // This one aggregates same results as GogzlxResultsAggregator, but splits into time-based histogram
+  var timeResultsAggregator = new TimeHistogramResultsAggregator(TimeSpan.FromSeconds(3));
 ```
 * Histogram results can be exported to CSV using [HistogramCsvExport](src/Viki.LoadRunner.Engine/Utils/HistogramCsvExport.cs) util.
 
