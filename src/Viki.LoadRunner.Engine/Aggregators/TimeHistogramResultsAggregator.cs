@@ -1,32 +1,35 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
     public class TimeHistogramResultsAggregator : HistogramResultsAggregator
     {
-        private readonly int _aggregationStepSeconds;
-        private long _testBeginTimeMs;
+        private readonly TimeSpan _aggregationTimeInterval;
+        private DateTime _testBeginTime;
 
-        public TimeHistogramResultsAggregator(int aggregationStepSeconds = 1)
+        /// <summary>
+        /// Groups results by test execution time in provided [aggregationTimeInterval] time periods
+        /// </summary>
+        /// <param name="aggregationTimeInterval">Time interval to group results by</param>
+        public TimeHistogramResultsAggregator(TimeSpan aggregationTimeInterval)
         {
-            _aggregationStepSeconds = aggregationStepSeconds;
+            _aggregationTimeInterval = aggregationTimeInterval;
             _groupByKeyCalculatorFunction = GroupByCalculatorFunction;
         }
 
         public override void Begin(DateTime testBeginTime)
         {
-            _testBeginTimeMs = testBeginTime.ToUnixTimeMs();
+            _testBeginTime = testBeginTime;
 
             base.Begin(testBeginTime);
         }
 
         private object GroupByCalculatorFunction(TestContextResult result)
         {
-            double iterationEndTime = (result.IterationFinished.ToUnixTimeMs() - _testBeginTimeMs) / 1000.0;
+            long iterationEndTicks = (result.IterationFinished - _testBeginTime).Ticks;
 
-            var resultTimeSlot = ((int)(iterationEndTime / _aggregationStepSeconds)) * _aggregationStepSeconds;
+            var resultTimeSlot = ((int) (iterationEndTicks/_aggregationTimeInterval.Ticks)) * _aggregationTimeInterval.Ticks;
 
             return resultTimeSlot;
         }

@@ -2,6 +2,7 @@
 {
     public class ThreadHistogramResultsAggregator : HistogramResultsAggregator
     {
+
         public ThreadHistogramResultsAggregator()
             : base(result => result.ThreadId)
         {

@@ -18,13 +18,13 @@ namespace Viki.LoadRunner.Playground
     {
         static void Main()
         {
-            //ReadmeDemo.Run();
+            ReadmeDemo.Run();
 
             string[] nameAggregates = new[] {"AAA", "BBB", "CCC"};
 
-            //return;
+            return;
             TotalsResultsAggregator defaultResultsAggregator = new TotalsResultsAggregator();
-            TimeHistogramResultsAggregator histogramResultsAggregator = new TimeHistogramResultsAggregator(aggregationStepSeconds: 3);
+            TimeHistogramResultsAggregator histogramResultsAggregator = new TimeHistogramResultsAggregator(TimeSpan.FromSeconds(3));
             ThreadHistogramResultsAggregator threadHistogramResultsAggregator = new ThreadHistogramResultsAggregator();
             HistogramResultsAggregator customAggregator = new HistogramResultsAggregator(result => nameAggregates[result.ThreadId % nameAggregates.Length]);
             

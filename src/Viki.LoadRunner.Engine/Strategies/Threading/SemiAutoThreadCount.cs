@@ -7,6 +7,13 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
     {
         private readonly int _maxThreadCount;
 
+        /// <summary>
+        /// Initially creates [minThreadCount].
+        /// if within LoadTest execution there are no idle threads available to work, but oter limitations alow new iteration to be enqueued
+        /// A new threads will be gradually increased, until there is no need for new threads or [maxThreadCount] limit was reached
+        /// </summary>
+        /// <param name="minThreadCount">initial thread count to create</param>
+        /// <param name="maxThreadCount">Maximum alowed thread count to be created within LoadTest execution</param>
         public SemiAutoThreadCount(int minThreadCount, int maxThreadCount)
         {
             if (minThreadCount > maxThreadCount)

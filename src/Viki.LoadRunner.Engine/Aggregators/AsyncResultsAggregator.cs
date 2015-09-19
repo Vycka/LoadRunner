@@ -17,6 +17,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         
         private volatile bool _stopping;
         private Thread _processorThread;
+        private Exception _thrownException = null;
 
         public AsyncResultsAggregator(params IResultsAggregator[] resultsAggregators)
         {
@@ -50,34 +51,46 @@ namespace Viki.LoadRunner.Engine.Aggregators
         public void TestContextResultReceived(TestContextResult result)
         {
             _processingQueue.Enqueue(result);
+
+            // ATM Exception will be cought in worker thread and bubbles up to the ThreadCoordinator, where it gets rethrown to the Main thread
+            // TODO: think of something better.
+            if (_thrownException != null)
+                throw _thrownException;
         }
 
         public void Reset()
         {
         }
 
-        // TODO: if aggregator fails, exception won't be detected
+        // TODO: Think of better way to catch error
         private void ProcessorThreadFunction()
         {
-            bool onlyOneAggregator = _resultsAggregators.Length == 1;
-
-            while (!_stopping || _processingQueue.IsEmpty == false)
+            try
             {
-                TestContextResult resultObject;
-                while (_processingQueue.TryDequeue(out resultObject))
+                bool onlyOneAggregator = _resultsAggregators.Length == 1;
+
+                while (!_stopping || _processingQueue.IsEmpty == false)
                 {
-                    TestContextResult localResultObject = resultObject;
+                    TestContextResult resultObject;
+                    while (_processingQueue.TryDequeue(out resultObject))
+                    {
+                        TestContextResult localResultObject = resultObject;
 
-                    if (onlyOneAggregator)
-                        _resultsAggregators[0].TestContextResultReceived(localResultObject);
-                    else
-                        Parallel.ForEach(_resultsAggregators, aggregator => aggregator.TestContextResultReceived(localResultObject));
+                        if (onlyOneAggregator)
+                            _resultsAggregators[0].TestContextResultReceived(localResultObject);
+                        else
+                            Parallel.ForEach(_resultsAggregators, aggregator => aggregator.TestContextResultReceived(localResultObject));
+                    }
 
-                    //Console.WriteLine(localResultObject.ThreadId + " " + localResultObject.IterationId);
+                    Thread.Sleep(50);
                 }
-
-                Thread.Sleep(50);
             }
+            catch (Exception ex)
+            {
+                _thrownException = ex;
+                throw;
+            }
+            
         }
     }
 }

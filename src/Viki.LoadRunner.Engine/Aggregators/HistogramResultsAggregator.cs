@@ -15,8 +15,12 @@ namespace Viki.LoadRunner.Engine.Aggregators
         private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
         private readonly Dictionary<object, TestContextResultAggregate> _histogramItems = new Dictionary<object, TestContextResultAggregate>();
 
-        public IReadOnlyList<string> CheckpointsOorder => _orderLearner.LearnedOrder; 
+        public IReadOnlyList<string> CheckpointsOorder => _orderLearner.LearnedOrder;
 
+        /// <summary>
+        /// Aggregates results, grouping them by [groupByKeyCalculatorFunction]
+        /// </summary>
+        /// <param name="groupByKeyCalculatorFunction">Function to calculate GroupBy Key</param>
         public HistogramResultsAggregator(Func<TestContextResult, object> groupByKeyCalculatorFunction)
         {
             if (groupByKeyCalculatorFunction == null)
@@ -41,7 +45,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         private TestContextResultAggregate GetHistogramRow(object aggregateSlot)
         {
-            TestContextResultAggregate result = null;
+            TestContextResultAggregate result;
             if (!_histogramItems.TryGetValue(aggregateSlot, out result))
             {
                 result = new TestContextResultAggregate();

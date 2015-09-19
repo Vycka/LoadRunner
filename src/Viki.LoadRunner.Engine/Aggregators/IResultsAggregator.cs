@@ -21,6 +21,5 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// Signals aggregator, that new test execution is ended and stats aggregation is finished
         /// </summary>
         void End();
-
     }
 }

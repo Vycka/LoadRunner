@@ -13,6 +13,12 @@ namespace Viki.LoadRunner.Engine.Aggregators
         private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
         private readonly TestContextResultAggregate _statsAggregator = new TestContextResultAggregate();
 
+        /// <summary>
+        /// Calculates totals without doing any aggregations
+        /// </summary>
+        public TotalsResultsAggregator()
+        {
+        }
 
         public void TestContextResultReceived(TestContextResult result)
         {
