@@ -2,77 +2,16 @@
 * NuGet: `Install-Package Viki.LoadRunner`
 
 ## *Quick Intro*
-Quickintro is based for 0.1.5.* version. Latest is 0.1.6, until readme.md is updated, try follow this commit https://github.com/Vycka/LoadRunner/commit/65e53f7acd6a394bb529a251ef6086884e6185aa
+* Quickintro is based for 0.1.5.* version. Latest is 0.1.6, until readme.md is updated, try follow this commit https://github.com/Vycka/LoadRunner/commit/65e53f7acd6a394bb529a251ef6086884e6185aa
+ * If you are planning to use things like `WebRequest` for API tests, don't forget to lift the connection limit in .NET (`<connectionManagement><add address = "*" maxconnection = "100" /></connectionManagement>`)
+
 ### *ILoadTestScenario*
 Implement `ILoadTestScenario` interface by defining test scenario for single thread instance.
 Each worker-thread will create its own `ILoadTestScenario` instance and will keep it persistent until working-thread is stopped.
- * If you are planning to use things like `WebRequest` for API tests, don't forget to lift the connection limit in .NET (`<connectionManagement><add address = "*" maxconnection = "100" /></connectionManagement>`)
-```cs
-public class TestScenario : ILoadTestScenario
-{
-    private static readonly Random Random = new Random(42);
+ * [ILoadTestScenario documentation and example](/../../wiki/ILoadTestScenario)
 
-    public void ScenarioSetup(ITestContext testContext)
-    {
-        Debug.WriteLine("ScenarioSetup Executes on thread creation");
-        Debug.WriteLine("Exceptions here are not handled!");
-
-        //throw new Exception("2% error chance for testing");
-    }
-
-    public void IterationSetup(ITestContext testContext)
-    {
-        Debug.WriteLine("IterationSetup is executed before each ExecuteScenario call");
-
-        if (Random.Next(100) % 50 == 0)
-            throw new Exception("2% error chance for testing");
-    }
-
-    public void ExecuteScenario(ITestContext testContext)
-    {
-        Debug.WriteLine(
-            "ExecuteScenario defines single iteration for load test scenario, " +
-            "It is called after each successful IterationSetup call. " +
-            "Execution time is measured only for this function" +
-            "You can use testContext.Checkpoint() function to mark points, " +
-            "where time should be measured"
-        );
-        Thread.Sleep(Random.Next(4000));
-
-        // [Iteration Begin Checkpoint] -- [First Checkpoint]
-        testContext.Checkpoint("First Checkpoint");
-
-        if (Random.Next(100) % 10 == 0)
-            throw new Exception("10% error chance for testing");
-
-        // [First Checkpoint] -- [Last Checkpoint]
-        testContext.Checkpoint("Last Checkpoint");
-
-        Thread.Sleep(Random.Next(1000));
-
-        if (Random.Next(100) % 100 == 0)
-            throw new Exception("1% error chance for testing");
-    }
-    // [Last Checkpoint] -- [SYS_ITERATION_END]
-
-    public void IterationTearDown(ITestContext testContext)
-    {
-        Debug.WriteLine("IterationTearDown is executed each time after ExecuteScenario iteration is finished.");
-        Debug.WriteLine("It is also executed even when IterationSetup or ExecuteScenario fails");
-
-        if (Random.Next(100) % 25 == 0)
-            throw new Exception("4% error chance for testing");
-    }
-
-    public void ScenarioTearDown(ITestContext testContext)
-    {
-        Debug.WriteLine("ScenarioTearDown Executes once LoadTest execution is over");
-
-        Debug.WriteLine("Exceptions here are not handled!");
-    }
-}
-```
 ### *Setup [LoadRunnerEngine] parameters with [LoadRunnerParameters]*
+ * [Read more about IThreadingStrategies](/../../wiki/IThreadingStrategy)
 ```cs
 // LoadRunnerParameters initializes defaults shown below
 LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
