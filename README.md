@@ -71,8 +71,8 @@ LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
   // Run test (blocking call)
   loadRunner.Run();
   
-  // ResultItem will have all logged exceptions within LoadTest execution
-  ResultsContainer defaultResults = resultsAggregator.GetResults();
+  // results will contain all logged exceptions within LoadTest execution
+  ResultsContainer results = resultsAggregator.GetResults();
   Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
 ```
 ## *Enjoy the result*
