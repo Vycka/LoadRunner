@@ -2,7 +2,6 @@
 * NuGet: `Install-Package Viki.LoadRunner`
 
 ## *Quick Intro*
-* Quickintro is based for 0.1.5.* version. Latest is 0.1.6, until readme.md is updated, try follow this commit https://github.com/Vycka/LoadRunner/commit/65e53f7acd6a394bb529a251ef6086884e6185aa
 * If you are planning to use things like `WebRequest` for API tests, don't forget to lift the connection limit in .NET (`<connectionManagement><add address = "*" maxconnection = "100" /></connectionManagement>`)
 
 ### *ILoadTestScenario*
@@ -47,14 +46,14 @@ LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
 ```
 
 ### *Choose your [IResultsAggregator]*
+* Read more about available [IResultsAggregator's](/../../wiki/IResultsAggregator)
 ```cs
   // This aggregation is similar to SoapUI (Like Min, Max, Avg, ...)
-  DefaultResultsAggregator resultsAggregator = new DefaultResultsAggregator();
-  // This one aggregates same results as DefaultResultsAggregator, but splits into time-based histogram
+  TotalsResultsAggregator resultsAggregator = new TotalsResultsAggregator();
   
-  HistogramResultsAggregator histogramResultsAggregator = new HistogramResultsAggregator(aggregationStepSeconds: 3);
+  // This one aggregates same results as DefaultResultsAggregator, but splits into time-based histogram
+  HistogramResultsAggregator histogramResultsAggregator = new TimeHistogramResultsAggregator(TimeSpan.FromSeconds(3));
 ```
-
 * Histogram results can be exported to CSV using [HistogramCsvExport](src/Viki.LoadRunner.Engine/Utils/HistogramCsvExport.cs) util.
 
 ### *Put it all together*
