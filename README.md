@@ -7,7 +7,6 @@
 
 ### *ILoadTestScenario*
 Implement `ILoadTestScenario` interface by defining test scenario for single thread instance.
-Each worker-thread will create its own `ILoadTestScenario` instance and will keep it persistent until working-thread is stopped.
  * [ILoadTestScenario documentation and example](/../../wiki/ILoadTestScenario)
 
 ### *Setup [LoadRunnerEngine] parameters with [LoadRunnerParameters]*
