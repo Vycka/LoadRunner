@@ -7,7 +7,7 @@ using Viki.LoadRunner.Engine.Executor.Context;
 namespace Viki.LoadRunner.Engine.Aggregators
 {
     /// <summary>
-    /// Since TestContextResultReceived call are synchronous from benchmarking threads, this class unloads processing to its own seperate thread
+    /// Since TestContextResultReceived calls are synchronous from benchmarking threads, this class unloads processing to its own seperate thread
     /// It's already used in LoadRunnerEngine, so no need to reuse it again.
     /// </summary>
     internal class AsyncResultsAggregator : IResultsAggregator, IDisposable
@@ -52,13 +52,14 @@ namespace Viki.LoadRunner.Engine.Aggregators
         {
             _processingQueue.Enqueue(result);
 
-            // ATM Exception will be cought in worker thread and bubbles up to the ThreadCoordinator, where it gets rethrown to the Main thread
+            // Exceptions thrown here goes to worker-thread who called this event
+            // Worker-thread crashes because of that and then ThreadCoordinator detects this error on the main thread.
             // TODO: think of something better.
             if (_thrownException != null)
                 throw _thrownException;
         }
 
-        // TODO: Think of better way to catch error
+        // TODO: Think of better way to catch error (not using _thrownException)
         private void ProcessorThreadFunction()
         {
             try
