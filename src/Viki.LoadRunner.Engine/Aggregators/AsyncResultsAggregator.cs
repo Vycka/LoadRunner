@@ -58,10 +58,6 @@ namespace Viki.LoadRunner.Engine.Aggregators
                 throw _thrownException;
         }
 
-        public void Reset()
-        {
-        }
-
         // TODO: Think of better way to catch error
         private void ProcessorThreadFunction()
         {
