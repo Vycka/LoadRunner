@@ -4,14 +4,24 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Results;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
 
 namespace Viki.LoadRunner.Engine.Utils
 {
+    /// <summary>
+    /// Tool for exporting Histogram results into .csv file
+    /// </summary>
     public static class HistogramCsvExport
     {
+        /// <summary>
+        /// Precision to use, when rounding up real numbers. 
+        /// </summary>
         public static int DoublePrecision = 3;
 
+        /// <summary>
+        /// Exports Histogram results into .csv file
+        /// </summary>
+        /// <param name="results">Results from histogram aggregator (GetResults())</param>
+        /// <param name="csvFilePath">file path to output csv file</param>
         public static void Export(IEnumerable<HistogramResultRow> results, string csvFilePath)
         {
             if (csvFilePath == null) throw new ArgumentNullException(nameof(csvFilePath));

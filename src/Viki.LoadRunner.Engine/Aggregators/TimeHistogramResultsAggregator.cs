@@ -36,8 +36,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// </summary>
         /// <param name="aggregationTimeInterval">Time interval to group results by</param>
         /// <param name="subGroupByKeyCalculatorFunction">Secondary aggregation function</param>
-        public TimeHistogramResultsAggregator(TimeSpan aggregationTimeInterval,
-            Func<TestContextResult, string> subGroupByKeyCalculatorFunction)
+        public TimeHistogramResultsAggregator(TimeSpan aggregationTimeInterval, Func<TestContextResult, string> subGroupByKeyCalculatorFunction)
         {
             _aggregationTimeInterval = aggregationTimeInterval;
 
