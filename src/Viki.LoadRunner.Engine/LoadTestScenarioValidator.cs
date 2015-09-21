@@ -17,6 +17,8 @@ namespace Viki.LoadRunner.Engine
         public static TestContextResult Validate(ILoadTestScenario loadTestScenario)
         {
             TestContext testContext =  new TestContext(0);
+            testContext.Reset(-1, -1);
+            loadTestScenario.ScenarioSetup(testContext);
 
             testContext.Reset(0, 0);
             testContext.Checkpoint(Checkpoint.IterationSetupCheckpointName);
@@ -36,6 +38,7 @@ namespace Viki.LoadRunner.Engine
 
             TestContextResult result = new TestContextResult(testContext);
 
+            testContext.Reset(-1, -1);
             loadTestScenario.ScenarioTearDown(testContext);
 
             return result;
