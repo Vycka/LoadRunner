@@ -12,19 +12,29 @@ namespace Viki.LoadRunner.Engine.Aggregators
     /// </summary>
     internal class AsyncResultsAggregator : IResultsAggregator, IDisposable
     {
+        #region Fields
+
         private readonly IResultsAggregator[] _resultsAggregators;
         private readonly ConcurrentQueue<TestContextResult> _processingQueue = new ConcurrentQueue<TestContextResult>();
-        
+
         private volatile bool _stopping;
         private Thread _processorThread;
-        private Exception _thrownException = null;
+        private Exception _thrownException;
+
+        #endregion
+
+        #region Constructor
 
         public AsyncResultsAggregator(params IResultsAggregator[] resultsAggregators)
         {
             _resultsAggregators = resultsAggregators;
         }
 
-        public void Begin(DateTime testBeginTime)
+        #endregion
+
+        #region IResultsAggregator
+
+        void IResultsAggregator.Begin(DateTime testBeginTime)
         {
             _stopping = false;
 
@@ -34,7 +44,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             Parallel.ForEach(_resultsAggregators, aggregator => aggregator.Begin(testBeginTime));
         }
 
-        public void End()
+        void IResultsAggregator.End()
         {
             _stopping = true;
             _processorThread.Join();
@@ -42,13 +52,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             Parallel.ForEach(_resultsAggregators, aggregator => aggregator.End());
         }
 
-
-        public void Dispose()
-        {
-            End();
-        }
-
-        public void TestContextResultReceived(TestContextResult result)
+        void IResultsAggregator.TestContextResultReceived(TestContextResult result)
         {
             _processingQueue.Enqueue(result);
 
@@ -58,6 +62,10 @@ namespace Viki.LoadRunner.Engine.Aggregators
             if (_thrownException != null)
                 throw _thrownException;
         }
+
+        #endregion
+
+        #region ProcessorThreadFunction()
 
         // TODO: Think of better way to catch error (not using _thrownException)
         private void ProcessorThreadFunction()
@@ -76,7 +84,8 @@ namespace Viki.LoadRunner.Engine.Aggregators
                         if (onlyOneAggregator)
                             _resultsAggregators[0].TestContextResultReceived(localResultObject);
                         else
-                            Parallel.ForEach(_resultsAggregators, aggregator => aggregator.TestContextResultReceived(localResultObject));
+                            Parallel.ForEach(_resultsAggregators,
+                                aggregator => aggregator.TestContextResultReceived(localResultObject));
                     }
 
                     Thread.Sleep(50);
@@ -87,7 +96,22 @@ namespace Viki.LoadRunner.Engine.Aggregators
                 _thrownException = ex;
                 throw;
             }
-            
         }
+
+        #endregion
+
+        #region IDisposable
+
+        ~AsyncResultsAggregator()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            ((IResultsAggregator) this).End();
+        }
+
+        #endregion
     }
 }

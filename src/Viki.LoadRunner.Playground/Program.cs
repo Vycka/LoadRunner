@@ -17,14 +17,16 @@ namespace Viki.LoadRunner.Playground
     {
         static void Main()
         {
-            ReadmeDemo.Run();
+            //ReadmeDemo.Run();
 
             string[] nameAggregates = new[] {"AAA", "BBB", "CCC"};
 
-            return;
+            TestContextResult validatorResult = LoadTestScenarioValidator.Validate(new LoadTestScenario());
+            Console.WriteLine(JsonConvert.SerializeObject(validatorResult, Formatting.Indented));
+
+            //return;
             TotalsResultsAggregator defaultResultsAggregator = new TotalsResultsAggregator();
             TimeHistogramResultsAggregator histogramResultsAggregator = new TimeHistogramResultsAggregator(TimeSpan.FromSeconds(3));
-            ThreadHistogramResultsAggregator threadHistogramResultsAggregator = new ThreadHistogramResultsAggregator();
             HistogramResultsAggregator customAggregator = new HistogramResultsAggregator(result => nameAggregates[result.ThreadId % nameAggregates.Length]);
             
             LoadRunnerEngine testClient =
@@ -40,7 +42,7 @@ namespace Viki.LoadRunner.Playground
                         ThreadingStrategy = new IncrementalWorkingThreadCount(40, 1, TimeSpan.FromSeconds(3), 3),
                         //SpeedStrategy = new IncrementalSpeed(10, TimeSpan.FromSeconds(9), 20)
                     },
-                    defaultResultsAggregator, histogramResultsAggregator, threadHistogramResultsAggregator, customAggregator
+                    defaultResultsAggregator, histogramResultsAggregator, customAggregator
                 );
                 
 
@@ -52,7 +54,6 @@ namespace Viki.LoadRunner.Playground
 
             Console.WriteLine(JsonConvert.SerializeObject(results, Formatting.Indented));
             HistogramCsvExport.Export(histogramResults, "d:\\exportTest.csv");
-            HistogramCsvExport.Export(threadHistogramResultsAggregator.GetResults(), "d:\\threadExportTest.csv");
             HistogramCsvExport.Export(customAggregator.GetResults(), "d:\\customExportTest.csv");
         }
     }

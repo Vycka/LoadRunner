@@ -8,24 +8,44 @@ using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
+    /// <summary>
+    /// Calculates totals without doing any aggregations
+    /// </summary>
     public class TotalsResultsAggregator : IResultsAggregator
     {
+        #region Fields
+
         private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
         private readonly TestContextResultAggregate _statsAggregator = new TestContextResultAggregate();
 
-        /// <summary>
-        /// Calculates totals without doing any aggregations
-        /// </summary>
-        public TotalsResultsAggregator()
-        {
-        }
+        #endregion
 
-        public void TestContextResultReceived(TestContextResult result)
+        #region IResultsAggregator
+
+        void IResultsAggregator.TestContextResultReceived(TestContextResult result)
         {
             _orderLearner.Learn(result);
             _statsAggregator.AggregateResult(result);
         }
 
+        void IResultsAggregator.Begin(DateTime testBeginTime)
+        {
+            _statsAggregator.Reset();
+            _orderLearner.Reset();
+        }
+
+        void IResultsAggregator.End()
+        {
+        }
+
+        #endregion
+
+        #region GetResults()
+
+        /// <summary>
+        /// Get Build results object from aggregated data
+        /// </summary>
+        /// <returns>Aggregated results</returns>
         public ResultsContainer GetResults()
         {
             ResultsContainer result = null;
@@ -37,16 +57,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             }
             return result;
         }
-    
-        public void Begin(DateTime testBeginTime)
-        {
-            _statsAggregator.Reset();
-            _orderLearner.Reset();
-        }
 
-        public void End()
-        {
-
-        }
+        #endregion
     }
 }

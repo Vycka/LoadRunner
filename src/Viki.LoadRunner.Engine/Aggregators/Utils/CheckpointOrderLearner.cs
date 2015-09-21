@@ -4,9 +4,11 @@ using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
+    /// <summary>
+    /// Tool for learning sort order of the checkpoints
+    /// </summary>
     public class CheckpointOrderLearner
     {
-
         private List<string> _checkpointOrder;
         private readonly static Checkpoint CheckpointBase = new Checkpoint("", TimeSpan.Zero);
 

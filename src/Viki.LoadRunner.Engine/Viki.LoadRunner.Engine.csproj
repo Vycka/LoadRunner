@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="Aggregators\HistogramResultsAggregator.cs" />
     <Compile Include="Aggregators\AsyncResultsAggregator.cs" />
-    <Compile Include="Aggregators\ThreadHistogramResultsAggregator.cs" />
     <Compile Include="Aggregators\TotalsResultsAggregator.cs" />
     <Compile Include="Aggregators\IResultsAggregator.cs" />
     <Compile Include="Aggregators\Results\ResultsContainer.cs" />
@@ -60,6 +59,7 @@
     <Compile Include="LoadTestBase.cs" />
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\ITestContext.cs" />
+    <Compile Include="LoadTestScenarioValidator.cs" />
     <Compile Include="Parameters\ExecutionLimits.cs" />
     <Compile Include="Parameters\LoadRunnerParameters.cs" />
     <Compile Include="Executor\Threads\ThreadCoordinator.cs" />

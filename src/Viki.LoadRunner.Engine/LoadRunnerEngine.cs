@@ -7,6 +7,9 @@ using Viki.LoadRunner.Engine.Parameters;
 
 namespace Viki.LoadRunner.Engine
 {
+    /// <summary>
+    /// ILoadTestScenario executor
+    /// </summary>
     public class LoadRunnerEngine
     {
         #region Fields
@@ -25,8 +28,14 @@ namespace Viki.LoadRunner.Engine
 
         #endregion
 
-        #region Ctor
+        #region Constructor
 
+        /// <summary>
+        /// Initializes new executor instance
+        /// </summary>
+        /// <param name="parameters">LoadTest parameters</param>
+        /// <param name="iTestScenarioObjectType">ILoadTestScenario to be executed object type</param>
+        /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
         public LoadRunnerEngine(LoadRunnerParameters parameters, Type iTestScenarioObjectType, params IResultsAggregator[] resultsAggregators)
         {
             if (parameters == null)
@@ -40,6 +49,13 @@ namespace Viki.LoadRunner.Engine
             _resultsAggregator = new AsyncResultsAggregator(resultsAggregators);
         }
 
+        /// <summary>
+        /// Initializes new executor instance
+        /// </summary>
+        /// <typeparam name="TTestScenario">ILoadTestScenario to be executed object type</typeparam>
+        /// <param name="parameters">LoadTest parameters</param>
+        /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
+        /// <returns></returns>
         public static LoadRunnerEngine Create<TTestScenario>(LoadRunnerParameters parameters, params IResultsAggregator[] resultsAggregators) 
             where TTestScenario : ILoadTestScenario
         {
@@ -50,6 +66,10 @@ namespace Viki.LoadRunner.Engine
 
         #region Run() Stuff
 
+        /// <summary>
+        /// Start LoadTest execution.
+        /// This is a blocking call and will finish only, once the test is over and all results are aggregated by IResultsAggregator's
+        /// </summary>
         public void Run()
         {
             try
