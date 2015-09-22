@@ -26,7 +26,10 @@ namespace Viki.LoadRunner.Playground
 
             //return;
             TotalsResultsAggregator defaultResultsAggregator = new TotalsResultsAggregator();
-            TimeHistogramResultsAggregator histogramResultsAggregator = new TimeHistogramResultsAggregator(TimeSpan.FromSeconds(3));
+            TimeHistogramResultsAggregator histogramResultsAggregator = new TimeHistogramResultsAggregator(
+                TimeSpan.FromSeconds(3),
+                (result, l) => $"{TimeSpan.FromTicks(l).TotalSeconds}" // {nameAggregates[result.ThreadId%nameAggregates.Length]}
+            );
             HistogramResultsAggregator customAggregator = new HistogramResultsAggregator(result => nameAggregates[result.ThreadId % nameAggregates.Length]);
             
             LoadRunnerEngine testClient =
@@ -103,15 +106,6 @@ namespace Viki.LoadRunner.Playground
             //    throw new Exception("err");
 
             Thread.Sleep(Random.Next(50) + 50);
-        }
-    }
-
-    public class HeaderDemo : LoadTestBase
-    {
-        
-        public override void ExecuteScenario(ITestContext testContext)
-        {
-            
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         public TimeHistogramResultsAggregator(TimeSpan aggregationTimeInterval)
         {
             _aggregationTimeInterval = aggregationTimeInterval;
-            _histogramResultsAggregator = new HistogramResultsAggregator(GroupByCalculatorFunction);
+            _histogramResultsAggregator = new HistogramResultsAggregator(result => GroupByCalculatorFunction(result));
         }
 
         /// <summary>
@@ -52,8 +52,22 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
             Func<TestContextResult, object> groupByFunction =
                 result =>
-                    string.Concat(GroupByCalculatorFunction(result).ToString(), " ",
-                        subGroupByKeyCalculatorFunction(result));
+                    string.Concat(GroupByCalculatorFunction(result).ToString(), " ", subGroupByKeyCalculatorFunction(result));
+
+            _histogramResultsAggregator = new HistogramResultsAggregator(groupByFunction);
+        }
+
+        /// <summary>
+        /// Groups results by provided aggregation function (which will receive key used by TimeAggregation)
+        /// And it gives full ability to postprocess GroupByKey before returning it.
+        /// </summary>
+        /// <param name="aggregationTimeInterval">Time interval to group results by</param>
+        /// <param name="groupByKeyCalculatorFunction">GroupBy function Func&lt;TestContextResult, TimeAggregationSlotTicks, GroupByKey&gt;</param>
+        public TimeHistogramResultsAggregator(TimeSpan aggregationTimeInterval, Func<TestContextResult, long, object> groupByKeyCalculatorFunction)
+        {
+            _aggregationTimeInterval = aggregationTimeInterval;
+
+            Func<TestContextResult, object> groupByFunction = result => groupByKeyCalculatorFunction(result, GroupByCalculatorFunction(result));
 
             _histogramResultsAggregator = new HistogramResultsAggregator(groupByFunction);
         }
@@ -62,7 +76,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region Group by time function
 
-        private object GroupByCalculatorFunction(TestContextResult result)
+        private long GroupByCalculatorFunction(TestContextResult result)
         {
             long iterationEndTicks = (GetTimeValue(result) - _testBeginTime).Ticks;
 
