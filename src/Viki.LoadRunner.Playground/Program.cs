@@ -105,4 +105,13 @@ namespace Viki.LoadRunner.Playground
             Thread.Sleep(Random.Next(50) + 50);
         }
     }
+
+    public class HeaderDemo : LoadTestBase
+    {
+        
+        public override void ExecuteScenario(ITestContext testContext)
+        {
+            
+        }
+    }
 }

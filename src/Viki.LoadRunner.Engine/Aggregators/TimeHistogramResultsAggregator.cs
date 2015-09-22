@@ -19,6 +19,16 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// Func to retrieve DateTime, on which aggregation is based on
+        /// (Default TestContextResult.IterationStarted)
+        /// </summary>
+        public Func<TestContextResult, DateTime> GetTimeValue = result => result.IterationStarted;
+
+        #endregion
+
         #region Constructor
 
         /// <summary>
@@ -54,10 +64,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         private object GroupByCalculatorFunction(TestContextResult result)
         {
-            long iterationEndTicks = (result.IterationFinished - _testBeginTime).Ticks;
+            long iterationEndTicks = (GetTimeValue(result) - _testBeginTime).Ticks;
 
-            var resultTimeSlot = ((int) (iterationEndTicks/_aggregationTimeInterval.Ticks))*
-                                 _aggregationTimeInterval.Ticks;
+            var resultTimeSlot = ((int) (iterationEndTicks/_aggregationTimeInterval.Ticks)) * _aggregationTimeInterval.Ticks;
 
             return resultTimeSlot;
         }

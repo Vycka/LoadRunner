@@ -3,6 +3,11 @@ using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
+    /// <summary>
+    /// Creates fixed amount of threads and spreads load throughout them.
+    /// But limits concurrent-thread-count
+    /// and gradually increases the limit over defined time periods
+    /// </summary>
     public class IncrementalWorkingThreadCount : IThreadingStrategy
     {
         private readonly TimeSpan _increaseTimePeriod;
@@ -26,16 +31,16 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
             _initialWorkingThreadCount = initialWorkingThreadCount;
         }
 
-        public int InitialThreadCount => _createdThreadCount;
+        int IThreadingStrategy.InitialThreadCount => _createdThreadCount;
 
-        public int ThreadCreateBatchSize { get; } = 1;
+        int IThreadingStrategy.ThreadCreateBatchSize { get; } = 1;
 
-        public int GetAllowedMaxWorkingThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
+        int IThreadingStrategy.GetAllowedMaxWorkingThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
         {
             return (((int)(testExecutionTime.TotalMilliseconds / _increaseTimePeriod.TotalMilliseconds)) * _increaseBatchSize) + _initialWorkingThreadCount;
         }
 
-        public int GetAllowedCreatedThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
+        int IThreadingStrategy.GetAllowedCreatedThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
         {
             return _createdThreadCount;
         }
