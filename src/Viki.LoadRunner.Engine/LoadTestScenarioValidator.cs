@@ -14,13 +14,13 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         /// <param name="loadTestScenario">ILoadTestScenario object</param>
         /// <returns>Raw result from single iteration</returns>
-        public static TestContextResult Validate(ILoadTestScenario loadTestScenario)
+        public static TestContextResult Validate(ILoadTestScenario loadTestScenario, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
         {
-            TestContext testContext =  new TestContext(0);
+            TestContext testContext =  new TestContext(threadId);
             testContext.Reset(-1, -1);
             loadTestScenario.ScenarioSetup(testContext);
 
-            testContext.Reset(0, 0);
+            testContext.Reset(threadIterationId, globalIterationId);
             testContext.Checkpoint(Checkpoint.IterationSetupCheckpointName);
 
             loadTestScenario.IterationSetup(testContext);

@@ -169,7 +169,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                     }
                     else
                     {
-                        Thread.Sleep(1);
+                        Thread.Sleep(TimeSpan.FromTicks(2000));
                     }
                 }
 
