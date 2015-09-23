@@ -44,7 +44,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
         }
 
 
-        public ResultItemRow(TestContextResultAggregate testContextResultAggregate, CheckpointAggregate checkpointAggregate)
+        public ResultItemRow(TestContextResultAggregate testContextResultAggregate, CheckpointAggregate checkpointAggregate, TimeSpan? totalDurationOverride = null)
         {
             _errors = checkpointAggregate.Errors;
 
@@ -60,7 +60,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
             SummedMax = checkpointAggregate.TotalMax;
             SummedAvg = TimeSpan.FromMilliseconds(checkpointAggregate.SummedTotalTime.TotalMilliseconds / _countDiv);
 
-            SuccessIterationsPerSec = Count / (testContextResultAggregate.IterationEndTime - testContextResultAggregate.IterationBeginTime).TotalMilliseconds * 1000;
+            if (totalDurationOverride == null)
+                totalDurationOverride = testContextResultAggregate.IterationEndTime -
+                                        testContextResultAggregate.IterationBeginTime;
+
+            SuccessIterationsPerSec = Count / totalDurationOverride.Value.TotalMilliseconds * 1000;
         }
         
         public List<Exception> GetErrors() => _errors;

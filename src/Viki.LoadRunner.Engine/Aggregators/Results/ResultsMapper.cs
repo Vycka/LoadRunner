@@ -17,7 +17,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
             _orderLearner = orderLearner;
         }
 
-        public IEnumerable<ResultItemRow> Map(TestContextResultAggregate results, bool includeAllCheckpoints = false)
+        public IEnumerable<ResultItemRow> Map(TestContextResultAggregate results, bool includeAllCheckpoints = false, TimeSpan? aggregationTimeSpan = null)
         {
             IEnumerable<string> resultsOrder = _orderLearner.LearnedOrder;
 
@@ -28,14 +28,14 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
 
             if (includeAllCheckpoints)
                 yield return
-                    new ResultItemRow(results, results.CheckpointAggregates[Checkpoint.IterationSetupCheckpointName]);
+                    new ResultItemRow(results, results.CheckpointAggregates[Checkpoint.IterationSetupCheckpointName], aggregationTimeSpan);
 
             int iterationCount = 0;
             if (results.CheckpointAggregates.ContainsKey(Checkpoint.IterationEndCheckpointName))
             {
                 foreach (CheckpointAggregate resultItem in orderedResults.GetRange(2, orderedResults.Count - 3))
                 {
-                    var resultItemRow = new ResultItemRow(results, resultItem);
+                    var resultItemRow = new ResultItemRow(results, resultItem, aggregationTimeSpan);
                     resultItemRow.SetErrors(orderedResults[1 + iterationCount].Errors);
 
                     iterationCount++;
@@ -49,7 +49,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
             {
                 foreach (CheckpointAggregate resultItem in orderedResults.GetRange(2, orderedResults.Count - 3))
                 {
-                    var resultItemRow = new ResultItemRow(results, resultItem);
+                    var resultItemRow = new ResultItemRow(results, resultItem, aggregationTimeSpan);
                     resultItemRow.SetErrors(orderedResults[1 + iterationCount].Errors);
 
                     iterationCount++;

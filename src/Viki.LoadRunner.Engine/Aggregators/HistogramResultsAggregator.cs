@@ -15,10 +15,11 @@ namespace Viki.LoadRunner.Engine.Aggregators
     {
         #region Fields
 
+        // TODO: HistogramResultsAggregator shouldn't know anything about timing, move it up!
+        private DateTime _testBeginTime;
+
         private readonly Func<TestContextResult, object> _groupByKeyCalculatorFunction;
-
         private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
-
         private readonly Dictionary<object, TestContextResultAggregate> _histogramItems =
             new Dictionary<object, TestContextResultAggregate>();
 
@@ -30,6 +31,12 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// Learned order of checkpoints
         /// </summary>
         public IReadOnlyList<string> CheckpointsOorder => _orderLearner.LearnedOrder;
+
+        /// <summary>
+        /// If concrete Aggregation time is known, specifying it here will gives more accurate TPS result value.
+        /// Otherwise it will be predicted by raw TestResult data
+        /// </summary>
+        public TimeSpan? AggregationTimePeriod = null;
 
         #endregion
 
@@ -62,6 +69,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         void IResultsAggregator.Begin(DateTime testBeginTime)
         {
+            _testBeginTime = testBeginTime;
             _histogramItems.Clear();
         }
 
@@ -92,14 +100,27 @@ namespace Viki.LoadRunner.Engine.Aggregators
         public IEnumerable<HistogramResultRow> GetResults()
         {
             if (_orderLearner.LearnedOrder.Count != 0)
-            {
+            { 
+                DateTime lastAggregationSlotThreshold = DateTime.MinValue;
+
+                if (AggregationTimePeriod != null)
+                {
+                    TimeSpan lastIterationBeginMark = _histogramItems.Max(h => h.Value.IterationBeginTime) - _testBeginTime;
+
+                    TimeSpan lastAggregationBeginMark = TimeSpan.FromTicks(
+                        (lastIterationBeginMark.Ticks / AggregationTimePeriod.Value.Ticks)
+                        * AggregationTimePeriod.Value.Ticks
+                    );
+                    lastAggregationSlotThreshold = _testBeginTime + lastAggregationBeginMark;
+                }
+
                 ResultsMapper mapper = new ResultsMapper(_orderLearner);
                 foreach (KeyValuePair<object, TestContextResultAggregate> histogramItem in _histogramItems)
                 {
                     HistogramResultRow result = new HistogramResultRow(
                         histogramItem.Key,
                         histogramItem.Value,
-                        mapper.Map(histogramItem.Value, true).ToList()
+                        mapper.Map(histogramItem.Value, true, histogramItem.Value.IterationBeginTime >= lastAggregationSlotThreshold ? null : AggregationTimePeriod).ToList()
                         );
 
                     yield return result;
