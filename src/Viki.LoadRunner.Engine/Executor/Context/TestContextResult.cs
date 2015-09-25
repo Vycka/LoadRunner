@@ -3,13 +3,13 @@ using System.Linq;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
-    public class TestContextResult
+    public class TestContextResult : IIterationMetadata
     {
         public readonly Checkpoint[] Checkpoints;
 
-        public readonly int ThreadId;
-        public readonly int GlobalIterationId;
-        public readonly int ThreadIterationId;
+        public int GlobalIterationId { get; }
+        public int ThreadIterationId { get; }
+        public int ThreadId { get; }
         public readonly DateTime IterationStarted;
         public readonly DateTime IterationFinished;
 
@@ -33,5 +33,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             CreatedThreads = createdThreads;
             WorkingThreads = workingThreads;
         }
+
+
     }
 }
