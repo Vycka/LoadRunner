@@ -78,6 +78,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         public int GlobalIterationId { get; private set; }
         public int ThreadId { get; }
         public int ThreadIterationId { get; private set; }
+        public object UserData { get; set; }
 
         #endregion
     }

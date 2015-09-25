@@ -19,5 +19,10 @@
         /// [Tip: If scenario fits - this reference ID can be used as index for test-data datasources]
         /// </summary>
         int ThreadId { get; }
+
+        /// <summary>
+        /// Field mainly used for passing data from test iteration to custom aggregation.
+        /// </summary>
+        object UserData { get; set; }
     }
 }
