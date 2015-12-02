@@ -20,11 +20,24 @@ namespace Viki.LoadRunner.Engine
 
         #region Run() globals
 
-        private DateTime _testBeginTime;
+        private DateTime _testBeginTime = default(DateTime);
         private TimeSpan _testElapsedTime;
         private ThreadCoordinator _threadCoordinator;
 
         #endregion
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Current duration of currently executing load test
+        /// </summary>
+        public TimeSpan TestDuration => _testElapsedTime;
+        /// <summary>
+        /// Start UTC time for currently executing load test
+        /// </summary>
+        public DateTime TestBeginTimeUtc => _testBeginTime;
 
         #endregion
 
@@ -119,6 +132,8 @@ namespace Viki.LoadRunner.Engine
                 _threadCoordinator?.AssertThreadErrors();
 
                 _threadCoordinator = null;
+                _testBeginTime = default(DateTime);
+                _testElapsedTime = TimeSpan.Zero;
             }
         }
 

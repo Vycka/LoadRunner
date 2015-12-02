@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
@@ -52,7 +53,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         #endregion
 
-        #region ILoadTestContext
+        #region ITestContext
 
         public void Checkpoint(string checkpointName = null)
         {
@@ -61,6 +62,14 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
             Checkpoint newCheckpoint = new Checkpoint(checkpointName, ExecutionTime);
             _checkpoints.Add(newCheckpoint);  
+        }
+
+        public IEnumerable<KeyValuePair<string, Exception>> GetErrors()
+        {
+            return
+                _checkpoints
+                    .Where(c => c.Error != null)
+                    .Select(c => new KeyValuePair<string, Exception>(c.CheckpointName, c.Error));
         }
 
         public TimeSpan ExecutionTime
@@ -75,6 +84,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
                 return TimeSpan.Zero;
             }
         }
+
         public int GlobalIterationId { get; private set; }
         public int ThreadId { get; }
         public int ThreadIterationId { get; private set; }

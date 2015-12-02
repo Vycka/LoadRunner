@@ -94,7 +94,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         #region Build results
 
         /// <summary>
-        /// Get Build results object from aggregated data
+        /// Build results object from aggregated data
         /// </summary>
         /// <returns>Aggregated results</returns>
         public IEnumerable<HistogramResultRow> GetResults()
