@@ -6,7 +6,13 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     public class ErrorCountMetric : IMetric
     {
-        private readonly FlexiGrid<string, int> _grid = new FlexiGrid<string, int>((() => default(int))); 
+        private readonly bool _includeTotals;
+        private readonly FlexiGrid<string, int> _grid = new FlexiGrid<string, int>((() => default(int)));
+
+        public ErrorCountMetric(bool includeTotals = true)
+        {
+            _includeTotals = includeTotals;
+        }
 
         public IMetric CreateNew()
         {
@@ -17,13 +23,19 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         {
             foreach (Checkpoint checkpoint in result.Checkpoints)
             {
-                string key = checkpoint.CheckpointName + " Errors";
-                _grid[key] += checkpoint.Error != null ? 1 : 0;
+                string key = "Errors: " + checkpoint.CheckpointName;
 
+                if (checkpoint.Error != null)
+                {
+                    _grid[key]++;
+
+                    if (_includeTotals)
+                        _grid["Errors: Totals"]++;
+                }
             }
         }
 
-        public string[] ColumnNames => _grid.Select(i => i.Key).ToArray();
-        public object[] Values => _grid.Select(i => (object)i.Value).ToArray();
+        public string[] ColumnNames => _grid.Keys.ToArray();
+        public object[] Values => _grid.Values.Select(v => (object)v).ToArray();
     }
 }

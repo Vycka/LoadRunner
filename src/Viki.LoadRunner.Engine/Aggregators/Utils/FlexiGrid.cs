@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
@@ -50,8 +51,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
             _grid.Clear();
         }
 
-        #endregion
+        public IEnumerable<TKey> Keys => _grid.Keys;
+        public IEnumerable<TValue> Values => _grid.Values;
 
+        #endregion
+        
         #region IEnumerable
 
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()

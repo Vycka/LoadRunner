@@ -6,13 +6,13 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
     public interface IMetric
     {
         /// <summary>
-        /// Creates new IMetric instance based on current instance settings
+        /// Create new blank IMetric instance based on current instance settings
         /// </summary>
         /// <returns></returns>
         IMetric CreateNew();
 
         /// <summary>
-        /// New iteration result received
+        /// New iteration result received event
         /// </summary>
         /// <param name="result">Iteration result</param>
         void Add(TestContextResult result);

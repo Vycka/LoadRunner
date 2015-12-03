@@ -7,26 +7,44 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     public class AvgDurationMetric : IMetric
     {
-        readonly FlexiGrid<string, AverageTimeCalculator> _grid = new FlexiGrid<string, AverageTimeCalculator>(() => new AverageTimeCalculator());
+        private readonly FlexiGrid<string, AverageTimeCalculator> _grid = new FlexiGrid<string, AverageTimeCalculator>(() => new AverageTimeCalculator());
+        private readonly string[] _ignoredCheckpoints;
 
-        public IMetric CreateNew()
+        private static readonly Checkpoint BlankCheckpoint = new Checkpoint("", TimeSpan.Zero);
+
+        public AvgDurationMetric(params string[] ignoredCheckpoints)
         {
-            return new AvgDurationMetric();
+            if (ignoredCheckpoints == null)
+                throw new ArgumentNullException(nameof(ignoredCheckpoints));
+
+            _ignoredCheckpoints = ignoredCheckpoints;
         }
 
-        public void Add(TestContextResult result)
+        IMetric IMetric.CreateNew()
         {
+            return new AvgDurationMetric(_ignoredCheckpoints);
+        }
+
+        void IMetric.Add(TestContextResult result)
+        {
+
+            Checkpoint previousCheckpoint = BlankCheckpoint;
             foreach (Checkpoint checkpoint in result.Checkpoints)
             {
-                string key = checkpoint.CheckpointName + " Avg";
+                if (_ignoredCheckpoints.All(name => name != checkpoint.CheckpointName))
+                {
+                    string key = checkpoint.CheckpointName + " Avg";
+                    TimeSpan momentDiff = TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
 
-                _grid[key].AddSample(checkpoint.TimePoint);
+                    _grid[key].AddSample(momentDiff);
+                }
+                previousCheckpoint = checkpoint;
             }
 
         }
 
-        public string[] ColumnNames => _grid.Select(i => i.Key).ToArray();
-        public object[] Values => _grid.Select(i => (object)i.Value.GetAverage()).ToArray();
+        string[] IMetric.ColumnNames => _grid.Keys.ToArray();
+        object[] IMetric.Values => _grid.Values.Select(v => (object)v).ToArray();
     }
 
     public class AverageTimeCalculator
@@ -43,6 +61,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         public TimeSpan GetAverage()
         {
             return TimeSpan.FromTicks(_timeSum.Ticks /_sampleCount);
+        }
+
+        public override string ToString()
+        {
+            return ((long)GetAverage().TotalMilliseconds).ToString();
         }
     }
 }

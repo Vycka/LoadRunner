@@ -7,26 +7,44 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     public class MinDurationMetric : IMetric
     {
-        readonly FlexiGrid<string, TimeSpan> _grid = new FlexiGrid<string, TimeSpan>(() => TimeSpan.MaxValue);
+        private readonly FlexiGrid<string, long> _grid = new FlexiGrid<string, long>(() => long.MaxValue);
+        private readonly string[] _ignoredCheckpoints;
+
+        private static readonly Checkpoint BlankCheckpoint = new Checkpoint("", TimeSpan.Zero);
+
+        public MinDurationMetric(params string[] ignoredCheckpoints)
+        {
+            if (ignoredCheckpoints == null)
+                throw new ArgumentNullException(nameof(ignoredCheckpoints));
+
+            _ignoredCheckpoints = ignoredCheckpoints;
+        }
 
         public IMetric CreateNew()
         {
-            return new MinDurationMetric();
+            return new MinDurationMetric(_ignoredCheckpoints);
         }
 
         public void Add(TestContextResult result)
         {
+            Checkpoint previousCheckpoint = BlankCheckpoint;
             foreach (Checkpoint checkpoint in result.Checkpoints)
             {
-                string key = checkpoint.CheckpointName + " Min";
+                if (_ignoredCheckpoints.All(name => name != checkpoint.CheckpointName))
+                {
+                    string key = checkpoint.CheckpointName + " Min";
+                    TimeSpan momentDiff =
+                        TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
 
-                if (_grid[key] > checkpoint.TimePoint)
-                    _grid[key] = checkpoint.TimePoint;
+                    if (_grid[key] > momentDiff.TotalMilliseconds)
+                        _grid[key] = (long) momentDiff.TotalMilliseconds;
+                }
+                previousCheckpoint = checkpoint;
             }
             
         }
 
-        public string[] ColumnNames => _grid.Select(i => i.Key).ToArray();
-        public object[] Values => _grid.Select(i => (object)i.Value).ToArray();
+        public string[] ColumnNames => _grid.Keys.ToArray();
+        public object[] Values => _grid.Values.Select(v => (object)v).ToArray();
     }
 }

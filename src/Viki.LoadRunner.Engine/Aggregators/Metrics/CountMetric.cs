@@ -22,7 +22,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             }
         }
 
-        public string[] ColumnNames => _grid.Select(i => i.Key).ToArray();
-        public object[] Values => _grid.Select(i => (object)i.Value).ToArray();
+        public string[] ColumnNames => _grid.Keys.ToArray();
+        public object[] Values => _grid.Values.Select(v => (object)v).ToArray();
     }
 }
