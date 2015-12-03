@@ -23,13 +23,5 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
 
             return resultValue;
         }
-
-        public void SetBegin(DateTime testBeginTime)
-        {
-            foreach (IDimension dimension in _dimensions)
-            {
-                dimension.SetBegin(testBeginTime);
-            }
-        }
     }
 }

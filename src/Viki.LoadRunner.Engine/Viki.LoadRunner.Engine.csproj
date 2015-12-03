@@ -72,6 +72,8 @@
     <Compile Include="Aggregators\Aggregates\CheckpointAggregate.cs" />
     <Compile Include="Aggregators\Aggregates\TestContextResultAggregate.cs" />
     <Compile Include="Executor\Context\IIterationMetadata.cs" />
+    <Compile Include="Executor\Timer\ITimer.cs" />
+    <Compile Include="Executor\Timer\ExecutionTimer.cs" />
     <Compile Include="LoadTestBase.cs" />
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\ITestContext.cs" />

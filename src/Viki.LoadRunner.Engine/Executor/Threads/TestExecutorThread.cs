@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Timer;
+#pragma warning disable 1591
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
 {
@@ -25,9 +27,14 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Ctor
 
-        public TestExecutorThread(ILoadTestScenario loadTestScenario, int threadId)
+        public TestExecutorThread(ILoadTestScenario loadTestScenario, ITimer timer, int threadId)
         {
-            _testContext = new TestContext(threadId);
+            if (loadTestScenario == null)
+                throw new ArgumentNullException(nameof(loadTestScenario));
+            if (timer == null)
+                throw new ArgumentNullException(nameof(timer));
+
+            _testContext = new TestContext(threadId, timer);
             _loadTestScenario = loadTestScenario;
 
             _handlerThread = new Thread(ExecuteScenarioThreadFunction);

@@ -45,7 +45,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         }
 
         /// <summary>
-        /// Add metric (aka Y value)
+        /// Register metric (aka Y value)
         /// </summary>
         /// <returns>Current HistogramAggregator instance</returns>
         public HistogramAggregator Add(IMetric metricTemplate)
@@ -53,8 +53,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _metricTemplates.Add(metricTemplate);
 
             return this;
-        }
-        
+        } 
 
         #endregion
 
@@ -72,7 +71,6 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _grid = new FlexiGrid<DimensionValues, IMetric>((() => _metricMultiplexer.CreateNew()));
 
             _dimensionsKeyBuilder = new DimensionsKeyBuilder(_dimensions.Select(d => d.Item2));
-            _dimensionsKeyBuilder.SetBegin(testBeginTime);
         }
 
         void IResultsAggregator.End()
@@ -83,6 +81,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region Results
 
+        /// <summary>
+        /// Builds results results into object having collumn names array  2d array data grid
+        /// </summary>
         public HistogramResults BuildResults()
         {
             OrderLearner orderLearner = new OrderLearner();
@@ -121,6 +122,10 @@ namespace Viki.LoadRunner.Engine.Aggregators
             return new HistogramResults(columnNames, resultValues);
         }
 
+        /// <summary>
+        /// Builds dynamic results objects list, where each object has property name equal to column name.
+        /// Result serialized to JSON it would produce output, which compatible with online JSON -> CSV converters.
+        /// </summary>
         public IEnumerable<dynamic> BuildResultsDynamic()
         {
             var results = BuildResults();
@@ -140,6 +145,5 @@ namespace Viki.LoadRunner.Engine.Aggregators
         }
 
         #endregion
-
     }
 }

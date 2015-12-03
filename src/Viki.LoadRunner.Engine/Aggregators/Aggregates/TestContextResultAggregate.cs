@@ -13,8 +13,8 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
         public readonly Dictionary<string, CheckpointAggregate> CheckpointAggregates = new Dictionary<string, CheckpointAggregate>();
         private readonly static Checkpoint PreviousCheckpointBase = new Checkpoint("", TimeSpan.Zero);
 
-        public DateTime IterationBeginTime { get; private set; } = DateTime.MaxValue;
-        public DateTime IterationEndTime { get; private set; } = DateTime.MinValue;
+        public TimeSpan IterationBeginTime { get; private set; } = TimeSpan.MaxValue;
+        public TimeSpan IterationEndTime { get; private set; } = TimeSpan.MinValue;
 
         public double WorkingThreadsAvg => _summedWorkingThreads / (double) _threadAggregationCount;
         public double CreatedThreadsAvg => _summedCreatedThreads / (double) _threadAggregationCount;
@@ -72,8 +72,8 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
             _summedWorkingThreads = 0;
             _threadAggregationCount = 0;
 
-            IterationBeginTime  = DateTime.MaxValue;
-            IterationEndTime  = DateTime.MinValue;
+            IterationBeginTime  = TimeSpan.MaxValue;
+            IterationEndTime  = TimeSpan.MinValue;
         }
     }
 }

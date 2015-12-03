@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Timer;
+#pragma warning disable 1591
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
 {
@@ -12,6 +14,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         #region Fields
 
         private readonly Type _testScenarioType;
+        private readonly ITimer _executionTimer;
 
         private readonly ConcurrentDictionary<int, TestExecutorThread> _allThreads = new ConcurrentDictionary<int, TestExecutorThread>();
         private readonly ConcurrentDictionary<int, TestExecutorThread> _initializedThreads = new ConcurrentDictionary<int, TestExecutorThread>();
@@ -26,12 +29,15 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Ctor
 
-        public ThreadCoordinator(Type testScenarioType)
+        public ThreadCoordinator(Type testScenarioType, ITimer executionTimer)
         {
             if (testScenarioType == null)
                 throw new ArgumentNullException(nameof(testScenarioType));
+            if (executionTimer == null)
+                throw new ArgumentNullException(nameof(executionTimer));
 
             _testScenarioType = testScenarioType;
+            _executionTimer = executionTimer;
         }
 
         #endregion
@@ -112,7 +118,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             for (int i = 0; i < threadCount; i++)
             {
                 var testScenarioInstance = (ILoadTestScenario)Activator.CreateInstance(_testScenarioType);
-                yield return new TestExecutorThread(testScenarioInstance, _nextThreadId++);
+                yield return new TestExecutorThread(testScenarioInstance, _executionTimer, _nextThreadId++);
             }
         }
 

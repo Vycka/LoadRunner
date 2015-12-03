@@ -12,8 +12,8 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         public int ThreadId { get; }
         public object UserData { get; set; }
 
-        public readonly DateTime IterationStarted;
-        public readonly DateTime IterationFinished;
+        public readonly TimeSpan IterationStarted;
+        public readonly TimeSpan IterationFinished;
 
         public int CreatedThreads { get; private set; }
         public int WorkingThreads { get; private set; }

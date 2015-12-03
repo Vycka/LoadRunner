@@ -3,6 +3,7 @@ using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Threads;
+using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Parameters;
 
 namespace Viki.LoadRunner.Engine
@@ -20,8 +21,7 @@ namespace Viki.LoadRunner.Engine
 
         #region Run() globals
 
-        private DateTime _testBeginTime = default(DateTime);
-        private TimeSpan _testElapsedTime;
+        private readonly ExecutionTimer _timer = new ExecutionTimer();
         private ThreadCoordinator _threadCoordinator;
 
         #endregion
@@ -33,11 +33,11 @@ namespace Viki.LoadRunner.Engine
         /// <summary>
         /// Current duration of currently executing load test
         /// </summary>
-        public TimeSpan TestDuration => _testElapsedTime;
+        public TimeSpan TestDuration => _timer.CurrentValue;
         /// <summary>
         /// Start UTC time for currently executing load test
         /// </summary>
-        public DateTime TestBeginTimeUtc => _testBeginTime;
+        public DateTime TestBeginTimeUtc => _timer.BeginTime;
 
         #endregion
 
@@ -87,27 +87,26 @@ namespace Viki.LoadRunner.Engine
         {
             try
             {
-                _threadCoordinator = new ThreadCoordinator(_iTestScenarioObjectType);
+                _threadCoordinator = new ThreadCoordinator(_iTestScenarioObjectType, _timer);
                 _threadCoordinator.ScenarioIterationFinished += _threadCoordinator_ScenarioIterationFinished;
                 _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.InitialThreadCount, true);
                 
                 int testIterationCount = 0;
                 TimeSpan executionEnqueueThreshold = TimeSpan.Zero;
 
-                _testElapsedTime = TimeSpan.Zero;
-                _testBeginTime = DateTime.UtcNow;
-                _resultsAggregator.Begin(_testBeginTime);
+                _timer.Start();
+                _resultsAggregator.Begin(_timer.BeginTime);
                 
-                while (_testElapsedTime <= _parameters.Limits.MaxDuration && testIterationCount < _parameters.Limits.MaxIterationsCount)
+                while (_timer.CurrentValue <= _parameters.Limits.MaxDuration && testIterationCount < _parameters.Limits.MaxIterationsCount)
                 {
                     WorkerThreadStats threadStats = _threadCoordinator.BuildWorkerThreadStats();
-                    int allowedWorkingthreadCount = _parameters.ThreadingStrategy.GetAllowedMaxWorkingThreadCount(_testElapsedTime, threadStats);
+                    int allowedWorkingthreadCount = _parameters.ThreadingStrategy.GetAllowedMaxWorkingThreadCount(_timer.CurrentValue, threadStats);
 
                     _threadCoordinator.AssertThreadErrors();
                     TryAdjustCreatedThreadCount(threadStats);
 
                     
-                    if (allowedWorkingthreadCount > threadStats.WorkingThreadCount && _testElapsedTime >= executionEnqueueThreshold)
+                    if (allowedWorkingthreadCount > threadStats.WorkingThreadCount && _timer.CurrentValue >= executionEnqueueThreshold)
                     {
                         if (_threadCoordinator.TryEnqueueSingleIteration())
                         {
@@ -122,7 +121,7 @@ namespace Viki.LoadRunner.Engine
                         Thread.Sleep(TimeSpan.FromTicks(5000));
                     }
 
-                    _testElapsedTime = DateTime.UtcNow - _testBeginTime;
+                    _timer.UpdateCurrent();
                 }
             }
             finally
@@ -132,14 +131,13 @@ namespace Viki.LoadRunner.Engine
                 _threadCoordinator?.AssertThreadErrors();
 
                 _threadCoordinator = null;
-                _testBeginTime = default(DateTime);
-                _testElapsedTime = TimeSpan.Zero;
+                _timer.Stop();
             }
         }
 
         private void TryAdjustCreatedThreadCount(WorkerThreadStats threadStats)
         {
-            int allowedCreatedThreadCount = _parameters.ThreadingStrategy.GetAllowedCreatedThreadCount(_testElapsedTime, threadStats);
+            int allowedCreatedThreadCount = _parameters.ThreadingStrategy.GetAllowedCreatedThreadCount(_timer.CurrentValue, threadStats);
 
             if (allowedCreatedThreadCount > threadStats.CreatedThreadCount)
                 _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.ThreadCreateBatchSize);
@@ -149,11 +147,11 @@ namespace Viki.LoadRunner.Engine
 
         private TimeSpan CalculateNextExecutionTime(TimeSpan lastExecutionEnqueueThreshold)
         {
-            TimeSpan delayBetweenIterations = _parameters.SpeedStrategy.GetDelayBetweenIterations(_testElapsedTime);
+            TimeSpan delayBetweenIterations = _parameters.SpeedStrategy.GetDelayBetweenIterations(_timer.CurrentValue);
 
             TimeSpan nextExecutionTime = lastExecutionEnqueueThreshold + delayBetweenIterations;
-            if (nextExecutionTime < _testElapsedTime)
-                nextExecutionTime = _testElapsedTime;
+            if (nextExecutionTime < _timer.CurrentValue)
+                nextExecutionTime = _timer.CurrentValue;
 
             return nextExecutionTime;
         }

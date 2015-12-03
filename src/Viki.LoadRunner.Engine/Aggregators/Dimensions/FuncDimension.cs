@@ -23,9 +23,5 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
         {
             return _dimensionValueSelector(result);
         }
-
-        void IDimension.SetBegin(DateTime testBeginTime)
-        {
-        }
     }
 }

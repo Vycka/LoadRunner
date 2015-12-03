@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
     public class TestContext : ITestContext
     {
+        private readonly ITimer _timer;
+
         #region Fields
 
         private readonly List<Checkpoint> _checkpoints = new List<Checkpoint>();
 
-        public TestContext(int threadId)
+        public TestContext(int threadId, ITimer timer)
         {
+            if (timer == null)
+                throw new ArgumentNullException(nameof(timer));
+
+            _timer = timer;
             ThreadId = threadId;
             
             Reset(-1,-1);
@@ -20,19 +27,19 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         #endregion
 
         public IReadOnlyList<Checkpoint> LoggedCheckpoints => _checkpoints;
-        public DateTime IterationStarted { get; private set; }
-        public DateTime IterationFinished { get; private set; }
+        public TimeSpan IterationStarted { get; private set; }
+        public TimeSpan IterationFinished { get; private set; }
 
         #region Internal methods
 
         internal void Start()
         {
-            IterationStarted = DateTime.UtcNow;
+            IterationStarted = _timer.CurrentValue;
         }
 
         internal void Stop()
         {
-            IterationFinished = DateTime.UtcNow;
+            IterationFinished = _timer.CurrentValue;
         }
 
         internal void Reset(int threadIterationId, int globalIterationId)
@@ -42,8 +49,8 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
             _checkpoints.Clear();
 
-            IterationStarted = DateTime.MaxValue;
-            IterationFinished = DateTime.MinValue;
+            IterationStarted = TimeSpan.MaxValue;
+            IterationFinished = TimeSpan.MinValue;
         }
 
         internal void SetError(Exception error)
@@ -76,10 +83,10 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         {
             get
             {
-                if (IterationFinished != DateTime.MinValue)
+                if (IterationFinished != TimeSpan.MinValue)
                     return IterationFinished - IterationStarted;
-                if (IterationStarted != DateTime.MaxValue)
-                    return DateTime.UtcNow - IterationStarted;
+                if (IterationStarted != TimeSpan.MaxValue)
+                    return _timer.CurrentValue - IterationStarted;
 
                 return TimeSpan.Zero;
             }

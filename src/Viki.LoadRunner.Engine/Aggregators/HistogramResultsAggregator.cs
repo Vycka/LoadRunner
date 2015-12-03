@@ -100,18 +100,17 @@ namespace Viki.LoadRunner.Engine.Aggregators
         public IEnumerable<HistogramResultRow> GetResults()
         {
             if (_orderLearner.LearnedOrder.Count != 0)
-            { 
-                DateTime lastAggregationSlotThreshold = DateTime.MinValue;
+            {
+                TimeSpan lastAggregationBeginMark = TimeSpan.MinValue;
 
                 if (AggregationTimePeriod != null)
                 {
-                    TimeSpan lastIterationBeginMark = _histogramItems.Max(h => h.Value.IterationBeginTime) - _testBeginTime;
+                    TimeSpan lastIterationBeginMark = _histogramItems.Max(h => h.Value.IterationBeginTime);
 
-                    TimeSpan lastAggregationBeginMark = TimeSpan.FromTicks(
+                    lastAggregationBeginMark = TimeSpan.FromTicks(
                         (lastIterationBeginMark.Ticks / AggregationTimePeriod.Value.Ticks)
                         * AggregationTimePeriod.Value.Ticks
                     );
-                    lastAggregationSlotThreshold = _testBeginTime + lastAggregationBeginMark;
                 }
 
                 ResultsMapper mapper = new ResultsMapper(_orderLearner);
@@ -120,7 +119,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
                     HistogramResultRow result = new HistogramResultRow(
                         histogramItem.Key,
                         histogramItem.Value,
-                        mapper.Map(histogramItem.Value, true, histogramItem.Value.IterationBeginTime >= lastAggregationSlotThreshold ? null : AggregationTimePeriod).ToList()
+                        mapper.Map(histogramItem.Value, true, histogramItem.Value.IterationBeginTime >= lastAggregationBeginMark ? null : AggregationTimePeriod).ToList()
                         );
 
                     yield return result;

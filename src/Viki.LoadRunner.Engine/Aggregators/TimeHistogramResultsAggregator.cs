@@ -24,7 +24,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// Func to retrieve DateTime, on which aggregation is based on
         /// (Default TestContextResult.IterationStarted)
         /// </summary>
-        public Func<TestContextResult, DateTime> GetTimeValue = result => result.IterationStarted;
+        public Func<TestContextResult, TimeSpan> GetTimeValue = result => result.IterationStarted;
 
         #endregion
 
@@ -75,10 +75,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         private long GroupByCalculatorFunction(TestContextResult result)
         {
-            long iterationEndTicks = (GetTimeValue(result) - _testBeginTime).Ticks;
 
             var resultTimeSlot =
-                ((int) (iterationEndTicks/_histogramResultsAggregator.AggregationTimePeriod.Value.Ticks))
+                ((int) (result.IterationStarted.Ticks / _histogramResultsAggregator.AggregationTimePeriod.Value.Ticks))
                 * _histogramResultsAggregator.AggregationTimePeriod.Value.Ticks;
 
             return resultTimeSlot;

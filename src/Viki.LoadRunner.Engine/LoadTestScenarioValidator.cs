@@ -1,4 +1,5 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine
 {
@@ -16,7 +17,7 @@ namespace Viki.LoadRunner.Engine
         /// <returns>Raw result from single iteration</returns>
         public static TestContextResult Validate(ILoadTestScenario loadTestScenario, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
         {
-            TestContext testContext =  new TestContext(threadId);
+            TestContext testContext =  new TestContext(threadId, new ExecutionTimer());
             testContext.Reset(-1, -1);
             loadTestScenario.ScenarioSetup(testContext);
 
