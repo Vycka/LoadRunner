@@ -44,7 +44,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         }
 
         string[] IMetric.ColumnNames => _grid.Keys.ToArray();
-        object[] IMetric.Values => _grid.Values.Select(v => (object)v).ToArray();
+        object[] IMetric.Values => _grid.Values.Select(v => (object)v.ToString()).ToArray();
     }
 
     public class AverageTimeCalculator
