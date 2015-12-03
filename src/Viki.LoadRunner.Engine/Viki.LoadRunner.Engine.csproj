@@ -42,9 +42,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aggregators\Dimensions\DateDimension.cs" />
+    <Compile Include="Aggregators\Dimensions\FuncDimension.cs" />
+    <Compile Include="Aggregators\Dimensions\IDimension.cs" />
+    <Compile Include="Aggregators\HistogramAggregator.cs" />
     <Compile Include="Aggregators\HistogramResultsAggregator.cs" />
     <Compile Include="Aggregators\AsyncResultsAggregator.cs" />
-    <Compile Include="Aggregators\PercentilesAggregator.cs" />
+    <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
+    <Compile Include="Aggregators\Metrics\CountMetric.cs" />
+    <Compile Include="Aggregators\Metrics\ErrorCountMetric.cs" />
+    <Compile Include="Aggregators\Metrics\IMetric.cs" />
+    <Compile Include="Aggregators\Metrics\MaxDurationMetric.cs" />
+    <Compile Include="Aggregators\Metrics\MinDurationMetric.cs" />
+    <Compile Include="Aggregators\Results\HistogramResults.cs" />
     <Compile Include="Aggregators\TotalsResultsAggregator.cs" />
     <Compile Include="Aggregators\IResultsAggregator.cs" />
     <Compile Include="Aggregators\Results\ResultsContainer.cs" />
@@ -53,8 +63,12 @@
     <Compile Include="Aggregators\Results\ResultItemRow.cs" />
     <Compile Include="Aggregators\Results\ResultsMapper.cs" />
     <Compile Include="Aggregators\TimeHistogramResultsAggregator.cs" />
+    <Compile Include="Aggregators\Utils\DimensionsKeyBuilder.cs" />
+    <Compile Include="Aggregators\Utils\DimensionValues.cs" />
+    <Compile Include="Aggregators\Utils\FlexiGrid.cs" />
+    <Compile Include="Aggregators\Utils\MetricMultiplexer.cs" />
     <Compile Include="Aggregators\Utils\UnixDateTimeExtensions.cs" />
-    <Compile Include="Aggregators\Utils\CheckpointOrderLearner.cs" />
+    <Compile Include="Aggregators\Utils\OrderLearner.cs" />
     <Compile Include="Aggregators\Aggregates\CheckpointAggregate.cs" />
     <Compile Include="Aggregators\Aggregates\TestContextResultAggregate.cs" />
     <Compile Include="Executor\Context\IIterationMetadata.cs" />
@@ -79,6 +93,7 @@
     <Compile Include="Strategies\Threading\IncrementalThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalWorkingThreadCount.cs" />
     <Compile Include="Strategies\Threading\SemiAutoThreadCount.cs" />
+    <Compile Include="Utils\EnumerableExtensions.cs" />
     <Compile Include="Utils\HistogramCsvExport.cs" />
   </ItemGroup>
   <ItemGroup />

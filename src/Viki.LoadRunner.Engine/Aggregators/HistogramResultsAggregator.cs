@@ -19,7 +19,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         private DateTime _testBeginTime;
 
         private readonly Func<TestContextResult, object> _groupByKeyCalculatorFunction;
-        private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
+        private readonly OrderLearner _orderLearner = new OrderLearner();
         private readonly Dictionary<object, TestContextResultAggregate> _histogramItems =
             new Dictionary<object, TestContextResultAggregate>();
 
@@ -60,7 +60,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         void IResultsAggregator.TestContextResultReceived(TestContextResult result)
         {
-            _orderLearner.Learn(result);
+            _orderLearner.Learn(result.Checkpoints.Select(c => c.CheckpointName).ToArray());
 
             object groupByKey = _groupByKeyCalculatorFunction(result);
             TestContextResultAggregate histogramRowAggregate = GetHistogramRow(groupByKey);

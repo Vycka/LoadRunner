@@ -15,7 +15,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     {
         #region Fields
 
-        private readonly CheckpointOrderLearner _orderLearner = new CheckpointOrderLearner();
+        private readonly OrderLearner _orderLearner = new OrderLearner();
         private readonly TestContextResultAggregate _statsAggregator = new TestContextResultAggregate();
 
         #endregion
@@ -24,7 +24,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         void IResultsAggregator.TestContextResultReceived(TestContextResult result)
         {
-            _orderLearner.Learn(result);
+            _orderLearner.Learn(result.Checkpoints.Select(c => c.CheckpointName).ToArray());
             _statsAggregator.AggregateResult(result);
         }
 

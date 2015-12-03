@@ -47,7 +47,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         void IResultsAggregator.End()
         {
             _stopping = true;
-            _processorThread.Join();
+            _processorThread?.Join();
 
             Parallel.ForEach(_resultsAggregators, aggregator => aggregator.End());
         }

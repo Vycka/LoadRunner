@@ -9,9 +9,9 @@ namespace Viki.LoadRunner.Engine.Aggregators.Results
 {
     public class ResultsMapper
     {
-        private readonly CheckpointOrderLearner _orderLearner;
+        private readonly OrderLearner _orderLearner;
 
-        public ResultsMapper(CheckpointOrderLearner orderLearner)
+        public ResultsMapper(OrderLearner orderLearner)
         {
             if (orderLearner == null) throw new ArgumentNullException(nameof(orderLearner));
             _orderLearner = orderLearner;

@@ -18,7 +18,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         public readonly string CheckpointName;
         public readonly TimeSpan TimePoint;
-        internal Exception Error { get; set; }
+        public Exception Error { get; internal set; }
 
         #endregion
 
