@@ -10,14 +10,20 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
     {
         private readonly Func<TestContextResult, string> _dimensionValueSelector;
 
+        /// <param name="dimensionName">Name/Key of custom dimension</param>
         /// <param name="dimensionValueSelector">Dimension value selector</param>
-        public FuncDimension(Func<TestContextResult,string> dimensionValueSelector)
+        public FuncDimension(string dimensionName, Func<TestContextResult,string> dimensionValueSelector)
         {
+            if (dimensionName == null)
+                throw new ArgumentNullException(nameof(dimensionName));
             if (dimensionValueSelector == null)
                 throw new ArgumentNullException(nameof(dimensionValueSelector));
 
             _dimensionValueSelector = dimensionValueSelector;
+            DimensionName = dimensionName;
         }
+
+        public string DimensionName { get; }
 
         string IDimension.GetKey(TestContextResult result)
         {

@@ -6,16 +6,18 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
     /// <summary>
     /// Split results in provided time intervals
     /// </summary>
-    public class DateDimension : IDimension
+    public class TimeDimension : IDimension
     {
         public readonly TimeSpan Interval;
 
 
         /// <param name="interval">interval timespan</param>
-        public DateDimension(TimeSpan interval)
+        public TimeDimension(TimeSpan interval)
         {
             Interval = interval;
         }
+
+        public string DimensionName { get; } = "Time (s)";
 
         string IDimension.GetKey(TestContextResult result)
         {

@@ -12,23 +12,23 @@ namespace Viki.LoadRunner.Engine.Executor.Timer
         public void Start()
         {
             _stopwatch.Reset();
-            UpdateCurrent();
+            //UpdateCurrent();
 
             _beginTime = DateTime.UtcNow;
             _stopwatch.Start();
         }
 
-        public void UpdateCurrent()
-        {
-            CurrentValue = _stopwatch.Elapsed;
-        }
+        //public void UpdateCurrent()
+        //{
+        //    CurrentValue = _stopwatch.Elapsed;
+        //}
 
         public void Stop()
         {
             _stopwatch.Stop();
         }
 
-        public TimeSpan CurrentValue { get; private set; }
+        public TimeSpan CurrentValue => _stopwatch.Elapsed;
         public DateTime BeginTime => _beginTime;
     }
 }

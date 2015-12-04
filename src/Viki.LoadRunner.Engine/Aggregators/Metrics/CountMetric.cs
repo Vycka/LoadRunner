@@ -29,7 +29,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             {
                 if (_ignoredCheckpoints.All(name => name != checkpoint.CheckpointName))
                 {
-                    string key = checkpoint.CheckpointName + " Count";
+                    string key = "Count: " + checkpoint.CheckpointName;
                     _grid[key]++;
                 }
             }

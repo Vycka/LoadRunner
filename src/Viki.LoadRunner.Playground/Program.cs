@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Results;
+using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Strategies.Threading;
@@ -15,16 +17,44 @@ namespace Viki.LoadRunner.Playground
 {
     class Program
     {
+        private static double CalculatePercentile(double[] sortedData, double percentile)
+        {
+            double realIndex = percentile * (sortedData.Length - 1);
+            int index = (int)realIndex;
+            double frac = realIndex - index;
+            if (index + 1 < sortedData.Length)
+                return sortedData[index] * (1 - frac) + sortedData[index + 1] * frac;
+            else
+                return sortedData[index];
+        }
+
         static void Main()
         {
-            //ReadmeDemo.Run();
+            //Random r = new Random(123465);
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
+            //List<double> bigList = new List<double>(Enumerable.Range(0, 10000000).Select(i => r.NextDouble()));
+            //Console.WriteLine(sw.Elapsed);
 
-            string[] nameAggregates = new[] {"AAA", "BBB", "CCC"};
+            //sw.Restart();
+            //double[] bigArray = bigList.ToArray();
+            //Console.WriteLine(sw.Elapsed);
+
+            //sw.Restart();
+            //QuickSort.Sort(bigArray);
+            //Console.WriteLine(sw.Elapsed);
+
+            //sw.Restart();
+            //bigList.Sort();
+            //Console.WriteLine(sw.Elapsed);
 
             TestContextResult validatorResult = LoadTestScenarioValidator.Validate(new LoadTestScenario());
             Console.WriteLine(JsonConvert.SerializeObject(validatorResult, Formatting.Indented));
 
-            //return;
+            return;
+
+            string[] nameAggregates = new[] { "AAA", "BBB", "CCC" };
+
             TotalsResultsAggregator defaultResultsAggregator = new TotalsResultsAggregator();
             TimeHistogramResultsAggregator histogramResultsAggregator = new TimeHistogramResultsAggregator(
                 TimeSpan.FromSeconds(3),

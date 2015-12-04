@@ -32,7 +32,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             {
                 if (_ignoredCheckpoints.All(name => name != checkpoint.CheckpointName))
                 {
-                    string key = checkpoint.CheckpointName + " Max";
+                    string key = "Max: " + checkpoint.CheckpointName;
                     TimeSpan momentDiff = TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
 
                     if (_grid[key] < momentDiff.TotalMilliseconds)

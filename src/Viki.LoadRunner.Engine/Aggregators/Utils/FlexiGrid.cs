@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+#pragma warning disable 1591
 
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
@@ -27,6 +27,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
         #endregion
 
         #region public functionality 
+
+        public void Touch(TKey key)
+        {
+            if (!_grid.ContainsKey(key))
+                _grid.Add(key, _builderFunc());
+        }
 
         public TValue this[TKey key]
         {

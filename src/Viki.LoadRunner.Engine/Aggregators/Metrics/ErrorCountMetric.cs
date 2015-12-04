@@ -12,6 +12,9 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         public ErrorCountMetric(bool includeTotals = true)
         {
             _includeTotals = includeTotals;
+
+            if (_includeTotals)
+                _grid.Touch("Errors: Totals");
         }
 
         public IMetric CreateNew()

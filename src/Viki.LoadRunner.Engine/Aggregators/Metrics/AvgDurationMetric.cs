@@ -33,7 +33,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             {
                 if (_ignoredCheckpoints.All(name => name != checkpoint.CheckpointName))
                 {
-                    string key = checkpoint.CheckpointName + " Avg";
+                    string key = "Avg: " + checkpoint.CheckpointName;
                     TimeSpan momentDiff = TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
 
                     _grid[key].AddSample(momentDiff);
@@ -44,7 +44,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         }
 
         string[] IMetric.ColumnNames => _grid.Keys.ToArray();
-        object[] IMetric.Values => _grid.Values.Select(v => (object)v.ToString()).ToArray();
+        object[] IMetric.Values => _grid.Values.Select(v => (object)Math.Round(v.GetAverage().TotalMilliseconds, 0)).ToArray();
     }
 
     public class AverageTimeCalculator
@@ -61,11 +61,6 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         public TimeSpan GetAverage()
         {
             return TimeSpan.FromTicks(_timeSum.Ticks /_sampleCount);
-        }
-
-        public override string ToString()
-        {
-            return ((long)GetAverage().TotalMilliseconds).ToString();
         }
     }
 }

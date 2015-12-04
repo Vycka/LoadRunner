@@ -21,12 +21,13 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         private FlexiGrid<DimensionValues, IMetric> _grid;
 
-        private readonly List<Tuple<string, IDimension>> _dimensions = new List<Tuple<string, IDimension>>();
+        private DimensionsKeyBuilder _dimensionsKeyBuilder;
+        private readonly List<IDimension> _dimensions = new List<IDimension>();
+
         private readonly List<IMetric> _metricTemplates = new List<IMetric>();
         private MetricMultiplexer _metricMultiplexer;
 
-        private DimensionsKeyBuilder _dimensionsKeyBuilder;
-
+        private readonly Dictionary<string, string> _columnNameAliases = new Dictionary<string, string>(); 
         #endregion
 
         #region Construction
@@ -34,12 +35,11 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// <summary>
         /// Register dimension (aka X value)
         /// </summary>
-        /// <param name="columnName">Display name for results table</param>
         /// <param name="dimension">dimension object</param>
         /// <returns>Current HistogramAggregator instance</returns>
-        public HistogramAggregator Add(IDimension dimension, string columnName)
+        public HistogramAggregator Add(IDimension dimension)
         {
-            _dimensions.Add(new Tuple<string, IDimension>(columnName, dimension));
+            _dimensions.Add(dimension);
 
             return this;
         }
@@ -53,7 +53,19 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _metricTemplates.Add(metricTemplate);
 
             return this;
-        } 
+        }
+
+        /// <summary>
+        /// Rename result columns to desired names
+        /// </summary>
+        /// <param name="sourceColumnName">source column name</param>
+        /// <param name="alias">Name to replace it with</param>
+        public HistogramAggregator Alias(string sourceColumnName, string alias)
+        {
+            _columnNameAliases.Add(sourceColumnName, alias);
+
+            return this;
+        }
 
         #endregion
 
@@ -70,7 +82,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _metricMultiplexer = new MetricMultiplexer(_metricTemplates);
             _grid = new FlexiGrid<DimensionValues, IMetric>((() => _metricMultiplexer.CreateNew()));
 
-            _dimensionsKeyBuilder = new DimensionsKeyBuilder(_dimensions.Select(d => d.Item2));
+            _dimensionsKeyBuilder = new DimensionsKeyBuilder(_dimensions);
         }
 
         void IResultsAggregator.End()
@@ -90,7 +102,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _grid.ForEach(i => orderLearner.Learn(i.Value.ColumnNames));
 
             string[] columnNames = _dimensions
-                .Select(d => d.Item1)
+                .Select(d => d.DimensionName)
                 .Concat(orderLearner.LearnedOrder)
                 .ToArray();
 
@@ -119,6 +131,8 @@ namespace Viki.LoadRunner.Engine.Aggregators
                 rowIndex++;
             }
 
+            ReplaceNames(columnNames, _columnNameAliases);
+
             return new HistogramResults(columnNames, resultValues);
         }
 
@@ -141,6 +155,18 @@ namespace Viki.LoadRunner.Engine.Aggregators
                 }
 
                 yield return resultRow;
+            }
+        }
+
+        private static void ReplaceNames(string[] data, Dictionary<string, string> replaceTable)
+        {
+            for (int i = 0; i < data.Length; i++)
+            {
+                string targetName;
+                if (replaceTable.TryGetValue(data[i], out targetName))
+                {
+                    data[i] = targetName;
+                }
             }
         }
 

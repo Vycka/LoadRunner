@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aggregators\Dimensions\DateDimension.cs" />
+    <Compile Include="Aggregators\Dimensions\TimeDimension.cs" />
     <Compile Include="Aggregators\Dimensions\FuncDimension.cs" />
     <Compile Include="Aggregators\Dimensions\IDimension.cs" />
     <Compile Include="Aggregators\HistogramAggregator.cs" />
@@ -54,6 +54,7 @@
     <Compile Include="Aggregators\Metrics\IMetric.cs" />
     <Compile Include="Aggregators\Metrics\MaxDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\MinDurationMetric.cs" />
+    <Compile Include="Aggregators\Metrics\PercentileMetric.cs" />
     <Compile Include="Aggregators\Results\HistogramResults.cs" />
     <Compile Include="Aggregators\TotalsResultsAggregator.cs" />
     <Compile Include="Aggregators\IResultsAggregator.cs" />

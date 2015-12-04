@@ -121,7 +121,7 @@ namespace Viki.LoadRunner.Engine
                         Thread.Sleep(TimeSpan.FromTicks(5000));
                     }
 
-                    _timer.UpdateCurrent();
+                    //_timer.UpdateCurrent();
                 }
             }
             finally

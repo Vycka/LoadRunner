@@ -32,7 +32,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             {
                 if (_ignoredCheckpoints.All(name => name != checkpoint.CheckpointName))
                 {
-                    string key = checkpoint.CheckpointName + " Min";
+                    string key = "Min: " + checkpoint.CheckpointName;
                     TimeSpan momentDiff =
                         TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
 
