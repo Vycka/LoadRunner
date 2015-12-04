@@ -14,7 +14,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         private static readonly Checkpoint BlankCheckpoint = new Checkpoint("", TimeSpan.Zero);
 
-        private readonly FlexiGrid<string, double> _percentileCache = new FlexiGrid<string, double>((() => default(double))); 
+        private readonly FlexiGrid<string, long> _percentileCache = new FlexiGrid<string, long>((() => default(long))); 
         private bool _percentileValueCacheValid;
 
         public PercentileMetric(params double[] percentiles)
@@ -58,7 +58,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         public string[] ColumnNames => GetPercentileValues().Keys.ToArray();
         public object[] Values => GetPercentileValues().Values.Select(value => (object)value).ToArray();
 
-        private FlexiGrid<string, double> GetPercentileValues()
+        private FlexiGrid<string, long> GetPercentileValues()
         {
             if (!_percentileValueCacheValid)
             {
