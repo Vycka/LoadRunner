@@ -33,12 +33,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             _ignoredCheckpoints = ignoredCheckpoints;
         }
 
-        public IMetric CreateNew()
+        IMetric IMetric.CreateNew()
         {
             return new PercentileMetric(_percentiles, _ignoredCheckpoints);
         }
 
-        public void Add(TestContextResult result)
+        void IMetric.Add(TestContextResult result)
         {
             _percentileValueCacheValid = false;
 

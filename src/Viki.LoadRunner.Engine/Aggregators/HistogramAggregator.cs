@@ -22,12 +22,13 @@ namespace Viki.LoadRunner.Engine.Aggregators
         private FlexiGrid<DimensionValues, IMetric> _grid;
 
         private DimensionsKeyBuilder _dimensionsKeyBuilder;
-        private readonly List<IDimension> _dimensions = new List<IDimension>();
-
-        private readonly List<IMetric> _metricTemplates = new List<IMetric>();
         private MetricMultiplexer _metricMultiplexer;
 
-        private readonly Dictionary<string, string> _columnNameAliases = new Dictionary<string, string>(); 
+        private readonly List<IDimension> _dimensions = new List<IDimension>();
+        private readonly List<IMetric> _metricTemplates = new List<IMetric>();
+
+        private readonly Dictionary<string, string> _columnNameAliases = new Dictionary<string, string>();
+
         #endregion
 
         #region Construction
@@ -71,12 +72,6 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region IResultsAggregator
 
-        void IResultsAggregator.TestContextResultReceived(TestContextResult result)
-        {
-            DimensionValues key = _dimensionsKeyBuilder.GetValue(result);
-            _grid[key].Add(result);
-        }
-
         void IResultsAggregator.Begin(DateTime testBeginTime)
         {
             _metricMultiplexer = new MetricMultiplexer(_metricTemplates);
@@ -85,13 +80,19 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _dimensionsKeyBuilder = new DimensionsKeyBuilder(_dimensions);
         }
 
+        void IResultsAggregator.TestContextResultReceived(TestContextResult result)
+        {
+            DimensionValues key = _dimensionsKeyBuilder.GetValue(result);
+            _grid[key].Add(result);
+        }
+
         void IResultsAggregator.End()
         {
         }
 
         #endregion
 
-        #region Results
+        #region Results builder
 
         /// <summary>
         /// Builds results results into object having collumn names array  2d array data grid

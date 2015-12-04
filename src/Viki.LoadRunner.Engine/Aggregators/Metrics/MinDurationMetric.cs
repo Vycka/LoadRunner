@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Linq;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
-    public class MinDurationMetric : IMetric
+    public class MinDurationMetric : MultiMetricBase<long>
     {
-        private readonly FlexiGrid<string, long> _grid = new FlexiGrid<string, long>(() => long.MaxValue);
         private readonly string[] _ignoredCheckpoints;
 
         private static readonly Checkpoint BlankCheckpoint = new Checkpoint("", TimeSpan.Zero);
 
         public MinDurationMetric(params string[] ignoredCheckpoints)
+            : base(() => default(long))
         {
             if (ignoredCheckpoints == null)
                 throw new ArgumentNullException(nameof(ignoredCheckpoints));
@@ -20,12 +19,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             _ignoredCheckpoints = ignoredCheckpoints;
         }
 
-        public IMetric CreateNew()
+        protected override IMetric CreateNewMetric()
         {
             return new MinDurationMetric(_ignoredCheckpoints);
         }
 
-        public void Add(TestContextResult result)
+        protected override void AddResult(TestContextResult result)
         {
             Checkpoint previousCheckpoint = BlankCheckpoint;
             foreach (Checkpoint checkpoint in result.Checkpoints)
@@ -43,8 +42,5 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             }
             
         }
-
-        public string[] ColumnNames => _grid.Keys.ToArray();
-        public object[] Values => _grid.Values.Select(v => (object)v).ToArray();
     }
 }

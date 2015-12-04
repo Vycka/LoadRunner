@@ -9,19 +9,19 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
     {
         #region Fields
 
-        private readonly Func<TValue> _builderFunc;
+        private readonly Func<TValue> _valueBuilderFunc;
         private readonly Dictionary<TKey, TValue> _grid = new Dictionary<TKey, TValue>();
 
         #endregion
 
         #region Constructor
 
-        public FlexiGrid(Func<TValue> builderFunc)
+        public FlexiGrid(Func<TValue> valueBuilderFunc)
         {
-            if (builderFunc == null)
-                throw new ArgumentNullException(nameof(builderFunc));
+            if (valueBuilderFunc == null)
+                throw new ArgumentNullException(nameof(valueBuilderFunc));
 
-            _builderFunc = builderFunc;
+            _valueBuilderFunc = valueBuilderFunc;
         }
 
         #endregion
@@ -31,7 +31,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
         public void Touch(TKey key)
         {
             if (!_grid.ContainsKey(key))
-                _grid.Add(key, _builderFunc());
+                _grid.Add(key, _valueBuilderFunc());
         }
 
         public TValue this[TKey key]
@@ -41,7 +41,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
                 TValue value;
                 if (!_grid.TryGetValue(key, out value))
                 {
-                    value = _builderFunc();
+                    value = _valueBuilderFunc();
                     _grid.Add(key, value);
                 }
 

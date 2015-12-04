@@ -27,7 +27,6 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         void IMetric.Add(TestContextResult result)
         {
-
             Checkpoint previousCheckpoint = BlankCheckpoint;
             foreach (Checkpoint checkpoint in result.Checkpoints)
             {
@@ -40,7 +39,6 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                 }
                 previousCheckpoint = checkpoint;
             }
-
         }
 
         string[] IMetric.ColumnNames => _grid.Keys.ToArray();
