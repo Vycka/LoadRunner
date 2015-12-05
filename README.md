@@ -1,8 +1,17 @@
-### Load/Stress test library for executing tests written in c# ###
+### Load/Stress generic test library for executing load-tests written in c# ###
 * NuGet: `Install-Package Viki.LoadRunner`
 
+
 ## *Quick Intro*
-* If you are planning to use things like `WebRequest` for API tests, don't forget to lift the connection limit in .NET (`<connectionManagement><add address = "*" maxconnection = "100" /></connectionManagement>`)
+* Take a look at [LoadRunner.Demo](/demo) project and follow commented code :)
+  - [DemoTestScenario.cs](/demo/DemoTestScenario.cs) - Setup your Load-test scenario for single thread
+  - [AggregationSetup.cs](/demo/AggregationSetup.cs) - Setup what will data be meassured
+  - [ParametersSetup.cs](/demo/AggregationSetup.cs) - Setup execution parameters (threads, duration, speed, etc...)
+  - [QuickIntroLoadTest.cs](/demo/QuickIntroLoadTest.cs) - Put it all together
+  - [Program.cs](/demo/Program.cs) - Run it
+* [DemoResults.xlsx](/demo/DemoResults.xlsx) to see what kind of output to expect from this tool.
+
+Whats written below this line, is parts of old tutorial, it covers more generic parts of this library, Demo project is little bit more simple and it covers most of the stuff, which should be enough
 
 ### *ILoadTestScenario*
 Implement `ILoadTestScenario` interface by defining test scenario for single thread instance.
