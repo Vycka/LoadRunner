@@ -21,8 +21,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
 
         string IDimension.GetKey(TestContextResult result)
         {
-
-            TimeSpan resultTimeSlot = TimeSpan.FromTicks(((int)(result.IterationStarted.Ticks / Interval.Ticks)) * Interval.Ticks);
+            TimeSpan resultTimeSlot = TimeSpan.FromTicks(((int)(result.IterationFinished.Ticks / Interval.Ticks)) * Interval.Ticks);
 
             return ((long)resultTimeSlot.TotalSeconds).ToString();
         }

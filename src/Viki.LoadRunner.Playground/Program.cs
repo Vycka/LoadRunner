@@ -30,6 +30,8 @@ namespace Viki.LoadRunner.Playground
 
         static void Main()
         {
+
+            ReadmeDemo.Run();
             //Random r = new Random(123465);
             //Stopwatch sw = new Stopwatch();
             //sw.Start();
@@ -48,8 +50,8 @@ namespace Viki.LoadRunner.Playground
             //bigList.Sort();
             //Console.WriteLine(sw.Elapsed);
 
-            TestContextResult validatorResult = LoadTestScenarioValidator.Validate(new LoadTestScenario());
-            Console.WriteLine(JsonConvert.SerializeObject(validatorResult, Formatting.Indented));
+            //TestContextResult validatorResult = LoadTestScenarioValidator.Validate(new LoadTestScenario());
+            //Console.WriteLine(JsonConvert.SerializeObject(validatorResult, Formatting.Indented));
 
             return;
 

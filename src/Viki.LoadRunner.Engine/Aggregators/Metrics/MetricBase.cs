@@ -5,18 +5,18 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     abstract public class MetricBase<TValue> : IMetric
     {
-        protected readonly string _columnName;
-        protected readonly TValue _initialvalue;
-        protected TValue _value { get; }
+        protected readonly string _keyName;
+        protected readonly TValue _initialValue;
+        protected TValue _value;
 
         protected MetricBase(string keyName, TValue initialValue)
         {
             if (keyName == null)
                 throw new ArgumentNullException(nameof(keyName));
 
-            _columnName = keyName;
+            _keyName = keyName;
             _value = initialValue;
-            _initialvalue = initialValue;
+            _initialValue = initialValue;
         }
 
         protected abstract IMetric CreateNewMetric();
@@ -33,7 +33,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             AddResult(result);
         }
 
-        string[] IMetric.ColumnNames => new[] { _columnName };
+        string[] IMetric.ColumnNames => new[] { _keyName };
         object[] IMetric.Values => new[] { (object)_value };
     }
 }

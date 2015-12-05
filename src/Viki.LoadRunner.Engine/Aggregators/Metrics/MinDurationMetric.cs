@@ -11,7 +11,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         private static readonly Checkpoint BlankCheckpoint = new Checkpoint("", TimeSpan.Zero);
 
         public MinDurationMetric(params string[] ignoredCheckpoints)
-            : base(() => default(long))
+            : base(() => long.MaxValue)
         {
             if (ignoredCheckpoints == null)
                 throw new ArgumentNullException(nameof(ignoredCheckpoints));

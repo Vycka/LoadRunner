@@ -5,22 +5,22 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     public class FuncMetric<TValue> : MetricBase<TValue>
     {
-        private readonly Action<TValue, TestContextResult> _metricProcedure;
+        private readonly Func<TValue, TestContextResult, TValue> _metricFunc;
 
-        public FuncMetric(string keyName, TValue initialValue, Action<TValue, TestContextResult> metricProcedure) 
+        public FuncMetric(string keyName, TValue initialValue, Func<TValue, TestContextResult, TValue> metricFunc) 
             : base(keyName, initialValue)
         {
-            _metricProcedure = metricProcedure;
+            _metricFunc = metricFunc;
         }
 
         protected override IMetric CreateNewMetric()
         {
-            return new FuncMetric<TValue>(_columnName, _initialvalue, _metricProcedure);
+            return new FuncMetric<TValue>(_keyName, _initialValue, _metricFunc);
         }
 
         protected override void AddResult(TestContextResult result)
         {
-            _metricProcedure(_value, result);
+            _value = _metricFunc(_value, result);
         }
     }
 }

@@ -95,7 +95,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         #region Results builder
 
         /// <summary>
-        /// Builds results results into object having collumn names array  2d array data grid
+        /// Builds results into object having collumn names array  2d array data grid
         /// </summary>
         public HistogramResults BuildResults()
         {
@@ -141,7 +141,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// Builds dynamic results objects list, where each object has property name equal to column name.
         /// Result serialized to JSON it would produce output, which compatible with online JSON -> CSV converters.
         /// </summary>
-        public IEnumerable<dynamic> BuildResultsDynamic()
+        public IEnumerable<object> BuildResultsObjects()
         {
             var results = BuildResults();
 
