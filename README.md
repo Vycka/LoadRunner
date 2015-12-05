@@ -10,6 +10,7 @@
   - [QuickIntroLoadTest.cs](/demo/QuickIntroLoadTest.cs) - Put it all together
   - [Program.cs](/demo/Program.cs) - Run it
 * [DemoResults.xlsx](/demo/DemoResults.xlsx) to see what kind of output to expect from this tool.
+![](https://raw.githubusercontent.com/Vycka/LoadRunner/master/diagrams/Architecture.png)
 
 Whats written below this line, is parts of old tutorial, it covers more generic parts of this library, Demo project is little bit more simple and it covers most of the stuff, which should be enough
 
