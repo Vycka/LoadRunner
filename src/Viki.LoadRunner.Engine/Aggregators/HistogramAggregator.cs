@@ -99,6 +99,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// </summary>
         public HistogramResults BuildResults()
         {
+            if (_grid == null)
+                throw new InvalidOperationException("LoadTest wasn't performed with this HistogramAggregator");
+
             OrderLearner orderLearner = new OrderLearner();
             _grid.ForEach(i => orderLearner.Learn(i.Value.ColumnNames));
 
