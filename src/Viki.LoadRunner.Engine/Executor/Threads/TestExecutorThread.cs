@@ -27,14 +27,14 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Ctor
 
-        public TestExecutorThread(ILoadTestScenario loadTestScenario, ITimer timer, int threadId)
+        public TestExecutorThread(ILoadTestScenario loadTestScenario, ITimer timer, int threadId, object initialUserData)
         {
             if (loadTestScenario == null)
                 throw new ArgumentNullException(nameof(loadTestScenario));
             if (timer == null)
                 throw new ArgumentNullException(nameof(timer));
 
-            _testContext = new TestContext(threadId, timer);
+            _testContext = new TestContext(threadId, timer, initialUserData);
             _loadTestScenario = loadTestScenario;
 
             _handlerThread = new Thread(ExecuteScenarioThreadFunction);

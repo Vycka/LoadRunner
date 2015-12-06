@@ -13,14 +13,15 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         private readonly List<Checkpoint> _checkpoints = new List<Checkpoint>();
 
-        public TestContext(int threadId, ITimer timer)
+        public TestContext(int threadId, ITimer timer, object initialUserData = null)
         {
             if (timer == null)
                 throw new ArgumentNullException(nameof(timer));
-
-            _timer = timer;
-            ThreadId = threadId;
             
+            ThreadId = threadId;
+            _timer = timer;
+            UserData = initialUserData;
+
             Reset(-1,-1);
         }
 
@@ -67,7 +68,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             if (checkpointName == null)
                 checkpointName = $"Checkpoint #{_checkpoints.Count + 1}";
 
-            Checkpoint newCheckpoint = new Checkpoint(checkpointName, ExecutionTime);
+            Checkpoint newCheckpoint = new Checkpoint(checkpointName, IterationElapsedTime);
             _checkpoints.Add(newCheckpoint);  
         }
 
@@ -79,7 +80,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
                     .Select(c => new KeyValuePair<string, Exception>(c.CheckpointName, c.Error));
         }
 
-        public TimeSpan ExecutionTime
+        public TimeSpan IterationElapsedTime
         {
             get
             {

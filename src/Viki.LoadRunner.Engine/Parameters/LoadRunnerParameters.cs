@@ -22,5 +22,10 @@ namespace Viki.LoadRunner.Engine.Parameters
         /// (Default: 10Threads)
         /// </summary>
         public IThreadingStrategy ThreadingStrategy = new SemiAutoThreadCount(10, 10);
+
+        /// <summary>
+        /// This object-value will be set to testContext.UserData for each created test thread.
+        /// </summary>
+        public object InitialUserData = null;
     }
 }

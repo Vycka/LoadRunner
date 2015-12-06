@@ -19,6 +19,6 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         /// <summary>
         /// Current timer value of the currently going on iteration.
         /// </summary>
-        TimeSpan ExecutionTime { get; }
+        TimeSpan IterationElapsedTime { get; }
     }
 }

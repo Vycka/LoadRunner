@@ -27,9 +27,16 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #endregion
 
+        #region Properties
+
+        public object InitialUserData = null;
+
+        #endregion
+
+
         #region Ctor
 
-        public ThreadCoordinator(Type testScenarioType, ITimer executionTimer)
+        public ThreadCoordinator(Type testScenarioType, ITimer executionTimer, int initialThreadCount)
         {
             if (testScenarioType == null)
                 throw new ArgumentNullException(nameof(testScenarioType));
@@ -38,6 +45,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
             _testScenarioType = testScenarioType;
             _executionTimer = executionTimer;
+
+            InitializeThreads(initialThreadCount);
         }
 
         #endregion
@@ -87,9 +96,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             return result;
         }
 
-        public void InitializeThreads(int threadCount, bool blockingScenarioSetup = false)
+        public void InitializeThreadsAsync(int threadCount)
         {
-            List<TestExecutorThread> newThreads = CreateThreads(threadCount).ToList();
+            IEnumerable<TestExecutorThread> newThreads = CreateThreads(threadCount);
 
             foreach (TestExecutorThread newThread in newThreads)
             {
@@ -101,13 +110,15 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
                 _allThreads.TryAdd(newThread.ThreadId, newThread);
             }
+        }
 
-            if (blockingScenarioSetup)
+        private void InitializeThreads(int threadCount)
+        {
+            InitializeThreadsAsync(threadCount);
+
+            while (_allThreads.Any(t => t.Value.IsAlive && t.Value.ScenarioInitialized == false))
             {
-                while (newThreads.Any(t => t.IsAlive && t.ScenarioInitialized == false))
-                {
-                    Thread.Sleep(50);
-                }
+                Thread.Sleep(150);
             }
         }
 
@@ -118,7 +129,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             for (int i = 0; i < threadCount; i++)
             {
                 var testScenarioInstance = (ILoadTestScenario)Activator.CreateInstance(_testScenarioType);
-                yield return new TestExecutorThread(testScenarioInstance, _executionTimer, _nextThreadId++);
+                yield return new TestExecutorThread(testScenarioInstance, _executionTimer, _nextThreadId++, InitialUserData);
             }
         }
 

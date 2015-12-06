@@ -87,9 +87,15 @@ namespace Viki.LoadRunner.Engine
         {
             try
             {
-                _threadCoordinator = new ThreadCoordinator(_iTestScenarioObjectType, _timer);
+                _threadCoordinator = new ThreadCoordinator(
+                    _iTestScenarioObjectType,
+                    _timer,
+                    _parameters.ThreadingStrategy.InitialThreadCount
+                )
+                {
+                    InitialUserData = _parameters.InitialUserData
+                };
                 _threadCoordinator.ScenarioIterationFinished += _threadCoordinator_ScenarioIterationFinished;
-                _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.InitialThreadCount, true);
                 
                 int testIterationCount = 0;
                 TimeSpan executionEnqueueThreshold = TimeSpan.Zero;
@@ -140,7 +146,7 @@ namespace Viki.LoadRunner.Engine
             int allowedCreatedThreadCount = _parameters.ThreadingStrategy.GetAllowedCreatedThreadCount(_timer.CurrentValue, threadStats);
 
             if (allowedCreatedThreadCount > threadStats.CreatedThreadCount)
-                _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.ThreadCreateBatchSize);
+                _threadCoordinator.InitializeThreadsAsync(_parameters.ThreadingStrategy.ThreadCreateBatchSize);
             else if (allowedCreatedThreadCount < threadStats.CreatedThreadCount)
                 _threadCoordinator.StopWorkersAsync(threadStats.CreatedThreadCount - allowedCreatedThreadCount);
         }
