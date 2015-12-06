@@ -11,3 +11,5 @@
   - [Program.cs](/demo/Program.cs) - Run it
 * [DemoResults.xlsx](/demo/DemoResults.xlsx) to see what kind of output to expect from this tool.
 ![](https://raw.githubusercontent.com/Vycka/LoadRunner/master/diagrams/Architecture.png)
+
+[](https://ga-beacon.appspot.com/UA-71045586-1/LoadRunner/readme?pixel)
