@@ -27,7 +27,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         #endregion
 
-        public IReadOnlyList<ICheckpoint> LoggedCheckpoints => _checkpoints;
+        public IReadOnlyList<Checkpoint> LoggedCheckpoints => _checkpoints;
         public TimeSpan IterationStarted { get; private set; }
         public TimeSpan IterationFinished { get; private set; }
 

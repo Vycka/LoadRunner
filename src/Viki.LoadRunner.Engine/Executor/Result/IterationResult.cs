@@ -6,6 +6,10 @@ namespace Viki.LoadRunner.Engine.Executor.Result
 {
     public class IterationResult : IResult
     {
+        public IterationResult()
+        {
+        }
+
         public ICheckpoint[] Checkpoints { get; set; }
 
         public int GlobalIterationId { get; set; }

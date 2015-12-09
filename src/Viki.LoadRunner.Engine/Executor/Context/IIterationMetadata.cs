@@ -1,6 +1,6 @@
 ﻿namespace Viki.LoadRunner.Engine.Executor.Context
 {
-    public interface IIterationMetadata
+    public interface IIterationMetadata<TUserData>
     {
         /// <summary>
         /// Unique Iteration ID withing all worker-threads (Starts from zero)
@@ -23,6 +23,6 @@
         /// <summary>
         /// Field mainly used for passing data from test iteration to custom aggregation.
         /// </summary>
-        object UserData { get; set; }
+        TUserData UserData { get; set; }
     }
 }

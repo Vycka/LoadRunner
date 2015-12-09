@@ -3,7 +3,8 @@ using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Engine.Executor.Result
 {
-    public interface IResult : IIterationMetadata
+
+    public interface IResult : IIterationMetadata<object>
     {
         ICheckpoint[] Checkpoints { get; }
 

@@ -29,6 +29,8 @@ namespace Viki.LoadRunner.Playground
             using (var writer = new JsonTextWriter(writeStream))
             {
                 var serializer = new JsonSerializer();
+                serializer.NullValueHandling = NullValueHandling.Ignore;
+
                 writer.WriteStartArray();
                 long index = 0;
                 foreach (var item in sequence)

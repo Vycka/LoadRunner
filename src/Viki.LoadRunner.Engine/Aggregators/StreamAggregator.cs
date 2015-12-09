@@ -3,18 +3,26 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Utils;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
     public class StreamAggregator : IResultsAggregator
     {
+        #region Fields
+
         private readonly Action<IEnumerable<IResult>> _streamWriterAction;
 
         private readonly ConcurrentQueue<IResult> _queue = new ConcurrentQueue<IResult>();
 
         private Task _writerTask;
         private bool _stopTask;
+
+        #endregion
+
+        #region Constructor
 
         public StreamAggregator(Action<IEnumerable<IResult>> streamWriterAction)
         {
@@ -24,7 +32,11 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _streamWriterAction = streamWriterAction;
         }
 
-        private IEnumerable<IResult> _queueStream
+        #endregion
+
+        #region EnumerableQueue
+
+        private IEnumerable<IResult> EnumerableQueue
         {
             get
             {
@@ -40,11 +52,15 @@ namespace Viki.LoadRunner.Engine.Aggregators
             }
         }
 
+        #endregion
+
+        #region IResultsAggregator
+
         void IResultsAggregator.Begin()
         {
             _stopTask = false;
 
-            _writerTask = new Task(() => _streamWriterAction(_queueStream), TaskCreationOptions.LongRunning);
+            _writerTask = new Task(() => _streamWriterAction(EnumerableQueue), TaskCreationOptions.LongRunning);
             _writerTask.Start();
         }
 
@@ -62,5 +78,24 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
             _writerTask?.Wait();
         }
+
+        #endregion
+
+        #region Replayer
+
+        public static void Replay<TUserData>(IEnumerable<IResult> results, params IResultsAggregator[] targetAggregators)
+        {
+            targetAggregators.ForEach(aggregator => aggregator.Begin());
+
+            foreach (IResult result in results)
+            {
+                targetAggregators.ForEach(aggregator => aggregator.TestContextResultReceived(result));
+            }
+
+            targetAggregators.ForEach(aggregator => aggregator.End());
+        }
+
+        #endregion
+
     }
 }
