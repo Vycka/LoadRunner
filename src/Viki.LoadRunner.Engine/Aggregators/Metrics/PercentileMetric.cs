@@ -43,8 +43,8 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         {
             _percentileValueCacheValid = false;
 
-            Checkpoint previousCheckpoint = BlankCheckpoint;
-            foreach (Checkpoint checkpoint in result.Checkpoints)
+            ICheckpoint previousCheckpoint = BlankCheckpoint;
+            foreach (ICheckpoint checkpoint in result.Checkpoints)
             {
                 if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {

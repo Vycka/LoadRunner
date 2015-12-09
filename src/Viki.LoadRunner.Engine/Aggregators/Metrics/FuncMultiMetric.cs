@@ -1,6 +1,5 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics

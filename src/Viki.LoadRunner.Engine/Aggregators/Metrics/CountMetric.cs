@@ -26,7 +26,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         void IMetric.Add(IResult result)
         {
-            foreach (Checkpoint checkpoint in result.Checkpoints)
+            foreach (ICheckpoint checkpoint in result.Checkpoints)
             {
                 if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {

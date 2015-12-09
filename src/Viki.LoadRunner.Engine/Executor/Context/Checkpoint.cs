@@ -1,5 +1,4 @@
 using System;
-using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
@@ -15,7 +14,6 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         #endregion
 
         #region Properties
-
 
         public string Name { get; set; }
         public TimeSpan TimePoint { get; set; }

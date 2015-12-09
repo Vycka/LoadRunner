@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators;
-using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Threads;
 using Viki.LoadRunner.Engine.Executor.Timer;
@@ -121,11 +120,11 @@ namespace Viki.LoadRunner.Engine
                             testIterationCount++;
                         }
                         else
-                            Thread.Sleep(TimeSpan.FromTicks(5000));
+                            Thread.Sleep(1);
                     }
                     else
                     {
-                        Thread.Sleep(TimeSpan.FromTicks(5000));
+                        Thread.Sleep(1);
                     }
 
                     //_timer.UpdateCurrent();

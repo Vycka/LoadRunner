@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Result;
+﻿using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {

@@ -63,7 +63,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
             Count = copyStatsFrom.Count;
         }
 
-        public void AggregateCheckpoint(TimeSpan momentDuration, Checkpoint checkpoint)
+        public void AggregateCheckpoint(TimeSpan momentDuration, ICheckpoint checkpoint)
         {
             Count++;
 

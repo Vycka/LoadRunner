@@ -94,7 +94,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Executor\Result\IterationResult.cs" />
     <Compile Include="Executor\Threads\TestExecutorThread.cs" />
-    <Compile Include="Strategies\Speed\AlteratingSpeed.cs" />
     <Compile Include="Strategies\ISpeedStrategy.cs" />
     <Compile Include="Strategies\IThreadingStrategy.cs" />
     <Compile Include="Strategies\Speed\FixedSpeed.cs" />

@@ -15,10 +15,15 @@ namespace Viki.LoadRunner.Engine
         /// Exceptions are not handled on purpose to ease problem identification while developing.
         /// </summary>
         /// <param name="loadTestScenario">ILoadTestScenario object</param>
+        /// <param name="threadId">TheardId to set in TestContext</param>
+        /// <param name="threadIterationId">ThreadIterationId to set in TestContext</param>
+        /// <param name="globalIterationId">GlobalIterationId to set in TestContext</param>
         /// <returns>Raw result from single iteration</returns>
         public static IterationResult Validate(ILoadTestScenario loadTestScenario, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
         {
-            TestContext testContext =  new TestContext(threadId, new ExecutionTimer());
+            ExecutionTimer timer = new ExecutionTimer();
+
+            TestContext testContext =  new TestContext(threadId, timer);
             testContext.Reset(-1, -1);
             loadTestScenario.ScenarioSetup(testContext);
 

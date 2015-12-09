@@ -10,7 +10,7 @@ namespace Viki.LoadRunner.Engine.Executor.Result
         TimeSpan IterationStarted { get;  }
         TimeSpan IterationFinished { get; }
 
-        int CreatedThreads { get;  }
+        int CreatedThreads { get; }
         int WorkingThreads { get; }
     }
 }

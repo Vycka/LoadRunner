@@ -4,7 +4,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
     public class FixedSpeed : ISpeedStrategy
     {
-        private TimeSpan _delay;
+        private readonly TimeSpan _delay;
 
         public FixedSpeed(double maxIterationsPerSec = Double.MaxValue)
         {

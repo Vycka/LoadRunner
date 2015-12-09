@@ -25,8 +25,8 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
             MapIterationTime(result);
             AggregateThreadCounts(result);
 
-            Checkpoint previousCheckpoint = PreviousCheckpointBase;
-            foreach (Checkpoint currentCheckpoint in result.Checkpoints)
+            ICheckpoint previousCheckpoint = PreviousCheckpointBase;
+            foreach (ICheckpoint currentCheckpoint in result.Checkpoints)
             {
                 TimeSpan momentCheckpointTimeSpan = currentCheckpoint.TimePoint - previousCheckpoint.TimePoint;
                 CheckpointAggregate checkpointAggregateResultObject = GetCheckpointAggregate(currentCheckpoint.Name);

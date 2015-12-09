@@ -4,7 +4,6 @@ using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Aggregates;
 using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators
@@ -15,9 +14,6 @@ namespace Viki.LoadRunner.Engine.Aggregators
     public class HistogramResultsAggregator : IResultsAggregator
     {
         #region Fields
-
-        // TODO: HistogramResultsAggregator shouldn't know anything about timing, move it up!
-        private DateTime _testBeginTime;
 
         private readonly Func<IResult, object> _groupByKeyCalculatorFunction;
         private readonly OrderLearner _orderLearner = new OrderLearner();
@@ -70,7 +66,6 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         void IResultsAggregator.Begin(DateTime testBeginTime)
         {
-            _testBeginTime = testBeginTime;
             _histogramItems.Clear();
         }
 

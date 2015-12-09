@@ -6,7 +6,6 @@ using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Utils;
 
@@ -149,9 +148,8 @@ namespace Viki.LoadRunner.Engine.Aggregators
         {
             var results = BuildResults();
 
-            for (int i = 0; i < results.Values.Length; i++)
+            foreach (var row in results.Values)
             {
-                var row = results.Values[i];
                 IDictionary<string, object> resultRow = new ExpandoObject();
 
                 for (int j = 0; j < row.Length; j++)

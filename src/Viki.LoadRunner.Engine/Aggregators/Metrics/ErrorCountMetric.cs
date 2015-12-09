@@ -18,14 +18,14 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                 _grid.Touch("Errors: Totals");
         }
 
-        public IMetric CreateNew()
+        IMetric IMetric.CreateNew()
         {
             return new ErrorCountMetric();
         }
 
-        public void Add(IResult result)
+        void IMetric.Add(IResult result)
         {
-            foreach (Checkpoint checkpoint in result.Checkpoints)
+            foreach (ICheckpoint checkpoint in result.Checkpoints)
             {
                 string key = "Errors: " + checkpoint.Name;
 
@@ -39,7 +39,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             }
         }
 
-        public string[] ColumnNames => _grid.Keys.ToArray();
-        public object[] Values => _grid.Values.Select(v => (object)v).ToArray();
+        string[] IMetric.ColumnNames => _grid.Keys.ToArray();
+        object[] IMetric.Values => _grid.Values.Select(v => (object)v).ToArray();
     }
 }

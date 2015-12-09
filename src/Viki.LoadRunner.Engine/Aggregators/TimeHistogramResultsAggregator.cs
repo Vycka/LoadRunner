@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Aggregators.Results;
-using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators
@@ -12,8 +11,6 @@ namespace Viki.LoadRunner.Engine.Aggregators
     public class TimeHistogramResultsAggregator : IResultsAggregator
     {
         #region Fields
-
-        private DateTime _testBeginTime;
 
         private readonly HistogramResultsAggregator _histogramResultsAggregator;
 
@@ -37,8 +34,10 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// <param name="aggregationTimeInterval">Time interval to group results by</param>
         public TimeHistogramResultsAggregator(TimeSpan aggregationTimeInterval)
         {
-            _histogramResultsAggregator = new HistogramResultsAggregator(result => GroupByCalculatorFunction(result));
-            _histogramResultsAggregator.AggregationTimePeriod = aggregationTimeInterval;
+            _histogramResultsAggregator = new HistogramResultsAggregator(result => GroupByCalculatorFunction(result))
+            {
+                AggregationTimePeriod = aggregationTimeInterval
+            };
         }
 
         /// <summary>
@@ -52,8 +51,10 @@ namespace Viki.LoadRunner.Engine.Aggregators
                 result =>
                     string.Concat(GroupByCalculatorFunction(result).ToString(), " ", subGroupByKeyCalculatorFunction(result));
 
-            _histogramResultsAggregator = new HistogramResultsAggregator(groupByFunction);
-            _histogramResultsAggregator.AggregationTimePeriod = aggregationTimeInterval;
+            _histogramResultsAggregator = new HistogramResultsAggregator(groupByFunction)
+            {
+                AggregationTimePeriod = aggregationTimeInterval
+            };
         }
 
         /// <summary>
@@ -66,8 +67,10 @@ namespace Viki.LoadRunner.Engine.Aggregators
         {
             Func<IResult, object> groupByFunction = result => groupByKeyCalculatorFunction(result, GroupByCalculatorFunction(result));
 
-            _histogramResultsAggregator = new HistogramResultsAggregator(groupByFunction);
-            _histogramResultsAggregator.AggregationTimePeriod = aggregationTimeInterval;
+            _histogramResultsAggregator = new HistogramResultsAggregator(groupByFunction)
+            {
+                AggregationTimePeriod = aggregationTimeInterval
+            };
         }
 
         #endregion
@@ -78,6 +81,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         {
 
             var resultTimeSlot =
+                // ReSharper disable once PossibleInvalidOperationException
                 ((int) (result.IterationStarted.Ticks / _histogramResultsAggregator.AggregationTimePeriod.Value.Ticks))
                 * _histogramResultsAggregator.AggregationTimePeriod.Value.Ticks;
 
@@ -95,7 +99,6 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         void IResultsAggregator.Begin(DateTime testBeginTime)
         {
-            _testBeginTime = testBeginTime;
             ((IResultsAggregator)_histogramResultsAggregator).Begin(testBeginTime);
         }
 
@@ -114,7 +117,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// <returns>Aggregated results</returns>
         public IEnumerable<HistogramResultRow> GetResults()
         {
-            return ((HistogramResultsAggregator) _histogramResultsAggregator).GetResults();
+            return _histogramResultsAggregator.GetResults();
         }
 
         #endregion

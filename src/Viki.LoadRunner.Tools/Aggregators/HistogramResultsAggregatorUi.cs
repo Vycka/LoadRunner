@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Windows.Forms;
 using Viki.LoadRunner.Engine.Aggregators;
-using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Tools.Windows;
 
