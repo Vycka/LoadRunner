@@ -97,9 +97,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
             ((IResultsAggregator)_histogramResultsAggregator).TestContextResultReceived(result);
         }
 
-        void IResultsAggregator.Begin(DateTime testBeginTime)
+        void IResultsAggregator.Begin()
         {
-            ((IResultsAggregator)_histogramResultsAggregator).Begin(testBeginTime);
+            ((IResultsAggregator)_histogramResultsAggregator).Begin();
         }
 
         void IResultsAggregator.End()

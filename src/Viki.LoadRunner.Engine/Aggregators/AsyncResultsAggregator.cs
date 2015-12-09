@@ -34,14 +34,14 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region IResultsAggregator
 
-        void IResultsAggregator.Begin(DateTime testBeginTime)
+        void IResultsAggregator.Begin()
         {
             _stopping = false;
 
             _processorThread = new Thread(ProcessorThreadFunction);
             _processorThread.Start();
 
-            Parallel.ForEach(_resultsAggregators, aggregator => aggregator.Begin(testBeginTime));
+            Parallel.ForEach(_resultsAggregators, aggregator => aggregator.Begin());
         }
 
         void IResultsAggregator.End()

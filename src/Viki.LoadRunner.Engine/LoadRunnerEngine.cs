@@ -101,7 +101,7 @@ namespace Viki.LoadRunner.Engine
                 TimeSpan executionEnqueueThreshold = TimeSpan.Zero;
 
                 _timer.Start();
-                _resultsAggregator.Begin(_timer.BeginTime);
+                _resultsAggregator.Begin();
                 
                 while (_timer.CurrentValue <= _parameters.Limits.MaxDuration && testIterationCount < _parameters.Limits.MaxIterationsCount)
                 {

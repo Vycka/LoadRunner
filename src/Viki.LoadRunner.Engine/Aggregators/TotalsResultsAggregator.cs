@@ -28,7 +28,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _statsAggregator.AggregateResult(result);
         }
 
-        void IResultsAggregator.Begin(DateTime testBeginTime)
+        void IResultsAggregator.Begin()
         {
             _statsAggregator.Reset();
             _orderLearner.Reset();

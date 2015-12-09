@@ -15,7 +15,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// Signals aggregator, that new test execution is about to begin
         /// So aggregator can reset stats if needed.
         /// </summary>
-        void Begin(DateTime testBeginTime);
+        void Begin();
 
         /// <summary>
         /// Signals aggregator, that new test execution is ended and stats aggregation is finished

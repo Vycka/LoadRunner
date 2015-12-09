@@ -72,7 +72,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region IResultsAggregator
 
-        void IResultsAggregator.Begin(DateTime testBeginTime)
+        void IResultsAggregator.Begin()
         {
             _metricMultiplexer = new MetricMultiplexer(_metricTemplates);
             _grid = new FlexiGrid<DimensionValues, IMetric>((() => _metricMultiplexer.CreateNew()));

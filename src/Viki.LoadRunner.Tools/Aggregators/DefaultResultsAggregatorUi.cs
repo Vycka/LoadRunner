@@ -18,7 +18,7 @@ namespace Viki.LoadRunner.Tools.Aggregators
 
 
 
-        public void Begin(DateTime testBeginTime)
+        public void Begin()
         {
             _windowThread = new Thread((() => Application.Run(_totalsWindow)));
             _windowThread.Start();

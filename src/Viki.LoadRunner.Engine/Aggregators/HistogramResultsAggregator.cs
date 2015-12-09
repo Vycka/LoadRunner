@@ -64,7 +64,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             histogramRowAggregate.AggregateResult(result);
         }
 
-        void IResultsAggregator.Begin(DateTime testBeginTime)
+        void IResultsAggregator.Begin()
         {
             _histogramItems.Clear();
         }
