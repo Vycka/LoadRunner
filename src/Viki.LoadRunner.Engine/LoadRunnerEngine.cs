@@ -152,7 +152,7 @@ namespace Viki.LoadRunner.Engine
                 _timer.Start();
                 _resultsAggregator.Begin();
                 
-                while (_timer.CurrentValue <= _parameters.Limits.MaxDuration && testIterationCount < _parameters.Limits.MaxIterationsCount)
+                while (_timer.CurrentValue < _parameters.Limits.MaxDuration && testIterationCount < _parameters.Limits.MaxIterationsCount)
                 {
                     WorkerThreadStats threadStats = _threadCoordinator.BuildWorkerThreadStats();
                     int allowedWorkingthreadCount = _parameters.ThreadingStrategy.GetAllowedMaxWorkingThreadCount(_timer.CurrentValue, threadStats);
