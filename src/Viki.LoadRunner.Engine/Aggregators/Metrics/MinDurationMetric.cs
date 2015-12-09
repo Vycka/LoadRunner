@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -24,14 +25,14 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             return new MinDurationMetric(_ignoredCheckpoints);
         }
 
-        protected override void AddResult(TestContextResult result)
+        protected override void AddResult(IResult result)
         {
             Checkpoint previousCheckpoint = BlankCheckpoint;
             foreach (Checkpoint checkpoint in result.Checkpoints)
             {
-                if (_ignoredCheckpoints.All(name => name != checkpoint.CheckpointName))
+                if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
-                    string key = "Min: " + checkpoint.CheckpointName;
+                    string key = "Min: " + checkpoint.Name;
                     TimeSpan momentDiff =
                         TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
 

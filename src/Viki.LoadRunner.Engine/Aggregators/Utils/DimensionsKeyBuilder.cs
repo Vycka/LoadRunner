@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
@@ -15,7 +16,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
             _dimensions = dimensions.ToArray();
         }
 
-        public DimensionValues GetValue(TestContextResult result)
+        public DimensionValues GetValue(IResult result)
         {
             string[] dimensionValues = _dimensions.Select(d => d.GetKey(result)).ToArray();
 

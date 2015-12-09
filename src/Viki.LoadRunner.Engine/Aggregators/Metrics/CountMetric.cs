@@ -2,6 +2,7 @@
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -23,13 +24,13 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             return new CountMetric(_ignoredCheckpoints);
         }
 
-        void IMetric.Add(TestContextResult result)
+        void IMetric.Add(IResult result)
         {
             foreach (Checkpoint checkpoint in result.Checkpoints)
             {
-                if (_ignoredCheckpoints.All(name => name != checkpoint.CheckpointName))
+                if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
-                    string key = "Count: " + checkpoint.CheckpointName;
+                    string key = "Count: " + checkpoint.Name;
                     _grid[key]++;
                 }
             }

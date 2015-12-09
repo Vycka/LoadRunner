@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
@@ -15,7 +16,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         #region Fields
 
         private readonly IResultsAggregator[] _resultsAggregators;
-        private readonly ConcurrentQueue<TestContextResult> _processingQueue = new ConcurrentQueue<TestContextResult>();
+        private readonly ConcurrentQueue<IResult> _processingQueue = new ConcurrentQueue<IResult>();
 
         private volatile bool _stopping;
         private Thread _processorThread;
@@ -52,7 +53,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             Parallel.ForEach(_resultsAggregators, aggregator => aggregator.End());
         }
 
-        void IResultsAggregator.TestContextResultReceived(TestContextResult result)
+        void IResultsAggregator.TestContextResultReceived(IResult result)
         {
             _processingQueue.Enqueue(result);
 
@@ -76,10 +77,10 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
                 while (!_stopping || _processingQueue.IsEmpty == false)
                 {
-                    TestContextResult resultObject;
+                    IResult resultObject;
                     while (_processingQueue.TryDequeue(out resultObject))
                     {
-                        TestContextResult localResultObject = resultObject;
+                        IResult localResultObject = resultObject;
 
                         if (onlyOneAggregator)
                             _resultsAggregators[0].TestContextResultReceived(localResultObject);

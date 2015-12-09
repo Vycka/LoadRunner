@@ -5,6 +5,7 @@ using Viki.LoadRunner.Engine.Aggregators.Aggregates;
 using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
@@ -22,9 +23,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region IResultsAggregator
 
-        void IResultsAggregator.TestContextResultReceived(TestContextResult result)
+        void IResultsAggregator.TestContextResultReceived(IResult result)
         {
-            _orderLearner.Learn(result.Checkpoints.Select(c => c.CheckpointName).ToArray());
+            _orderLearner.Learn(result.Checkpoints.Select(c => c.Name).ToArray());
             _statsAggregator.AggregateResult(result);
         }
 

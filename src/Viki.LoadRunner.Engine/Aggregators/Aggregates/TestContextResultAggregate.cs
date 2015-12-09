@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
 {
@@ -19,7 +20,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
         public double WorkingThreadsAvg => _summedWorkingThreads / (double) _threadAggregationCount;
         public double CreatedThreadsAvg => _summedCreatedThreads / (double) _threadAggregationCount;
 
-        public void AggregateResult(TestContextResult result)
+        public void AggregateResult(IResult result)
         {
             MapIterationTime(result);
             AggregateThreadCounts(result);
@@ -28,14 +29,14 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
             foreach (Checkpoint currentCheckpoint in result.Checkpoints)
             {
                 TimeSpan momentCheckpointTimeSpan = currentCheckpoint.TimePoint - previousCheckpoint.TimePoint;
-                CheckpointAggregate checkpointAggregateResultObject = GetCheckpointAggregate(currentCheckpoint.CheckpointName);
+                CheckpointAggregate checkpointAggregateResultObject = GetCheckpointAggregate(currentCheckpoint.Name);
 
                 checkpointAggregateResultObject.AggregateCheckpoint(momentCheckpointTimeSpan, currentCheckpoint);
                 previousCheckpoint = currentCheckpoint;
             }
         }
 
-        private void MapIterationTime(TestContextResult result)
+        private void MapIterationTime(IResult result)
         {
             if (result.IterationStarted < IterationBeginTime)
                 IterationBeginTime = result.IterationStarted;
@@ -44,7 +45,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
                 IterationEndTime = result.IterationFinished;
         }
 
-        private void AggregateThreadCounts(TestContextResult result)
+        private void AggregateThreadCounts(IResult result)
         {
             _summedCreatedThreads += (uint) result.CreatedThreads;
             _summedWorkingThreads += (uint) result.WorkingThreads;

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -22,11 +23,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             return new ErrorCountMetric();
         }
 
-        public void Add(TestContextResult result)
+        public void Add(IResult result)
         {
             foreach (Checkpoint checkpoint in result.Checkpoints)
             {
-                string key = "Errors: " + checkpoint.CheckpointName;
+                string key = "Errors: " + checkpoint.Name;
 
                 if (checkpoint.Error != null)
                 {

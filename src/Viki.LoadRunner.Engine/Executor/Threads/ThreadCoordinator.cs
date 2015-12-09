@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Timer;
 #pragma warning disable 1591
 
@@ -191,11 +192,12 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
         }
 
-        private void ExecutorThreadScenarioIterationFinished(TestExecutorThread sender, TestContextResult result)
+        private void ExecutorThreadScenarioIterationFinished(TestExecutorThread sender, IterationResult result)
         {
             if (!_disposing)
             {
-                result.SetInternalMetadata(_allThreads.Count, _initializedThreads.Count - _idleThreads.Count);
+                result.CreatedThreads = _allThreads.Count;
+                result.WorkingThreads = _initializedThreads.Count - _idleThreads.Count;
 
                 OnScenarioExecutionFinished(result);
 
@@ -204,7 +206,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
         }
 
-        private void ExecutorThread_ThreadFailed(TestExecutorThread sender, TestContextResult result, Exception ex)
+        private void ExecutorThread_ThreadFailed(TestExecutorThread sender, IterationResult result, Exception ex)
         {
             if (!_disposing)
             {
@@ -214,10 +216,10 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
         }
 
-        public delegate void ScenarioExecutionFinishedEventHandler(TestContextResult result);
+        public delegate void ScenarioExecutionFinishedEventHandler(IterationResult result);
         public event ScenarioExecutionFinishedEventHandler ScenarioIterationFinished;
 
-        private void OnScenarioExecutionFinished(TestContextResult result)
+        private void OnScenarioExecutionFinished(IterationResult result)
         {
             ScenarioIterationFinished?.Invoke(result);
         }

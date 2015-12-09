@@ -1,8 +1,9 @@
 using System;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
-    public class Checkpoint
+    public class Checkpoint : ICheckpoint
     {
         #region Consts
 
@@ -16,17 +17,17 @@ namespace Viki.LoadRunner.Engine.Executor.Context
         #region Properties
 
 
-        public readonly string CheckpointName;
-        public readonly TimeSpan TimePoint;
-        public Exception Error { get; internal set; }
+        public string Name { get; set; }
+        public TimeSpan TimePoint { get; set; }
+        public Exception Error { get; set; }
 
         #endregion
 
         #region Methods
 
-        public Checkpoint(string checkpointName, TimeSpan timePoint)
+        public Checkpoint(string name, TimeSpan timePoint)
         {
-            CheckpointName = checkpointName;
+            Name = name;
             TimePoint = timePoint;
         }
 

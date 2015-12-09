@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
@@ -9,7 +10,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// Results from all running threads will be poured into this one.
         /// Avoid throwing exceptions outside, unless you want to stop the test
         /// </summary>
-        void TestContextResultReceived(TestContextResult result);
+        void TestContextResultReceived(IResult result);
 
         /// <summary>
         /// Signals aggregator, that new test execution is about to begin

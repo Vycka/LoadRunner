@@ -2,6 +2,7 @@
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -25,14 +26,14 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             return new AvgDurationMetric(_ignoredCheckpoints);
         }
 
-        void IMetric.Add(TestContextResult result)
+        void IMetric.Add(IResult result)
         {
             Checkpoint previousCheckpoint = BlankCheckpoint;
             foreach (Checkpoint checkpoint in result.Checkpoints)
             {
-                if (_ignoredCheckpoints.All(name => name != checkpoint.CheckpointName))
+                if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
-                    string key = "Avg: " + checkpoint.CheckpointName;
+                    string key = "Avg: " + checkpoint.Name;
                     TimeSpan momentDiff = TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
 
                     _grid[key].AddSample(momentDiff);

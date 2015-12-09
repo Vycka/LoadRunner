@@ -1,4 +1,5 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine
@@ -15,7 +16,7 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         /// <param name="loadTestScenario">ILoadTestScenario object</param>
         /// <returns>Raw result from single iteration</returns>
-        public static TestContextResult Validate(ILoadTestScenario loadTestScenario, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
+        public static IterationResult Validate(ILoadTestScenario loadTestScenario, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
         {
             TestContext testContext =  new TestContext(threadId, new ExecutionTimer());
             testContext.Reset(-1, -1);
@@ -37,7 +38,7 @@ namespace Viki.LoadRunner.Engine
             testContext.Checkpoint(Checkpoint.IterationTearDownCheckpointName);
             loadTestScenario.IterationTearDown(testContext);
 
-            TestContextResult result = new TestContextResult(testContext);
+            IterationResult result = new IterationResult(testContext);
 
             testContext.Reset(-1, -1);
             loadTestScenario.ScenarioTearDown(testContext);

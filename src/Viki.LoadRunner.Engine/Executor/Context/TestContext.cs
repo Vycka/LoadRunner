@@ -27,7 +27,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         #endregion
 
-        public IReadOnlyList<Checkpoint> LoggedCheckpoints => _checkpoints;
+        public IReadOnlyList<ICheckpoint> LoggedCheckpoints => _checkpoints;
         public TimeSpan IterationStarted { get; private set; }
         public TimeSpan IterationFinished { get; private set; }
 
@@ -77,7 +77,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             return
                 _checkpoints
                     .Where(c => c.Error != null)
-                    .Select(c => new KeyValuePair<string, Exception>(c.CheckpointName, c.Error));
+                    .Select(c => new KeyValuePair<string, Exception>(c.Name, c.Error));
         }
 
         public TimeSpan IterationElapsedTime

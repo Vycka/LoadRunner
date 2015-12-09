@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -38,18 +39,18 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             return new PercentileMetric(_percentiles, _ignoredCheckpoints);
         }
 
-        void IMetric.Add(TestContextResult result)
+        void IMetric.Add(IResult result)
         {
             _percentileValueCacheValid = false;
 
             Checkpoint previousCheckpoint = BlankCheckpoint;
             foreach (Checkpoint checkpoint in result.Checkpoints)
             {
-                if (_ignoredCheckpoints.All(name => name != checkpoint.CheckpointName))
+                if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
                     TimeSpan momentDiff = TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
 
-                    _grid[checkpoint.CheckpointName].Add(momentDiff.TotalMilliseconds); 
+                    _grid[checkpoint.Name].Add(momentDiff.TotalMilliseconds); 
                 }
                 previousCheckpoint = checkpoint;
             }

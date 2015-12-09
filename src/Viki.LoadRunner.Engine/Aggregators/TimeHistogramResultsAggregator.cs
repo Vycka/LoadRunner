@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
@@ -24,7 +25,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// Func to retrieve DateTime, on which aggregation is based on
         /// (Default TestContextResult.IterationStarted)
         /// </summary>
-        public Func<TestContextResult, TimeSpan> GetTimeValue = result => result.IterationStarted;
+        public Func<IterationResult, TimeSpan> GetTimeValue = result => result.IterationStarted;
 
         #endregion
 
@@ -45,9 +46,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// </summary>
         /// <param name="aggregationTimeInterval">Time interval to group results by</param>
         /// <param name="subGroupByKeyCalculatorFunction">Secondary aggregation function</param>
-        public TimeHistogramResultsAggregator(TimeSpan aggregationTimeInterval, Func<TestContextResult, string> subGroupByKeyCalculatorFunction)
+        public TimeHistogramResultsAggregator(TimeSpan aggregationTimeInterval, Func<IResult, string> subGroupByKeyCalculatorFunction)
         {
-            Func<TestContextResult, object> groupByFunction =
+            Func<IResult, object> groupByFunction =
                 result =>
                     string.Concat(GroupByCalculatorFunction(result).ToString(), " ", subGroupByKeyCalculatorFunction(result));
 
@@ -61,9 +62,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// </summary>
         /// <param name="aggregationTimeInterval">Time interval to group results by</param>
         /// <param name="groupByKeyCalculatorFunction">GroupBy function Func&lt;TestContextResult, TimeAggregationSlotTicks, GroupByKey&gt;</param>
-        public TimeHistogramResultsAggregator(TimeSpan aggregationTimeInterval, Func<TestContextResult, long, object> groupByKeyCalculatorFunction)
+        public TimeHistogramResultsAggregator(TimeSpan aggregationTimeInterval, Func<IResult, long, object> groupByKeyCalculatorFunction)
         {
-            Func<TestContextResult, object> groupByFunction = result => groupByKeyCalculatorFunction(result, GroupByCalculatorFunction(result));
+            Func<IResult, object> groupByFunction = result => groupByKeyCalculatorFunction(result, GroupByCalculatorFunction(result));
 
             _histogramResultsAggregator = new HistogramResultsAggregator(groupByFunction);
             _histogramResultsAggregator.AggregationTimePeriod = aggregationTimeInterval;
@@ -73,7 +74,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region Group by time function
 
-        private long GroupByCalculatorFunction(TestContextResult result)
+        private long GroupByCalculatorFunction(IResult result)
         {
 
             var resultTimeSlot =
@@ -87,7 +88,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region IResultsAggregator
 
-        void IResultsAggregator.TestContextResultReceived(TestContextResult result)
+        void IResultsAggregator.TestContextResultReceived(IResult result)
         {
             ((IResultsAggregator)_histogramResultsAggregator).TestContextResultReceived(result);
         }

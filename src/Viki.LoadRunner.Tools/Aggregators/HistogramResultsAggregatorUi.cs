@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Tools.Windows;
 
 namespace Viki.LoadRunner.Tools.Aggregators
@@ -12,7 +13,7 @@ namespace Viki.LoadRunner.Tools.Aggregators
         private readonly TimelineWindow _totalsWindow = new TimelineWindow();
         private Thread _windowThread;
 
-        public void TestContextResultReceived(TestContextResult result)
+        public void TestContextResultReceived(IResult result)
         {
         }
 

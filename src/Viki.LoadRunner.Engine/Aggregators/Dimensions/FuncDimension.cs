@@ -1,5 +1,5 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
 {
@@ -8,11 +8,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
     /// </summary>
     public class FuncDimension : IDimension
     {
-        private readonly Func<TestContextResult, string> _dimensionValueSelector;
+        private readonly Func<IResult, string> _dimensionValueSelector;
 
         /// <param name="dimensionName">Name/Key of custom dimension</param>
         /// <param name="dimensionValueSelector">Dimension value selector</param>
-        public FuncDimension(string dimensionName, Func<TestContextResult,string> dimensionValueSelector)
+        public FuncDimension(string dimensionName, Func<IResult,string> dimensionValueSelector)
         {
             if (dimensionName == null)
                 throw new ArgumentNullException(nameof(dimensionName));
@@ -25,7 +25,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
 
         public string DimensionName { get; }
 
-        string IDimension.GetKey(TestContextResult result)
+        string IDimension.GetKey(IResult result)
         {
             return _dimensionValueSelector(result);
         }

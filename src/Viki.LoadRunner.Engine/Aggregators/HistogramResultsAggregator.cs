@@ -5,6 +5,7 @@ using Viki.LoadRunner.Engine.Aggregators.Aggregates;
 using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
@@ -18,7 +19,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         // TODO: HistogramResultsAggregator shouldn't know anything about timing, move it up!
         private DateTime _testBeginTime;
 
-        private readonly Func<TestContextResult, object> _groupByKeyCalculatorFunction;
+        private readonly Func<IResult, object> _groupByKeyCalculatorFunction;
         private readonly OrderLearner _orderLearner = new OrderLearner();
         private readonly Dictionary<object, TestContextResultAggregate> _histogramItems =
             new Dictionary<object, TestContextResultAggregate>();
@@ -46,7 +47,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// Aggregates results, grouping them by [groupByKeyCalculatorFunction]
         /// </summary>
         /// <param name="groupByKeyCalculatorFunction">Function to calculate GroupBy key</param>
-        public HistogramResultsAggregator(Func<TestContextResult, object> groupByKeyCalculatorFunction)
+        public HistogramResultsAggregator(Func<IResult, object> groupByKeyCalculatorFunction)
         {
             if (groupByKeyCalculatorFunction == null)
                 throw new ArgumentNullException(nameof(groupByKeyCalculatorFunction));
@@ -58,9 +59,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region IResultsAggregator
 
-        void IResultsAggregator.TestContextResultReceived(TestContextResult result)
+        void IResultsAggregator.TestContextResultReceived(IResult result)
         {
-            _orderLearner.Learn(result.Checkpoints.Select(c => c.CheckpointName).ToArray());
+            _orderLearner.Learn(result.Checkpoints.Select(c => c.Name).ToArray());
 
             object groupByKey = _groupByKeyCalculatorFunction(result);
             TestContextResultAggregate histogramRowAggregate = GetHistogramRow(groupByKey);

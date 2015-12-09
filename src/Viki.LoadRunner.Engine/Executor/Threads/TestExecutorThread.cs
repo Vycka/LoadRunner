@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Timer;
 #pragma warning disable 1591
 
@@ -103,20 +104,20 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             ScenarioSetupSucceeded?.Invoke(this);
         }
 
-        public delegate void ScenarioIterationFinishedEvent(TestExecutorThread sender, TestContextResult result);
+        public delegate void ScenarioIterationFinishedEvent(TestExecutorThread sender, IterationResult result);
         public event ScenarioIterationFinishedEvent ScenarioIterationFinished;
 
         private void OnScenarioIterationFinished()
         {
-            ScenarioIterationFinished?.Invoke(this, new TestContextResult(_testContext));
+            ScenarioIterationFinished?.Invoke(this, new IterationResult(_testContext));
         }
 
-        public delegate void ThreadFailedEvent(TestExecutorThread sender, TestContextResult result, Exception ex);
+        public delegate void ThreadFailedEvent(TestExecutorThread sender, IterationResult result, Exception ex);
         public event ThreadFailedEvent ThreadFailed;
 
         private void OnThreadFailed(Exception ex)
         {
-            ThreadFailed?.Invoke(this, new TestContextResult(_testContext), ex);
+            ThreadFailed?.Invoke(this, new IterationResult(_testContext), ex);
         }
 
         #endregion

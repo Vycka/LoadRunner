@@ -2,6 +2,7 @@
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Threads;
 using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Parameters;
@@ -166,7 +167,7 @@ namespace Viki.LoadRunner.Engine
 
         #region Events
 
-        private void _threadCoordinator_ScenarioIterationFinished(TestContextResult result)
+        private void _threadCoordinator_ScenarioIterationFinished(IterationResult result)
         {
             _resultsAggregator.TestContextResultReceived(result);
         }

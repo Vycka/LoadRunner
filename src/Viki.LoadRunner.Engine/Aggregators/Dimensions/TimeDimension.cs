@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
 {
@@ -19,7 +20,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
 
         public string DimensionName { get; } = "Time (s)";
 
-        string IDimension.GetKey(TestContextResult result)
+        string IDimension.GetKey(IResult result)
         {
             TimeSpan resultTimeSlot = TimeSpan.FromTicks(((int)(result.IterationFinished.Ticks / Interval.Ticks)) * Interval.Ticks);
 

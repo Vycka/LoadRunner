@@ -1,4 +1,5 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
 {
@@ -14,6 +15,6 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
         /// </summary>
         /// <param name="result">current iteration result</param>
         /// <returns>String dimension key</returns>
-        string GetKey(TestContextResult result);
+        string GetKey(IResult result);
     }
 }

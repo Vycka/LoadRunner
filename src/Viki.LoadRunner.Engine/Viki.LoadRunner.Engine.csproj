@@ -77,6 +77,8 @@
     <Compile Include="Aggregators\Aggregates\CheckpointAggregate.cs" />
     <Compile Include="Aggregators\Aggregates\TestContextResultAggregate.cs" />
     <Compile Include="Executor\Context\IIterationMetadata.cs" />
+    <Compile Include="Executor\Context\ICheckpoint.cs" />
+    <Compile Include="Executor\Result\IResult.cs" />
     <Compile Include="Executor\Timer\ITimer.cs" />
     <Compile Include="Executor\Timer\ExecutionTimer.cs" />
     <Compile Include="LoadTestBase.cs" />
@@ -90,7 +92,7 @@
     <Compile Include="Executor\Context\TestContext.cs" />
     <Compile Include="LoadRunnerEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Executor\Context\TestContextResult.cs" />
+    <Compile Include="Executor\Result\IterationResult.cs" />
     <Compile Include="Executor\Threads\TestExecutorThread.cs" />
     <Compile Include="Strategies\Speed\AlteratingSpeed.cs" />
     <Compile Include="Strategies\ISpeedStrategy.cs" />

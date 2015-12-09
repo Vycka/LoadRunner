@@ -2,6 +2,7 @@
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -21,9 +22,9 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             return CreateNewMetric();
         }
 
-        protected abstract void AddResult(TestContextResult result);
+        protected abstract void AddResult(IResult result);
 
-        void IMetric.Add(TestContextResult result)
+        void IMetric.Add(IResult result)
         {
             AddResult(result);
         }

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
@@ -21,7 +20,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
             return new MetricMultiplexer(_metrics.Select(m => m.CreateNew()));
         }
 
-        public void Add(TestContextResult result)
+        public void Add(IResult result)
         {
             foreach (IMetric metric in _metrics)
             {

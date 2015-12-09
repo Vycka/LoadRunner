@@ -7,6 +7,7 @@ using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Aggregators.Results;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Utils;
 
 namespace Viki.LoadRunner.Engine.Aggregators
@@ -80,7 +81,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _dimensionsKeyBuilder = new DimensionsKeyBuilder(_dimensions);
         }
 
-        void IResultsAggregator.TestContextResultReceived(TestContextResult result)
+        void IResultsAggregator.TestContextResultReceived(IResult result)
         {
             DimensionValues key = _dimensionsKeyBuilder.GetValue(result);
             _grid[key].Add(result);

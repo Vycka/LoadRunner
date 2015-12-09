@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -15,7 +16,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         /// New iteration result received event
         /// </summary>
         /// <param name="result">Iteration result</param>
-        void Add(TestContextResult result);
+        void Add(IResult result);
 
         /// <summary>
         /// Names of columns produced by this metric (order must match [Values] order)
