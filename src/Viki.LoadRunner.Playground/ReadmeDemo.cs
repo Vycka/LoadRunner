@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
@@ -7,6 +9,7 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
@@ -78,16 +81,20 @@ namespace Viki.LoadRunner.Playground
                 .Alias($"Errors: {Checkpoint.IterationSetupCheckpointName}", "Errors: Setup")
                 .Alias($"Errors: {Checkpoint.IterationStartCheckpointName}", "Errors: Iteration")
                 .Alias($"Errors: {Checkpoint.IterationTearDownCheckpointName}", "Errors: Teardown");
-       
+            
+            StreamAggregator streamAggregator = new StreamAggregator(r => r.SerializeSequenceToJson("d:\\test.stream.json"));
 
             //TotalsResultsAggregator resultsAggregator = new TotalsResultsAggregator();
 
             // Initializing LoadTest Client
-            LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(loadRunnerParameters, histogramAggregator);
+            LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(loadRunnerParameters, histogramAggregator, streamAggregator);
 
             // Run test (blocking call)
-            loadRunner.Run();
+            //loadRunner.Run();
 
+            loadRunner.RunAsync();
+            Console.WriteLine("Async started");
+            loadRunner.Wait();
             
             object defaultResults = histogramAggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
@@ -95,6 +102,7 @@ namespace Viki.LoadRunner.Playground
             Console.ReadKey();
         }
     }
+
 
     public class TestScenario : ILoadTestScenario
     {

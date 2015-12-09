@@ -50,6 +50,8 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _processorThread?.Join();
 
             Parallel.ForEach(_resultsAggregators, aggregator => aggregator.End());
+
+            _processorThread = null;
         }
 
         void IResultsAggregator.TestContextResultReceived(IResult result)
@@ -70,10 +72,13 @@ namespace Viki.LoadRunner.Engine.Aggregators
         // TODO: Think of better way to catch error (not using _thrownException)
         private void ProcessorThreadFunction()
         {
+            Action<IResult> singleAggregator = r => _resultsAggregators[0].TestContextResultReceived(r);
+            Action<IResult> multiAggregator = r => Parallel.ForEach(_resultsAggregators, a => a.TestContextResultReceived(r));
+
+            Action<IResult> aggregator = _resultsAggregators.Length == 1 ? singleAggregator : multiAggregator;
+
             try
             {
-                bool onlyOneAggregator = _resultsAggregators.Length == 1;
-
                 while (!_stopping || _processingQueue.IsEmpty == false)
                 {
                     IResult resultObject;
@@ -81,11 +86,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
                     {
                         IResult localResultObject = resultObject;
 
-                        if (onlyOneAggregator)
-                            _resultsAggregators[0].TestContextResultReceived(localResultObject);
-                        else
-                            Parallel.ForEach(_resultsAggregators,
-                                aggregator => aggregator.TestContextResultReceived(localResultObject));
+                        aggregator(localResultObject);
                     }
 
                     Thread.Sleep(50);

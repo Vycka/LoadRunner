@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Threads;
@@ -18,6 +19,7 @@ namespace Viki.LoadRunner.Engine
         private readonly LoadRunnerParameters _parameters;
         private readonly IResultsAggregator _resultsAggregator;
         private readonly Type _iTestScenarioObjectType;
+        private Thread _asyncRunThread;
 
         #region Run() globals
 
@@ -77,6 +79,50 @@ namespace Viki.LoadRunner.Engine
 
         #endregion
 
+        #region Async Run()
+
+        /// <summary>
+        /// Executes load test in seperate thread (non-blocking call)
+        /// </summary>
+        public void RunAsync()
+        {
+            if (_asyncRunThread?.IsAlive == true)
+                throw new InvalidOperationException("Another instance is already running");
+
+            _asyncRunThread = new Thread(Run);
+            _asyncRunThread.Start();
+        }
+
+        /// <summary>
+        /// Cancels Async test execution.
+        /// Stops exeucion safely with time-out handling.
+        /// Aggregated data up to this point won't be lost. 
+        /// </summary>
+        public void CancelAsync(bool blocking = true)
+        {
+            // This inits the stop
+            _parameters.Limits.MaxIterationsCount = 0;
+
+            if (blocking)
+                _asyncRunThread?.Join();
+        }
+
+        /// <summary>
+        /// Waits, till execution is finished.
+        /// </summary>
+        public bool Wait(TimeSpan timeOut)
+        {
+            return _asyncRunThread.Join(timeOut);
+        }
+
+        public void Wait()
+        {
+            _asyncRunThread?.Join();
+        }
+
+        #endregion
+
+
         #region Run() Stuff
 
         /// <summary>
@@ -85,6 +131,9 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         public void Run()
         {
+            if (_threadCoordinator != null)
+                throw new InvalidOperationException("Async instance is already running");
+
             try
             {
                 _threadCoordinator = new ThreadCoordinator(
