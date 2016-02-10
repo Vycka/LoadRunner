@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Threads;
@@ -79,7 +78,17 @@ namespace Viki.LoadRunner.Engine
 
         #endregion
 
-        #region Async Run()
+        #region Async/Run()
+
+        /// <summary>
+        /// Start LoadTest execution.
+        /// This is a blocking call and will finish only, once the test is over and all results are aggregated by IResultsAggregator's
+        /// </summary>
+        public void Run()
+        {
+            RunAsync();
+            Wait();
+        }
 
         /// <summary>
         /// Executes load test in seperate thread (non-blocking call)
@@ -89,7 +98,7 @@ namespace Viki.LoadRunner.Engine
             if (_asyncRunThread?.IsAlive == true)
                 throw new InvalidOperationException("Another instance is already running");
 
-            _asyncRunThread = new Thread(Run);
+            _asyncRunThread = new Thread(RunInner);
             _asyncRunThread.Start();
         }
 
@@ -107,14 +116,28 @@ namespace Viki.LoadRunner.Engine
                 _asyncRunThread?.Join();
         }
 
+
         /// <summary>
         /// Waits, till execution is finished.
         /// </summary>
-        public bool Wait(TimeSpan timeOut)
+        /// <param name="timeOut">timeout time period to wait before returning</param>
+        /// <param name="abortOnTimeOut">if execution won't finish within desired timeout, should it be terminated prematurely?</param>
+        /// <returns>true - if test execution is finished before timeout or aborted due to [abortOnTimeOut]</returns>
+        public bool Wait(TimeSpan timeOut, bool abortOnTimeOut = false)
         {
-            return _asyncRunThread.Join(timeOut);
+            bool result = _asyncRunThread.Join(timeOut);
+            if (abortOnTimeOut == true && result == false)
+            {
+                _asyncRunThread.Abort();
+                result = true;
+            }
+
+            return result;
         }
 
+        /// <summary>
+        /// Waits Infinitely until loadtest execution is finished
+        /// </summary>
         public void Wait()
         {
             _asyncRunThread?.Join();
@@ -122,14 +145,9 @@ namespace Viki.LoadRunner.Engine
 
         #endregion
 
+        #region RunInner() Stuff
 
-        #region Run() Stuff
-
-        /// <summary>
-        /// Start LoadTest execution.
-        /// This is a blocking call and will finish only, once the test is over and all results are aggregated by IResultsAggregator's
-        /// </summary>
-        public void Run()
+        private void RunInner()
         {
             if (_threadCoordinator != null)
                 throw new InvalidOperationException("Async instance is already running");
