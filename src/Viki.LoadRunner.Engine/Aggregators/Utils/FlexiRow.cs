@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-#pragma warning disable 1591
+#pragma warning disable 1591 // missing xml-doc
 
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
-    public class FlexiGrid<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
+    public class FlexiRow<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
         #region Fields
 
         private readonly Func<TValue> _valueBuilderFunc;
-        private readonly Dictionary<TKey, TValue> _grid = new Dictionary<TKey, TValue>();
+        private readonly Dictionary<TKey, TValue> _row = new Dictionary<TKey, TValue>();
 
         #endregion
 
         #region Constructor
 
-        public FlexiGrid(Func<TValue> valueBuilderFunc)
+        public FlexiRow(Func<TValue> valueBuilderFunc)
         {
             if (valueBuilderFunc == null)
                 throw new ArgumentNullException(nameof(valueBuilderFunc));
@@ -30,8 +30,8 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
 
         public void Touch(TKey key)
         {
-            if (!_grid.ContainsKey(key))
-                _grid.Add(key, _valueBuilderFunc());
+            if (!_row.ContainsKey(key))
+                _row.Add(key, _valueBuilderFunc());
         }
 
         public TValue this[TKey key]
@@ -39,26 +39,26 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
             get
             {
                 TValue value;
-                if (!_grid.TryGetValue(key, out value))
+                if (!_row.TryGetValue(key, out value))
                 {
                     value = _valueBuilderFunc();
-                    _grid.Add(key, value);
+                    _row.Add(key, value);
                 }
 
                 return value;
             }
-            set { _grid[key] = value; }
+            set { _row[key] = value; }
         }
 
-        public int Count => _grid.Count;
+        public int Count => _row.Count;
 
         public void Clear()
         {
-            _grid.Clear();
+            _row.Clear();
         }
 
-        public IEnumerable<TKey> Keys => _grid.Keys;
-        public IEnumerable<TValue> Values => _grid.Values;
+        public IEnumerable<TKey> Keys => _row.Keys;
+        public IEnumerable<TValue> Values => _row.Values;
 
         #endregion
         
@@ -66,7 +66,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
 
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
-            return _grid.GetEnumerator();
+            return _row.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

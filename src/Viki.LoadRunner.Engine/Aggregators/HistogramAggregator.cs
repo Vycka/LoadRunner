@@ -19,7 +19,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     {
         #region Fields
 
-        private FlexiGrid<DimensionValues, IMetric> _grid;
+        private FlexiRow<DimensionValues, IMetric> _row;
 
         private DimensionsKeyBuilder _dimensionsKeyBuilder;
         private MetricMultiplexer _metricMultiplexer;
@@ -75,7 +75,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         void IResultsAggregator.Begin()
         {
             _metricMultiplexer = new MetricMultiplexer(_metricTemplates);
-            _grid = new FlexiGrid<DimensionValues, IMetric>((() => _metricMultiplexer.CreateNew()));
+            _row = new FlexiRow<DimensionValues, IMetric>((() => _metricMultiplexer.CreateNew()));
 
             _dimensionsKeyBuilder = new DimensionsKeyBuilder(_dimensions);
         }
@@ -83,7 +83,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         void IResultsAggregator.TestContextResultReceived(IResult result)
         {
             DimensionValues key = _dimensionsKeyBuilder.GetValue(result);
-            _grid[key].Add(result);
+            _row[key].Add(result);
         }
 
         void IResultsAggregator.End()
@@ -99,21 +99,21 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// </summary>
         public HistogramResults BuildResults()
         {
-            if (_grid == null)
+            if (_row == null)
                 throw new InvalidOperationException("LoadTest wasn't performed with this HistogramAggregator");
 
             OrderLearner orderLearner = new OrderLearner();
-            _grid.ForEach(i => orderLearner.Learn(i.Value.ColumnNames));
+            _row.ForEach(i => orderLearner.Learn(i.Value.ColumnNames));
 
             string[] columnNames = _dimensions
                 .Select(d => d.DimensionName)
                 .Concat(orderLearner.LearnedOrder)
                 .ToArray();
 
-            object[][] resultValues = new object[_grid.Count][];
+            object[][] resultValues = new object[_row.Count][];
 
             int rowIndex = 0;
-            foreach (KeyValuePair<DimensionValues, IMetric> pair in _grid)
+            foreach (KeyValuePair<DimensionValues, IMetric> pair in _row)
             {
                 resultValues[rowIndex] = new object[columnNames.Length];
 

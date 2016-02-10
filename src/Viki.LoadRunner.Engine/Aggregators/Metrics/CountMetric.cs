@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     public class CountMetric : IMetric
     {
-        private readonly FlexiGrid<string, int> _grid = new FlexiGrid<string, int>((() => default(int)));
+        private readonly FlexiRow<string, int> _row = new FlexiRow<string, int>((() => default(int)));
         private readonly string[] _ignoredCheckpoints;
 
         public CountMetric(params string[] ignoredCheckpoints)
@@ -31,12 +31,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                 if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
                     string key = "Count: " + checkpoint.Name;
-                    _grid[key]++;
+                    _row[key]++;
                 }
             }
         }
 
-        string[] IMetric.ColumnNames => _grid.Keys.ToArray();
-        object[] IMetric.Values => _grid.Values.Select(v => (object)v).ToArray();
+        string[] IMetric.ColumnNames => _row.Keys.ToArray();
+        object[] IMetric.Values => _row.Values.Select(v => (object)v).ToArray();
     }
 }

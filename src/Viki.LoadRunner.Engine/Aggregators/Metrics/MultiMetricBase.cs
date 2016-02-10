@@ -7,11 +7,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     public abstract class MultiMetricBase<TValue> : IMetric
     {
-        protected readonly FlexiGrid<string, TValue> _grid;
+        protected readonly FlexiRow<string, TValue> _row;
 
         protected MultiMetricBase(Func<TValue> cellBuilderFunc)
         {
-            _grid = new FlexiGrid<string, TValue>(cellBuilderFunc);
+            _row = new FlexiRow<string, TValue>(cellBuilderFunc);
         }
 
         protected abstract IMetric CreateNewMetric();
@@ -28,7 +28,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             AddResult(result);
         }
 
-        string[] IMetric.ColumnNames => _grid.Keys.ToArray();
-        object[] IMetric.Values => _grid.Values.Select(v => (object) v).ToArray();
+        string[] IMetric.ColumnNames => _row.Keys.ToArray();
+        object[] IMetric.Values => _row.Values.Select(v => (object) v).ToArray();
     }
 }

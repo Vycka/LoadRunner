@@ -9,13 +9,13 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     public class PercentileMetric : IMetric
     {
-        private readonly FlexiGrid<string, List<double>> _grid = new FlexiGrid<string, List<double>>((() => new List<double>()));
+        private readonly FlexiRow<string, List<double>> _row = new FlexiRow<string, List<double>>((() => new List<double>()));
         private readonly double[] _percentiles;
         private readonly string[] _ignoredCheckpoints;
 
         private static readonly Checkpoint BlankCheckpoint = new Checkpoint("", TimeSpan.Zero);
 
-        private readonly FlexiGrid<string, long> _percentileCache = new FlexiGrid<string, long>((() => default(long))); 
+        private readonly FlexiRow<string, long> _percentileCache = new FlexiRow<string, long>((() => default(long))); 
         private bool _percentileValueCacheValid;
 
         public PercentileMetric(params double[] percentiles)
@@ -50,7 +50,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                 {
                     TimeSpan momentDiff = TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
 
-                    _grid[checkpoint.Name].Add(momentDiff.TotalMilliseconds); 
+                    _row[checkpoint.Name].Add(momentDiff.TotalMilliseconds); 
                 }
                 previousCheckpoint = checkpoint;
             }
@@ -59,11 +59,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         public string[] ColumnNames => GetPercentileValues().Keys.ToArray();
         public object[] Values => GetPercentileValues().Values.Select(value => (object)value).ToArray();
 
-        private FlexiGrid<string, long> GetPercentileValues()
+        private FlexiRow<string, long> GetPercentileValues()
         {
             if (!_percentileValueCacheValid)
             {
-                foreach (KeyValuePair<string, List<double>> pair in _grid)
+                foreach (KeyValuePair<string, List<double>> pair in _row)
                 {
                     pair.Value.Sort();
                     double[] sortedData = pair.Value.ToArray();

@@ -110,6 +110,5 @@ namespace Viki.LoadRunner.Engine.Aggregators
         }
 
         #endregion
-
     }
 }

@@ -36,8 +36,8 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                     TimeSpan momentDiff =
                         TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
 
-                    if (_grid[key] > momentDiff.TotalMilliseconds)
-                        _grid[key] = Convert.ToInt64(momentDiff.TotalMilliseconds);
+                    if (_row[key] > momentDiff.TotalMilliseconds)
+                        _row[key] = Convert.ToInt64(momentDiff.TotalMilliseconds);
                 }
                 previousCheckpoint = checkpoint;
             }

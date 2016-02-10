@@ -6,10 +6,10 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     public class FuncMultiMetric<TValue> : MultiMetricBase<TValue>
     {
-        private readonly Action<FlexiGrid<string, TValue>, IResult> _metricProcedure;
+        private readonly Action<FlexiRow<string, TValue>, IResult> _metricProcedure;
         private readonly Func<TValue> _cellBuilderFunc;
 
-        public FuncMultiMetric(Action<FlexiGrid<string,TValue>, IResult> metricProcedure, Func<TValue> cellBuilderFunc)
+        public FuncMultiMetric(Action<FlexiRow<string,TValue>, IResult> metricProcedure, Func<TValue> cellBuilderFunc)
             : base(cellBuilderFunc)
         {
             if (metricProcedure == null) throw new ArgumentNullException(nameof(metricProcedure));
@@ -26,7 +26,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         protected override void AddResult(IResult result)
         {
-            _metricProcedure(_grid, result);
+            _metricProcedure(_row, result);
         }
     }
 }

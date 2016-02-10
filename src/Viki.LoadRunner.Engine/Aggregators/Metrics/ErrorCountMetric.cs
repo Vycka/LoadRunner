@@ -8,14 +8,14 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
     public class ErrorCountMetric : IMetric
     {
         private readonly bool _includeTotals;
-        private readonly FlexiGrid<string, int> _grid = new FlexiGrid<string, int>((() => default(int)));
+        private readonly FlexiRow<string, int> _row = new FlexiRow<string, int>((() => default(int)));
 
         public ErrorCountMetric(bool includeTotals = true)
         {
             _includeTotals = includeTotals;
 
             if (_includeTotals)
-                _grid.Touch("Errors: Totals");
+                _row.Touch("Errors: Totals");
         }
 
         IMetric IMetric.CreateNew()
@@ -31,15 +31,15 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
                 if (checkpoint.Error != null)
                 {
-                    _grid[key]++;
+                    _row[key]++;
 
                     if (_includeTotals)
-                        _grid["Errors: Totals"]++;
+                        _row["Errors: Totals"]++;
                 }
             }
         }
 
-        string[] IMetric.ColumnNames => _grid.Keys.ToArray();
-        object[] IMetric.Values => _grid.Values.Select(v => (object)v).ToArray();
+        string[] IMetric.ColumnNames => _row.Keys.ToArray();
+        object[] IMetric.Values => _row.Values.Select(v => (object)v).ToArray();
     }
 }

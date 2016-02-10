@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Tools.Aggregators;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -11,11 +10,6 @@ namespace Viki.LoadRunner.Playground
     {
         static void Main()
         {
-            //ReadmeDemo.Run();
-
-            var res = JsonStream.DeserializeSequenceFromJson<ReplayResult<Exception>>("d:\\test.stream.json")
-                .Select(r => (IResult)r).ToList();
-
             HistogramAggregator histo = new HistogramAggregator();
             histo
                 .Add(new TimeDimension(TimeSpan.FromSeconds(1)))
@@ -24,7 +18,7 @@ namespace Viki.LoadRunner.Playground
                 .Add(new PercentileMetric(0.95));
 
 
-            StreamAggregator.Replay(res, histo);
+            JsonStreamAggregator.Replay("d:\\test.stream.json", histo);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 
@@ -10,7 +11,7 @@ namespace Viki.LoadRunner.Playground
         public new Checkpoint[] Checkpoints
         {
             get { return (Checkpoint[]) base.Checkpoints; }
-            set { base.Checkpoints = value;  }
+            set { base.Checkpoints = value.Cast<ICheckpoint>().ToArray();  }
         }
 
         public new TUserData UserData

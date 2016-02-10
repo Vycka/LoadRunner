@@ -71,8 +71,9 @@
     <Compile Include="Aggregators\TimeHistogramResultsAggregator.cs" />
     <Compile Include="Aggregators\Utils\DimensionsKeyBuilder.cs" />
     <Compile Include="Aggregators\Utils\DimensionValues.cs" />
-    <Compile Include="Aggregators\Utils\FlexiGrid.cs" />
+    <Compile Include="Aggregators\Utils\FlexiRow.cs" />
     <Compile Include="Aggregators\Utils\MetricMultiplexer.cs" />
+    <Compile Include="Aggregators\Utils\ReplayResult.cs" />
     <Compile Include="Aggregators\Utils\UnixDateTimeExtensions.cs" />
     <Compile Include="Aggregators\Utils\OrderLearner.cs" />
     <Compile Include="Aggregators\Aggregates\CheckpointAggregate.cs" />
