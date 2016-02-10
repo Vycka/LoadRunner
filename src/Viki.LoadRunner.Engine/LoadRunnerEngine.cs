@@ -95,7 +95,7 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         public void RunAsync()
         {
-            if (_asyncRunThread?.IsAlive == true)
+            if (IsLoadEngineRunning)
                 throw new InvalidOperationException("Another instance is already running");
 
             _asyncRunThread = new Thread(RunInner);
@@ -142,6 +142,8 @@ namespace Viki.LoadRunner.Engine
         {
             _asyncRunThread?.Join();
         }
+
+        private bool IsLoadEngineRunning => _asyncRunThread?.IsAlive == true;
 
         #endregion
 
