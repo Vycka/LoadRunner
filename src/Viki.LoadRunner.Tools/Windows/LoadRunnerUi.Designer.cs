@@ -28,11 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this._startButton = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // _startButton
+            // 
+            this._startButton.Location = new System.Drawing.Point(197, 12);
+            this._startButton.Name = "_startButton";
+            this._startButton.Size = new System.Drawing.Size(75, 23);
+            this._startButton.TabIndex = 0;
+            this._startButton.Text = "Start";
+            this._startButton.UseVisualStyleBackColor = true;
+            this._startButton.Click += new System.EventHandler(this._startButton_Click);
+            // 
+            // LoadRunnerUi
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this._startButton);
+            this.Name = "LoadRunnerUi";
             this.Text = "LoadRunnerUi";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.Button _startButton;
     }
 }

@@ -3,7 +3,7 @@ using System.Linq;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 
-namespace Viki.LoadRunner.Playground
+namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
     [DebuggerDisplay("T:{ThreadIterationId} G:{GlobalIterationId} L:{ThreadIterationId} TS:{(int)(IterationStarted.TotalMilliseconds)}")]
     public class ReplayResult<TUserData> : IterationResult

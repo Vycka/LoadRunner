@@ -75,7 +75,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         void IResultsAggregator.Begin()
         {
             _metricMultiplexer = new MetricMultiplexer(_metricTemplates);
-            _row = new FlexiRow<DimensionValues, IMetric>((() => _metricMultiplexer.CreateNew()));
+            _row = new FlexiRow<DimensionValues, IMetric>(() => _metricMultiplexer.CreateNew());
 
             _dimensionsKeyBuilder = new DimensionsKeyBuilder(_dimensions);
         }

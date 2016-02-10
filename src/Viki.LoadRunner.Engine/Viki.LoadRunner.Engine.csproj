@@ -59,6 +59,7 @@
     <Compile Include="Aggregators\Metrics\MultiMetricBase.cs" />
     <Compile Include="Aggregators\Metrics\MinDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\PercentileMetric.cs" />
+    <Compile Include="Aggregators\Metrics\TransactionsPerSecMetric.cs" />
     <Compile Include="Aggregators\Results\HistogramResults.cs" />
     <Compile Include="Aggregators\StreamAggregator.cs" />
     <Compile Include="Aggregators\TotalsResultsAggregator.cs" />

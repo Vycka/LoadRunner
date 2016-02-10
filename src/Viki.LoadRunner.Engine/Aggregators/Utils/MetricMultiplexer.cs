@@ -5,7 +5,7 @@ using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
-    internal class MetricMultiplexer : IMetric
+    public class MetricMultiplexer : IMetric
     {
         private readonly IMetric[] _metrics;
 

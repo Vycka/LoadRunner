@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators;
+using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Result;
-using Viki.LoadRunner.Playground;
 using Viki.LoadRunner.Tools.Utils;
 
 namespace Viki.LoadRunner.Tools.Aggregators
