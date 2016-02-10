@@ -4,7 +4,7 @@ using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Playground
 {
-    [DebuggerDisplay("T:{ThreadIterationId} G:{GlobalIterationId} L:{ThreadIterationId}")]
+    [DebuggerDisplay("T:{ThreadIterationId} G:{GlobalIterationId} L:{ThreadIterationId} TS:{(int)(IterationStarted.TotalMilliseconds)}")]
     public class ReplayResult<TUserData> : IterationResult
     {
         public new Checkpoint[] Checkpoints

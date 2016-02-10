@@ -3,12 +3,14 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Utils;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
+    /// <summary>
+    /// StreamAggregator provides loadtest raw/masterdata (IResult) IEnumerable stream 
+    /// </summary>
     public class StreamAggregator : IResultsAggregator
     {
         #region Fields
@@ -24,6 +26,10 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region Constructor
 
+        /// <summary>
+        /// StreamAggregator provides loadtest raw/masterdata (IResult) IEnumerable stream 
+        /// </summary>
+        /// <param name="streamWriterAction">Action, which will be called, when its required. that given IEnumerable&lt;IResult&gt; won't return, until loadtest is over.</param>
         public StreamAggregator(Action<IEnumerable<IResult>> streamWriterAction)
         {
             if (streamWriterAction == null)
@@ -83,7 +89,15 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region Replayer
 
-        public static void Replay<TUserData>(IEnumerable<IResult> results, params IResultsAggregator[] targetAggregators)
+        /// <summary>
+        /// Replays raw result stream to provided aggregators.
+        /// You can use this to replay saved masterdata of previously executed loadtest to differently configured aggregators - allowing to see the results from different angles.
+        /// 
+        /// Contact me in github if interested.
+        /// </summary>
+        /// <param name="results">LoadTest masterdata result stream</param>
+        /// <param name="targetAggregators">Result aggregators</param>
+        public static void Replay(IEnumerable<IResult> results, params IResultsAggregator[] targetAggregators)
         {
             targetAggregators.ForEach(aggregator => aggregator.Begin());
 
