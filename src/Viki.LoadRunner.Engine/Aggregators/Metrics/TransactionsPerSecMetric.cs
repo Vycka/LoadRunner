@@ -6,9 +6,18 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     public class TransactionsPerSecMetric : IMetric
     {
-        private uint _count = 0;
-        private TimeSpan _iterationStartedMin = TimeSpan.MaxValue;
-        private TimeSpan _iterationFinishedMax = TimeSpan.MinValue; 
+        private TimeSpan _iterationStartedMin;
+        private TimeSpan _iterationFinishedMax;
+        
+        private uint _count;
+
+        public TransactionsPerSecMetric()
+        {
+            _count = 0;
+
+            _iterationStartedMin = TimeSpan.MaxValue;
+            _iterationFinishedMax = TimeSpan.MinValue;
+        }
 
         IMetric IMetric.CreateNew()
         {
@@ -31,10 +40,25 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         private int GetSecondsPassed()
         {
-            return (int)(_iterationFinishedMax = _iterationStartedMin).TotalSeconds;
+            if (_count == 0)
+                return 0;
+
+            return (int)(_iterationFinishedMax - _iterationStartedMin).TotalSeconds;
         }
 
         string[] IMetric.ColumnNames { get; } = {"TPS"};
-        object[] IMetric.Values => _count == 0 ? new object[] {0.0} : new object[] { _count/GetSecondsPassed() };
+
+        object[] IMetric.Values
+        {
+            get
+            {
+                int passedSeconds = GetSecondsPassed();
+
+                if (passedSeconds == 0)
+                    return new object[] {0.0};
+                else
+                    return new object[] {((double)_count)/GetSecondsPassed()};
+            }
+        }
     }
 }

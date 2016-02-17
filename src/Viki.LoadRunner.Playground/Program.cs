@@ -10,6 +10,8 @@ namespace Viki.LoadRunner.Playground
     {
         static void Main()
         {
+            ReadmeDemo.Run();
+
             HistogramAggregator histo = new HistogramAggregator();
             histo
                 .Add(new TimeDimension(TimeSpan.FromSeconds(1)))

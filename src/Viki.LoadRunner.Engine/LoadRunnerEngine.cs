@@ -129,6 +129,7 @@ namespace Viki.LoadRunner.Engine
             if (abortOnTimeOut == true && result == false)
             {
                 _asyncRunThread.Abort();
+                _asyncRunThread?.Join();
                 result = true;
             }
 

@@ -17,7 +17,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         private readonly IResultsAggregator[] _resultsAggregators;
         private readonly ConcurrentQueue<IResult> _processingQueue = new ConcurrentQueue<IResult>();
 
-        private volatile bool _stopping;
+        private volatile bool _stopping = true;
         private Thread _processorThread;
         private Exception _thrownException;
 
@@ -36,22 +36,28 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         void IResultsAggregator.Begin()
         {
-            _stopping = false;
+            if (_stopping == true)
+            {
+                _stopping = false;
 
-            _processorThread = new Thread(ProcessorThreadFunction);
-            _processorThread.Start();
+                _processorThread = new Thread(ProcessorThreadFunction);
+                _processorThread.Start();
 
-            Parallel.ForEach(_resultsAggregators, aggregator => aggregator.Begin());
+                Parallel.ForEach(_resultsAggregators, aggregator => aggregator.Begin());
+            }
         }
 
         void IResultsAggregator.End()
         {
-            _stopping = true;
-            _processorThread?.Join();
+            if (_stopping == false)
+            {
+                _stopping = true;
+                _processorThread?.Join();
 
-            Parallel.ForEach(_resultsAggregators, aggregator => aggregator.End());
+                Parallel.ForEach(_resultsAggregators, aggregator => aggregator.End());
 
-            _processorThread = null;
+                _processorThread = null;
+            }
         }
 
         void IResultsAggregator.TestContextResultReceived(IResult result)
@@ -110,7 +116,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         public void Dispose()
         {
-            ((IResultsAggregator) this).End();
+            ((IResultsAggregator)this).End();
         }
 
         #endregion

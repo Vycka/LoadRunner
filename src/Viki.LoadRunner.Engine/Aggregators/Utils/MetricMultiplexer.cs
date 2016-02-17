@@ -15,12 +15,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
         }
 
 
-        public IMetric CreateNew()
+        IMetric IMetric.CreateNew()
         {
             return new MetricMultiplexer(_metrics.Select(m => m.CreateNew()));
         }
 
-        public void Add(IResult result)
+        void IMetric.Add(IResult result)
         {
             foreach (IMetric metric in _metrics)
             {
@@ -28,7 +28,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
             }
         }
 
-        public string[] ColumnNames => _metrics.SelectMany(m => m.ColumnNames).ToArray();
-        public object[] Values => _metrics.SelectMany(m => m.Values).ToArray();
+        string[] IMetric.ColumnNames => _metrics.SelectMany(m => m.ColumnNames).ToArray();
+        object[] IMetric.Values => _metrics.SelectMany(m => m.Values).ToArray();
     }
 }

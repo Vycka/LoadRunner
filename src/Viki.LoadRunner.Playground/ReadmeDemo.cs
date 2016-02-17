@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
@@ -13,6 +14,7 @@ using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
+using Viki.LoadRunner.Tools.Windows;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -89,6 +91,10 @@ namespace Viki.LoadRunner.Playground
             // Initializing LoadTest Client
             LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(loadRunnerParameters, histogramAggregator, streamAggregator);
 
+            LoadRunnerUi loadRunnerUi = LoadRunnerUi.Create<TestScenario>(loadRunnerParameters, histogramAggregator);
+
+            Application.Run(loadRunnerUi);
+            return;
             // Run test (blocking call)
             //loadRunner.Run();
 
@@ -132,7 +138,7 @@ namespace Viki.LoadRunner.Playground
                 "where time should be measured"
             );
 
-            Thread.Sleep(Random.Next(1500));
+            //Thread.Sleep(Random.Next(1500));
 
             if (Random.Next(100) % 10 == 0)
                 throw new Exception("10% error chance for testing");
