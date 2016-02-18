@@ -22,7 +22,7 @@ namespace Viki.LoadRunner.Tools.Aggregators
         public static void Replay<TUserData>(string jsonResultsFile, params IResultsAggregator[] targetAggregators)
         {
             IEnumerable<IResult> resultsStream = JsonStream
-                .DeserializeSequenceFromJson<ReplayResult<TUserData>>("d:\\test.stream.json")
+                .DeserializeSequenceFromJson<ReplayResult<TUserData>>(jsonResultsFile)
                 .Select(r => (IResult) r);
 
             StreamAggregator.Replay(resultsStream, targetAggregators);

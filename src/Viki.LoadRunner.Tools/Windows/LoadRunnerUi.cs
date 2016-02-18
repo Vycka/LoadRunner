@@ -75,7 +75,18 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void _startButton_Click(object sender, EventArgs e)
         {
-            _loadRunnerEngine.RunAsync();
+            DialogResult dialogResult = MessageBox.Show("Start?", "Start?", MessageBoxButtons.YesNo);
+
+            if (dialogResult == DialogResult.Yes)
+                _loadRunnerEngine.RunAsync();
+        }
+
+        private void stopButton_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Stop?", "Stop?", MessageBoxButtons.YesNo);
+
+            if (dialogResult == DialogResult.Yes)
+                Task.Run(() => _loadRunnerEngine.Wait(TimeSpan.Zero, true));
         }
 
         private void _backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -106,10 +117,5 @@ namespace Viki.LoadRunner.Tools.Windows
         }
 
         private delegate void InvokeDelegate();
-
-        private void stopButton_Click(object sender, EventArgs e)
-        {
-            Task.Run(() => _loadRunnerEngine.Wait(TimeSpan.Zero, true));
-        }
     }
 }
