@@ -77,6 +77,7 @@
             this.Controls.Add(this.resultsTextBox);
             this.Controls.Add(this._startButton);
             this.Name = "LoadRunnerUi";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LoadRunnerUi";
             this.ResumeLayout(false);
 

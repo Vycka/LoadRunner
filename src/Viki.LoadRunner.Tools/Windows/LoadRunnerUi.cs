@@ -11,6 +11,7 @@ using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Parameters;
+using Viki.LoadRunner.Engine.Utils;
 
 namespace Viki.LoadRunner.Tools.Windows
 {
@@ -39,7 +40,10 @@ namespace Viki.LoadRunner.Tools.Windows
         {
             _metricMultiplexerTemplate = new MetricMultiplexer(new IMetric[]
             {
-                new PercentileMetric(0.5, 0.95, 0.99),
+                new FuncMultiMetric<int>((row, result) => 
+                    result.Checkpoints.ForEach(c => row[c.Name] = (int)c.TimePoint.TotalMilliseconds),
+                    () => default(int)
+                ), 
                 new CountMetric(),
                 new ErrorCountMetric(),
                 new TransactionsPerSecMetric()

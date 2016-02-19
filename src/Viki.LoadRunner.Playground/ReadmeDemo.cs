@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -10,7 +8,6 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
@@ -138,7 +135,7 @@ namespace Viki.LoadRunner.Playground
                 "where time should be measured"
             );
 
-            //Thread.Sleep(Random.Next(1500));
+            Thread.Sleep(Random.Next(1500));
 
             if (Random.Next(100) % 10 == 0)
                 throw new Exception("10% error chance for testing");
