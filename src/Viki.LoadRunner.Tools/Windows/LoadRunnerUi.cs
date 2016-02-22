@@ -9,6 +9,7 @@ using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
+using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Utils;
@@ -66,6 +67,23 @@ namespace Viki.LoadRunner.Tools.Windows
 
         void IResultsAggregator.TestContextResultReceived(IResult result)
         {
+            foreach (ICheckpoint checkpoint in result.Checkpoints)
+            {
+                if (checkpoint.Error != null)
+                {
+                    string existingTextBoxValue = tbErrors.Text;
+                    if (existingTextBoxValue.Length > 10000)
+                    {
+                        existingTextBoxValue = existingTextBoxValue.Substring(0, 10000);
+                    }
+
+                    string newText = $"{DateTime.Now.ToString("O")} {checkpoint.Name}\r\n{checkpoint.Error}\r\n\r\n";
+
+                    tbErrors.Invoke(new InvokeDelegate(() => tbErrors.Text = newText + existingTextBoxValue));
+                }
+                    
+            }
+
             _metricMultiplexer.Add(result);
         }
 
