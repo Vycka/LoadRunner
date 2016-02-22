@@ -26,14 +26,14 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         void IMetric.Add(IResult result)
         {
+            if (result.IterationStarted < _iterationStartedMin)
+                _iterationStartedMin = result.IterationStarted;
+
+            if (result.IterationFinished > _iterationFinishedMax)
+                _iterationFinishedMax = result.IterationFinished;
+
             if (result.Checkpoints.All(c => c.Error == null))
             {
-                if (result.IterationStarted < _iterationStartedMin)
-                    _iterationStartedMin = result.IterationStarted;
-
-                if (result.IterationFinished > _iterationFinishedMax)
-                    _iterationFinishedMax = result.IterationFinished;
-
                 _count++;
             }
         }
