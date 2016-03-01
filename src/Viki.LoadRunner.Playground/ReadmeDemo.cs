@@ -11,6 +11,7 @@ using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
+using Viki.LoadRunner.Tools.Aggregators;
 using Viki.LoadRunner.Tools.Windows;
 
 namespace Viki.LoadRunner.Playground
@@ -81,28 +82,28 @@ namespace Viki.LoadRunner.Playground
                 .Alias($"Errors: {Checkpoint.IterationStartCheckpointName}", "Errors: Iteration")
                 .Alias($"Errors: {Checkpoint.IterationTearDownCheckpointName}", "Errors: Teardown");
             
-            StreamAggregator streamAggregator = new StreamAggregator(r => r.SerializeSequenceToJson("d:\\test.stream.json"));
+            JsonStreamAggregator _jsonStreamAggregator = new JsonStreamAggregator(() => DateTime.Now.ToString("HH_mm_ss__ffff") + ".json");
 
             //TotalsResultsAggregator resultsAggregator = new TotalsResultsAggregator();
 
             // Initializing LoadTest Client
-            LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(loadRunnerParameters, histogramAggregator, streamAggregator);
+            //LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(loadRunnerParameters, histogramAggregator, _jsonStreamAggregator);
 
-            LoadRunnerUi loadRunnerUi = LoadRunnerUi.Create<TestScenario>(loadRunnerParameters, histogramAggregator);
+            LoadRunnerUi loadRunnerUi = LoadRunnerUi.Create<TestScenario>(loadRunnerParameters, histogramAggregator, _jsonStreamAggregator);
 
             Application.Run(loadRunnerUi);
             return;
             // Run test (blocking call)
             //loadRunner.Run();
 
-            loadRunner.RunAsync();
-            Console.WriteLine("Async started");
-            loadRunner.Wait();
+            //loadRunner.RunAsync();
+            //Console.WriteLine("Async started");
+            //loadRunner.Wait();
             
-            object defaultResults = histogramAggregator.BuildResultsObjects();
-            Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
+            //object defaultResults = histogramAggregator.BuildResultsObjects();
+            //Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
 
-            Console.ReadKey();
+            //Console.ReadKey();
         }
     }
 

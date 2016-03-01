@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Result;
@@ -8,9 +9,42 @@ namespace Viki.LoadRunner.Tools.Aggregators
 {
     public class JsonStreamAggregator : StreamAggregator
     {
-        public JsonStreamAggregator(string jsonOutputfile) : base(results => results.SerializeSequenceToJson(jsonOutputfile))
+        #region Fields
+
+        private readonly Func<string> _outFileNameFunc;
+
+        #endregion
+
+        #region Constructors
+
+        public JsonStreamAggregator(string jsonOutputfile)
         {
+            _outFileNameFunc = () => jsonOutputfile;
+
+            _streamWriterAction = StreamWriterFunction;
         }
+
+        public JsonStreamAggregator(Func<string> dynamicJsonOutputFile)
+        {
+            _outFileNameFunc = dynamicJsonOutputFile;
+
+            _streamWriterAction = StreamWriterFunction;
+        }
+
+        #endregion
+
+        #region Write function
+
+        private void StreamWriterFunction(IEnumerable<IResult> results)
+        {
+            string fileName = _outFileNameFunc();
+
+            results.SerializeSequenceToJson(fileName);
+        }
+
+        #endregion
+
+        #region Replay functions
 
         public static void Replay(string jsonResultsFile, params IResultsAggregator[] targetAggregators)
         {
@@ -28,5 +62,7 @@ namespace Viki.LoadRunner.Tools.Aggregators
         {
             return JsonStream.DeserializeSequenceFromJson<ReplayResult<TUserData>>(jsonResultsFile);
         }
+
+        #endregion
     }
 }

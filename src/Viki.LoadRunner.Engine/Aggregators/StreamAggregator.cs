@@ -15,7 +15,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     {
         #region Fields
 
-        private readonly Action<IEnumerable<IResult>> _streamWriterAction;
+        protected Action<IEnumerable<IResult>> _streamWriterAction;
 
         private readonly ConcurrentQueue<IResult> _queue = new ConcurrentQueue<IResult>();
 
@@ -36,6 +36,10 @@ namespace Viki.LoadRunner.Engine.Aggregators
                 throw new ArgumentNullException(nameof(streamWriterAction));
 
             _streamWriterAction = streamWriterAction;
+        }
+
+        protected StreamAggregator()
+        {
         }
 
         #endregion
