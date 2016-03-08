@@ -28,6 +28,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         private readonly List<IMetric> _metricTemplates = new List<IMetric>();
 
         private readonly Dictionary<string, string> _columnNameAliases = new Dictionary<string, string>();
+        private readonly List<string> _ignoredColumnNames = new List<string>();
 
         #endregion
 
@@ -52,6 +53,13 @@ namespace Viki.LoadRunner.Engine.Aggregators
         public HistogramAggregator Add(IMetric metricTemplate)
         {
             _metricTemplates.Add(metricTemplate);
+
+            return this;
+        }
+
+        public HistogramAggregator Ignore(string columnName)
+        {
+            _ignoredColumnNames.Add(columnName);
 
             return this;
         }
@@ -108,6 +116,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             string[] columnNames = _dimensions
                 .Select(d => d.DimensionName)
                 .Concat(orderLearner.LearnedOrder)
+                .Except(_ignoredColumnNames)
                 .ToArray();
 
             object[][] resultValues = new object[_row.Count][];
@@ -129,7 +138,8 @@ namespace Viki.LoadRunner.Engine.Aggregators
                 {
                     int columnIndex = Array.FindIndex(columnNames, s => s == metrics.ColumnNames[i]);
 
-                    resultValues[rowIndex][columnIndex] = metrics.Values[i];
+                    if(columnIndex != -1)
+                        resultValues[rowIndex][columnIndex] = metrics.Values[i];
                 }
 
                 rowIndex++;

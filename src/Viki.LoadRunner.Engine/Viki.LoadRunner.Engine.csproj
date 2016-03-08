@@ -49,6 +49,7 @@
     <Compile Include="Aggregators\HistogramResultsAggregator.cs" />
     <Compile Include="Aggregators\AsyncResultsAggregator.cs" />
     <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
+    <Compile Include="Aggregators\Metrics\BreakByMetric.cs" />
     <Compile Include="Aggregators\Metrics\CountMetric.cs" />
     <Compile Include="Aggregators\Metrics\ErrorCountMetric.cs" />
     <Compile Include="Aggregators\Metrics\FuncMetric.cs" />
