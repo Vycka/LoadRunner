@@ -16,10 +16,10 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         private readonly Type _testScenarioType;
         private readonly ITimer _executionTimer;
 
-        private readonly ConcurrentDictionary<int, TestExecutorThread> _allThreads = new ConcurrentDictionary<int, TestExecutorThread>();
-        private readonly ConcurrentDictionary<int, TestExecutorThread> _initializedThreads = new ConcurrentDictionary<int, TestExecutorThread>();
-        private readonly ConcurrentQueue<TestExecutorThread> _idleThreads = new ConcurrentQueue<TestExecutorThread>();
-        private readonly ConcurrentBag<Exception> _threadErrors = new ConcurrentBag<Exception>();
+        private readonly ConcurrentDictionary<int, TestExecutorThread> _allThreads;
+        private readonly ConcurrentDictionary<int, TestExecutorThread> _initializedThreads;
+        private readonly ConcurrentQueue<TestExecutorThread> _idleThreads;
+        private readonly ConcurrentBag<Exception> _threadErrors;
 
         private bool _disposing;
         private int _nextIterationId;
@@ -42,6 +42,11 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 throw new ArgumentNullException(nameof(testScenarioType));
             if (executionTimer == null)
                 throw new ArgumentNullException(nameof(executionTimer));
+
+            _allThreads = new ConcurrentDictionary<int, TestExecutorThread>();
+            _initializedThreads = new ConcurrentDictionary<int, TestExecutorThread>();
+            _idleThreads = new ConcurrentQueue<TestExecutorThread>();
+            _threadErrors = new ConcurrentBag<Exception>();
 
             _testScenarioType = testScenarioType;
             _executionTimer = executionTimer;
@@ -128,7 +133,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             {
                 Exception resultError;
                 _threadErrors.TryTake(out resultError);
-                throw resultError;
+
+                if (resultError != null)
+                    throw resultError;
             }
         }
 
