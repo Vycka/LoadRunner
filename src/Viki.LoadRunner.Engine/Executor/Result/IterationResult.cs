@@ -34,7 +34,7 @@ namespace Viki.LoadRunner.Engine.Executor.Result
             IterationStarted = testContext.IterationStarted;
             IterationFinished = testContext.IterationFinished;
 
-            Checkpoints = testContext.LoggedCheckpoints.ToArray();
+            Checkpoints = testContext.LoggedCheckpoints.Select(c => c).Cast<ICheckpoint>().ToArray();
         }
     }
 }

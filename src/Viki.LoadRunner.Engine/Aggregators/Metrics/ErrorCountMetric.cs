@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
     public class ErrorCountMetric : IMetric
     {
         private readonly bool _includeTotals;
-        private readonly FlexiRow<string, int> _row = new FlexiRow<string, int>((() => default(int)));
+        private readonly FlexiRow<string, int> _row = new FlexiRow<string, int>(() => default(int));
 
         public ErrorCountMetric(bool includeTotals = true)
         {
@@ -20,7 +20,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         IMetric IMetric.CreateNew()
         {
-            return new ErrorCountMetric();
+            return new ErrorCountMetric(_includeTotals);
         }
 
         void IMetric.Add(IResult result)
