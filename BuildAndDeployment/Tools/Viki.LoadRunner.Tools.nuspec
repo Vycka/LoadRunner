@@ -19,6 +19,7 @@
     <tags>Load Stress Test Tester c# Runner Parallel Thread Client Library Framework Tool Addin .NET utils</tags>
 	<dependencies>
         <dependency id="Newtonsoft.Json" version="8.0.0" />
+		<dependency id="Viki.LoadRunner.Engine" version="7.2.5" />
     </dependencies>
   </metadata>
 </package>

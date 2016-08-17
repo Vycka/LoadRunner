@@ -1,7 +1,7 @@
 @ECHO OFF
 cd %~dp0
 
-SET minorVersion="0.1-alpha"
+SET minorVersion="0.2-alpha"
 SET majorVersion="0"
 
 SET projectID=Viki.LoadRunner.Tools
@@ -16,9 +16,11 @@ del %projectID%.nupkg
 echo Clean up finished
 
 echo Try to remove necessary dll's
-
-
+del pack\lib\net45\Newtonsoft.Json.dll
+del pack\lib\net45\Newtonsoft.Json.xml
+del pack\lib\net45\Viki.LoadRunner.Engine.dll
 echo Necessary dll's removed
+
 
 echo Creating package
 ..\NuGet.exe pack .\pack\%projectID%.nuspec

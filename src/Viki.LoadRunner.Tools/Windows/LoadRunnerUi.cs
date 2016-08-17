@@ -18,6 +18,7 @@ namespace Viki.LoadRunner.Tools.Windows
 {
     public partial class LoadRunnerUi : Form, IResultsAggregator
     {
+        private readonly Type _iTestScenarioType;
         private readonly MetricMultiplexer _metricMultiplexerTemplate;
         private IMetric _metricMultiplexer;
         private readonly LoadRunnerEngine _loadRunnerEngine;
@@ -39,6 +40,10 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private LoadRunnerUi(LoadRunnerParameters parameters, Type iTestScenarioType, IResultsAggregator[] resultsAggregators)
         {
+            if (iTestScenarioType == null)
+                throw new ArgumentNullException(nameof(iTestScenarioType));
+            _iTestScenarioType = iTestScenarioType;
+
             _metricMultiplexerTemplate = new MetricMultiplexer(new IMetric[]
             {
                 new FuncMultiMetric<int>((row, result) => 
@@ -55,15 +60,23 @@ namespace Viki.LoadRunner.Tools.Windows
             InitializeComponent();
         }
 
+        private void ResetStats()
+        {
+            _metricMultiplexer = ((IMetric)_metricMultiplexerTemplate).CreateNew();
+        }
+
         void IResultsAggregator.Begin()
         {
             _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = false));
+            _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = false));
             _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = true));
 
-            _metricMultiplexer = ((IMetric)_metricMultiplexerTemplate).CreateNew();
+
+            ResetStats();
 
             _backgroundWorker1.RunWorkerAsync();
         }
+
 
         void IResultsAggregator.TestContextResultReceived(IResult result)
         {
@@ -92,6 +105,7 @@ namespace Viki.LoadRunner.Tools.Windows
             _backgroundWorker1.CancelAsync();
 
             _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = true));
+            _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = true));
             _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = false));
         }
 
@@ -139,5 +153,10 @@ namespace Viki.LoadRunner.Tools.Windows
         }
 
         private delegate void InvokeDelegate();
+
+        private void _validateButton_Click(object sender, EventArgs e)
+        {
+            LoadTestScenarioValidator.Validate((ILoadTestScenario) Activator.CreateInstance(_iTestScenarioType));
+        }
     }
 }
