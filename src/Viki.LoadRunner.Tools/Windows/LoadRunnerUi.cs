@@ -18,6 +18,8 @@ namespace Viki.LoadRunner.Tools.Windows
 {
     public partial class LoadRunnerUi : Form, IResultsAggregator
     {
+        public string TextTemplate = "LoadRunnerUi {0}";
+
         private readonly Type _iTestScenarioType;
         private readonly MetricMultiplexer _metricMultiplexerTemplate;
         private IMetric _metricMultiplexer;
@@ -67,12 +69,11 @@ namespace Viki.LoadRunner.Tools.Windows
 
         void IResultsAggregator.Begin()
         {
+            ResetStats();
+
             _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = false));
             _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = false));
             _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = true));
-
-
-            ResetStats();
 
             _backgroundWorker1.RunWorkerAsync();
         }
@@ -132,6 +133,7 @@ namespace Viki.LoadRunner.Tools.Windows
                 string jsonResult = JsonConvert.SerializeObject(GetData(), Formatting.Indented);
 
                 resultsTextBox.Invoke(new InvokeDelegate(() => resultsTextBox.Text = jsonResult));
+                this.Invoke(new InvokeDelegate(() => Text = string.Format(TextTemplate, _loadRunnerEngine.TestDuration.ToString("g"))));
 
                 Thread.Sleep(1000);
             }
@@ -157,6 +159,11 @@ namespace Viki.LoadRunner.Tools.Windows
         private void _validateButton_Click(object sender, EventArgs e)
         {
             LoadTestScenarioValidator.Validate((ILoadTestScenario) Activator.CreateInstance(_iTestScenarioType));
+        }
+
+        private void _clearButton_Click(object sender, EventArgs e)
+        {
+            ResetStats();
         }
     }
 }

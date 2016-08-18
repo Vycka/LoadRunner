@@ -105,6 +105,7 @@
             this._clearButton.TabIndex = 6;
             this._clearButton.Text = "Clear";
             this._clearButton.UseVisualStyleBackColor = true;
+            this._clearButton.Click += new System.EventHandler(this._clearButton_Click);
             // 
             // LoadRunnerUi
             // 
