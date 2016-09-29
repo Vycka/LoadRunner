@@ -13,6 +13,7 @@ using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Utils;
+using Viki.LoadRunner.Tools.Utils;
 
 namespace Viki.LoadRunner.Tools.Windows
 {
@@ -71,9 +72,9 @@ namespace Viki.LoadRunner.Tools.Windows
         {
             ResetStats();
 
-            _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = false));
-            _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = false));
-            _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = true));
+            _startButton.SetPropertyThreadSafe(() => _startButton.Enabled, false);
+            _validateButton.SetPropertyThreadSafe(() => _validateButton.Enabled, false);
+            _stopButton.SetPropertyThreadSafe(() => _stopButton.Enabled, true);
 
             _backgroundWorker1.RunWorkerAsync();
         }
@@ -91,9 +92,9 @@ namespace Viki.LoadRunner.Tools.Windows
                         existingTextBoxValue = existingTextBoxValue.Substring(0, 10000);
                     }
 
-                    string newText = $"{DateTime.Now.ToString("O")} {checkpoint.Name}\r\n{checkpoint.Error}\r\n\r\n";
+                    string newText = $"{DateTime.Now.ToString("O")} {checkpoint.Name}\r\n{checkpoint.Error}\r\n\r\n{existingTextBoxValue}";
 
-                    tbErrors.Invoke(new InvokeDelegate(() => tbErrors.Text = newText + existingTextBoxValue));
+                    tbErrors.SetPropertyThreadSafe(() => tbErrors.Text, newText);
                 }
                     
             }
@@ -105,9 +106,9 @@ namespace Viki.LoadRunner.Tools.Windows
         {
             _backgroundWorker1.CancelAsync();
 
-            _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = true));
-            _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = true));
-            _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = false));
+            _startButton.SetPropertyThreadSafe(() => _startButton.Enabled, true);
+            _validateButton.SetPropertyThreadSafe(() => _validateButton.Enabled, true);
+            _stopButton.SetPropertyThreadSafe(() => _stopButton.Enabled, false);
         }
 
         private void _startButton_Click(object sender, EventArgs e)
@@ -115,7 +116,12 @@ namespace Viki.LoadRunner.Tools.Windows
             DialogResult dialogResult = MessageBox.Show("Start?", "Start?", MessageBoxButtons.YesNo);
 
             if (dialogResult == DialogResult.Yes)
+            {
+                _startButton.Enabled = false;
+                _validateButton.Enabled = false;
+
                 _loadRunnerEngine.RunAsync();
+            }
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -132,8 +138,8 @@ namespace Viki.LoadRunner.Tools.Windows
             {
                 string jsonResult = JsonConvert.SerializeObject(GetData(), Formatting.Indented);
 
-                resultsTextBox.Invoke(new InvokeDelegate(() => resultsTextBox.Text = jsonResult));
-                this.Invoke(new InvokeDelegate(() => Text = string.Format(TextTemplate, _loadRunnerEngine.TestDuration.ToString("g"))));
+                resultsTextBox.SetPropertyThreadSafe(() => resultsTextBox.Text, jsonResult);
+                this.SetPropertyThreadSafe(() => Text, string.Format(TextTemplate, _loadRunnerEngine.TestDuration.ToString("g")));
 
                 Thread.Sleep(1000);
             }
@@ -153,8 +159,6 @@ namespace Viki.LoadRunner.Tools.Windows
 
             return dictionary;
         }
-
-        private delegate void InvokeDelegate();
 
         private void _validateButton_Click(object sender, EventArgs e)
         {
