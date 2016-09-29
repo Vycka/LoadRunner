@@ -115,4 +115,34 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #endregion
     }
+
+    public class BufferedEnumerable<T>
+    {
+        private readonly ConcurrentQueue<T> _queue = new ConcurrentQueue<T>();
+
+        public bool Lock;
+
+        public IEnumerable<T> Buffer
+        {
+            get
+            {
+                while (Lock == true || _queue.IsEmpty == false)
+                {
+                    T result;
+
+                    while (_queue.TryDequeue(out result))
+                        yield return result;
+
+                    Thread.Sleep(100);
+                }
+            }
+        }
+
+        public void Add(T item)
+        {
+            _queue.Enqueue(item);
+        }
+    }
+
+
 }

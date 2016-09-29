@@ -52,6 +52,7 @@
     <Compile Include="Aggregators\Metrics\BreakByMetric.cs" />
     <Compile Include="Aggregators\Metrics\CountMetric.cs" />
     <Compile Include="Aggregators\Metrics\ErrorCountMetric.cs" />
+    <Compile Include="Aggregators\Metrics\ErrorRatioMetric.cs" />
     <Compile Include="Aggregators\Metrics\FuncMetric.cs" />
     <Compile Include="Aggregators\Metrics\FuncMultiMetric.cs" />
     <Compile Include="Aggregators\Metrics\IMetric.cs" />
