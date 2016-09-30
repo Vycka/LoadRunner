@@ -5,7 +5,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
     public interface IMetric
     {
         /// <summary>
-        /// Create new blank IMetric instance based on current instance settings
+        /// Create new blank IMetric instance based on current instance settings (e.g. settings passed in the constructor in histogram setup)
         /// </summary>
         /// <returns></returns>
         IMetric CreateNew();

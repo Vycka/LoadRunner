@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-#pragma warning disable 1591 // missing xml-doc
 
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {

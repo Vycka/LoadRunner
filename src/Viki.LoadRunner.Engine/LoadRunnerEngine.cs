@@ -109,13 +109,8 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         public void CancelAsync(bool blocking = true)
         {
-            // This inits the stop
-            _parameters.Limits.MaxIterationsCount = 0;
-
-            if (blocking)
-                _asyncRunThread?.Join();
+            Wait(TimeSpan.Zero, true);
         }
-
 
         /// <summary>
         /// Waits, till execution is finished.

@@ -9,7 +9,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     public class PercentileMetric : IMetric
     {
-        private readonly FlexiRow<string, List<double>> _row = new FlexiRow<string, List<double>>((() => new List<double>()));
+        private readonly FlexiRow<string, List<double>> _row = new FlexiRow<string, List<double>>(() => new List<double>());
         private readonly double[] _percentiles;
         private readonly string[] _ignoredCheckpoints;
 
