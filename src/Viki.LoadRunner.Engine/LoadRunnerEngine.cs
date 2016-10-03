@@ -40,6 +40,11 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         public DateTime TestBeginTimeUtc => _timer.BeginTime;
 
+        /// <summary>
+        /// Indicates whether LoadTest is currently running
+        /// </summary>
+        public bool IsRunning => _timer.IsRunning;
+
         #endregion
 
         #region Constructor

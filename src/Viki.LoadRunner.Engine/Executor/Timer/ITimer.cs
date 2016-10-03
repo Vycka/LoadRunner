@@ -11,6 +11,11 @@ namespace Viki.LoadRunner.Engine.Executor.Timer
         /// Time passed since the start of the execution
         /// </summary>
         TimeSpan CurrentValue { get; }
+
+        /// <summary>
+        /// Indicates whether timer is running
+        /// </summary>
+        bool IsRunning { get;  }
         
         /// <summary>
         /// Real-world utc time of when load test was started

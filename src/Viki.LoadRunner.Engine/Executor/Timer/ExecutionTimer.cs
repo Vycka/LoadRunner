@@ -18,17 +18,13 @@ namespace Viki.LoadRunner.Engine.Executor.Timer
             _stopwatch.Start();
         }
 
-        //public void UpdateCurrent()
-        //{
-        //    CurrentValue = _stopwatch.Elapsed;
-        //}
-
         public void Stop()
         {
             _stopwatch.Stop();
         }
 
         public TimeSpan CurrentValue => _stopwatch.Elapsed;
+        public bool IsRunning => _stopwatch.IsRunning;
         public DateTime BeginTime => _beginTime;
     }
 }

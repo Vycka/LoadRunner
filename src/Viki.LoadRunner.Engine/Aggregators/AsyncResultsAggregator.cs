@@ -78,10 +78,6 @@ namespace Viki.LoadRunner.Engine.Aggregators
         // TODO: Think of better way to catch error (not using _thrownException)
         private void ProcessorThreadFunction()
         {
-            Action<IResult> singleAggregator = r => _resultsAggregators[0].TestContextResultReceived(r);
-            Action<IResult> multiAggregator = r => Parallel.ForEach(_resultsAggregators, a => a.TestContextResultReceived(r));
-
-            Action<IResult> aggregator = _resultsAggregators.Length == 1 ? singleAggregator : multiAggregator;
 
             try
             {
@@ -92,16 +88,21 @@ namespace Viki.LoadRunner.Engine.Aggregators
                     {
                         IResult localResultObject = resultObject;
 
-                        aggregator(localResultObject);
+                        Parallel.ForEach(_resultsAggregators, a => a.TestContextResultReceived(localResultObject));
                     }
 
                     Thread.Sleep(50);
                 }
             }
-            catch (Exception ex)
+            catch (AggregateException ex)
             {
                 _thrownException = ex;
-                throw;
+
+                //throw ex.InnerException;
+
+                // Rethrowing exception here does nothing, since this is executed in _processorThread
+                // But it will bubble up to application-thread if LoadRunnerUi(IResultsAggregator) is used. (Because it invokes controls from this _processorThread, and this is the point where exceptions can reach the application-thread)
+                // Not rethrowing here just makes LoadRunner work consistently.
             }
         }
 

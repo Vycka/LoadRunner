@@ -59,8 +59,10 @@
             // 
             // _backgroundWorker1
             // 
+            this._backgroundWorker1.WorkerReportsProgress = true;
             this._backgroundWorker1.WorkerSupportsCancellation = true;
             this._backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this._backgroundWorker1_DoWork);
+            this._backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this._backgroundWorker1_ProgressChanged);
             // 
             // _stopButton
             // 
@@ -121,6 +123,7 @@
             this.Name = "LoadRunnerUi";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LoadRunnerUi";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoadRunnerUi_FormClosing);
             this.ResumeLayout(false);
 
         }

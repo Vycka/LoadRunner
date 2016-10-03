@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -13,7 +14,6 @@ using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Utils;
-using Viki.LoadRunner.Tools.Utils;
 
 namespace Viki.LoadRunner.Tools.Windows
 {
@@ -25,6 +25,8 @@ namespace Viki.LoadRunner.Tools.Windows
         private readonly MetricMultiplexer _metricMultiplexerTemplate;
         private IMetric _metricMultiplexer;
         private readonly LoadRunnerEngine _loadRunnerEngine;
+
+        private readonly ConcurrentQueue<IResult> _resultsQueue = new ConcurrentQueue<IResult>(); 
 
         /// <summary>
         /// Initializes new executor instance
@@ -72,43 +74,28 @@ namespace Viki.LoadRunner.Tools.Windows
         {
             ResetStats();
 
-            _startButton.SetPropertyThreadSafe(() => _startButton.Enabled, false);
-            _validateButton.SetPropertyThreadSafe(() => _validateButton.Enabled, false);
-            _stopButton.SetPropertyThreadSafe(() => _stopButton.Enabled, true);
+            _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = false));
+            _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = false));
+            _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = true));
 
-            _backgroundWorker1.RunWorkerAsync();
+            // Invoke forces this command to be executed on UI thread
+            // This will allow BW ProcessChange to work properly.
+            Invoke(new InvokeDelegate(() => _backgroundWorker1.RunWorkerAsync()));
         }
 
 
         void IResultsAggregator.TestContextResultReceived(IResult result)
         {
-            foreach (ICheckpoint checkpoint in result.Checkpoints)
-            {
-                if (checkpoint.Error != null)
-                {
-                    string existingTextBoxValue = tbErrors.Text;
-                    if (existingTextBoxValue.Length > 10000)
-                    {
-                        existingTextBoxValue = existingTextBoxValue.Substring(0, 10000);
-                    }
-
-                    string newText = $"{DateTime.Now.ToString("O")} {checkpoint.Name}\r\n{checkpoint.Error}\r\n\r\n{existingTextBoxValue}";
-
-                    tbErrors.SetPropertyThreadSafe(() => tbErrors.Text, newText);
-                }
-                    
-            }
-
-            _metricMultiplexer.Add(result);
+            _resultsQueue.Enqueue(result);
         }
 
         void IResultsAggregator.End()
         {
             _backgroundWorker1.CancelAsync();
 
-            _startButton.SetPropertyThreadSafe(() => _startButton.Enabled, true);
-            _validateButton.SetPropertyThreadSafe(() => _validateButton.Enabled, true);
-            _stopButton.SetPropertyThreadSafe(() => _stopButton.Enabled, false);
+            _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = true));
+            _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = true));
+            _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = false));
         }
 
         private void _startButton_Click(object sender, EventArgs e)
@@ -116,12 +103,7 @@ namespace Viki.LoadRunner.Tools.Windows
             DialogResult dialogResult = MessageBox.Show("Start?", "Start?", MessageBoxButtons.YesNo);
 
             if (dialogResult == DialogResult.Yes)
-            {
-                _startButton.Enabled = false;
-                _validateButton.Enabled = false;
-
                 _loadRunnerEngine.RunAsync();
-            }
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -136,13 +118,12 @@ namespace Viki.LoadRunner.Tools.Windows
         {
             while (_backgroundWorker1.CancellationPending == false)
             {
-                string jsonResult = JsonConvert.SerializeObject(GetData(), Formatting.Indented);
-
-                resultsTextBox.SetPropertyThreadSafe(() => resultsTextBox.Text, jsonResult);
-                this.SetPropertyThreadSafe(() => Text, string.Format(TextTemplate, _loadRunnerEngine.TestDuration.ToString("g")));
+                _backgroundWorker1.ReportProgress(0);
 
                 Thread.Sleep(1000);
             }
+
+            _backgroundWorker1.ReportProgress(0);
         }
 
         private IDictionary<string, object> GetData()
@@ -160,6 +141,8 @@ namespace Viki.LoadRunner.Tools.Windows
             return dictionary;
         }
 
+        private delegate void InvokeDelegate();
+
         private void _validateButton_Click(object sender, EventArgs e)
         {
             LoadTestScenarioValidator.Validate((ILoadTestScenario) Activator.CreateInstance(_iTestScenarioType));
@@ -168,6 +151,47 @@ namespace Viki.LoadRunner.Tools.Windows
         private void _clearButton_Click(object sender, EventArgs e)
         {
             ResetStats();
+        }
+
+        private void _backgroundWorker1_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            IResult result;
+
+            while (_resultsQueue.TryDequeue(out result))
+            {
+                _metricMultiplexer.Add(result);
+
+                foreach (ICheckpoint checkpoint in result.Checkpoints)
+                {
+                    if (checkpoint.Error != null)
+                    {
+                        string existingTextBoxValue = tbErrors.Text;
+                        if (existingTextBoxValue.Length > 10000)
+                        {
+                            existingTextBoxValue = existingTextBoxValue.Substring(0, 10000);
+                        }
+
+                        string newText = $"{DateTime.Now.ToString("O")} {checkpoint.Name}\r\n{checkpoint.Error}\r\n\r\n";
+                        newText += existingTextBoxValue;
+
+                        tbErrors.Text = newText;
+                    }
+                }
+            }
+
+            string jsonResult = JsonConvert.SerializeObject(GetData(), Formatting.Indented);
+            resultsTextBox.Text = jsonResult;
+            Text = string.Format(TextTemplate, _loadRunnerEngine.TestDuration.ToString("g"));
+        }
+
+        private void LoadRunnerUi_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_loadRunnerEngine.IsRunning)
+            {
+                e.Cancel = true;
+
+                MessageBox.Show("Can't close window when test is running. Stop it first");
+            }
         }
     }
 }
