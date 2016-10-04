@@ -1,5 +1,9 @@
 ﻿namespace Viki.LoadRunner.Engine.Executor.Context
 {
+    /// <summary>
+    /// Only iteration metadata containing values (no meassurements)
+    /// </summary>
+    /// <typeparam name="TUserData">type of UserData it will carry</typeparam>
     public interface IIterationMetadata<TUserData>
     {
         /// <summary>

@@ -17,10 +17,14 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
 
         public new TUserData UserData
         {
-            get { return (TUserData)((IIterationMetadata<object>)this).UserData; }
-            set { ((IIterationMetadata<object>)this).UserData = value; }
+            get { return (TUserData)base.UserData; }
+            set { base.UserData = value; }
         }
 
+        /// <summary>
+        /// offsets IterationStarted and IterationFinished values by provided offset
+        /// </summary>
+        /// <param name="offset"></param>
         public void Offset(TimeSpan offset)
         {
             IterationStarted += offset;

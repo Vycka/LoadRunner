@@ -10,6 +10,9 @@ namespace Viki.LoadRunner.Engine.Executor.Result
         {
         }
 
+        /// <summary>
+        /// Checkpoints contain meassured durations
+        /// </summary>
         public ICheckpoint[] Checkpoints { get; set; }
 
         public int GlobalIterationId { get; set; }
