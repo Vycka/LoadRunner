@@ -21,7 +21,7 @@ namespace Viki.LoadRunner.Playground
         public static void Run()
         {
 
-            // LoadRunnerParameters initializes defaults shown below
+            // LoadRunnerParameters used to configure on how load test will execute.
             LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
             {
                 Limits = new ExecutionLimits
