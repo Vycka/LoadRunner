@@ -9,7 +9,7 @@
   - [ParametersSetup.cs](/demo/ParametersSetup.cs) - Setup execution parameters (threads, duration, speed, etc...)
   - [QuickIntroLoadTest.cs](/demo/QuickIntroLoadTest.cs) - Put it all together
   - [Program.cs](/demo/Program.cs) - Run it
-* [DemoResults.xlsx](/demo/DemoResults.xlsx) import results to excel and do some charting :)
+* [DemoResults.xlsx](/demo/DemoResults.xlsx) - import results to excel and do some charting :)
 ![](https://raw.githubusercontent.com/Vycka/LoadRunner/master/diagrams/Architecture.png)
 
 ***Sorry for poor documentation, I don't have much time to work on it ATM, but if having any questions/suggestions/etc, feel free to contact me.***
