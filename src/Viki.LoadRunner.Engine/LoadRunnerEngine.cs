@@ -114,7 +114,12 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         public void CancelAsync(bool blocking = true)
         {
-            Wait(TimeSpan.Zero, true);
+            // TODO: Refactor a bit to allow clean way to stop this
+            // This inits the stop.
+            _parameters.Limits.MaxIterationsCount = 0;
+
+            if (blocking)
+                Wait();
         }
 
         /// <summary>
