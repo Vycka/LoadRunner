@@ -16,7 +16,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             if (iterationPerSecValues == null)
                 throw new ArgumentNullException(nameof(iterationPerSecValues));
             if (iterationPerSecValues.Length == 0)
-                throw new ArgumentException("at least one iteration speed must be provided", nameof(iterationPerSecValues));
+                throw new ArgumentException("At least one iteration speed must be provided", nameof(iterationPerSecValues));
 
             _period = period;
             _iterationPerSecValues = iterationPerSecValues;
@@ -28,7 +28,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             long index = testExecutionTime.Ticks / _period.Ticks;
 
             if (index < _iterationPerSecValues.Length)
-                return TimeSpan.FromTicks((long) (OneSecond.Ticks / _iterationPerSecValues[index]));
+                return TimeSpan.FromTicks((long) (OneSecond.Ticks / _iterationPerSecValues[index])); // TODO: This math can be cached in c-tor
 
             return _maxSpeed;
         }

@@ -19,12 +19,18 @@ namespace Viki.LoadRunner.Tools.Windows
 {
     public partial class LoadRunnerUi : Form, IResultsAggregator
     {
-        public string TextTemplate = "LoadRunnerUi {0}";
+        public string TextTemplate = "LR-UI {0}";
 
         private readonly Type _iTestScenarioType;
         private readonly MetricMultiplexer _metricMultiplexerTemplate;
         private IMetric _metricMultiplexer;
-        private readonly LoadRunnerEngine _loadRunnerEngine;
+
+        /// <summary>
+        /// Exposed LoadRunnerEngine instance to give access to its status properties.
+        /// 
+        /// But It shouldn't be controlled from here, use UI buttons instead.
+        /// </summary>
+        public readonly LoadRunnerEngine Instance;
 
         private readonly ConcurrentQueue<IResult> _resultsQueue = new ConcurrentQueue<IResult>(); 
 
@@ -60,7 +66,7 @@ namespace Viki.LoadRunner.Tools.Windows
                 new TransactionsPerSecMetric()
             });
 
-            _loadRunnerEngine = new LoadRunnerEngine(parameters, iTestScenarioType, resultsAggregators.Concat(new [] { this }).ToArray());
+            Instance = new LoadRunnerEngine(parameters, iTestScenarioType, resultsAggregators.Concat(new [] { this }).ToArray());
 
             InitializeComponent();
         }
@@ -73,6 +79,7 @@ namespace Viki.LoadRunner.Tools.Windows
         void IResultsAggregator.Begin()
         {
             ResetStats();
+            TestStartedDisableButtons();
 
             // Invoke forces this command to be executed on UI thread
             // This will allow BW ProcessChange to work properly.
@@ -89,10 +96,10 @@ namespace Viki.LoadRunner.Tools.Windows
         {
             _backgroundWorker1.CancelAsync();
 
-            _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = true));
-            _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = true));
-            _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = false));
+            TestEndedEnableButtons();
         }
+
+
 
         private void _startButton_Click(object sender, EventArgs e)
         {
@@ -100,12 +107,24 @@ namespace Viki.LoadRunner.Tools.Windows
 
             if (dialogResult == DialogResult.Yes)
             {
-                _loadRunnerEngine.RunAsync();
+                Instance.RunAsync();
 
-                _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = false));
-                _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = false));
-                _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = true));
+                TestStartedDisableButtons();
             }
+        }
+
+        private void TestStartedDisableButtons()
+        {
+            _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = false));
+            _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = false));
+            _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = true));
+        }
+
+        private void TestEndedEnableButtons()
+        {
+            _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = true));
+            _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = true));
+            _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = false));
         }
 
         private void stopButton_Click(object sender, EventArgs e)
@@ -113,7 +132,7 @@ namespace Viki.LoadRunner.Tools.Windows
             DialogResult dialogResult = MessageBox.Show("Stop?", "Stop?", MessageBoxButtons.YesNo);
 
             if (dialogResult == DialogResult.Yes)
-                Task.Run(() => _loadRunnerEngine.Wait(TimeSpan.Zero, true));
+                Task.Run(() => Instance.Wait(TimeSpan.Zero, true));
         }
 
         private void _backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -183,17 +202,27 @@ namespace Viki.LoadRunner.Tools.Windows
 
             string jsonResult = JsonConvert.SerializeObject(GetData(), Formatting.Indented);
             resultsTextBox.Text = jsonResult;
-            Text = string.Format(TextTemplate, _loadRunnerEngine.TestDuration.ToString("g"));
+            RefreshWindowTitle();
         }
 
         private void LoadRunnerUi_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_loadRunnerEngine.IsRunning)
+            if (Instance.IsRunning)
             {
                 e.Cancel = true;
 
                 MessageBox.Show("Can't close window when test is running. Stop it first");
             }
+        }
+
+        private void LoadRunnerUi_Shown(object sender, EventArgs e)
+        {
+            RefreshWindowTitle();
+        }
+
+        private void RefreshWindowTitle()
+        {
+            Text = string.Format(TextTemplate, Instance.TestDuration.ToString("g"));
         }
     }
 }

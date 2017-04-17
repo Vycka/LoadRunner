@@ -124,6 +124,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LoadRunnerUi";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoadRunnerUi_FormClosing);
+            this.Shown += new System.EventHandler(this.LoadRunnerUi_Shown);
             this.ResumeLayout(false);
 
         }
