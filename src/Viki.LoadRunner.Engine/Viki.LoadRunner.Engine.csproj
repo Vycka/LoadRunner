@@ -86,6 +86,7 @@
     <Compile Include="Executor\Result\IResult.cs" />
     <Compile Include="Executor\Timer\ITimer.cs" />
     <Compile Include="Executor\Timer\ExecutionTimer.cs" />
+    <Compile Include="Executor\Timer\StopWatchEx.cs" />
     <Compile Include="LoadTestBase.cs" />
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\ITestContext.cs" />
@@ -101,8 +102,10 @@
     <Compile Include="Executor\Threads\TestExecutorThread.cs" />
     <Compile Include="Strategies\ISpeedStrategy.cs" />
     <Compile Include="Strategies\IThreadingStrategy.cs" />
+    <Compile Include="Strategies\Speed\ClockedListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\FixedSpeed.cs" />
     <Compile Include="Strategies\Speed\IncrementalSpeed.cs" />
+    <Compile Include="Strategies\Speed\ListOfSpeed.cs" />
     <Compile Include="Strategies\Threading\IncrementalThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalWorkingThreadCount.cs" />
     <Compile Include="Strategies\Threading\SemiAutoThreadCount.cs" />

@@ -4,19 +4,19 @@ namespace Viki.LoadRunner.Engine
 {
     public interface ILoadTestScenario
     {
-        void ScenarioSetup(ITestContext testContext);
+        void ScenarioSetup(ITestContext context);
 
-        void IterationSetup(ITestContext testContext);
+        void IterationSetup(ITestContext context);
 
         /// <summary>
         /// Test scenario for single thread
         /// </summary>
         /// <param name="testContext"></param>
-        void ExecuteScenario(ITestContext testContext);
+        void ExecuteScenario(ITestContext context);
 
 
-        void IterationTearDown(ITestContext testContext);
+        void IterationTearDown(ITestContext context);
 
-        void ScenarioTearDown(ITestContext testContext);
+        void ScenarioTearDown(ITestContext context);
     }
 }

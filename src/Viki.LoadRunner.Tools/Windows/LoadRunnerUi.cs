@@ -74,10 +74,6 @@ namespace Viki.LoadRunner.Tools.Windows
         {
             ResetStats();
 
-            _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = false));
-            _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = false));
-            _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = true));
-
             // Invoke forces this command to be executed on UI thread
             // This will allow BW ProcessChange to work properly.
             Invoke(new InvokeDelegate(() => _backgroundWorker1.RunWorkerAsync()));
@@ -103,7 +99,13 @@ namespace Viki.LoadRunner.Tools.Windows
             DialogResult dialogResult = MessageBox.Show("Start?", "Start?", MessageBoxButtons.YesNo);
 
             if (dialogResult == DialogResult.Yes)
+            {
                 _loadRunnerEngine.RunAsync();
+
+                _startButton.Invoke(new InvokeDelegate(() => _startButton.Enabled = false));
+                _validateButton.Invoke(new InvokeDelegate(() => _validateButton.Enabled = false));
+                _stopButton.Invoke(new InvokeDelegate(() => _stopButton.Enabled = true));
+            }
         }
 
         private void stopButton_Click(object sender, EventArgs e)

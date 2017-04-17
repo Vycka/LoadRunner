@@ -32,7 +32,7 @@ namespace Viki.LoadRunner.Engine.Executor.Result
         int CreatedThreads { get; }
 
         /// <summary>
-        /// Count of currently working test scenario runner threads t the end of this iteration
+        /// Count of currently working test scenario runner threads at the end of this iteration
         /// </summary>
         int WorkingThreads { get; }
     }
