@@ -127,7 +127,7 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         /// <param name="timeOut">timeout time period to wait before returning</param>
         /// <param name="abortOnTimeOut">if execution won't finish within desired timeout, should it be terminated prematurely?</param>
-        /// <returns>true - if test execution is finished before timeout or aborted due to [abortOnTimeOut]</returns>
+        /// <returns>true - if test execution is stopped (either before timeout or aborted due to [abortOnTimeOut])</returns>
         public bool Wait(TimeSpan timeOut, bool abortOnTimeOut = false)
         {
             bool result = _asyncRunThread.Join(timeOut);
@@ -162,14 +162,11 @@ namespace Viki.LoadRunner.Engine
 
             try
             {
-                _threadCoordinator = new ThreadCoordinator(
-                    _iTestScenarioObjectType,
-                    _timer,
-                    _parameters.ThreadingStrategy.InitialThreadCount
-                )
+                _threadCoordinator = new ThreadCoordinator(_iTestScenarioObjectType, _timer)
                 {
                     InitialUserData = _parameters.InitialUserData
                 };
+                _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.InitialThreadCount);
                 _threadCoordinator.ScenarioIterationFinished += _threadCoordinator_ScenarioIterationFinished;
                 
                 int testIterationCount = 0;

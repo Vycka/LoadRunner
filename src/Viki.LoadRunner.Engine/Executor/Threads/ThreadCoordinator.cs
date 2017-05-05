@@ -33,10 +33,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #endregion
 
-
         #region Ctor
 
-        public ThreadCoordinator(Type testScenarioType, ITimer executionTimer, int initialThreadCount)
+        public ThreadCoordinator(Type testScenarioType, ITimer executionTimer)
         {
             if (testScenarioType == null)
                 throw new ArgumentNullException(nameof(testScenarioType));
@@ -51,7 +50,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             _testScenarioType = testScenarioType;
             _executionTimer = executionTimer;
 
-            InitializeThreads(initialThreadCount);
         }
 
         #endregion
@@ -90,6 +88,16 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             return result;
         }
 
+        public void InitializeThreads(int threadCount)
+        {
+            InitializeThreadsAsync(threadCount);
+
+            while (_allThreads.Any(t => t.Value.IsAlive && t.Value.ScenarioInitialized == false))
+            {
+                Thread.Sleep(100);
+            }
+        }
+
         public void InitializeThreadsAsync(int threadCount)
         {
             IEnumerable<TestExecutorThread> newThreads = CreateThreads(threadCount);
@@ -103,16 +111,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 newThread.StartThread();
 
                 _allThreads.TryAdd(newThread.ThreadId, newThread);
-            }
-        }
-
-        private void InitializeThreads(int threadCount)
-        {
-            InitializeThreadsAsync(threadCount);
-
-            while (_allThreads.Any(t => t.Value.IsAlive && t.Value.ScenarioInitialized == false))
-            {
-                Thread.Sleep(150);
             }
         }
 
