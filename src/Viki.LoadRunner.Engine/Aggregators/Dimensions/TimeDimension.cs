@@ -10,20 +10,28 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
     {
         public readonly TimeSpan Interval;
 
-
         /// <param name="interval">interval timespan</param>
-        public TimeDimension(TimeSpan interval)
+        public TimeDimension(TimeSpan interval, string dimensionName = "Time (s)")
         {
             Interval = interval;
+            DimensionName = dimensionName;
         }
 
-        public string DimensionName { get; } = "Time (s)";
-
+        public string DimensionName { get; }
+   
         string IDimension.GetKey(IResult result)
         {
-            TimeSpan resultTimeSlot = TimeSpan.FromTicks(((int)(result.IterationFinished.Ticks / Interval.Ticks)) * Interval.Ticks);
+            TimeSpan resultTimeSlot = Calculate(Interval, result.IterationFinished);
 
             return ((long)resultTimeSlot.TotalSeconds).ToString();
+        }
+
+        /// <summary>
+        /// Calculates TimeSpan value for dimension key.
+        /// </summary> 
+        public static TimeSpan Calculate(TimeSpan interval, TimeSpan time)
+        {
+            return TimeSpan.FromTicks(((int) (time.Ticks / interval.Ticks)) * interval.Ticks);
         }
     }
 }
