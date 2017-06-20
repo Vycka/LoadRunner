@@ -34,9 +34,11 @@ namespace Viki.LoadRunner.Engine
 
             testContext.Checkpoint(Checkpoint.IterationStartCheckpointName);
 
+            timer.Start();
             testContext.Start();
             loadTestScenario.ExecuteScenario(testContext);
             testContext.Stop();
+            timer.Stop();
 
             testContext.Checkpoint(Checkpoint.IterationEndCheckpointName);
 
