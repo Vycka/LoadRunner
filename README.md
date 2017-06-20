@@ -5,7 +5,7 @@
 ## *Quick Intro*
 * Take a look at [LoadRunner.Demo](/demo) project and follow commented code :)
   - [DemoTestScenario.cs](/demo/DemoTestScenario.cs) - Setup your Load-test scenario for single thread
-  - [AggregationSetup.cs](/demo/AggregationSetup.cs) - Setup what data be saved/meassured
+  - [AggregationSetup.cs](/demo/AggregationSetup.cs) - Setup what data will be saved/meassured
   - [ParametersSetup.cs](/demo/ParametersSetup.cs) - Setup execution parameters (threads, duration, speed, etc...)
   - [QuickIntroLoadTest.cs](/demo/QuickIntroLoadTest.cs) - Put it all together
   - [Program.cs](/demo/Program.cs) - Run it
