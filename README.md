@@ -9,6 +9,7 @@
   - [ParametersSetup.cs](/demo/ParametersSetup.cs) - Setup execution parameters (threads, duration, speed, etc...)
   - [QuickIntroLoadTest.cs](/demo/QuickIntroLoadTest.cs) - Put it all together
   - [Program.cs](/demo/Program.cs) - Run it
+  - [RawDataAggregationDemo.cs](/demo/RawDataAggregationDemo.cs) - Advanced RnD feature to checkout.
 * [DemoResults.xlsx](/demo/DemoResults.xlsx) - import results to excel and do some charting :)
 ![](https://raw.githubusercontent.com/Vycka/LoadRunner/master/diagrams/Architecture.png)
 
