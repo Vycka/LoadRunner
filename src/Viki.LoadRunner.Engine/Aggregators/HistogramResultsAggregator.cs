@@ -11,6 +11,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     /// <summary>
     /// Aggregates results by provided group key using Func&lt;TestContextResult, object&gt;()
     /// </summary>
+    [Obsolete("Use HistogramAggregator")]
     public class HistogramResultsAggregator : IResultsAggregator
     {
         #region Fields

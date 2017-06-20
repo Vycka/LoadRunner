@@ -11,6 +11,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     /// <summary>
     /// Calculates totals without doing any aggregations
     /// </summary>
+    [Obsolete("Use HistogramAggregator")]
     public class TotalsResultsAggregator : IResultsAggregator
     {
         #region Fields

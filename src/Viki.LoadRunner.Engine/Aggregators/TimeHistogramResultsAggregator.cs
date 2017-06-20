@@ -8,6 +8,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     /// <summary>
     /// Aggregate results by test execution time
     /// </summary>
+    [Obsolete("Use HistogramAggregator")]
     public class TimeHistogramResultsAggregator : IResultsAggregator
     {
         #region Fields
