@@ -20,9 +20,6 @@ namespace LoadRunner.Demo
         {
             // This demo shows this new HistogramAggregator which isn't currently documented anywhere else. (TODO)
             //
-            // Though there are older ones "Legacy" which are somewhat documented
-            // https://github.com/Vycka/LoadRunner/wiki/IResultsAggregator but avoid using them until HistogramAggregator is not enough (e.g. if wanting to make Exceptions dump)
-
             // This preset shown below more or less should work for most of the test cases, except for TimeDimension,
             // which you might want to adjust for bigger chunks or remove it to get totals [no dimensions == no grouping by].
             //
