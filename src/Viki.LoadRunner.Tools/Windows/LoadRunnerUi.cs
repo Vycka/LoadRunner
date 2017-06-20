@@ -166,7 +166,10 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void _validateButton_Click(object sender, EventArgs e)
         {
-            LoadTestScenarioValidator.Validate((ILoadTestScenario) Activator.CreateInstance(_iTestScenarioType));
+            IterationResult result = LoadTestScenarioValidator.Validate((ILoadTestScenario) Activator.CreateInstance(_iTestScenarioType));
+            ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.IterationEndCheckpointName);
+
+            AppendMessage($"Validation OK: {checkpoint.TimePoint.TotalMilliseconds}ms.");
         }
 
         private void _clearButton_Click(object sender, EventArgs e)
@@ -186,16 +189,7 @@ namespace Viki.LoadRunner.Tools.Windows
                 {
                     if (checkpoint.Error != null)
                     {
-                        string existingTextBoxValue = tbErrors.Text;
-                        if (existingTextBoxValue.Length > 10000)
-                        {
-                            existingTextBoxValue = existingTextBoxValue.Substring(0, 10000);
-                        }
-
-                        string newText = $"{DateTime.Now.ToString("O")} {checkpoint.Name}\r\n{checkpoint.Error}\r\n\r\n";
-                        newText += existingTextBoxValue;
-
-                        tbErrors.Text = newText;
+                        AppendMessage($"{checkpoint.Name}\r\n{checkpoint.Error}");
                     }
                 }
             }
@@ -203,6 +197,21 @@ namespace Viki.LoadRunner.Tools.Windows
             string jsonResult = JsonConvert.SerializeObject(GetData(), Formatting.Indented);
             resultsTextBox.Text = jsonResult;
             RefreshWindowTitle();
+        }
+
+        private int _errorIndex = 1;
+        private void AppendMessage(string message)
+        {
+            string existingTextBoxValue = tbErrors.Text;
+            if (existingTextBoxValue.Length > 10000)
+            {
+                existingTextBoxValue = existingTextBoxValue.Substring(0, 10000);
+            }
+
+            string newText = $"--- {DateTime.Now:O} #{_errorIndex++} ---\r\n{message}\r\n";
+            newText += existingTextBoxValue;
+
+            tbErrors.Text = newText;
         }
 
         private void LoadRunnerUi_FormClosing(object sender, FormClosingEventArgs e)
