@@ -3,6 +3,7 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Tools.Aggregators;
 
 namespace LoadRunner.Demo
 {
@@ -15,7 +16,7 @@ namespace LoadRunner.Demo
                 Checkpoint.IterationTearDownCheckpointName
         };
 
-        public static HistogramAggregator Build()
+        public static HistogramAggregator BuildHistogram()
         {
             // This demo shows this new HistogramAggregator which isn't currently documented anywhere else. (TODO)
             //
@@ -54,6 +55,16 @@ namespace LoadRunner.Demo
                 .Alias($"Errors: {Checkpoint.IterationTearDownCheckpointName}", "Errors: Teardown");
 
             return histogramAggregator;
+        }
+
+
+        // Advanced optional at first, but useful when going to PROD.
+        // This allows to do post-test aggregations in any slices you will think later.
+        //
+        // Checkout RawDataAggregationDemo.cs if interested.
+        public static IResultsAggregator BuildJsonStreamAggregator()
+        {
+            return new JsonStreamAggregator("masterdata.json");
         }
     }
 }

@@ -13,6 +13,12 @@ namespace LoadRunner.Demo
             // For this example we will create a little bit modified of default preset (see this.DefaultParametersPreset below).
             LoadRunnerParameters parameters = new LoadRunnerParameters
             {
+                // Stop execution after 30 secs.
+                Limits = new ExecutionLimits
+                {
+                    MaxDuration = TimeSpan.FromSeconds(30)
+                },
+
                 // Incremental strategy here increases thread count every 10 seconds.
                 // This can be aligned with TimeDimension used below in shown aggregator.
                 ThreadingStrategy = new IncrementalThreadCount(20, TimeSpan.FromSeconds(10), 20)
@@ -21,16 +27,16 @@ namespace LoadRunner.Demo
             return parameters;
         }
 
-        // This demonstrates default parameters of LoadRunnerParameters object for reference
-        // Default presets are no where near for logical test scenarios. they are just modest enough to test if engine works.
+        // This demonstrates default parameters of LoadRunnerParameters object for reference.
+        // Default presets will cause unlimited execution, so either [MaxDuration] or [MaxIterationsCount] must be defined. 
         private static readonly LoadRunnerParameters DefaultParametersPreset = new LoadRunnerParameters
         {
             Limits = new ExecutionLimits
             {
-                // Maximum LoadTest duration threshold, after which test is stopped
-                MaxDuration = TimeSpan.FromSeconds(30),
+                // Maximum LoadTest duration threshold, after which test is stopped.
+                MaxDuration = TimeSpan.MaxValue,
 
-                // Maximum executet iterations count threshold, after which test is stopped
+                // Maximum executed iterations count threshold, after which test is stopped.
                 MaxIterationsCount = Int32.MaxValue,
 
                 // Once LoadTest execution finishes because of [maxDuration] or [maxIterationsCount] limit
@@ -39,12 +45,13 @@ namespace LoadRunner.Demo
                 //
                 // Aborted threads won't get the chance to call IterationTearDown() or ScenarioTearDown()
                 // neither it will broadcast TestContextResultReceived() to aggregators with the state as it is after abort.
-                FinishTimeout = TimeSpan.FromSeconds(60)
+                FinishTimeout = TimeSpan.FromMinutes(3)
             },
 
-            // [ISpeedStrategy] defines maximum allowed load by dampening executed Iterations per second count
+            // [ISpeedStrategy] defines maximum allowed load by dampening executed Iterations per second count.
             // * Other existing version of [ISpeedStrategy]
             //    - IncremantalSpeed(initialRequestsPerSec: 1.0, increasePeriod: TimeSpan.FromSeconds(10), increaseStep: 3.0)
+            //    - ListOfSpeed(period: TimeSpan.FromSeconds(10), iterationPerSecValues: new [] { 11.1, 5.5, 66.6 })
             SpeedStrategy = new FixedSpeed(maxIterationsPerSec: Double.MaxValue),
 
             // [IThreadingStrategy] controls allowed worker thread count

@@ -32,7 +32,7 @@ namespace LoadRunner.Demo
             // * Type of class which implements ILoadTestScenario (e.g DemoTestScenario)
             // * LoadRunnerParameters
             // * As many aggregators as you like 
-            HistogramAggregator histogramAggregator = AggregationSetup.Build();
+            HistogramAggregator histogramAggregator = AggregationSetup.BuildHistogram();
             LoadRunnerParameters parameters = ParametersSetup.Build();
             LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<DemoTestScenario>(parameters, histogramAggregator);
 

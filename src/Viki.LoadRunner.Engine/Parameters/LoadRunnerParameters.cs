@@ -5,11 +5,14 @@ using Viki.LoadRunner.Engine.Strategies.Threading;
 
 namespace Viki.LoadRunner.Engine.Parameters
 {
+    /// <summary>
+    /// LoadRunner configuration root class
+    /// </summary>
     public class LoadRunnerParameters
     {
         /// <summary>
         /// Limits defines Test-stopping related parameters
-        /// (Defaults - MaxDuration: 30sec, FinishTimeout 60sec, MaxIterationsCount Unlimited)
+        /// (Defaults are unlimited except for 3 min timeout)
         /// </summary>
         public ExecutionLimits Limits = new ExecutionLimits();
         /// <summary>

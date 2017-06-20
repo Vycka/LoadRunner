@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
+    /// <summary>
+    /// Define manually a table of various speed values which will be used one by one every provided time period
+    /// </summary>
     public class ListOfSpeed : ISpeedStrategy
     {
         private readonly TimeSpan _period;
@@ -11,6 +14,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
         private readonly TimeSpan _maxSpeed;
         protected static readonly TimeSpan OneSecond = TimeSpan.FromSeconds(1);
 
+        /// <summary>
+        /// Define manually a table of various speed values which will be used one by one every provided time period
+        /// </summary>
+        /// <param name="period">time period after which value from the next index will be used</param>
+        /// <param name="iterationPerSecValues">Speed values for each time period.
+        /// Once all values are consumed, speed will stay at value from last index</param>
         public ListOfSpeed(TimeSpan period, params double[] iterationPerSecValues)
         {
             if (iterationPerSecValues == null)

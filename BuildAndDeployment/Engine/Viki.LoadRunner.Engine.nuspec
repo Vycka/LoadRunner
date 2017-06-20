@@ -10,9 +10,8 @@
 
 Visit project website for documentation.
 
-Easy-to-use, Customizable, Light-weight and Fast.
-
-WIP Library: Namespace and project name might still change, once proper name is decided.</description>
+WIP Library: Namespace and project name might still change, once proper name is decided.
+Sorry for name clash with H P LoadRunner, but this library has no relations to it.</description>
 	<summary></summary>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes></releaseNotes>
