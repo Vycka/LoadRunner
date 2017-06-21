@@ -18,6 +18,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         private readonly FlexiRow<string, long> _percentileCache = new FlexiRow<string, long>((() => default(long))); 
         private bool _percentileValueCacheValid;
 
+        /// <summary>
+        /// Custom formatter, allows to post-process the value before outputing it to the grid.
+        /// </summary>
+        public Func<long, object> Formatter => (duration) => duration;
+
         public PercentileMetric(params double[] percentiles)
             : this(percentiles, new string[] { })
         {
@@ -57,7 +62,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         }
 
         public string[] ColumnNames => GetPercentileValues().Keys.ToArray();
-        public object[] Values => GetPercentileValues().Values.Select(value => (object)value).ToArray();
+        public object[] Values => GetPercentileValues().Values.Select(value => Formatter(value)).ToArray();
 
         private FlexiRow<string, long> GetPercentileValues()
         {
