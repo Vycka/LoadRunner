@@ -9,23 +9,6 @@ namespace LoadRunner.Demo
 {
     public class QuickIntroLoadTest
     {
-        public static void RunNewerWorkflowDemo()
-        {
-            // In this demo everything is the same as in previous one, except that this one will use StreamAggregators 
-            // (They store test meassurements to file) and then do results aggregation as normal.
-            // This approach gives ability to do post-test aggregations.
-            // It's most helpful when you forget to define correct aggregations before the test or have new chart ideas after the test has finished.
-            //
-            // Newer workflow uses StreamAggregator like JsonStreamAggregator (from Viki.LoadRunner.Tools)
-            // StreamAggregator - Pushes all meassured raw data as blocking IEnumerable<IResult> which can be used to do custom processing.
-            //
-            // JsonStreamAggregator (extends StreamAggregator) - Pushes all meassured raw data to json file.
-            
-            // * That results file in future on demand can be replayed on whatever aggregation you design.
-            // * It helps to do test first, and then aggregate data later.
-            //
-        }
-
         public static void Run()
         {
             // Initialize LoadRunnerEngine by providing:
