@@ -21,7 +21,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         /// <summary>
         /// Custom formatter, allows to post-process the value before outputing it to the grid.
         /// </summary>
-        public Func<long, object> Formatter => (duration) => duration;
+        public Func<long, object> Formatter = (duration) => duration;
 
         public PercentileMetric(params double[] percentiles)
             : this(percentiles, new string[] { })
