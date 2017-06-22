@@ -41,7 +41,10 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         IMetric IMetric.CreateNew()
         {
-            return new PercentileMetric(_percentiles, _ignoredCheckpoints);
+            return new PercentileMetric(_percentiles, _ignoredCheckpoints)
+            {
+                Formatter = Formatter
+            };
         }
 
         void IMetric.Add(IResult result)

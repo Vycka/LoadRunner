@@ -10,6 +10,9 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
     {
         public readonly TimeSpan Interval;
 
+        public Func<IResult, TimeSpan> TimeSelector = r => r.IterationFinished;
+        public Func<TimeSpan, string> Formatter = t => ((long) t.TotalSeconds).ToString();
+
         /// <param name="interval">interval timespan</param>
         public TimeDimension(TimeSpan interval, string dimensionName = "Time (s)")
         {
@@ -21,9 +24,9 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
    
         string IDimension.GetKey(IResult result)
         {
-            TimeSpan resultTimeSlot = Calculate(Interval, result.IterationFinished);
+            TimeSpan resultTimeSlot = Calculate(Interval, TimeSelector(result));
 
-            return ((long)resultTimeSlot.TotalSeconds).ToString();
+            return Formatter(resultTimeSlot);
         }
 
         /// <summary>

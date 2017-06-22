@@ -109,6 +109,7 @@
     <Compile Include="Strategies\Threading\FixedThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalWorkingThreadCount.cs" />
+    <Compile Include="Strategies\Threading\ListOfCounts.cs" />
     <Compile Include="Strategies\Threading\SemiAutoThreadCount.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
     <Compile Include="Utils\HistogramCsvExport.cs" />
