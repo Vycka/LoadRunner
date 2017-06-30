@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Executor.Result
 
     /// <summary>
     /// IResult defines meassurement data structure
-    /// this can be seen as fundamental masterdata.
+    /// this can be seen as fundamental raw data.
     /// Only the list of these IResult's are needed for meassured data aggregation.
     /// </summary>
     public interface IResult : IIterationMetadata<object>
@@ -29,12 +29,14 @@ namespace Viki.LoadRunner.Engine.Executor.Result
         TimeSpan IterationFinished { get; }
 
         /// <summary>
-        /// Count of currently created test scenario runner threads at the end of this iteration
+        /// Count of currently created worker threads at the end of this iteration
+        /// This value will be set at the [IterationFinished] moment.
         /// </summary>
         int CreatedThreads { get; }
 
         /// <summary>
-        /// Count of currently working test scenario runner threads at the end of this iteration
+        /// Count of currently working worker threads at the end of this iteration
+        /// This value will be set at the [IterationFinished] moment.
         /// </summary>
         int WorkingThreads { get; }
     }

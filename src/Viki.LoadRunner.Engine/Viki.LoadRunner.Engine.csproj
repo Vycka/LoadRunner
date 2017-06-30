@@ -79,8 +79,8 @@
     <Compile Include="Aggregators\Utils\ReplayResult.cs" />
     <Compile Include="Aggregators\Utils\UnixDateTimeExtensions.cs" />
     <Compile Include="Aggregators\Utils\OrderLearner.cs" />
-    <Compile Include="Aggregators\Aggregates\CheckpointAggregate.cs" />
-    <Compile Include="Aggregators\Aggregates\TestContextResultAggregate.cs" />
+    <Compile Include="Aggregators\Obsolete\Aggregates\CheckpointAggregate.cs" />
+    <Compile Include="Aggregators\Obsolete\Aggregates\TestContextResultAggregate.cs" />
     <Compile Include="Executor\Context\IIterationMetadata.cs" />
     <Compile Include="Executor\Context\ICheckpoint.cs" />
     <Compile Include="Executor\Result\IResult.cs" />

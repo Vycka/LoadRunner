@@ -3,6 +3,11 @@ using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
+    /// <summary>
+    /// This interface defines handling of raw results received from ongoing test.
+    /// </summary>
+    /// <remarks>Aggregators are expected to contain their errors.
+    /// Thrown exceptions will break test execution.</remarks>
     public interface IResultsAggregator
     {
         /// <summary>
@@ -14,7 +19,6 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// <summary>
         /// Results from all running threads will be poured into this one.
         /// </summary>
-        /// <remarks>Exceptions are unhandled here and will break test execution.</remarks>
         void TestContextResultReceived(IResult result);
 
         /// <summary>

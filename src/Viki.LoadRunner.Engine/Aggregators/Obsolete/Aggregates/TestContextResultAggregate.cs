@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 
-namespace Viki.LoadRunner.Engine.Aggregators.Aggregates
+namespace Viki.LoadRunner.Engine.Aggregators.Obsolete.Aggregates
 {
     public class TestContextResultAggregate
     {

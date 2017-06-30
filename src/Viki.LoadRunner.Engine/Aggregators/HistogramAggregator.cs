@@ -11,9 +11,8 @@ using Viki.LoadRunner.Engine.Utils;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
-    
     /// <summary>
-    /// Generic X/Y histogram aggregator/builder. Use RegisterDimension() and AddMetric() methods to add concrete aggregates
+    /// Modular 2D grid histogram aggregator/builder. Use Add() method to register concrete IDiminension's & IMetric's
     /// </summary>
     public class HistogramAggregator : IResultsAggregator
     {
@@ -36,6 +35,8 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         /// <summary>
         /// Register dimension (aka X value)
+        /// Each registered dimension will become part of composite key for aggregation.
+        /// Think of each dimension as part of GROUP BY key.
         /// </summary>
         /// <param name="dimension">dimension object</param>
         /// <returns>Current HistogramAggregator instance</returns>
@@ -48,15 +49,22 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         /// <summary>
         /// Register metric (aka Y value)
+        /// Rows grouped by provided dimensions will be aggregated with registered metrics.
         /// </summary>
+        /// <param name="metric">metric object</param>
         /// <returns>Current HistogramAggregator instance</returns>
-        public HistogramAggregator Add(IMetric metricTemplate)
+        public HistogramAggregator Add(IMetric metric)
         {
-            _metricTemplates.Add(metricTemplate);
+            _metricTemplates.Add(metric);
 
             return this;
         }
-
+    
+        /// <summary>
+        /// Ignore column when building results
+        /// </summary>
+        /// <param name="columnName">Column name to ignore</param>
+        /// <returns>Current HistogramAggregator instance</returns>
         public HistogramAggregator Ignore(string columnName)
         {
             _ignoredColumnNames.Add(columnName);
@@ -69,6 +77,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// </summary>
         /// <param name="sourceColumnName">source column name</param>
         /// <param name="alias">Name to replace it with</param>
+        /// <returns>Current HistogramAggregator instance</returns>
         public HistogramAggregator Alias(string sourceColumnName, string alias)
         {
             _columnNameAliases.Add(sourceColumnName, alias);
