@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Aggregators.Aggregates;
 
-namespace Viki.LoadRunner.Engine.Aggregators.Results
+namespace Viki.LoadRunner.Engine.Aggregators.Obsolete.Results
 {
     public class ResultItemRow 
     {

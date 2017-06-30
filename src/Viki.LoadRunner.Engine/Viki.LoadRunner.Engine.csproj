@@ -46,7 +46,7 @@
     <Compile Include="Aggregators\Dimensions\FuncDimension.cs" />
     <Compile Include="Aggregators\Dimensions\IDimension.cs" />
     <Compile Include="Aggregators\HistogramAggregator.cs" />
-    <Compile Include="Aggregators\HistogramResultsAggregator.cs" />
+    <Compile Include="Aggregators\Obsolete\HistogramResultsAggregator.cs" />
     <Compile Include="Aggregators\AsyncResultsAggregator.cs" />
     <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\BreakByMetric.cs" />
@@ -64,14 +64,14 @@
     <Compile Include="Aggregators\Metrics\TransactionsPerSecMetric.cs" />
     <Compile Include="Aggregators\Results\HistogramResults.cs" />
     <Compile Include="Aggregators\StreamAggregator.cs" />
-    <Compile Include="Aggregators\TotalsResultsAggregator.cs" />
+    <Compile Include="Aggregators\Obsolete\TotalsResultsAggregator.cs" />
     <Compile Include="Aggregators\IResultsAggregator.cs" />
-    <Compile Include="Aggregators\Results\ResultsContainer.cs" />
-    <Compile Include="Aggregators\Results\ResultItemTotals.cs" />
-    <Compile Include="Aggregators\Results\HistogramResultRow.cs" />
-    <Compile Include="Aggregators\Results\ResultItemRow.cs" />
-    <Compile Include="Aggregators\Results\ResultsMapper.cs" />
-    <Compile Include="Aggregators\TimeHistogramResultsAggregator.cs" />
+    <Compile Include="Aggregators\Obsolete\Results\ResultsContainer.cs" />
+    <Compile Include="Aggregators\Obsolete\Results\ResultItemTotals.cs" />
+    <Compile Include="Aggregators\Obsolete\Results\HistogramResultRow.cs" />
+    <Compile Include="Aggregators\Obsolete\Results\ResultItemRow.cs" />
+    <Compile Include="Aggregators\Obsolete\Results\ResultsMapper.cs" />
+    <Compile Include="Aggregators\Obsolete\TimeHistogramResultsAggregator.cs" />
     <Compile Include="Aggregators\Utils\DimensionsKeyBuilder.cs" />
     <Compile Include="Aggregators\Utils\DimensionValues.cs" />
     <Compile Include="Aggregators\Utils\FlexiRow.cs" />
@@ -112,7 +112,7 @@
     <Compile Include="Strategies\Threading\ListOfCounts.cs" />
     <Compile Include="Strategies\Threading\SemiAutoThreadCount.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
-    <Compile Include="Utils\HistogramCsvExport.cs" />
+    <Compile Include="Aggregators\Obsolete\Utis\HistogramCsvExport.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

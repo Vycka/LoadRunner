@@ -19,7 +19,7 @@ namespace Viki.LoadRunner.Playground
                 .Add(new TimeDimension(TimeSpan.FromSeconds(1)))
                 .Add(new CountMetric())
                 .Add(new AvgDurationMetric())
-                .Add(new PercentileMetric(0.95));
+                .Add(new PercentileMetric(0.95) { Formatter =  l => l });
 
 
             JsonStreamAggregator.Replay("d:\\test.stream.json", histo);

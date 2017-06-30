@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Aggregates;
-using Viki.LoadRunner.Engine.Aggregators.Results;
+using Viki.LoadRunner.Engine.Aggregators.Obsolete.Results;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Result;
 
-namespace Viki.LoadRunner.Engine.Aggregators
+namespace Viki.LoadRunner.Engine.Aggregators.Obsolete
 {
     /// <summary>
     /// Aggregates results by provided group key using Func&lt;TestContextResult, object&gt;()

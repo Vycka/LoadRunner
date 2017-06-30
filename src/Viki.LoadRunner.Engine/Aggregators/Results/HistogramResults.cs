@@ -2,9 +2,20 @@
 
 namespace Viki.LoadRunner.Engine.Aggregators.Results
 {
+    /// <summary>
+    /// HistogramAggregator results class
+    /// Results represented with ColumnNames[colIndex] object[colIndex][rows] arrays
+    /// </summary>
     public class HistogramResults
     {
+        /// <summary>
+        /// Column headers
+        /// </summary>
         public readonly string[] ColumnNames;
+
+        /// <summary>
+        /// 2d-array results
+        /// </summary>
         public readonly object[][] Values;
 
         public HistogramResults(string[] columnNames, object[][] values)

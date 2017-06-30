@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using Viki.LoadRunner.Engine.Aggregators.Results;
+using Viki.LoadRunner.Engine.Aggregators.Obsolete.Results;
 
-namespace Viki.LoadRunner.Engine.Utils
+namespace Viki.LoadRunner.Engine.Aggregators.Obsolete.Utis
 {
     /// <summary>
     /// Tool for exporting Histogram results into .csv file
     /// </summary>
+    [Obsolete("")]
     public static class HistogramCsvExport
     {
         /// <summary>

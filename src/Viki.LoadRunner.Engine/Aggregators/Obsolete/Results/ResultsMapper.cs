@@ -5,7 +5,7 @@ using Viki.LoadRunner.Engine.Aggregators.Aggregates;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 
-namespace Viki.LoadRunner.Engine.Aggregators.Results
+namespace Viki.LoadRunner.Engine.Aggregators.Obsolete.Results
 {
     public class ResultsMapper
     {

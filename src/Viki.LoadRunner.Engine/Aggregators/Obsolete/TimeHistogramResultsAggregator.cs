@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Viki.LoadRunner.Engine.Aggregators.Results;
+using Viki.LoadRunner.Engine.Aggregators.Obsolete.Results;
 using Viki.LoadRunner.Engine.Executor.Result;
 
-namespace Viki.LoadRunner.Engine.Aggregators
+namespace Viki.LoadRunner.Engine.Aggregators.Obsolete
 {
     /// <summary>
     /// Aggregate results by test execution time
