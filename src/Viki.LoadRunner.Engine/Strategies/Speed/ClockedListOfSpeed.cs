@@ -2,6 +2,9 @@
 
 namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
+    /// <summary>
+    /// WiP Strategy, not yet fully finallized.
+    /// </summary>
     public class ClockedListOfSpeed : ListOfSpeed
     {
         private readonly DateTime _initialTime;

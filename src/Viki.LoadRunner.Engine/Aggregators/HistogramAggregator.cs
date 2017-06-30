@@ -12,7 +12,7 @@ using Viki.LoadRunner.Engine.Utils;
 namespace Viki.LoadRunner.Engine.Aggregators
 {
     /// <summary>
-    /// Modular 2D grid histogram aggregator/builder. Use Add() method to register concrete IDiminension's & IMetric's
+    /// Modular 2D grid histogram aggregator/builder. Use Add() method to register concrete IDiminension's and IMetric's
     /// </summary>
     public class HistogramAggregator : IResultsAggregator
     {
@@ -112,7 +112,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         #region Results builder
 
         /// <summary>
-        /// Builds results into object having collumn names array  2d array data grid
+        /// Builds results into object having collumn names array and 2d array data grid
         /// </summary>
         public HistogramResults BuildResults()
         {

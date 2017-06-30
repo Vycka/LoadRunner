@@ -2,13 +2,13 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Parameters;
+using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 using Viki.LoadRunner.Tools.Aggregators;
@@ -24,7 +24,7 @@ namespace Viki.LoadRunner.Playground
             // LoadRunnerParameters used to configure on how load test will execute.
             LoadRunnerParameters loadRunnerParameters = new LoadRunnerParameters
             {
-                Limits = new ExecutionLimits
+                Limits = new LimitStrategy
                 {
                     // Maximum LoadTest duration threshold, after which test is stopped
                     MaxDuration = TimeSpan.FromSeconds(30),
@@ -44,12 +44,12 @@ namespace Viki.LoadRunner.Playground
                 // [ISpeedStrategy] defines maximum allowed load by dampening executed Iterations per second count
                 // * Other existing version of [ISpeedStrategy]
                 //    - IncremantalSpeed(initialRequestsPerSec: 1.0, increasePeriod: TimeSpan.FromSeconds(10), increaseStep: 3.0)
-                SpeedStrategy = new FixedSpeed(maxIterationsPerSec: Double.MaxValue),
+                Speed = new FixedSpeed(maxIterationsPerSec: Double.MaxValue),
 
                 //[IThreadingStrategy] defines allowed worker thread count
                 // * SemiAutoThreading initializes [minThreadCount] at begining
                 // It will be increased if not enough threads are available to reach [ISpeedStrategy] limits 
-                ThreadingStrategy = new IncrementalThreadCount(15, TimeSpan.FromSeconds(10), 15)
+                Threading = new IncrementalThreadCount(15, TimeSpan.FromSeconds(10), 15)
             };
 
             // Initialize aggregator

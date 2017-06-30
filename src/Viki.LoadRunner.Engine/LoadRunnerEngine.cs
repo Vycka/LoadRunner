@@ -5,6 +5,7 @@ using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Threads;
 using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Parameters;
+using Viki.LoadRunner.Engine.Strategies;
 
 namespace Viki.LoadRunner.Engine
 {
@@ -15,7 +16,8 @@ namespace Viki.LoadRunner.Engine
     {
         #region Fields
 
-        private readonly LoadRunnerParameters _parameters;
+        private readonly ILoadRunnerSettings _settings;
+        private ILimitStrategy _limits;
         private readonly IResultsAggregator _resultsAggregator;
         private readonly Type _iTestScenarioObjectType;
         private Thread _asyncRunThread;
@@ -52,17 +54,19 @@ namespace Viki.LoadRunner.Engine
         /// <summary>
         /// Initializes new executor instance
         /// </summary>
-        /// <param name="parameters">LoadTest parameters</param>
+        /// <param name="settings">LoadTest parameters</param>
         /// <param name="iTestScenarioObjectType">ILoadTestScenario to be executed object type</param>
         /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        public LoadRunnerEngine(LoadRunnerParameters parameters, Type iTestScenarioObjectType, params IResultsAggregator[] resultsAggregators)
+        public LoadRunnerEngine(ILoadRunnerSettings settings, Type iTestScenarioObjectType, params IResultsAggregator[] resultsAggregators)
         {
-            if (parameters == null)
-                throw new ArgumentNullException(nameof(parameters));
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings));
             if (iTestScenarioObjectType == null)
                 throw new ArgumentNullException(nameof(iTestScenarioObjectType));
 
-            _parameters = parameters;
+            _settings = settings;
+            _limits = _settings.Limits;
+
             _iTestScenarioObjectType = iTestScenarioObjectType;
 
             _resultsAggregator = new AsyncResultsAggregator(resultsAggregators);
@@ -116,7 +120,11 @@ namespace Viki.LoadRunner.Engine
         {
             // TODO: Refactor a bit to allow clean way to stop this
             // This inits the stop.
-            _parameters.Limits.MaxIterationsCount = 0;
+            _limits = new LimitStrategy
+            {
+                MaxIterationsCount = 0,
+                FinishTimeout = _limits.FinishTimeout,
+            };
 
             if (blocking)
                 Wait();
@@ -164,9 +172,9 @@ namespace Viki.LoadRunner.Engine
             {
                 _threadCoordinator = new ThreadCoordinator(_iTestScenarioObjectType, _timer)
                 {
-                    InitialUserData = _parameters.InitialUserData
+                    InitialUserData = _settings.InitialUserData
                 };
-                _threadCoordinator.InitializeThreads(_parameters.ThreadingStrategy.InitialThreadCount);
+                _threadCoordinator.InitializeThreads(_settings.Threading.InitialThreadCount);
                 _threadCoordinator.ScenarioIterationFinished += _threadCoordinator_ScenarioIterationFinished;
                 
                 int testIterationCount = 0;
@@ -175,10 +183,10 @@ namespace Viki.LoadRunner.Engine
                 _timer.Start();
                 _resultsAggregator.Begin();
                 
-                while (_timer.CurrentValue < _parameters.Limits.MaxDuration && testIterationCount < _parameters.Limits.MaxIterationsCount)
+                while (!_limits.StopTest(_timer.CurrentValue, testIterationCount))
                 {
                     WorkerThreadStats threadStats = _threadCoordinator.BuildWorkerThreadStats();
-                    int allowedWorkingthreadCount = _parameters.ThreadingStrategy.GetAllowedMaxWorkingThreadCount(_timer.CurrentValue, threadStats);
+                    int allowedWorkingthreadCount = _settings.Threading.GetAllowedMaxWorkingThreadCount(_timer.CurrentValue, threadStats);
 
                     _threadCoordinator.AssertThreadErrors();
                     TryAdjustCreatedThreadCount(threadStats);
@@ -204,7 +212,7 @@ namespace Viki.LoadRunner.Engine
             }
             finally
             {
-                _threadCoordinator?.StopAndDispose((int)_parameters.Limits.FinishTimeout.TotalMilliseconds);
+                _threadCoordinator?.StopAndDispose((int)_limits.FinishTimeout.TotalMilliseconds);
                 _resultsAggregator.End();
                 _threadCoordinator?.AssertThreadErrors();
 
@@ -215,17 +223,17 @@ namespace Viki.LoadRunner.Engine
 
         private void TryAdjustCreatedThreadCount(WorkerThreadStats threadStats)
         {
-            int allowedCreatedThreadCount = _parameters.ThreadingStrategy.GetAllowedCreatedThreadCount(_timer.CurrentValue, threadStats);
+            int allowedCreatedThreadCount = _settings.Threading.GetAllowedCreatedThreadCount(_timer.CurrentValue, threadStats);
 
             if (allowedCreatedThreadCount > threadStats.CreatedThreadCount)
-                _threadCoordinator.InitializeThreadsAsync(_parameters.ThreadingStrategy.ThreadCreateBatchSize);
+                _threadCoordinator.InitializeThreadsAsync(_settings.Threading.ThreadCreateBatchSize);
             else if (allowedCreatedThreadCount < threadStats.CreatedThreadCount)
                 _threadCoordinator.StopWorkersAsync(threadStats.CreatedThreadCount - allowedCreatedThreadCount);
         }
 
         private TimeSpan CalculateNextExecutionTime(TimeSpan lastExecutionEnqueueThreshold)
         {
-            TimeSpan delayBetweenIterations = _parameters.SpeedStrategy.GetDelayBetweenIterations(_timer.CurrentValue);
+            TimeSpan delayBetweenIterations = _settings.Speed.GetDelayBetweenIterations(_timer.CurrentValue);
 
             TimeSpan nextExecutionTime = lastExecutionEnqueueThreshold + delayBetweenIterations;
             if (nextExecutionTime < _timer.CurrentValue)
