@@ -28,15 +28,23 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
         public void Next(IThreadContext context, IIterationControl control)
         {
             long timerTicks = context.Timer.Value.Ticks;
-            long delta = timerTicks + ScheduleAheadTicks - _next;
-            if (delta >= 0)
+            long deltaTimeline = timerTicks + ScheduleAheadTicks - _next;
+            if (deltaTimeline >= 0)
             {
                 long current = Interlocked.Add(ref _next, DelayTicks);
                 control.Execute(TimeSpan.FromTicks(current));
+
+                // Catch up _next if lagging behind timeline
+                long deltaLag = timerTicks - current;
+                long threshold = 2 * DelayTicks;
+                if (deltaLag > threshold)
+                {
+                    Interlocked.Add(ref _next, threshold);
+                }
             }
             else
             {
-                control.Idle(TimeSpan.FromTicks(Math.Abs(delta) + TimeSpan.TicksPerMillisecond));
+                control.Idle(TimeSpan.FromTicks(Math.Abs(deltaTimeline) + TimeSpan.TicksPerMillisecond));
             }
         }
 

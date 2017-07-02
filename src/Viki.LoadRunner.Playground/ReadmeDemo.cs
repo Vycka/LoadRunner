@@ -26,17 +26,17 @@ namespace Viki.LoadRunner.Playground
             {
                 Limits = new LimitStrategy
                 {
-                    MaxDuration = TimeSpan.FromSeconds(180),
+                    MaxDuration = TimeSpan.FromSeconds(30),
 
                     MaxIterationsCount = Int32.MaxValue,
 
                     FinishTimeout = TimeSpan.FromSeconds(60)
                 },
 
-                //Speed = new FixedSpeed(10),
-                Speed = new ListOfSpeed(TimeSpan.FromSeconds(60), 5, 1, Double.MaxValue),
+                Speed = new MaxSpeed(),
+                //Speed = new ListOfSpeed(TimeSpan.FromSeconds(60), 5, 1, Double.MaxValue),
 
-                Threading = new FixedThreadCount(20, 20)
+                Threading = new ListOfCounts(TimeSpan.FromSeconds(10), 4, 20, 40)
             };
 
             // Initialize aggregator
@@ -48,7 +48,7 @@ namespace Viki.LoadRunner.Playground
             };
 
             HistogramAggregator histogramAggregator = new HistogramAggregator()
-                .Add(new TimeDimension(TimeSpan.FromSeconds(60)) { TimeSelector = result => result.IterationStarted})
+                .Add(new TimeDimension(TimeSpan.FromSeconds(10)))
                 .Add(new MinDurationMetric(ignoredCheckpoints))
                 .Add(new AvgDurationMetric(ignoredCheckpoints))
                 .Add(new MaxDurationMetric(ignoredCheckpoints))

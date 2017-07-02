@@ -16,10 +16,10 @@ namespace Viki.LoadRunner.Playground
         static void Main()
         {
 
-            //ReadmeDemo.Run();
+            ReadmeDemo.Run();
             
 
-            //return;
+            return;
 
             HistogramAggregator histo = new HistogramAggregator();
             histo

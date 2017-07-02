@@ -18,7 +18,6 @@ namespace Viki.LoadRunner.Playground
 
         public void ExecuteScenario(ITestContext context)
         {
-            Thread.Sleep(10);
         }
 
         public void IterationTearDown(ITestContext context)
