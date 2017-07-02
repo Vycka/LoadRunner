@@ -1,5 +1,8 @@
 ﻿namespace Viki.LoadRunner.Engine.Executor.Threads
 {
+
+    // TODO: Handle no threads, try delete  threads from lowest index
+    // due to how ISpeedStrategy by working thread count will look like
     public interface IThreadPoolControl
     {
         void StartWorkersAsync(int threadCount);

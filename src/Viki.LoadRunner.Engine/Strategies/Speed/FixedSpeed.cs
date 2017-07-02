@@ -39,7 +39,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
                 long threshold = 2 * DelayTicks;
                 if (deltaLag > threshold)
                 {
-                    Interlocked.Add(ref _next, threshold);
+                    Interlocked.Add(ref _next, deltaLag - DelayTicks);
                 }
             }
             else
