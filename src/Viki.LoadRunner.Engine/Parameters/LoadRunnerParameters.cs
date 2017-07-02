@@ -5,6 +5,8 @@ using Viki.LoadRunner.Engine.Strategies.Threading;
 
 namespace Viki.LoadRunner.Engine.Parameters
 {
+    // TODO: Make builder with .Add .Set etc
+
     /// <summary>
     /// LoadRunner engine configuration root
     /// </summary>

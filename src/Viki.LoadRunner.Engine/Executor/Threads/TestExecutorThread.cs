@@ -2,7 +2,7 @@
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
-using Viki.LoadRunner.Engine.Executor.Timer;
+
 #pragma warning disable 1591
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
@@ -160,7 +160,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         }
 
-        private static void ExecuteIteration(TestContext context, ILoadTestScenario scenario)
+        public static void ExecuteIteration(TestContext context, ILoadTestScenario scenario)
         {
             context.Checkpoint(Checkpoint.IterationSetupCheckpointName);
             bool setupSuccess = ExecuteWithExceptionHandling(() => scenario.IterationSetup(context), context);

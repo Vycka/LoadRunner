@@ -6,7 +6,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
     public class FixedSpeed : ISpeedStrategy
     {
-
         protected long ScheduleAheadTicks = TimeSpan.TicksPerSecond;
 
         protected long DelayTicks;
@@ -33,14 +32,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             {
                 long current = Interlocked.Add(ref _next, DelayTicks);
                 control.Execute(TimeSpan.FromTicks(current));
-
-                // Catch up _next if lagging behind timeline
-                long deltaLag = timerTicks - current;
-                long threshold = 2 * DelayTicks;
-                if (deltaLag > threshold)
-                {
-                    Interlocked.Add(ref _next, deltaLag - DelayTicks);
-                }
             }
             else
             {
@@ -48,10 +39,15 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             }
         }
 
-
         public void Adjust(CoordinatorContext context)
         {
-
+            // Catch up _next if lagging behind timeline
+            long deltaLag = context.Timer.Value.Ticks - _next;
+            long threshold = 2 * DelayTicks;
+            if (deltaLag > threshold)
+            {
+                Interlocked.Add(ref _next, deltaLag - DelayTicks);
+            }
         }
     }
 }

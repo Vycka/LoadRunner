@@ -111,6 +111,7 @@
     <Compile Include="Strategies\Speed\IncrementalSpeed.cs" />
     <Compile Include="Strategies\Speed\ListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\MaxSpeed.cs" />
+    <Compile Include="Strategies\Speed\PrioritySpeedStrategy.cs" />
     <Compile Include="Strategies\Threading\FixedThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalWorkingThreadCount.cs" />
