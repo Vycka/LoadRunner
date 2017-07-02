@@ -1,4 +1,5 @@
 ﻿using System;
+using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies
 {
@@ -14,7 +15,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <param name="timeStamp">Internal timestamp of test execution duration</param>
         /// <param name="iteration">Iteration number (starting from zero) which is about to get started.</param>
         /// <returns></returns>
-        bool StopTest(TimeSpan timeStamp, int iteration);
+        bool StopTest(CoordinatorContext context);
 
         /// <summary>
         /// Time threshold how long engine should give worker-threads to finish gracefully once test is being stopped.
@@ -38,9 +39,9 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         public int MaxIterationsCount { get; set; } = Int32.MaxValue;
 
-        bool ILimitStrategy.StopTest(TimeSpan timeStamp, int iteration)
+        bool ILimitStrategy.StopTest(CoordinatorContext context)
         {
-            return timeStamp >= MaxDuration || iteration >= MaxIterationsCount;
+            return context.Timer.Value >= MaxDuration || context.IdFactory.Current >= MaxIterationsCount;
         }
 
         /// <summary>

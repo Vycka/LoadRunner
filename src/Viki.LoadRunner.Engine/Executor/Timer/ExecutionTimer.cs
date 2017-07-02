@@ -23,7 +23,7 @@ namespace Viki.LoadRunner.Engine.Executor.Timer
             _stopwatch.Stop();
         }
 
-        public TimeSpan CurrentValue => _stopwatch.Elapsed;
+        public TimeSpan Value => _stopwatch.Elapsed;
         public bool IsRunning => _stopwatch.IsRunning;
         public DateTime BeginTime => _beginTime;
     }

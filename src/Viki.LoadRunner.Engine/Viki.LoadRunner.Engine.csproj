@@ -78,7 +78,10 @@
     <Compile Include="Executor\Threads\CoordinatorContext.cs" />
     <Compile Include="Executor\Threads\CoordinatorSettings.cs" />
     <Compile Include="Executor\Threads\IdFactory.cs" />
+    <Compile Include="Executor\Threads\IIterationControl.cs" />
+    <Compile Include="Executor\Threads\IterationControl.cs" />
     <Compile Include="Executor\Threads\IThreadContext.cs" />
+    <Compile Include="Executor\Threads\IThreadPoolControl.cs" />
     <Compile Include="Executor\Threads\IUniqueIdFactory.cs" />
     <Compile Include="Executor\Threads\IThreadPoolStats.cs" />
     <Compile Include="Executor\Threads\ThreadContext.cs" />
@@ -101,11 +104,13 @@
     <Compile Include="Strategies\ISpeedStrategy.cs" />
     <Compile Include="Strategies\ILimitStrategy.cs" />
     <Compile Include="Strategies\ISpeedStrategyLegacy.cs" />
+    <Compile Include="Strategies\IThreadingStrategy.cs" />
     <Compile Include="Strategies\IThreadingStrategyLegacy.cs" />
     <Compile Include="Strategies\Speed\ClockedListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\FixedSpeed.cs" />
     <Compile Include="Strategies\Speed\IncrementalSpeed.cs" />
     <Compile Include="Strategies\Speed\ListOfSpeed.cs" />
+    <Compile Include="Strategies\Speed\MaxSpeed.cs" />
     <Compile Include="Strategies\Threading\FixedThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalWorkingThreadCount.cs" />

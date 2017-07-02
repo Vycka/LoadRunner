@@ -38,12 +38,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             }
         }
 
-        private int GetSecondsPassed()
+        private TimeSpan GetDurationDelta()
         {
             if (_count == 0)
-                return 0;
+                return TimeSpan.Zero;
 
-            return (int)(_iterationFinishedMax - _iterationStartedMin).TotalSeconds;
+            return _iterationFinishedMax - _iterationStartedMin;
         }
 
         string[] IMetric.ColumnNames { get; } = {"TPS"};
@@ -52,12 +52,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         {
             get
             {
-                int passedSeconds = GetSecondsPassed();
+                TimeSpan delta = GetDurationDelta();
 
-                if (passedSeconds == 0)
+                if (delta == TimeSpan.Zero)
                     return new object[] {0.0};
                 else
-                    return new object[] {((double)_count)/GetSecondsPassed()};
+                    return new object[] {(double)_count / delta.TotalSeconds };
             }
         }
     }

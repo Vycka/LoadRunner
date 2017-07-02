@@ -43,7 +43,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
                 _processorThread = new Thread(ProcessorThreadFunction);
                 _processorThread.Start();
 
-                Parallel.ForEach(_resultsAggregators, aggregator => aggregator.Begin());
+                Array.ForEach(_resultsAggregators, aggregator => aggregator.Begin());
             }
         }
 
@@ -54,7 +54,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
                 _stopping = true;
                 _processorThread?.Join();
 
-                Parallel.ForEach(_resultsAggregators, aggregator => aggregator.End());
+                Array.ForEach(_resultsAggregators, aggregator => aggregator.End());
 
                 _processorThread = null;
             }

@@ -1,29 +1,49 @@
 ﻿using System;
+using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
-    public class FixedSpeed : ISpeedStrategyLegacy, ISpeedStrategy
+    public class FixedSpeed : ISpeedStrategy
     {
-        private readonly TimeSpan _delay;
-        private readonly long _delayTicks;
+
+        protected long ScheduleAheadTicks = TimeSpan.TicksPerSecond;
+
+        protected long DelayTicks;
+
+        private long _next = 0;
 
         public FixedSpeed(double maxIterationsPerSec = Double.MaxValue)
         {
-            long delayTicks = (long)(TimeSpan.TicksPerSecond / maxIterationsPerSec);
+            SetSpeed(maxIterationsPerSec);
+        }
+        
+        public void SetSpeed(double maxIterationsPerSec)
+        {
+            long delayTicks = (long)(TimeSpan.TicksPerSecond / maxIterationsPerSec) + 1;
 
-            _delay = TimeSpan.FromTicks(delayTicks);
-            _delayTicks = _delay.Ticks;
+            DelayTicks = delayTicks;
         }
 
-        public TimeSpan GetDelayBetweenIterations(TimeSpan testExecutionTime)
+        public void Next(IThreadContext context, IIterationControl control)
         {
-            return _delay;
+            long timerTicks = context.Timer.Value.Ticks;
+            long delta = timerTicks + ScheduleAheadTicks - _next;
+            if (delta >= 0)
+            {
+                long current = Interlocked.Add(ref _next, DelayTicks);
+                control.Execute(TimeSpan.FromTicks(current));
+            }
+            else
+            {
+                control.Idle(TimeSpan.FromTicks(Math.Abs(delta) + TimeSpan.TicksPerMillisecond));
+            }
         }
 
-        public TimeSpan Next(IThreadContext context)
+
+        public void Adjust(CoordinatorContext context)
         {
-            return TimeSpan.FromTicks(_delayTicks * context.Iteration.GlobalIterationId);
+
         }
     }
 }

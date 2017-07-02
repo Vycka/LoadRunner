@@ -10,7 +10,7 @@ namespace Viki.LoadRunner.Engine.Executor.Timer
         /// <summary>
         /// Time passed since the start of the execution
         /// </summary>
-        TimeSpan CurrentValue { get; }
+        TimeSpan Value { get; }
 
         /// <summary>
         /// Indicates whether timer is running

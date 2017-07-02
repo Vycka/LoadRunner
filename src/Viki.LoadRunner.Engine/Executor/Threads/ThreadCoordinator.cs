@@ -9,7 +9,7 @@ using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
 {
-    public class ThreadCoordinator : IDisposable, IThreadPoolStats
+    public class ThreadCoordinator : IDisposable, IThreadPoolStats, IThreadPoolControl
     {
         #region Properties
 
@@ -64,18 +64,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
         }
 
-
-        public void InitializeThreads(int threadCount)
-        {
-            InitializeThreadsAsync(threadCount);
-
-            while (_allThreads.Any(t => t.Value.IsAlive && t.Value.ScenarioInitialized == false))
-            {
-                Thread.Sleep(100);
-            }
-        }
-
-        public void InitializeThreadsAsync(int threadCount)
+        public void StartWorkersAsync(int threadCount)
         {
             IEnumerable<TestExecutorThread> newThreads = CreateThreads(threadCount);
 

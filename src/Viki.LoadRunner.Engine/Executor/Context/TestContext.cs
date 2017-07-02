@@ -35,12 +35,12 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         internal void Start()
         {
-            IterationStarted = _timer.CurrentValue;
+            IterationStarted = _timer.Value;
         }
 
         internal void Stop()
         {
-            IterationFinished = _timer.CurrentValue;
+            IterationFinished = _timer.Value;
         }
 
         internal void Reset(int threadIterationId, int globalIterationId)
@@ -87,7 +87,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
                 if (IterationFinished != TimeSpan.MinValue)
                     return IterationFinished - IterationStarted;
                 if (IterationStarted != TimeSpan.MaxValue)
-                    return _timer.CurrentValue - IterationStarted;
+                    return _timer.Value - IterationStarted;
 
                 return TimeSpan.Zero;
             }

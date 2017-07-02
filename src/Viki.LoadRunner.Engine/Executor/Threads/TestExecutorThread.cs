@@ -116,6 +116,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             try
             {
                 IThreadContext threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
+                IterationControl control = new IterationControl();
 
                 int threadIterationId = 0;
 
@@ -124,42 +125,26 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 while (_context.Timer.IsRunning == false)
                     Thread.Sleep(1);
 
-                
+                _testContext.Reset(threadIterationId++, _context.IdFactory.Next());
                 while (_stopQueued == false)
                 {
-                    _testContext.Reset(threadIterationId++, _context.IdFactory.Next());
+                    _context.Scheduler.Next(threadContext, control);
 
-                    TimeSpan nextExecutionThreshold = _context.Scheduler.Next(threadContext);
-                    TimeSpan sleepPeriod = nextExecutionThreshold - _context.Timer.CurrentValue;
-                    if (sleepPeriod > TimeSpan.Zero)
-                        Thread.Sleep(sleepPeriod);
-
-                    _testContext.Checkpoint(Checkpoint.IterationSetupCheckpointName);
-                    bool setupSuccess = ExecuteWithExceptionHandling(() => _scenario.IterationSetup(_testContext), _testContext);
-
-                    if (setupSuccess)
+                    if (control.Action == IterationControl.IterationAction.Idle)
                     {
-                        _testContext.Checkpoint(Checkpoint.IterationStartCheckpointName);
-
-                        _testContext.Start();
-                        bool iterationSuccess = ExecuteWithExceptionHandling(() => _scenario.ExecuteScenario(_testContext), _testContext);
-                        _testContext.Stop();
-
-                        if (iterationSuccess)
-                        {
-                            _testContext.Checkpoint(Checkpoint.IterationEndCheckpointName);
-                        }
-                    }
-                    else
-                    {
-                        _testContext.Start();
-                        _testContext.Stop();
+                        Thread.Sleep(control.TimeValue);
+                        continue;
                     }
 
-                    _testContext.Checkpoint(Checkpoint.IterationTearDownCheckpointName);
-                    ExecuteWithExceptionHandling(() => _scenario.IterationTearDown(_testContext), _testContext);
+                    TimeSpan timerValue = _context.Timer.Value;
+                    if (control.TimeValue > timerValue)
+                        Thread.Sleep(control.TimeValue - timerValue);
+
+                    ExecuteIteration(_testContext, _scenario);
 
                     OnScenarioIterationFinished();
+
+                    _testContext.Reset(threadIterationId++, _context.IdFactory.Next());
                 }
 
                 _testContext.Reset(-1,-1);
@@ -173,6 +158,34 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 }
             }
 
+        }
+
+        private static void ExecuteIteration(TestContext context, ILoadTestScenario scenario)
+        {
+            context.Checkpoint(Checkpoint.IterationSetupCheckpointName);
+            bool setupSuccess = ExecuteWithExceptionHandling(() => scenario.IterationSetup(context), context);
+
+            if (setupSuccess)
+            {
+                context.Checkpoint(Checkpoint.IterationStartCheckpointName);
+
+                context.Start();
+                bool iterationSuccess = ExecuteWithExceptionHandling(() => scenario.ExecuteScenario(context), context);
+                context.Stop();
+
+                if (iterationSuccess)
+                {
+                    context.Checkpoint(Checkpoint.IterationEndCheckpointName);
+                }
+            }
+            else
+            {
+                context.Start();
+                context.Stop();
+            }
+
+            context.Checkpoint(Checkpoint.IterationTearDownCheckpointName);
+            ExecuteWithExceptionHandling(() => scenario.IterationTearDown(context), context);
         }
 
         private void ExecuteScenarioSetup()

@@ -4,7 +4,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 {
     public class IdFactory : IUniqueIdFactory<int>
     {
-        private int _id;
+        private int _id = -1;
 
         public int Next()
         {

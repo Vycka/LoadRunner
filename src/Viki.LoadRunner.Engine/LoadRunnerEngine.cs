@@ -36,7 +36,7 @@ namespace Viki.LoadRunner.Engine
         /// <summary>
         /// Current duration of currently executing load test
         /// </summary>
-        public TimeSpan TestDuration => _timer.CurrentValue;
+        public TimeSpan TestDuration => _timer.Value;
         /// <summary>
         /// Start UTC time for currently executing load test
         /// </summary>
@@ -186,20 +186,22 @@ namespace Viki.LoadRunner.Engine
                     Aggregator = _resultsAggregator
                 });
 
-                _threadCoordinator.InitializeThreads(_settings.Threading.InitialThreadCount);
+                CoordinatorContext context = _threadCoordinator.Context;
 
+                InitialThreadingSetup();
 
-                _timer.Start();
                 _resultsAggregator.Begin();
+                _timer.Start();
+                
 
-                while (!_limits.StopTest(_timer.CurrentValue, _threadCoordinator.Context.IdFactory.Current))
+                while (!_limits.StopTest(_threadCoordinator.Context))
                 {
-                    WorkerThreadStats threadStats = _threadCoordinator.BuildWorkerThreadStats();
-
                     _threadCoordinator.AssertThreadErrors();
-                    TryAdjustCreatedThreadCount(threadStats);
 
-                    Thread.Sleep(1);
+                    _settings.Threading.Adjust(context, _threadCoordinator);
+                    _settings.Speed.Adjust(context);
+
+                    Thread.Sleep(1000);
                 }
             }
             catch (Exception ex)
@@ -210,6 +212,7 @@ namespace Viki.LoadRunner.Engine
             finally
             {
                 _threadCoordinator?.StopAndDispose((int)_limits.FinishTimeout.TotalMilliseconds);
+
                 _resultsAggregator.End();
                 _timer.Stop();
 
@@ -219,14 +222,15 @@ namespace Viki.LoadRunner.Engine
             }
         }
 
-        private void TryAdjustCreatedThreadCount(WorkerThreadStats threadStats)
+        private void InitialThreadingSetup()
         {
-            int allowedCreatedThreadCount = _settings.Threading.GetAllowedCreatedThreadCount(_timer.CurrentValue, threadStats);
+            _settings.Threading.Setup(_threadCoordinator.Context, _threadCoordinator);
 
-            if (allowedCreatedThreadCount > threadStats.CreatedThreadCount)
-                _threadCoordinator.InitializeThreadsAsync(_settings.Threading.ThreadCreateBatchSize);
-            else if (allowedCreatedThreadCount < threadStats.CreatedThreadCount)
-                _threadCoordinator.StopWorkersAsync(threadStats.CreatedThreadCount - allowedCreatedThreadCount);
+            while (_threadCoordinator.CreatedThreadCount != _threadCoordinator.InitializedThreadCount)
+            {
+                Thread.Sleep(100);
+                _threadCoordinator.AssertThreadErrors();
+            }
         }
 
         #endregion

@@ -3,7 +3,7 @@ using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
-    public class FixedThreadCount : IThreadingStrategyLegacy
+    public class FixedThreadCount : IThreadingStrategyLegacy, IThreadingStrategy
     {
         private readonly int _workingThreadCount;
 
@@ -25,6 +25,16 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
         public int GetAllowedCreatedThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
         {
             return ThreadCreateBatchSize;
+        }
+
+        public void Setup(CoordinatorContext context, IThreadPoolControl control)
+        {
+            control.StartWorkersAsync(_workingThreadCount);
+        }
+
+        public void Adjust(CoordinatorContext context, IThreadPoolControl control)
+        {
+            control.SetWorkerCountAsync(_workingThreadCount);
         }
     }
 }

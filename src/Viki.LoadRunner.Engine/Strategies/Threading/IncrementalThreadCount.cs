@@ -5,7 +5,7 @@ using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
-    public class IncrementalThreadCount : IThreadingStrategyLegacy, IDimension
+    public class IncrementalThreadCount : IThreadingStrategyLegacy, IThreadingStrategy, IDimension
     {
         private readonly TimeSpan _increaseTimePeriod;
 
@@ -35,11 +35,25 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
             return (((int)(testExecutionTime.TotalMilliseconds / _increaseTimePeriod.TotalMilliseconds)) * ThreadCreateBatchSize) + InitialThreadCount;
         }
 
+        public void Setup(CoordinatorContext context, IThreadPoolControl control)
+        {
+            control.StartWorkersAsync(InitialThreadCount);
+        }
+
+        public void Adjust(CoordinatorContext context, IThreadPoolControl control)
+        {
+            int threadCount = (((int)(context.Timer.Value.Ticks / _increaseTimePeriod.Ticks)) * ThreadCreateBatchSize) + InitialThreadCount;
+
+            control.SetWorkerCountAsync(threadCount);
+        }
+
         public string DimensionName => "Created Threads";
 
         public string GetKey(IResult result)
         {
             return GetAllowedCreatedThreadCount(result.IterationStarted, default(WorkerThreadStats)).ToString();
         }
+
+
     }
 }
