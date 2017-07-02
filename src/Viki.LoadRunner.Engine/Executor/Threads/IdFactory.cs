@@ -12,5 +12,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
             return result;
         }
+
+        public int Current => _id;
     }
 }

@@ -3,5 +3,7 @@
     public interface IUniqueIdFactory<T>
     {
         T Next();
+
+        T Current { get; }
     }
 }

@@ -182,19 +182,17 @@ namespace Viki.LoadRunner.Engine
                     InitialUserData = _settings.InitialUserData,
                     Scenario = _iTestScenarioObjectType,
                     Scheduler = _settings.Speed,
-                    Timer = _timer
+                    Timer = _timer,
+                    Aggregator = _resultsAggregator
                 });
 
                 _threadCoordinator.InitializeThreads(_settings.Threading.InitialThreadCount);
-                _threadCoordinator.ScenarioIterationFinished += _threadCoordinator_ScenarioIterationFinished;
 
-                int testIterationCount = 0;
-                TimeSpan executionEnqueueThreshold = TimeSpan.Zero;
 
                 _timer.Start();
                 _resultsAggregator.Begin();
 
-                while (!_limits.StopTest(_timer.CurrentValue, testIterationCount))
+                while (!_limits.StopTest(_timer.CurrentValue, _threadCoordinator.Context.IdFactory.Current))
                 {
                     WorkerThreadStats threadStats = _threadCoordinator.BuildWorkerThreadStats();
 
@@ -229,15 +227,6 @@ namespace Viki.LoadRunner.Engine
                 _threadCoordinator.InitializeThreadsAsync(_settings.Threading.ThreadCreateBatchSize);
             else if (allowedCreatedThreadCount < threadStats.CreatedThreadCount)
                 _threadCoordinator.StopWorkersAsync(threadStats.CreatedThreadCount - allowedCreatedThreadCount);
-        }
-
-        #endregion
-
-        #region Events
-
-        private void _threadCoordinator_ScenarioIterationFinished(IterationResult result)
-        {
-            _resultsAggregator.TestContextResultReceived(result);
         }
 
         #endregion

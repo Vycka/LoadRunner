@@ -67,22 +67,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
                 if (!_handlerThread.Join(timeoutMilliseconds))
                 {
-                    //Console.WriteLine($"Aborting {_testContext.ThreadId}");
                     _handlerThread.Abort();
-
-                    ////Broadcast threads that managed to start TeardownProcess
-                    //if (_executeIterationQueued && _testContext.ExecutionTime.Ticks != 0)
-                    //{
-                    //    //Console.WriteLine($"Broadcasting {_testContext.ThreadId}");
-                    //    OnScenarioExecutionFinished();
-                    //}
                 }
             }
-        }
-        
-        public void QueueIteration(int iteration)
-        {
-            throw new Exception();
         }
 
         #endregion
@@ -98,12 +85,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             ScenarioSetupSucceeded?.Invoke(this);
         }
 
-        public delegate void ScenarioIterationFinishedEvent(TestExecutorThread sender, IterationResult result);
-        public event ScenarioIterationFinishedEvent ScenarioIterationFinished;
-
         private void OnScenarioIterationFinished()
         {
-            ScenarioIterationFinished?.Invoke(this, new IterationResult(_testContext));
+            _context.Aggregator.TestContextResultReceived(new IterationResult(_testContext));
         }
 
         public delegate void ThreadFailedEvent(TestExecutorThread sender, IterationResult result, Exception ex);

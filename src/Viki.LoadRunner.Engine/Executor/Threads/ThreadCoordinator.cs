@@ -11,9 +11,13 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 {
     public class ThreadCoordinator : IDisposable, IThreadPoolStats
     {
-        #region Fields
+        #region Properties
 
-        private CoordinatorContext _context;
+        public readonly CoordinatorContext Context;
+
+        #endregion
+
+        #region Fields
 
         private readonly ConcurrentDictionary<int, TestExecutorThread> _allThreads;
         private readonly ConcurrentDictionary<int, TestExecutorThread> _initializedThreads;
@@ -37,8 +41,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             _threadErrors = new ConcurrentBag<Exception>();
 
 
-            _context = new CoordinatorContext
+            Context = new CoordinatorContext
             {
+                Aggregator = settings.Aggregator,
                 IdFactory = new IdFactory(),
                 Scenario = settings.Scenario,
                 Scheduler = settings.Scheduler,
@@ -76,7 +81,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
             foreach (TestExecutorThread newThread in newThreads)
             {
-                newThread.ScenarioIterationFinished += ExecutorThreadScenarioIterationFinished;
                 newThread.ThreadFailed += ExecutorThread_ThreadFailed;
                 newThread.ScenarioSetupSucceeded += NewThread_ScenarioSetupSucceeded;
 
@@ -92,7 +96,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         {
             for (int i = 0; i < threadCount; i++)
             {
-                yield return new TestExecutorThread(_context, _nextThreadId++);
+                yield return new TestExecutorThread(Context, _nextThreadId++);
             }
         }
 
@@ -155,16 +159,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
         }
 
-        private void ExecutorThreadScenarioIterationFinished(TestExecutorThread sender, IterationResult result)
-        {
-            if (!_disposing)
-            {
-
-                OnScenarioExecutionFinished(result);
-
-            }
-        }
-
         private void ExecutorThread_ThreadFailed(TestExecutorThread sender, IterationResult result, Exception ex)
         {
             if (!_disposing)
@@ -173,14 +167,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
                 _threadErrors.Add(ex);
             }
-        }
-
-        public delegate void ScenarioExecutionFinishedEventHandler(IterationResult result);
-        public event ScenarioExecutionFinishedEventHandler ScenarioIterationFinished;
-
-        private void OnScenarioExecutionFinished(IterationResult result)
-        {
-            ScenarioIterationFinished?.Invoke(result);
         }
 
         private void TryRemoveThread(int threadId)
