@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
     /// But limits concurrent-thread-count
     /// and gradually increases the limit over defined time periods
     /// </summary>
-    public class IncrementalWorkingThreadCount : IThreadingStrategy
+    public class IncrementalWorkingThreadCount : IThreadingStrategyLegacy
     {
         private readonly TimeSpan _increaseTimePeriod;
         private readonly int _increaseBatchSize;
@@ -31,16 +31,16 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
             _initialWorkingThreadCount = initialWorkingThreadCount;
         }
 
-        int IThreadingStrategy.InitialThreadCount => _createdThreadCount;
+        int IThreadingStrategyLegacy.InitialThreadCount => _createdThreadCount;
 
-        int IThreadingStrategy.ThreadCreateBatchSize { get; } = 1;
+        int IThreadingStrategyLegacy.ThreadCreateBatchSize { get; } = 1;
 
-        int IThreadingStrategy.GetAllowedMaxWorkingThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
+        int IThreadingStrategyLegacy.GetAllowedMaxWorkingThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
         {
             return (((int)(testExecutionTime.TotalMilliseconds / _increaseTimePeriod.TotalMilliseconds)) * _increaseBatchSize) + _initialWorkingThreadCount;
         }
 
-        int IThreadingStrategy.GetAllowedCreatedThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
+        int IThreadingStrategyLegacy.GetAllowedCreatedThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
         {
             return _createdThreadCount;
         }

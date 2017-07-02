@@ -101,7 +101,7 @@
     <Compile Include="Strategies\ISpeedStrategy.cs" />
     <Compile Include="Strategies\ILimitStrategy.cs" />
     <Compile Include="Strategies\ISpeedStrategyLegacy.cs" />
-    <Compile Include="Strategies\IThreadingStrategy.cs" />
+    <Compile Include="Strategies\IThreadingStrategyLegacy.cs" />
     <Compile Include="Strategies\Speed\ClockedListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\FixedSpeed.cs" />
     <Compile Include="Strategies\Speed\IncrementalSpeed.cs" />

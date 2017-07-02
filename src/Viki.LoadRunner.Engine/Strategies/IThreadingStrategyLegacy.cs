@@ -3,7 +3,7 @@ using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies
 {
-    public interface IThreadingStrategy
+    public interface IThreadingStrategyLegacy
     {
         /// <summary>
         /// Initial count of threads to be initialized (And ScenarioSetup() executed) before LoadTest is started

@@ -5,7 +5,7 @@ using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
-    public class IncrementalThreadCount : IThreadingStrategy, IDimension
+    public class IncrementalThreadCount : IThreadingStrategyLegacy, IDimension
     {
         private readonly TimeSpan _increaseTimePeriod;
 

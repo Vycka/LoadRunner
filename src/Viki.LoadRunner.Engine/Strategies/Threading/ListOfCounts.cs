@@ -4,7 +4,7 @@ using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
-    public class ListOfCounts : IThreadingStrategy
+    public class ListOfCounts : IThreadingStrategyLegacy
     {
         private readonly TimeSpan _period;
         private readonly int[] _threadCountValues;

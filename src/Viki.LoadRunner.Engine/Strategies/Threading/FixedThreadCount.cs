@@ -3,7 +3,7 @@ using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
-    public class FixedThreadCount : IThreadingStrategy
+    public class FixedThreadCount : IThreadingStrategyLegacy
     {
         private readonly int _workingThreadCount;
 

@@ -23,7 +23,7 @@ namespace Viki.LoadRunner.Engine.Parameters
         /// <summary>
         /// Threading strategy defines created and working parallel thread count throughout the LoadTest
         /// </summary>
-        IThreadingStrategy Threading { get; }
+        IThreadingStrategyLegacy Threading { get; }
 
         /// <summary>
         /// This object-value will be set to testContext.UserData for each created test thread.
@@ -50,7 +50,7 @@ namespace Viki.LoadRunner.Engine.Parameters
         /// ThreadingStrategy Defines Created and Working parallel thread count throughout the LoadTest
         /// (Default: 10Threads)
         /// </summary>
-        public IThreadingStrategy Threading { get; set; } = new FixedThreadCount(10, 10);
+        public IThreadingStrategyLegacy Threading { get; set; } = new FixedThreadCount(10, 10);
 
         /// <summary>
         /// This object-value will be set to testContext.UserData for each created test thread.
