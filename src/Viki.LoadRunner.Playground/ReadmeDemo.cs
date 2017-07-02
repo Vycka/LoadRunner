@@ -68,7 +68,7 @@ namespace Viki.LoadRunner.Playground
                 .Add(new PercentileMetric(new[] {0.5, 0.8, 0.9, 0.95, 0.99}, ignoredCheckpoints))
                 .Add(new CountMetric(ignoredCheckpoints))
                 .Add(new ErrorCountMetric())
-                .Add(new FuncMetric<int>("Created Threads", 0, (i, result) => result.CreatedThreads))
+                .Add(new IncrementalThreadCount(15, TimeSpan.FromSeconds(10), 15))
                 .Alias($"Min: {Checkpoint.IterationEndCheckpointName}", "Min (ms)")
                 .Alias($"Avg: {Checkpoint.IterationEndCheckpointName}", "Avg (ms)")
                 .Alias($"Max: {Checkpoint.IterationEndCheckpointName}", "Max (ms)")

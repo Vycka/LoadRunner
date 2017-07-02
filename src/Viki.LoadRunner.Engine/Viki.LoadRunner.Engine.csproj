@@ -46,7 +46,7 @@
     <Compile Include="Aggregators\Dimensions\FuncDimension.cs" />
     <Compile Include="Aggregators\Dimensions\IDimension.cs" />
     <Compile Include="Aggregators\HistogramAggregator.cs" />
-    <Compile Include="Aggregators\Obsolete\HistogramResultsAggregator.cs" />
+    <Compile Include="Aggregators\NullAggregator.cs" />
     <Compile Include="Aggregators\AsyncResultsAggregator.cs" />
     <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\BreakByMetric.cs" />
@@ -64,14 +64,7 @@
     <Compile Include="Aggregators\Metrics\TransactionsPerSecMetric.cs" />
     <Compile Include="Aggregators\Results\HistogramResults.cs" />
     <Compile Include="Aggregators\StreamAggregator.cs" />
-    <Compile Include="Aggregators\Obsolete\TotalsResultsAggregator.cs" />
     <Compile Include="Aggregators\IResultsAggregator.cs" />
-    <Compile Include="Aggregators\Obsolete\Results\ResultsContainer.cs" />
-    <Compile Include="Aggregators\Obsolete\Results\ResultItemTotals.cs" />
-    <Compile Include="Aggregators\Obsolete\Results\HistogramResultRow.cs" />
-    <Compile Include="Aggregators\Obsolete\Results\ResultItemRow.cs" />
-    <Compile Include="Aggregators\Obsolete\Results\ResultsMapper.cs" />
-    <Compile Include="Aggregators\Obsolete\TimeHistogramResultsAggregator.cs" />
     <Compile Include="Aggregators\Utils\DimensionsKeyBuilder.cs" />
     <Compile Include="Aggregators\Utils\DimensionValues.cs" />
     <Compile Include="Aggregators\Utils\FlexiRow.cs" />
@@ -79,11 +72,17 @@
     <Compile Include="Aggregators\Utils\ReplayResult.cs" />
     <Compile Include="Aggregators\Utils\UnixDateTimeExtensions.cs" />
     <Compile Include="Aggregators\Utils\OrderLearner.cs" />
-    <Compile Include="Aggregators\Obsolete\Aggregates\CheckpointAggregate.cs" />
-    <Compile Include="Aggregators\Obsolete\Aggregates\TestContextResultAggregate.cs" />
     <Compile Include="Executor\Context\IIterationMetadata.cs" />
     <Compile Include="Executor\Context\ICheckpoint.cs" />
     <Compile Include="Executor\Result\IResult.cs" />
+    <Compile Include="Executor\Threads\CoordinatorContext.cs" />
+    <Compile Include="Executor\Threads\CoordinatorSettings.cs" />
+    <Compile Include="Executor\Threads\IdFactory.cs" />
+    <Compile Include="Executor\Threads\IThreadContext.cs" />
+    <Compile Include="Executor\Threads\IUniqueIdFactory.cs" />
+    <Compile Include="Executor\Threads\IThreadPoolStats.cs" />
+    <Compile Include="Executor\Threads\ThreadContext.cs" />
+    <Compile Include="Executor\Threads\ThreadCoordinator.cs" />
     <Compile Include="Executor\Timer\ITimer.cs" />
     <Compile Include="Executor\Timer\ExecutionTimer.cs" />
     <Compile Include="Executor\Timer\StopWatchEx.cs" />
@@ -93,15 +92,15 @@
     <Compile Include="LoadTestScenarioValidator.cs" />
     <Compile Include="Parameters\ExecutionLimits.cs" />
     <Compile Include="Parameters\LoadRunnerParameters.cs" />
-    <Compile Include="Executor\Threads\ThreadCoordinator.cs" />
     <Compile Include="ILoadTestScenario.cs" />
     <Compile Include="Executor\Context\TestContext.cs" />
     <Compile Include="LoadRunnerEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Executor\Result\IterationResult.cs" />
     <Compile Include="Executor\Threads\TestExecutorThread.cs" />
-    <Compile Include="Strategies\ILimitStrategy.cs" />
     <Compile Include="Strategies\ISpeedStrategy.cs" />
+    <Compile Include="Strategies\ILimitStrategy.cs" />
+    <Compile Include="Strategies\ISpeedStrategyLegacy.cs" />
     <Compile Include="Strategies\IThreadingStrategy.cs" />
     <Compile Include="Strategies\Speed\ClockedListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\FixedSpeed.cs" />
@@ -111,9 +110,7 @@
     <Compile Include="Strategies\Threading\IncrementalThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalWorkingThreadCount.cs" />
     <Compile Include="Strategies\Threading\ListOfCounts.cs" />
-    <Compile Include="Strategies\Threading\SemiAutoThreadCount.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
-    <Compile Include="Aggregators\Obsolete\Utis\HistogramCsvExport.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Strategies\Limit\" />

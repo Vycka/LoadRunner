@@ -17,11 +17,8 @@ namespace Viki.LoadRunner.Tools.Aggregators
 
         #region Constructors
 
-        public JsonStreamAggregator(string jsonOutputfile)
+        public JsonStreamAggregator(string jsonOutputfile) : this(() => jsonOutputfile)
         {
-            _outFileNameFunc = () => jsonOutputfile;
-
-            _streamWriterAction = StreamWriterFunction;
         }
 
         public JsonStreamAggregator(Func<string> dynamicJsonOutputFile)

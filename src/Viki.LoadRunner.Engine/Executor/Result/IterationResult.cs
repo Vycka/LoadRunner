@@ -23,8 +23,6 @@ namespace Viki.LoadRunner.Engine.Executor.Result
         public TimeSpan IterationStarted { get; set; }
         public TimeSpan IterationFinished { get; set; }
 
-        public int CreatedThreads { get; set; }
-        public int WorkingThreads { get; set; }
 
         public IterationResult(TestContext testContext)
         {

@@ -47,6 +47,11 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         public bool IsRunning => _timer.IsRunning;
 
+        /// <summary>
+        /// If execution failed due to unhandled exception, it will be set here.
+        /// </summary>
+        public Exception Exception { get; private set; }
+
         #endregion
 
         #region Constructor
@@ -168,56 +173,51 @@ namespace Viki.LoadRunner.Engine
             if (_threadCoordinator != null)
                 throw new InvalidOperationException("Async instance is already running");
 
+            Exception = null;
+
             try
             {
-                _threadCoordinator = new ThreadCoordinator(_iTestScenarioObjectType, _timer)
+                _threadCoordinator = new ThreadCoordinator(new CoordinatorSettings
                 {
-                    InitialUserData = _settings.InitialUserData
-                };
+                    InitialUserData = _settings.InitialUserData,
+                    Scenario = _iTestScenarioObjectType,
+                    Scheduler = _settings.Speed,
+                    Timer = _timer
+                });
+
                 _threadCoordinator.InitializeThreads(_settings.Threading.InitialThreadCount);
                 _threadCoordinator.ScenarioIterationFinished += _threadCoordinator_ScenarioIterationFinished;
-                
+
                 int testIterationCount = 0;
                 TimeSpan executionEnqueueThreshold = TimeSpan.Zero;
 
                 _timer.Start();
                 _resultsAggregator.Begin();
-                
+
                 while (!_limits.StopTest(_timer.CurrentValue, testIterationCount))
                 {
                     WorkerThreadStats threadStats = _threadCoordinator.BuildWorkerThreadStats();
-                    int allowedWorkingthreadCount = _settings.Threading.GetAllowedMaxWorkingThreadCount(_timer.CurrentValue, threadStats);
 
                     _threadCoordinator.AssertThreadErrors();
                     TryAdjustCreatedThreadCount(threadStats);
 
-                    
-                    if (allowedWorkingthreadCount > threadStats.WorkingThreadCount && _timer.CurrentValue >= executionEnqueueThreshold)
-                    {
-                        if (_threadCoordinator.TryEnqueueSingleIteration())
-                        {
-                            executionEnqueueThreshold = CalculateNextExecutionTime(executionEnqueueThreshold);
-                            testIterationCount++;
-                        }
-                        else
-                            Thread.Sleep(1);
-                    }
-                    else
-                    {
-                        Thread.Sleep(1);
-                    }
-
-                    //_timer.UpdateCurrent();
+                    Thread.Sleep(1);
                 }
+            }
+            catch (Exception ex)
+            {
+                Exception = ex;
+                throw;
             }
             finally
             {
                 _threadCoordinator?.StopAndDispose((int)_limits.FinishTimeout.TotalMilliseconds);
                 _resultsAggregator.End();
-                _threadCoordinator?.AssertThreadErrors();
-
-                _threadCoordinator = null;
                 _timer.Stop();
+
+                ThreadCoordinator local = _threadCoordinator;
+                _threadCoordinator = null;
+                local?.AssertThreadErrors();
             }
         }
 
@@ -229,17 +229,6 @@ namespace Viki.LoadRunner.Engine
                 _threadCoordinator.InitializeThreadsAsync(_settings.Threading.ThreadCreateBatchSize);
             else if (allowedCreatedThreadCount < threadStats.CreatedThreadCount)
                 _threadCoordinator.StopWorkersAsync(threadStats.CreatedThreadCount - allowedCreatedThreadCount);
-        }
-
-        private TimeSpan CalculateNextExecutionTime(TimeSpan lastExecutionEnqueueThreshold)
-        {
-            TimeSpan delayBetweenIterations = _settings.Speed.GetDelayBetweenIterations(_timer.CurrentValue);
-
-            TimeSpan nextExecutionTime = lastExecutionEnqueueThreshold + delayBetweenIterations;
-            if (nextExecutionTime < _timer.CurrentValue)
-                nextExecutionTime = _timer.CurrentValue;
-
-            return nextExecutionTime;
         }
 
         #endregion

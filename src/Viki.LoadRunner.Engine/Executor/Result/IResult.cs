@@ -27,18 +27,6 @@ namespace Viki.LoadRunner.Engine.Executor.Result
         /// It contains value when this iteration ended (relative to LoadTest start)
         /// </summary>
         TimeSpan IterationFinished { get; }
-
-        /// <summary>
-        /// Count of currently created worker threads at the end of this iteration
-        /// This value will be set at the [IterationFinished] moment.
-        /// </summary>
-        int CreatedThreads { get; }
-
-        /// <summary>
-        /// Count of currently working worker threads at the end of this iteration
-        /// This value will be set at the [IterationFinished] moment.
-        /// </summary>
-        int WorkingThreads { get; }
     }
 
     /// <summary>

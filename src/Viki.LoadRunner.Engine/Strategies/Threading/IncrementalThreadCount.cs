@@ -1,9 +1,11 @@
 ﻿using System;
+using Viki.LoadRunner.Engine.Aggregators.Dimensions;
+using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
-    public class IncrementalThreadCount : IThreadingStrategy
+    public class IncrementalThreadCount : IThreadingStrategy, IDimension
     {
         private readonly TimeSpan _increaseTimePeriod;
 
@@ -31,6 +33,13 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
         public int GetAllowedCreatedThreadCount(TimeSpan testExecutionTime, WorkerThreadStats workerThreadStats)
         {
             return (((int)(testExecutionTime.TotalMilliseconds / _increaseTimePeriod.TotalMilliseconds)) * ThreadCreateBatchSize) + InitialThreadCount;
+        }
+
+        public string DimensionName => "Created Threads";
+
+        public string GetKey(IResult result)
+        {
+            return GetAllowedCreatedThreadCount(result.IterationStarted, default(WorkerThreadStats)).ToString();
         }
     }
 }

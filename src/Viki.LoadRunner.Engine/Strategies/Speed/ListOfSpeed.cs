@@ -6,7 +6,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
     /// <summary>
     /// Define manually a table of various speed values which will be used one by one every provided time period
     /// </summary>
-    public class ListOfSpeed : ISpeedStrategy
+    public class ListOfSpeed : ISpeedStrategyLegacy
     {
         private readonly TimeSpan _period;
         private readonly double[] _iterationPerSecValues;

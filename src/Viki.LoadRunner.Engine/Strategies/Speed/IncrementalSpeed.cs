@@ -2,7 +2,7 @@
 
 namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
-    public class IncrementalSpeed : ISpeedStrategy
+    public class IncrementalSpeed : ISpeedStrategyLegacy
     {
         private readonly double _initialRequestsPerSec;
         private readonly TimeSpan _increasePeriod;
