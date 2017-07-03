@@ -125,6 +125,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
             try
             { 
+                // TODO: Move context creation outside of this method
+
                 IThreadContext threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
                 Scheduler scheduler = new Scheduler(_context.Timer);
 
@@ -183,7 +185,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                     while (_stopQueued == false && scheduler.Action == ScheduleAction.Idle)
                     {
                         TimeSpan deltaIdle = scheduler.At - _context.Timer.Value;
-                        if (deltaIdle < MilliSecond)
+                        if (deltaIdle > TimeSpan.Zero)
                             Thread.Sleep(deltaIdle);
 
                         _context.Scheduler.Next(context, scheduler);
@@ -194,7 +196,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 }
 
                 TimeSpan deltaWait = scheduler.At - _context.Timer.Value;
-                Thread.Sleep(deltaWait > MilliSecond ? deltaWait : MilliSecond);
+                if (deltaWait > MilliSecond)
+                    Thread.Sleep(deltaWait);
 
                 _context.ThreadPool.AddIdle(-1);
             }
