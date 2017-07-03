@@ -5,15 +5,12 @@ using Viki.LoadRunner.Engine.Strategies;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
 {
-    public class CoordinatorContext
+    public class ThreadPoolSettings
     {
-        public IUniqueIdFactory<int> IdFactory;
-        public ISpeedStrategy Scheduler;
-        public object UserData;
         public Type Scenario;
+        public ITimer Timer;
+        public ISpeedStrategy Scheduler;
         public IResultsAggregator Aggregator;
-
-        public IThreadPoolStats ThreadPool { get; set; }
-        public ITimer Timer { get; set; }
+        public object InitialUserData;
     }
 }

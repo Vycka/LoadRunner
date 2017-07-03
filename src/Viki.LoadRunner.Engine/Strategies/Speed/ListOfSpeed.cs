@@ -45,7 +45,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
 
         private int _currentIndex = -1;
 
-        public new void Adjust(CoordinatorContext context)
+        public new void Adjust(IThreadPoolContext context)
         {
             int index = GetIndex(context.Timer.Value);
             if (index != _currentIndex)

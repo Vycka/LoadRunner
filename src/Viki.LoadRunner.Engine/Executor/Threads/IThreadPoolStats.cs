@@ -4,7 +4,6 @@
     {
         int CreatedThreadCount { get; }
         int InitializedThreadCount { get; }
-        //int ReadyThreadCount { get; }
-        //int WorkingThreadCount { get; }
+        int IdleThreadCount { get; }
     }
 }

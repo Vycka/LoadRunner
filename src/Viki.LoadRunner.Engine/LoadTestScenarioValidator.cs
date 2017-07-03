@@ -1,5 +1,6 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Executor.Threads;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine
@@ -45,7 +46,7 @@ namespace Viki.LoadRunner.Engine
             testContext.Checkpoint(Checkpoint.IterationTearDownCheckpointName);
             loadTestScenario.IterationTearDown(testContext);
 
-            IterationResult result = new IterationResult(testContext);
+            IterationResult result = new IterationResult(testContext, new WorkerThreadStats());
 
             testContext.Reset(-1, -1);
             loadTestScenario.ScenarioTearDown(testContext);

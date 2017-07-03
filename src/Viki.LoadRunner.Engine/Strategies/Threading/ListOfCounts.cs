@@ -43,12 +43,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
 
         public int InitialThreadCount => _threadCountValues[0];
         public int ThreadCreateBatchSize => 1;
-        public void Setup(CoordinatorContext context, IThreadPoolControl control)
+        public void Setup(IThreadPoolContext context, IThreadPoolControl control)
         {
             control.SetWorkerCountAsync(InitialThreadCount);
         }
 
-        public void Adjust(CoordinatorContext context, IThreadPoolControl control)
+        public void Adjust(IThreadPoolContext context, IThreadPoolControl control)
         {
             long index = context.Timer.Value.Ticks / _period.Ticks;
             int result = 0;

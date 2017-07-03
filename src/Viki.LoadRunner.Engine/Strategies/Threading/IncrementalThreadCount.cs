@@ -35,12 +35,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
             return (((int)(testExecutionTime.TotalMilliseconds / _increaseTimePeriod.TotalMilliseconds)) * ThreadCreateBatchSize) + InitialThreadCount;
         }
 
-        public void Setup(CoordinatorContext context, IThreadPoolControl control)
+        public void Setup(IThreadPoolContext context, IThreadPoolControl control)
         {
             control.StartWorkersAsync(InitialThreadCount);
         }
 
-        public void Adjust(CoordinatorContext context, IThreadPoolControl control)
+        public void Adjust(IThreadPoolContext context, IThreadPoolControl control)
         {
             int threadCount = (((int)(context.Timer.Value.Ticks / _increaseTimePeriod.Ticks)) * ThreadCreateBatchSize) + InitialThreadCount;
 

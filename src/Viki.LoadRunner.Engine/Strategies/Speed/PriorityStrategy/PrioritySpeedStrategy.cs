@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
         private readonly PriorityStrategy _strategy;
         private readonly ISpeedStrategy[] _strategies;
 
-        public PrioritySpeedStrategy(PriorityStrategy strategy, ISpeedStrategy[] strategies)
+        public PrioritySpeedStrategy(Priority strategy, ISpeedStrategy[] strategies)
         {
             if (strategy == null)
                 throw new ArgumentNullException(nameof(strategy));
@@ -17,17 +17,17 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
             if (strategies.Length == 0)
                 throw new ArgumentException("At least one strategy has to be provided", nameof(strategies));
 
-            _strategy = strategy;
+            //_strategy = strategy;
             _strategies = strategies;
         }
 
         // TODO:
-        public void Next(IThreadContext context, IIterationControl control)
+        public void Next(IThreadContext context, IScheduler scheduler)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Adjust(CoordinatorContext context)
+        public void Adjust(IThreadPoolContext context)
         {
             throw new System.NotImplementedException();
         }

@@ -6,6 +6,8 @@ using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Speed;
+using Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy;
+using ThreadPool = Viki.LoadRunner.Engine.Executor.Threads.ThreadPool;
 
 namespace Viki.LoadRunner.Engine
 {
@@ -28,7 +30,7 @@ namespace Viki.LoadRunner.Engine
         #region Run() globals
 
         private readonly ExecutionTimer _timer = new ExecutionTimer();
-        private ThreadCoordinator _coordinator;
+        private ThreadPool _pool;
 
         #endregion
 
@@ -172,7 +174,7 @@ namespace Viki.LoadRunner.Engine
 
         private void RunInner()
         {
-            if (_coordinator != null)
+            if (_pool != null)
                 throw new InvalidOperationException("Async instance is already running");
 
             Exception = null;
@@ -180,7 +182,7 @@ namespace Viki.LoadRunner.Engine
             try
             {
                 _limits = _settings.Limits;
-                _coordinator = new ThreadCoordinator(new CoordinatorSettings
+                _pool = new ThreadPool(new ThreadPoolSettings
                 {
                     InitialUserData = _settings.InitialUserData,
                     Scenario = _iTestScenarioObjectType,
@@ -189,20 +191,20 @@ namespace Viki.LoadRunner.Engine
                     Aggregator = _aggregator
                 });
 
-                CoordinatorContext context = _coordinator.Context;
+                IThreadPoolContext context = _pool.Context;
 
                 ISpeedStrategy scheduler = context.Scheduler;
                 IThreadingStrategy threading = _settings.Threading;
 
-                InitialThreadingSetup(_coordinator, threading);
+                InitialThreadingSetup(_pool, threading);
 
                 StartTest(context, _timer);
 
                 while (!_limits.StopTest(context))
                 {
-                    _coordinator.AssertThreadErrors();
+                    _pool.AssertThreadErrors();
 
-                    threading.Adjust(context, _coordinator);
+                    threading.Adjust(context, _pool);
                     scheduler.Adjust(context);
 
                     Thread.Sleep(1000);
@@ -215,31 +217,31 @@ namespace Viki.LoadRunner.Engine
             }
             finally
             {
-                _coordinator?.StopAndDispose((int)_limits.FinishTimeout.TotalMilliseconds);
+                _pool?.StopAndDispose((int)_limits.FinishTimeout.TotalMilliseconds);
 
                 _aggregator.End();
                 _timer.Stop();
 
-                ThreadCoordinator local = _coordinator;
-                _coordinator = null;
+                ThreadPool local = _pool;
+                _pool = null;
                 local?.AssertThreadErrors();
             }
         }
 
-        private static void StartTest(CoordinatorContext context, ExecutionTimer timer)
+        private static void StartTest(IThreadPoolContext context, ExecutionTimer timer)
         {
             context.Aggregator.Begin();
             timer.Start(); // This line also releases Worker-Threads from wait.
         }
 
-        private static void InitialThreadingSetup(ThreadCoordinator coordinator, IThreadingStrategy threading)
+        private static void InitialThreadingSetup(ThreadPool pool, IThreadingStrategy threading)
         {
-            threading.Setup(coordinator.Context, coordinator);
+            threading.Setup(pool.Context, pool);
 
-            while (coordinator.CreatedThreadCount != coordinator.InitializedThreadCount)
+            while (pool.CreatedThreadCount != pool.InitializedThreadCount)
             {
                 Thread.Sleep(100);
-                coordinator.AssertThreadErrors();
+                pool.AssertThreadErrors();
             }
         }
 

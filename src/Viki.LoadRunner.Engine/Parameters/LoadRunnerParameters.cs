@@ -1,6 +1,7 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Speed;
+using Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 
 namespace Viki.LoadRunner.Engine.Parameters

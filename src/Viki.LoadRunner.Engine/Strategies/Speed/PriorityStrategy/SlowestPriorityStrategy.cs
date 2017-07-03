@@ -1,13 +1,12 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Threads;
+using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
 {
-    public class SlowestPriorityStrategy : IterationControl
+    public class SlowestPriorityStrategy : Scheduler
     {
-        public void Test()
+        public SlowestPriorityStrategy(ITimer timer) : base(timer)
         {
-            //base.
         }
-
     }
 }

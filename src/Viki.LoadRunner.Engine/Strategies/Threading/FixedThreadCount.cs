@@ -12,12 +12,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
             _threadCount = threadCount;
         }
 
-        public void Setup(CoordinatorContext context, IThreadPoolControl control)
+        public void Setup(IThreadPoolContext context, IThreadPoolControl control)
         {
             control.StartWorkersAsync(_threadCount);
         }
 
-        public void Adjust(CoordinatorContext context, IThreadPoolControl control)
+        public void Adjust(IThreadPoolContext context, IThreadPoolControl control)
         {
         }
     }

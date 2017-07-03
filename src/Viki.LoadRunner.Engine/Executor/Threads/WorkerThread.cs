@@ -12,9 +12,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
     /// Worker-Thread once created, will initialize ASAP.
     /// After initialization, it will start execution of iterations ASAP but not until ITimer is started.
     /// </summary>
-    public class TestExecutorThread : IDisposable
+    public class WorkerThread : IDisposable
     {
-        private readonly CoordinatorContext _context;
+        private readonly ThreadPoolContext _context;
 
         #region Properties
 
@@ -28,12 +28,13 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         public bool ScenarioInitialized { get; private set; }
         public int ThreadId => _testContext.ThreadId;
         public bool IsAlive => _handlerThread.IsAlive;
+        public bool Idle { get; private set; } = false;
 
         #endregion
 
         #region Ctor
 
-        public TestExecutorThread(CoordinatorContext context, int threadId)
+        public WorkerThread(ThreadPoolContext context, int threadId)
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
@@ -82,7 +83,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         #region Events
 
 
-        public delegate void ScenarioSetupSucceededEvent(TestExecutorThread sender);
+        public delegate void ScenarioSetupSucceededEvent(WorkerThread sender);
         public event ScenarioSetupSucceededEvent ScenarioSetupSucceeded;
 
         private void OnScenarioSetupSucceeded()
@@ -92,15 +93,15 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         private void OnScenarioIterationFinished()
         {
-            _context.Aggregator.TestContextResultReceived(new IterationResult(_testContext));
+            _context.Aggregator.TestContextResultReceived(new IterationResult(_testContext, _context.ThreadPool));
         }
 
-        public delegate void ThreadFailedEvent(TestExecutorThread sender, IterationResult result, Exception ex);
+        public delegate void ThreadFailedEvent(WorkerThread sender, IterationResult result, Exception ex);
         public event ThreadFailedEvent ThreadFailed;
 
         private void OnThreadFailed(Exception ex)
         {
-            ThreadFailed?.Invoke(this, new IterationResult(_testContext), ex);
+            ThreadFailed?.Invoke(this, new IterationResult(_testContext, _context.ThreadPool), ex);
         }
 
         #endregion
@@ -116,12 +117,16 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Thread Func
 
+        private static readonly TimeSpan MilliSecond = TimeSpan.FromMilliseconds(1);
+
         private void ExecuteScenarioThreadFunction()
         {
+            _context.ThreadPool.AddCreated(1);
+
             try
-            {
+            { 
                 IThreadContext threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
-                IterationControl control = new IterationControl();
+                Scheduler scheduler = new Scheduler(_context.Timer);
 
                 int threadIterationId = 0;
 
@@ -136,17 +141,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
                 while (_stopQueued == false)
                 {
-                    _context.Scheduler.Next(threadContext, control);
-
-                    if (control.Action == IterationControl.IterationAction.Idle)
-                    {
-                        Thread.Sleep(control.TimeValue);
+                    if (WaitForExecuteCommand(threadContext, scheduler))
                         continue;
-                    }
-
-                    TimeSpan timerValue = _context.Timer.Value;
-                    if (control.TimeValue > timerValue)
-                        Thread.Sleep(control.TimeValue - timerValue);
 
                     ExecuteIteration(_testContext, _scenario);
 
@@ -155,17 +151,55 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                     _testContext.Reset(threadIterationId++, _context.IdFactory.Next());
                 }
 
-                _testContext.Reset(-1,-1);
+                _testContext.Reset(-1, -1);
                 _scenario.ScenarioTearDown(_testContext);
             }
             catch (Exception ex)
             {
+                _context.ThreadPool.AddCreated(-1);
+
                 if (ex.GetType() != typeof(ThreadAbortException))
                 {
                     OnThreadFailed(ex);
                 }
             }
+            finally
+            {
+                _context.ThreadPool.AddCreated(-1);
+            }
 
+        }
+
+        private bool WaitForExecuteCommand(IThreadContext context, Scheduler scheduler)
+        {
+            _context.Scheduler.Next(context, scheduler);
+
+            if (scheduler.At - _context.Timer.Value > MilliSecond)
+            {
+                _context.ThreadPool.AddIdle(1);
+
+                if (scheduler.Action == Scheduler.ScheduleAction.Idle)
+                {
+                    while (_stopQueued == false && scheduler.Action == Scheduler.ScheduleAction.Idle)
+                    {
+                        TimeSpan deltaIdle = scheduler.At - _context.Timer.Value;
+                        if (deltaIdle < MilliSecond)
+                            Thread.Sleep(deltaIdle);
+
+                        _context.Scheduler.Next(context, scheduler);
+                    }
+
+                    if (_stopQueued)
+                        return false;
+                }
+
+                TimeSpan deltaWait = scheduler.At - _context.Timer.Value;
+                Thread.Sleep(deltaWait > MilliSecond ? deltaWait : MilliSecond);
+
+                _context.ThreadPool.AddIdle(-1);
+            }
+
+            return true;
         }
 
         public static void ExecuteIteration(TestContext context, ILoadTestScenario scenario)

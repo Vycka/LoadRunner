@@ -5,8 +5,8 @@ namespace Viki.LoadRunner.Engine.Strategies
 {
     public interface ISpeedStrategy
     {
-        void Next(IThreadContext context, IIterationControl control); // Must be thread safe
+        void Next(IThreadContext context, IScheduler scheduler); // Must be thread safe
 
-        void Adjust(CoordinatorContext context);
+        void Adjust(IThreadPoolContext context);
     }
 }

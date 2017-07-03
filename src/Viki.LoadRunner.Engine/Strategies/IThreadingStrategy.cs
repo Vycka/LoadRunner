@@ -4,8 +4,8 @@ namespace Viki.LoadRunner.Engine.Strategies
 {
     public interface IThreadingStrategy
     {
-        void Setup(CoordinatorContext context, IThreadPoolControl control);
+        void Setup(IThreadPoolContext context, IThreadPoolControl control);
 
-        void Adjust(CoordinatorContext context, IThreadPoolControl control);
+        void Adjust(IThreadPoolContext context, IThreadPoolControl control);
     }
 }

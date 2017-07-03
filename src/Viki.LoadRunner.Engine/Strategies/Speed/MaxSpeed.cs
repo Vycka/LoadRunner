@@ -4,12 +4,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
     public class MaxSpeed : ISpeedStrategy
     {
-        public void Next(IThreadContext context, IIterationControl control)
+        public void Next(IThreadContext context, IScheduler scheduler)
         {
-            control.Execute();
+            scheduler.Execute();
         }
 
-        public void Adjust(CoordinatorContext context)
+        public void Adjust(IThreadPoolContext context)
         {
         }
     }
