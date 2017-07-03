@@ -9,7 +9,7 @@ using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
 {
-    public class ThreadPool : IDisposable, IThreadPool
+    public class ThreadPool : IThreadPool
     {
         #region Properties
 
@@ -54,40 +54,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #endregion
 
-        #region Methods
-
-        public void StopWorkersAsync(int threadCount)
-        {
-            for (int i = 0; i < threadCount; i++)
-            {
-                TryRemoveThread(_allThreads.Keys.First());
-            }
-        }
-
-        public void StartWorkersAsync(int threadCount)
-        {
-            IEnumerable<WorkerThread> newThreads = CreateThreads(threadCount);
-
-            foreach (WorkerThread newThread in newThreads)
-            {
-                newThread.ThreadFailed += ExecutorThread_ThreadFailed;
-                newThread.ScenarioSetupSucceeded += NewThread_ScenarioSetupSucceeded;
-
-                newThread.StartThread();
-
-                _allThreads.TryAdd(newThread.ThreadId, newThread);
-            }
-        }
-
-        //public WorkerThreadStats BuildWorkerThreadStats() => new WorkerThreadStats(this);
-
-        private IEnumerable<WorkerThread> CreateThreads(int threadCount)
-        {
-            for (int i = 0; i < threadCount; i++)
-            {
-                yield return new WorkerThread(_context, _nextThreadId++);
-            }
-        }
+        #region Asserts
 
         public void AssertThreadErrors()
         {
@@ -150,7 +117,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         private void ExecutorThread_ThreadFailed(WorkerThread sender, IterationResult result, Exception ex)
         {
-            if (!_disposing)
+            if (ex.GetType() != typeof(ThreadAbortException) && !_disposing)
             {
                 TryRemoveThread(sender.ThreadId);
 
@@ -167,6 +134,41 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             removedThread.QueueStopThreadAsync();
 
             _initializedThreads.TryRemove(threadId, out removedThread);
+        }
+
+        #endregion
+
+        #region IThreadPoolControl
+
+        public void StopWorkersAsync(int threadCount)
+        {
+            for (int i = 0; i < threadCount; i++)
+            {
+                TryRemoveThread(_allThreads.Keys.First());
+            }
+        }
+
+        public void StartWorkersAsync(int threadCount)
+        {
+            IEnumerable<WorkerThread> newThreads = CreateThreads(threadCount);
+
+            foreach (WorkerThread newThread in newThreads)
+            {
+                newThread.ThreadFailed += ExecutorThread_ThreadFailed;
+                newThread.ScenarioSetupSucceeded += NewThread_ScenarioSetupSucceeded;
+
+                newThread.StartThread();
+
+                _allThreads.TryAdd(newThread.ThreadId, newThread);
+            }
+        }
+
+        private IEnumerable<WorkerThread> CreateThreads(int threadCount)
+        {
+            for (int i = 0; i < threadCount; i++)
+            {
+                yield return new WorkerThread(_context, _nextThreadId++);
+            }
         }
 
         #endregion

@@ -158,12 +158,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
             catch (Exception ex)
             {
-                _context.ThreadPool.AddCreated(-1);
-
-                if (ex.GetType() != typeof(ThreadAbortException))
-                {
-                    OnThreadFailed(ex);
-                }
+                OnThreadFailed(ex);
             }
             finally
             {

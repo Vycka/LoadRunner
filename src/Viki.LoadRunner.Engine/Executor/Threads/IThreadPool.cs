@@ -1,6 +1,8 @@
-﻿namespace Viki.LoadRunner.Engine.Executor.Threads
+﻿using System;
+
+namespace Viki.LoadRunner.Engine.Executor.Threads
 {
-    public interface IThreadPool : IThreadPoolStats, IThreadPoolControl, IThreadPoolCounter
+    public interface IThreadPool : IThreadPoolStats, IThreadPoolControl, IThreadPoolCounter, IDisposable
     {   
     }
 
