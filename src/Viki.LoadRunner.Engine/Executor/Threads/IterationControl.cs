@@ -10,22 +10,22 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             Execute
         }
 
-        public IterationAction Action { get; private set; }
-        public TimeSpan TimeValue { get; private set; }
+        public IterationAction Action { get; protected set; }
+        public TimeSpan TimeValue { get; protected set; }
 
-        public void Idle(TimeSpan delay)
+        public virtual void Idle(TimeSpan delay)
         {
             Action = IterationAction.Idle;
             TimeValue = delay;
         }
 
-        public void Execute()
+        public virtual void Execute()
         {
             Action = IterationAction.Execute;
             TimeValue = TimeSpan.Zero;
         }
 
-        public void Execute(TimeSpan delay)
+        public virtual void Execute(TimeSpan delay)
         {
             Action = IterationAction.Execute;
             TimeValue = delay;

@@ -12,7 +12,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
         private readonly TimeSpan _period;
         private readonly double[] _iterationPerSecValues;
 
-        private readonly TimeSpan _maxSpeed;
         protected static readonly TimeSpan OneSecond = TimeSpan.FromSeconds(1);
 
         /// <summary>
@@ -21,7 +20,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
         /// <param name="period">time period after which value from the next index will be used</param>
         /// <param name="iterationPerSecValues">Speed values for each time period.
         /// Once all values are consumed, speed will stay at value from last index</param>
-        public ListOfSpeed(TimeSpan period, params double[] iterationPerSecValues)
+        public ListOfSpeed(TimeSpan period, params double[] iterationPerSecValues) : base(Double.MaxValue)
         {
             if (iterationPerSecValues == null)
                 throw new ArgumentNullException(nameof(iterationPerSecValues));
@@ -30,24 +29,13 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
 
             _period = period;
             _iterationPerSecValues = iterationPerSecValues;
-            _maxSpeed = TimeSpan.FromTicks((long)(OneSecond.Ticks /  _iterationPerSecValues.Last()));
 
             SetSpeed(iterationPerSecValues[0]);
         }
 
-        public virtual TimeSpan GetDelayBetweenIterations(TimeSpan testExecutionTime)
+        protected int GetIndex(TimeSpan timerValue)
         {
-            long index = testExecutionTime.Ticks / _period.Ticks;
-
-            if (index < _iterationPerSecValues.Length)
-                return TimeSpan.FromTicks((long) (OneSecond.Ticks / _iterationPerSecValues[index]) + 1) ; // TODO: This math can be cached in c-tor
-
-            return _maxSpeed;
-        }
-
-        protected int GetIndex(CoordinatorContext context)
-        {
-            int index = (int)(context.Timer.Value.Ticks / _period.Ticks);
+            int index = (int)(timerValue.Ticks / _period.Ticks);
 
             if (index >= _iterationPerSecValues.Length)
                 index = _iterationPerSecValues.Length - 1;
@@ -55,9 +43,18 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             return index;
         }
 
+        private int _currentIndex = -1;
+
         public new void Adjust(CoordinatorContext context)
         {
-            SetSpeed(_iterationPerSecValues[GetIndex(context)]);
+            int index = GetIndex(context.Timer.Value);
+            if (index != _currentIndex)
+            {
+                _currentIndex = index;
+
+                SetSpeed(_iterationPerSecValues[_currentIndex]);
+            }
+            
 
             base.Adjust(context);
         }

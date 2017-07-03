@@ -10,9 +10,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
 
         protected long DelayTicks;
 
-        private long _next = 0;
+        private long _next;
 
-        public FixedSpeed(double maxIterationsPerSec = Double.MaxValue)
+        public FixedSpeed(double maxIterationsPerSec)
         {
             SetSpeed(maxIterationsPerSec);
         }

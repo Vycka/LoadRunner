@@ -111,7 +111,11 @@
     <Compile Include="Strategies\Speed\IncrementalSpeed.cs" />
     <Compile Include="Strategies\Speed\ListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\MaxSpeed.cs" />
-    <Compile Include="Strategies\Speed\PrioritySpeedStrategy.cs" />
+    <Compile Include="Strategies\Speed\PriorityStrategy\FastestPriorityStrategy.cs" />
+    <Compile Include="Strategies\Speed\PriorityStrategy\PrioritySpeedStrategy.cs" />
+    <Compile Include="Strategies\Speed\PriorityStrategy\PriorityStrategy.cs" />
+    <Compile Include="Strategies\Speed\PriorityStrategy\PriorityStrategyFactory.cs" />
+    <Compile Include="Strategies\Speed\PriorityStrategy\SlowestPriorityStrategy.cs" />
     <Compile Include="Strategies\Threading\FixedThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalWorkingThreadCount.cs" />

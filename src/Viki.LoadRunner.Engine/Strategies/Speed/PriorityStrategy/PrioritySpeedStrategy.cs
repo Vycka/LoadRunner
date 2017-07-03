@@ -1,26 +1,23 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Threads;
 
-namespace Viki.LoadRunner.Engine.Strategies.Speed
+namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
 {
-    public enum Priority
-    {
-        Slowest,
-        Fastest
-    }
     internal class PrioritySpeedStrategy : ISpeedStrategy
     {
-        private readonly Priority _priority;
+        private readonly PriorityStrategy _strategy;
         private readonly ISpeedStrategy[] _strategies;
 
-        public PrioritySpeedStrategy(Priority priority, ISpeedStrategy[] strategies)
+        public PrioritySpeedStrategy(PriorityStrategy strategy, ISpeedStrategy[] strategies)
         {
+            if (strategy == null)
+                throw new ArgumentNullException(nameof(strategy));
             if (strategies == null)
                 throw new ArgumentNullException(nameof(strategies));
             if (strategies.Length == 0)
                 throw new ArgumentException("At least one strategy has to be provided", nameof(strategies));
 
-            _priority = priority;
+            _strategy = strategy;
             _strategies = strategies;
         }
 
