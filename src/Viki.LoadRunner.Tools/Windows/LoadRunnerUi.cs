@@ -167,7 +167,7 @@ namespace Viki.LoadRunner.Tools.Windows
         private void _validateButton_Click(object sender, EventArgs e)
         {
             IterationResult result = LoadTestScenarioValidator.Validate((ILoadTestScenario) Activator.CreateInstance(_iTestScenarioType));
-            ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.IterationEndCheckpointName);
+            ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.Names.IterationEnd);
 
             AppendMessage($"Validation OK: {checkpoint.TimePoint.TotalMilliseconds}ms.");
         }

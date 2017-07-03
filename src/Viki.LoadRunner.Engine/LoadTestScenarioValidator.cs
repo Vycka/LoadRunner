@@ -29,11 +29,11 @@ namespace Viki.LoadRunner.Engine
             loadTestScenario.ScenarioSetup(testContext);
 
             testContext.Reset(threadIterationId, globalIterationId);
-            testContext.Checkpoint(Checkpoint.IterationSetupCheckpointName);
+            testContext.Checkpoint(Checkpoint.Names.Setup);
 
             loadTestScenario.IterationSetup(testContext);
 
-            testContext.Checkpoint(Checkpoint.IterationStartCheckpointName);
+            testContext.Checkpoint(Checkpoint.Names.IterationStart);
 
             timer.Start();
             testContext.Start();
@@ -41,9 +41,9 @@ namespace Viki.LoadRunner.Engine
             testContext.Stop();
             timer.Stop();
 
-            testContext.Checkpoint(Checkpoint.IterationEndCheckpointName);
+            testContext.Checkpoint(Checkpoint.Names.IterationEnd);
 
-            testContext.Checkpoint(Checkpoint.IterationTearDownCheckpointName);
+            testContext.Checkpoint(Checkpoint.Names.TearDown);
             loadTestScenario.IterationTearDown(testContext);
 
             IterationResult result = new IterationResult(testContext, new WorkerThreadStats());

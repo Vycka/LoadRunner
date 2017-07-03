@@ -5,7 +5,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
 {
     internal class PrioritySpeedStrategy : ISpeedStrategy
     {
-        private readonly PriorityStrategy _strategy;
+        //private readonly PriorityStrategy _strategy;
         private readonly ISpeedStrategy[] _strategies;
 
         public PrioritySpeedStrategy(Priority strategy, ISpeedStrategy[] strategies)

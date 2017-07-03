@@ -7,12 +7,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
     {
         public ITimer Timer { get; }
 
-        public enum ScheduleAction
-        {
-            Idle,
-            Execute
-        }
-
         public Scheduler(ITimer timer)
         {
             if (timer == null)
@@ -23,7 +17,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         public ScheduleAction Action { get; protected set; }
         public TimeSpan At { get; protected set; }
-        //public TimeSpan Delay { get; protected set; }
 
         public virtual void Idle(TimeSpan delay)
         {

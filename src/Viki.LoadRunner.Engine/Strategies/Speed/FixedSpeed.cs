@@ -8,25 +8,26 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
     {
         protected long ScheduleAheadTicks = TimeSpan.TicksPerSecond;
 
-        protected long DelayTicks;
-
+        private long _delayTicks;
         private long _next;
 
         public FixedSpeed(double maxIterationsPerSec)
         {
-            SetSpeed(maxIterationsPerSec);
+            SetSpeed(maxIterationsPerSec, TimeSpan.Zero);
         }
         
-        public void SetSpeed(double maxIterationsPerSec)
+        public void SetSpeed(double maxIterationsPerSec, TimeSpan timerValue)
         {
             long delayTicks = (long)(TimeSpan.TicksPerSecond / maxIterationsPerSec) + 1;
 
-            DelayTicks = delayTicks;
+            SetDelay(delayTicks, timerValue);
         }
 
-        public void SetSpeed(TimeSpan delay)
+        public void SetDelay(long delayTicks, TimeSpan timerValue)
         {
-            DelayTicks = delay.Ticks;
+            _delayTicks = delayTicks;
+
+            Interlocked.Exchange(ref _next, timerValue.Ticks - _delayTicks);
         }
 
         public void Next(IThreadContext context, IScheduler scheduler)
@@ -35,7 +36,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             long deltaTimeline = timerTicks + ScheduleAheadTicks - _next;
             if (deltaTimeline >= 0)
             {
-                long current = Interlocked.Add(ref _next, DelayTicks);
+                long current = Interlocked.Add(ref _next, _delayTicks);
                 scheduler.ExecuteAt(TimeSpan.FromTicks(current));
             }
             else
@@ -48,10 +49,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
         {
             // Catch up _next if lagging behind timeline
             long deltaLag = context.Timer.Value.Ticks - _next;
-            long threshold = 2 * DelayTicks;
+            long threshold = 2 * _delayTicks;
             if (deltaLag > threshold)
             {
-                Interlocked.Add(ref _next, deltaLag - DelayTicks);
+                Interlocked.Add(ref _next, deltaLag - _delayTicks);
             }
         }
     }

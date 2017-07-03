@@ -3,9 +3,18 @@ using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
 {
+    public enum ScheduleAction
+    {
+        Idle,
+        Execute
+    }
+
     public interface IScheduler
     {
         ITimer Timer { get; }
+
+        ScheduleAction Action { get;  }
+        TimeSpan At { get;  }
 
         void Idle(TimeSpan delay);
         void ExecuteAt(TimeSpan at);

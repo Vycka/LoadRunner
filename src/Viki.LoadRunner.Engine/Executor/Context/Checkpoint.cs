@@ -11,10 +11,13 @@ namespace Viki.LoadRunner.Engine.Executor.Context
     {
         #region Consts
 
-        public const string IterationStartCheckpointName = "SYS_ITERATION_START";
-        public const string IterationEndCheckpointName = "SYS_ITERATION_END";
-        public const string IterationSetupCheckpointName = "SYS_ITERATION_SETUP";
-        public const string IterationTearDownCheckpointName = "SYS_ITERATION_TEARDOWN";
+        public static class Names
+        {
+            public const string IterationStart = "SYS_ITERATION_START";
+            public const string IterationEnd = "SYS_ITERATION_END";
+            public const string Setup = "SYS_ITERATION_SETUP";
+            public const string TearDown = "SYS_ITERATION_TEARDOWN";
+        }
 
         #endregion
 

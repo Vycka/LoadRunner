@@ -42,9 +42,9 @@ namespace Viki.LoadRunner.Playground
             // Initialize aggregator
             string[] ignoredCheckpoints =
             {
-                Checkpoint.IterationSetupCheckpointName,
-                Checkpoint.IterationStartCheckpointName,
-                Checkpoint.IterationTearDownCheckpointName
+                Checkpoint.Names.Setup,
+                Checkpoint.Names.IterationStart,
+                Checkpoint.Names.TearDown
             };
 
             HistogramAggregator histogramAggregator = new HistogramAggregator()
@@ -56,18 +56,18 @@ namespace Viki.LoadRunner.Playground
                 .Add(new CountMetric(ignoredCheckpoints))
                 .Add(new TransactionsPerSecMetric())
                 .Add(new ErrorCountMetric())
-                .Alias($"Min: {Checkpoint.IterationEndCheckpointName}", "Min (ms)")
-                .Alias($"Avg: {Checkpoint.IterationEndCheckpointName}", "Avg (ms)")
-                .Alias($"Max: {Checkpoint.IterationEndCheckpointName}", "Max (ms)")
-                .Alias($"50%: {Checkpoint.IterationEndCheckpointName}", "50% (ms)")
-                .Alias($"80%: {Checkpoint.IterationEndCheckpointName}", "80% (ms)")
-                .Alias($"90%: {Checkpoint.IterationEndCheckpointName}", "90% (ms)")
-                .Alias($"95%: {Checkpoint.IterationEndCheckpointName}", "95% (ms)")
-                .Alias($"99%: {Checkpoint.IterationEndCheckpointName}", "99% (ms)")
-                .Alias($"Count: {Checkpoint.IterationEndCheckpointName}", "Success: Count")
-                .Alias($"Errors: {Checkpoint.IterationSetupCheckpointName}", "Errors: Setup")
-                .Alias($"Errors: {Checkpoint.IterationStartCheckpointName}", "Errors: Iteration")
-                .Alias($"Errors: {Checkpoint.IterationTearDownCheckpointName}", "Errors: Teardown");
+                .Alias($"Min: {Checkpoint.Names.IterationEnd}", "Min (ms)")
+                .Alias($"Avg: {Checkpoint.Names.IterationEnd}", "Avg (ms)")
+                .Alias($"Max: {Checkpoint.Names.IterationEnd}", "Max (ms)")
+                .Alias($"50%: {Checkpoint.Names.IterationEnd}", "50% (ms)")
+                .Alias($"80%: {Checkpoint.Names.IterationEnd}", "80% (ms)")
+                .Alias($"90%: {Checkpoint.Names.IterationEnd}", "90% (ms)")
+                .Alias($"95%: {Checkpoint.Names.IterationEnd}", "95% (ms)")
+                .Alias($"99%: {Checkpoint.Names.IterationEnd}", "99% (ms)")
+                .Alias($"Count: {Checkpoint.Names.IterationEnd}", "Success: Count")
+                .Alias($"Errors: {Checkpoint.Names.Setup}", "Errors: Setup")
+                .Alias($"Errors: {Checkpoint.Names.IterationStart}", "Errors: Iteration")
+                .Alias($"Errors: {Checkpoint.Names.TearDown}", "Errors: Teardown");
 
             JsonStreamAggregator _jsonStreamAggregator =
                 new JsonStreamAggregator(() => DateTime.Now.ToString("HH_mm_ss__ffff") + ".json");

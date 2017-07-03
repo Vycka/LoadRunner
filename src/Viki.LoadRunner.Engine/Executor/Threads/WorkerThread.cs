@@ -178,9 +178,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             {
                 _context.ThreadPool.AddIdle(1);
 
-                if (scheduler.Action == Scheduler.ScheduleAction.Idle)
+                if (scheduler.Action == ScheduleAction.Idle)
                 {
-                    while (_stopQueued == false && scheduler.Action == Scheduler.ScheduleAction.Idle)
+                    while (_stopQueued == false && scheduler.Action == ScheduleAction.Idle)
                     {
                         TimeSpan deltaIdle = scheduler.At - _context.Timer.Value;
                         if (deltaIdle < MilliSecond)
@@ -204,12 +204,12 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         public static void ExecuteIteration(TestContext context, ILoadTestScenario scenario)
         {
-            context.Checkpoint(Checkpoint.IterationSetupCheckpointName);
+            context.Checkpoint(Checkpoint.Names.Setup);
             bool setupSuccess = ExecuteWithExceptionHandling(() => scenario.IterationSetup(context), context);
 
             if (setupSuccess)
             {
-                context.Checkpoint(Checkpoint.IterationStartCheckpointName);
+                context.Checkpoint(Checkpoint.Names.IterationStart);
 
                 context.Start();
                 bool iterationSuccess = ExecuteWithExceptionHandling(() => scenario.ExecuteScenario(context), context);
@@ -217,7 +217,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
                 if (iterationSuccess)
                 {
-                    context.Checkpoint(Checkpoint.IterationEndCheckpointName);
+                    context.Checkpoint(Checkpoint.Names.IterationEnd);
                 }
             }
             else
@@ -226,7 +226,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 context.Stop();
             }
 
-            context.Checkpoint(Checkpoint.IterationTearDownCheckpointName);
+            context.Checkpoint(Checkpoint.Names.TearDown);
             ExecuteWithExceptionHandling(() => scenario.IterationTearDown(context), context);
         }
 

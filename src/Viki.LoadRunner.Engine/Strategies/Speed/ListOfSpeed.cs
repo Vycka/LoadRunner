@@ -30,7 +30,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             _period = period;
             _iterationPerSecValues = iterationPerSecValues;
 
-            SetSpeed(iterationPerSecValues[0]);
+            SetSpeed(iterationPerSecValues[0], TimeSpan.Zero);
         }
 
         protected int GetIndex(TimeSpan timerValue)
@@ -52,7 +52,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             {
                 _currentIndex = index;
 
-                SetSpeed(_iterationPerSecValues[_currentIndex]);
+                SetSpeed(_iterationPerSecValues[_currentIndex], context.Timer.Value);
             }
             
 
