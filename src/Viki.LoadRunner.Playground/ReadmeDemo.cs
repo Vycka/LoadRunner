@@ -33,7 +33,7 @@ namespace Viki.LoadRunner.Playground
                     FinishTimeout = TimeSpan.FromSeconds(60)
                 },
 
-                Speed = new MaxSpeed(),
+                Speed = new ISpeedStrategy[] { new MaxSpeed() },
                 //Speed = new ListOfSpeed(TimeSpan.FromSeconds(60), 5, 1, Double.MaxValue),
 
                 Threading = new ListOfCounts(TimeSpan.FromSeconds(10), 4, 20, 40)

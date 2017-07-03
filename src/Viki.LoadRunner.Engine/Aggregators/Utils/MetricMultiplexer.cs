@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Executor.Result;
 
@@ -22,7 +23,6 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
             _metrics = metricTemplates.ToArray();
         }
 
-
         IMetric IMetric.CreateNew()
         {
             return new MetricMultiplexer(_metrics.Select(m => m.CreateNew()));
@@ -30,10 +30,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
 
         void IMetric.Add(IResult result)
         {
-            foreach (IMetric metric in _metrics)
-            {
-                metric.Add(result);
-            }
+            Parallel.ForEach(_metrics, m => m.Add(result));
         }
 
         string[] IMetric.ColumnNames => _metrics.SelectMany(m => m.ColumnNames).ToArray();
