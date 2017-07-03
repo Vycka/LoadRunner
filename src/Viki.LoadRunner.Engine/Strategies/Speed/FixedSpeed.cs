@@ -24,6 +24,11 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             DelayTicks = delayTicks;
         }
 
+        public void SetSpeed(TimeSpan delay)
+        {
+            DelayTicks = delay.Ticks;
+        }
+
         public void Next(IThreadContext context, IIterationControl control)
         {
             long timerTicks = context.Timer.Value.Ticks;

@@ -7,6 +7,11 @@ using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
 {
+    /// <summary>
+    /// Executor defines worker-thread logic
+    /// Worker-Thread once created, will initialize ASAP.
+    /// After initialization, it will start execution of iterations ASAP but not until ITimer is started.
+    /// </summary>
     public class TestExecutorThread : IDisposable
     {
         private readonly CoordinatorContext _context;
@@ -122,10 +127,13 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
                 ExecuteScenarioSetup();
 
-                while (_context.Timer.IsRunning == false)
+                // Wait for ITimer to start.
+                while (_context.Timer.IsRunning == false && _stopQueued == false)
                     Thread.Sleep(1);
 
-                _testContext.Reset(threadIterationId++, _context.IdFactory.Next());
+                if (!_stopQueued)
+                    _testContext.Reset(threadIterationId++, _context.IdFactory.Next());
+
                 while (_stopQueued == false)
                 {
                     _context.Scheduler.Next(threadContext, control);

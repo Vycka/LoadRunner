@@ -18,9 +18,17 @@ namespace Viki.LoadRunner.Engine.Parameters
         ILimitStrategy Limits { get; }
 
         /// <summary>
-        /// Speed strategy defines limitations related to executed iteration-per-second capping
+        /// Speed strategy is like iteration scheduler. It defines limitations related to executed iteration-per-time capping.
+        /// See this.SpeedPriority for prioritization.
         /// </summary>
-        ISpeedStrategy Speed { get; }
+        ISpeedStrategy[] Speed { get; }
+
+        /// <summary>
+        /// ISpeedStrategy strategy prioritization
+        /// Default - Prioritize slowest
+        /// </summary>
+        Priority SpeedPriority { get; }
+
 
         /// <summary>
         /// Threading strategy defines created and working parallel thread count throughout the LoadTest
@@ -43,16 +51,25 @@ namespace Viki.LoadRunner.Engine.Parameters
         /// (Defaults are unlimited except for 3 min timeout)
         /// </summary>
         public ILimitStrategy Limits { get; set; } = new LimitStrategy();
+
         /// <summary>
-        /// SpeedStrategy defines limitations related to executed iteration-per-second capping.
+        /// SpeedStrategies defines limitations related to executed iteration-per-second capping.
         /// (Default: Unlimited, aka FixedSpeed(Double.MaxValue))
+        /// See this.SpeedPriority for prioritization.
         /// </summary>
-        public ISpeedStrategy Speed { get; set; } = new FixedSpeed(Double.MaxValue);
+        public ISpeedStrategy[] Speed { get; set; } = { new MaxSpeed() };
+
+        /// <summary>
+        /// Only one ISpeedStrategy result can be used for each iteration.
+        /// This property defines which ISpeedStrategy result to prioritize.
+        /// </summary>
+        public Priority SpeedPriority { get; set; } = Priority.Slowest;
+
         /// <summary>
         /// ThreadingStrategy Defines Created and Working parallel thread count throughout the LoadTest
         /// (Default: 10Threads)
         /// </summary>
-        public IThreadingStrategy Threading { get; set; } = new FixedThreadCount(10, 10);
+        public IThreadingStrategy Threading { get; set; } = new FixedThreadCount(10);
 
         /// <summary>
         /// This object-value will be set to testContext.UserData for each created test thread.
