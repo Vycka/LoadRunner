@@ -88,7 +88,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
                     {
                         IResult localResultObject = resultObject;
 
-                        Parallel.ForEach(_resultsAggregators, a => a.TestContextResultReceived(localResultObject));
+                        Array.ForEach(_resultsAggregators, a => a.TestContextResultReceived(localResultObject));
                     }
 
                     Thread.Sleep(50);

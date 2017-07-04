@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Threads;
@@ -186,7 +187,7 @@ namespace Viki.LoadRunner.Engine
                 {
                     InitialUserData = _settings.InitialUserData,
                     Scenario = _iTestScenarioObjectType,
-                    Scheduler = new PrioritySpeedStrategy(_settings.SpeedPriority, _settings.Speed),
+                    Scheduler = WrapStrategies(_settings),
                     Timer = _timer,
                     Aggregator = _aggregator
                 });
@@ -226,6 +227,13 @@ namespace Viki.LoadRunner.Engine
                 _pool = null;
                 local?.AssertThreadErrors();
             }
+        }
+
+        private static ISpeedStrategy WrapStrategies(ILoadRunnerSettings settings)
+        {
+            return settings.Speed.First();
+
+            return new PrioritySpeedStrategy(settings.SpeedPriority, settings.Speed);
         }
 
         private static void StartTest(IThreadPoolContext context, ExecutionTimer timer)

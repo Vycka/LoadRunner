@@ -143,7 +143,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
                 while (_stopQueued == false)
                 {
-                    if (WaitForExecuteCommand(threadContext, scheduler))
+                    if (!WaitForExecuteCommand(threadContext, scheduler))
                         continue;
 
                     ExecuteIteration(_testContext, _scenario);

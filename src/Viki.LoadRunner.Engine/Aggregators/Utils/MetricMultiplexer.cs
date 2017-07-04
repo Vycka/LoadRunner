@@ -30,7 +30,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
 
         void IMetric.Add(IResult result)
         {
-            Parallel.ForEach(_metrics, m => m.Add(result));
+            Array.ForEach(_metrics, m => m.Add(result));
         }
 
         string[] IMetric.ColumnNames => _metrics.SelectMany(m => m.ColumnNames).ToArray();

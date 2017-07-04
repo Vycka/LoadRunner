@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using Viki.LoadRunner.Engine;
+﻿using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Playground

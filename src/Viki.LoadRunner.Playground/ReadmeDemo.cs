@@ -26,7 +26,7 @@ namespace Viki.LoadRunner.Playground
             {
                 Limits = new LimitStrategy
                 {
-                    MaxDuration = TimeSpan.FromSeconds(30),
+                    MaxDuration = TimeSpan.FromSeconds(20),
 
                     MaxIterationsCount = Int32.MaxValue,
 
@@ -36,7 +36,7 @@ namespace Viki.LoadRunner.Playground
                 Speed = new ISpeedStrategy[] { new MaxSpeed() },
                 //Speed = new ListOfSpeed(TimeSpan.FromSeconds(60), 5, 1, Double.MaxValue),
 
-                Threading = new ListOfCounts(TimeSpan.FromSeconds(10), 4, 20, 40)
+                Threading = new ListOfCounts(TimeSpan.FromSeconds(10), 4, 20)
             };
 
             // Initialize aggregator
