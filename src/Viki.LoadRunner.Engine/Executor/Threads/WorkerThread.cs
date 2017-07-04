@@ -117,7 +117,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Thread Func
 
-        private static readonly TimeSpan MilliSecond = TimeSpan.FromMilliseconds(1);
+        //private static readonly TimeSpan MilliSecond = TimeSpan.FromMilliseconds(1);
 
         private void ExecuteScenarioThreadFunction()
         {
@@ -171,7 +171,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         {
             _context.Scheduler.Next(context, scheduler);
 
-            if (scheduler.At - _context.Timer.Value > MilliSecond)
+            TimeSpan delta = scheduler.At - _context.Timer.Value;
+            if (delta > TimeSpan.Zero)
             {
                 _context.ThreadPool.AddIdle(1);
 
@@ -179,9 +180,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 {
                     while (_stopQueued == false && scheduler.Action == ScheduleAction.Idle)
                     {
-                        TimeSpan deltaIdle = scheduler.At - _context.Timer.Value;
-                        if (deltaIdle > TimeSpan.Zero)
-                            Thread.Sleep(deltaIdle);
+                        Thread.Sleep(delta);
 
                         _context.Scheduler.Next(context, scheduler);
                     }
@@ -190,9 +189,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                         return false;
                 }
 
-                TimeSpan deltaWait = scheduler.At - _context.Timer.Value;
-                if (deltaWait > MilliSecond)
-                    Thread.Sleep(deltaWait);
+                Thread.Sleep(delta);
 
                 _context.ThreadPool.AddIdle(-1);
             }
