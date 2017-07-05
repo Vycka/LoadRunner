@@ -29,9 +29,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
 
         public void Next(IThreadContext context, ISchedule schedule)
         {
+            TimeSpan time = schedule.Timer.Value;
+
             for (int i = 0; i < _strategies.Length; i++)
             {
-                _strategies[i].Next(context, _schedules[i]);
+                if (_schedules[i].At < time)
+                    _strategies[i].Next(context, _schedules[i]);
             }
 
             _strategy.Apply(_schedules, schedule);

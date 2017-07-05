@@ -6,9 +6,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
     {
         public void Apply(ISchedule[] schedules, ISchedule target)
         {
-            target.Action = ScheduleAction.Idle;
+            target.Action = schedules[0].Action;
+            target.At = schedules[0].At;
 
-            for (int i = 0; i < schedules.Length; i++)
+            for (int i = 1; i < schedules.Length; i++)
             {
                 ISchedule schedule = schedules[i];
 
