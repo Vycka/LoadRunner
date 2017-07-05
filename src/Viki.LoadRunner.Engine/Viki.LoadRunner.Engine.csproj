@@ -113,14 +113,16 @@
     <Compile Include="Strategies\Speed\IncrementalSpeed.cs" />
     <Compile Include="Strategies\Speed\ListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\MaxSpeed.cs" />
-    <Compile Include="Strategies\Speed\PriorityStrategy\FastestPriorityStrategy.cs" />
+    <Compile Include="Strategies\Speed\PriorityStrategy\FastestPriority.cs" />
     <Compile Include="Strategies\Speed\PriorityStrategy\PrioritySpeedStrategy.cs" />
     <Compile Include="Strategies\Speed\PriorityStrategy\PriorityStrategyFactory.cs" />
-    <Compile Include="Strategies\Speed\PriorityStrategy\SlowestPriorityStrategy.cs" />
+    <Compile Include="Strategies\Speed\PriorityStrategy\SlowestPriority.cs" />
+    <Compile Include="Strategies\Speed\PriorityStrategy\StrategyBuilder.cs" />
     <Compile Include="Strategies\Threading\FixedThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalWorkingThreadCount.cs" />
     <Compile Include="Strategies\Threading\ListOfCounts.cs" />
+    <Compile Include="Utils\ArrayExtensions.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

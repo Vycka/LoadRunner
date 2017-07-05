@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Threads;
 using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Strategies;
-using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy;
 using ThreadPool = Viki.LoadRunner.Engine.Executor.Threads.ThreadPool;
 
@@ -190,7 +188,7 @@ namespace Viki.LoadRunner.Engine
             try
             {
                 _limits = _settings.Limits;
-                ISpeedStrategy speed = WrapStrategies(_settings);
+                ISpeedStrategy speed = StrategyBuilder.Create(_settings.Speed, _settings.SpeedPriority, _timer);
 
                 _pool = new ThreadPool(new ThreadPoolSettings
                 {
@@ -236,13 +234,6 @@ namespace Viki.LoadRunner.Engine
                 _pool = null;
                 local?.AssertThreadErrors();
             }
-        }
-
-        private static ISpeedStrategy WrapStrategies(ILoadRunnerSettings settings)
-        {
-            return settings.Speed.First();
-
-            return new PrioritySpeedStrategy(settings.SpeedPriority, settings.Speed);
         }
 
         private static void StartTest(IThreadPoolContext context, ExecutionTimer timer)

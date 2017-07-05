@@ -13,10 +13,10 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         public static class Names
         {
-            public const string IterationStart = "SYS_ITERATION_START";
-            public const string IterationEnd = "SYS_ITERATION_END";
-            public const string Setup = "SYS_ITERATION_SETUP";
-            public const string TearDown = "SYS_ITERATION_TEARDOWN";
+            public const string Setup = "ITERATION_SETUP";
+            public const string IterationStart = "ITERATION_START";
+            public const string IterationEnd = "ITERATION_END"; 
+            public const string TearDown = "ITERATION_TEARDOWN";
         }
 
         #endregion

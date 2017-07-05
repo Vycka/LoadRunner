@@ -125,8 +125,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
             try
             { 
-                // TODO: Move context creation outside of this method
-
                 IThreadContext threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
                 Scheduler scheduler = new Scheduler(_context.Speed, threadContext, _context.ThreadPool);
 
@@ -159,6 +157,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
             finally
             {
+                // TODO: Replace with Finished event
                 _context.ThreadPool.AddCreated(-1);
             }
 

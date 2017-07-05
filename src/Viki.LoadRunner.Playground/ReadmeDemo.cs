@@ -69,7 +69,7 @@ namespace Viki.LoadRunner.Playground
                 .Alias($"Errors: {Checkpoint.Names.IterationStart}", "Errors: Iteration")
                 .Alias($"Errors: {Checkpoint.Names.TearDown}", "Errors: Teardown");
 
-            JsonStreamAggregator _jsonStreamAggregator =
+            JsonStreamAggregator jsonStreamAggregator =
                 new JsonStreamAggregator(() => DateTime.Now.ToString("HH_mm_ss__ffff") + ".json");
 
             //TotalsResultsAggregator resultsAggregator = new TotalsResultsAggregator();
@@ -77,7 +77,7 @@ namespace Viki.LoadRunner.Playground
             // Initializing LoadTest Client
             //LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(loadRunnerParameters, histogramAggregator, _jsonStreamAggregator);
 
-            LoadRunnerUi loadRunnerUi = LoadRunnerUi.Create<BlankScenario>(loadRunnerParameters, histogramAggregator);
+            LoadRunnerUi loadRunnerUi = LoadRunnerUi.Create<BlankScenario>(loadRunnerParameters, jsonStreamAggregator, histogramAggregator);
 
             Application.Run(loadRunnerUi);
 

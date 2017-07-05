@@ -29,7 +29,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
 
             _period = period;
             _iterationPerSecValues = iterationPerSecValues;
-
+            _currentIndex = 0;
             SetSpeed(iterationPerSecValues[0], TimeSpan.Zero);
         }
 

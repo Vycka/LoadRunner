@@ -23,9 +23,24 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
     public interface ISchedule
     {
         ITimer Timer { get; }
-
+        
         ScheduleAction Action { get; set; }
         TimeSpan At { get; set; }
+    }
+
+    public class Schedule : ISchedule
+    {
+        public Schedule(ITimer timer)
+        {
+            if (timer == null)
+                throw new ArgumentNullException(nameof(timer));
+
+            Timer = timer;
+        }
+
+        public ITimer Timer { get; }
+        public ScheduleAction Action { get; set; }
+        public TimeSpan At { get; set; }
     }
 
     public static class SchedulerExtensions
@@ -33,7 +48,11 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         public static void Execute(this ISchedule scheduler)
         {
             scheduler.Action = ScheduleAction.Execute;
-            scheduler.At = TimeSpan.Zero; // given how scheduler uses these properties, its probably impossible for this value to be bigger then current value of timer, so this set is probably not needed here
+
+            // given how scheduler works, its impossible for this value to be bigger then current value of timer
+            // so this set is not needed here
+
+            //scheduler.At = TimeSpan.Zero; 
         }
 
         public static void DelayAndExecute(this ISchedule schedule, TimeSpan delay)
