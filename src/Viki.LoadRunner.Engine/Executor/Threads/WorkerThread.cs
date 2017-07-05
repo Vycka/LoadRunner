@@ -167,11 +167,13 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         }
 
+        private readonly TimeSpan _oneSecond = TimeSpan.FromSeconds(1);
         private bool WaitForExecuteCommand(IThreadContext context, Scheduler scheduler)
         {
+            
             _context.Scheduler.Next(context, scheduler);
 
-            TimeSpan delta = scheduler.At - _context.Timer.Value;
+            TimeSpan delta = scheduler.CalculateDelta();
             if (delta > TimeSpan.Zero)
             {
                 _context.ThreadPool.AddIdle(1);
@@ -180,7 +182,13 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 {
                     while (_stopQueued == false && scheduler.Action == ScheduleAction.Idle)
                     {
-                        Thread.Sleep(delta);
+                        while (delta > _oneSecond && _stopQueued == false)
+                        {
+                            Thread.Sleep(_oneSecond);
+                            delta = scheduler.CalculateDelta();
+                        }
+                        if (delta > TimeSpan.Zero && _stopQueued == false)
+                            Thread.Sleep(delta);
 
                         _context.Scheduler.Next(context, scheduler);
                     }

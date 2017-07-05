@@ -31,5 +31,10 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
             Action = ScheduleAction.Execute;
         }
+
+        public TimeSpan CalculateDelta()
+        {
+            return At - Timer.Value;
+        }
     }
 }
