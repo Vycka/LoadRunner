@@ -40,7 +40,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
             control.StartWorkersAsync(InitialThreadCount);
         }
 
-        public void Adjust(IThreadPoolContext context, IThreadPoolControl control)
+        public void HeartBeat(IThreadPoolContext context, IThreadPoolControl control)
         {
             int threadCount = (((int)(context.Timer.Value.Ticks / _increaseTimePeriod.Ticks)) * ThreadCreateBatchSize) + InitialThreadCount;
 

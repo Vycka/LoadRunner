@@ -46,7 +46,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 Aggregator = settings.Aggregator,
                 IdFactory = new IdFactory(),
                 Scenario = settings.Scenario,
-                Scheduler = settings.Scheduler,
+                Speed = settings.SpeedStrategy,
                 ThreadPool = this,
                 Timer = settings.Timer,
             };

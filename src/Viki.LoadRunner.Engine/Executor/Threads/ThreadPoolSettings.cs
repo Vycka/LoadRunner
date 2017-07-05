@@ -9,7 +9,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
     {
         public Type Scenario;
         public ITimer Timer;
-        public ISpeedStrategy Scheduler;
+        public ISpeedStrategy SpeedStrategy;
         public IResultsAggregator Aggregator;
         public object InitialUserData;
     }

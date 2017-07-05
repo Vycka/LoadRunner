@@ -6,6 +6,6 @@ namespace Viki.LoadRunner.Engine.Strategies
     {
         void Setup(IThreadPoolContext context, IThreadPoolControl control);
 
-        void Adjust(IThreadPoolContext context, IThreadPoolControl control);
+        void HeartBeat(IThreadPoolContext context, IThreadPoolControl control);
     }
 }

@@ -22,7 +22,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         private readonly ILoadTestScenario _scenario;
 
         private readonly TestContext _testContext;
-        private volatile bool _stopQueued;
+        private bool _stopQueued;
 
         public bool QueuedToStop => _stopQueued;
         public bool ScenarioInitialized { get; private set; }
@@ -128,7 +128,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 // TODO: Move context creation outside of this method
 
                 IThreadContext threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
-                Scheduler scheduler = new Scheduler(_context.Timer);
+                Scheduler scheduler = new Scheduler(_context.Speed, threadContext, _context.ThreadPool);
 
                 int threadIterationId = 0;
 
@@ -141,11 +141,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 if (!_stopQueued)
                     _testContext.Reset(threadIterationId++, _context.IdFactory.Next());
 
-                while (_stopQueued == false)
+                while (scheduler.Execute(ref _stopQueued) == false)
                 {
-                    if (!WaitForExecuteCommand(threadContext, scheduler))
-                        continue;
-
                     ExecuteIteration(_testContext, _scenario);
 
                     OnScenarioIterationFinished();
@@ -165,44 +162,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 _context.ThreadPool.AddCreated(-1);
             }
 
-        }
-
-        private readonly TimeSpan _oneSecond = TimeSpan.FromSeconds(1);
-        private bool WaitForExecuteCommand(IThreadContext context, Scheduler scheduler)
-        {
-            
-            _context.Scheduler.Next(context, scheduler);
-
-            TimeSpan delta = scheduler.CalculateDelta();
-            if (delta > TimeSpan.Zero)
-            {
-                _context.ThreadPool.AddIdle(1);
-
-                if (scheduler.Action == ScheduleAction.Idle)
-                {
-                    while (_stopQueued == false && scheduler.Action == ScheduleAction.Idle)
-                    {
-                        while (delta > _oneSecond && _stopQueued == false)
-                        {
-                            Thread.Sleep(_oneSecond);
-                            delta = scheduler.CalculateDelta();
-                        }
-                        if (delta > TimeSpan.Zero && _stopQueued == false)
-                            Thread.Sleep(delta);
-
-                        _context.Scheduler.Next(context, scheduler);
-                    }
-
-                    if (_stopQueued)
-                        return false;
-                }
-
-                Thread.Sleep(delta);
-
-                _context.ThreadPool.AddIdle(-1);
-            }
-
-            return true;
         }
 
         public static void ExecuteIteration(TestContext context, ILoadTestScenario scenario)

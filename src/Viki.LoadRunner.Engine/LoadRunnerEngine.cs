@@ -54,6 +54,13 @@ namespace Viki.LoadRunner.Engine
         public bool IsRunning => _timer.IsRunning;
 
         /// <summary>
+        /// Controls, how often root thread will ping strategies with HeartBeat()
+        /// Some strategies depend on this to readjust time sensitive limits, and increasing value too much can result some Thread/Speed precision decrease.
+        /// E.g. ListOfSpeed strategy will readjust speed only at this heart-beat.
+        /// </summary>
+        public int HeartBeatMs = 100;
+
+        /// <summary>
         /// If execution failed due to unhandled exception, it will be set here.
         /// </summary>
         public Exception Exception { get; private set; }
@@ -183,18 +190,20 @@ namespace Viki.LoadRunner.Engine
             try
             {
                 _limits = _settings.Limits;
+                ISpeedStrategy speed = WrapStrategies(_settings);
+
                 _pool = new ThreadPool(new ThreadPoolSettings
                 {
                     InitialUserData = _settings.InitialUserData,
                     Scenario = _iTestScenarioObjectType,
-                    Scheduler = WrapStrategies(_settings),
+                    SpeedStrategy = speed,
                     Timer = _timer,
                     Aggregator = _aggregator
                 });
 
                 IThreadPoolContext context = _pool.Context;
 
-                ISpeedStrategy scheduler = context.Scheduler;
+
                 IThreadingStrategy threading = _settings.Threading;
 
                 InitialThreadingSetup(_pool, threading);
@@ -205,10 +214,10 @@ namespace Viki.LoadRunner.Engine
                 {
                     _pool.AssertThreadErrors();
 
-                    threading.Adjust(context, _pool);
-                    scheduler.Adjust(context);
+                    threading.HeartBeat(context, _pool);
+                    speed.HeartBeat(context);
 
-                    Thread.Sleep(1000);
+                    Thread.Sleep(HeartBeatMs);
                 }
             }
             catch (Exception ex)

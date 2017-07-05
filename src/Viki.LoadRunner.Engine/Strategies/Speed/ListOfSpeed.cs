@@ -45,7 +45,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
 
         private int _currentIndex = -1;
 
-        public new void Adjust(IThreadPoolContext context)
+        public new void HeartBeat(IThreadPoolContext context)
         {
             int index = GetIndex(context.Timer.Value);
             if (index != _currentIndex)
@@ -56,7 +56,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             }
             
 
-            base.Adjust(context);
+            base.HeartBeat(context);
         }
     }
 }

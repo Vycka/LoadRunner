@@ -48,7 +48,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
             control.SetWorkerCountAsync(InitialThreadCount);
         }
 
-        public void Adjust(IThreadPoolContext context, IThreadPoolControl control)
+        public void HeartBeat(IThreadPoolContext context, IThreadPoolControl control)
         {
             long index = context.Timer.Value.Ticks / _period.Ticks;
             int result = 0;

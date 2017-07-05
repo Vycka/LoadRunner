@@ -7,8 +7,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
     public class FastestPriorityStrategy : IScheduler
     {
         public ITimer Timer { get; }
-        public ScheduleAction Action { get; }
-        public TimeSpan At { get; }
+        public ScheduleAction Action { get; set; }
+        public TimeSpan At { get; set; }
 
         public void Reset()
         {

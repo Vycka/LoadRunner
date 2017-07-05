@@ -17,7 +17,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
             control.StartWorkersAsync(_threadCount);
         }
 
-        public void Adjust(IThreadPoolContext context, IThreadPoolControl control)
+        public void HeartBeat(IThreadPoolContext context, IThreadPoolControl control)
         {
         }
     }

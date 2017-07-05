@@ -1,4 +1,5 @@
-﻿using Viki.LoadRunner.Engine;
+﻿using System.Threading;
+using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Executor.Context;
 
 namespace Viki.LoadRunner.Playground
@@ -17,6 +18,7 @@ namespace Viki.LoadRunner.Playground
 
         public void ExecuteScenario(ITestContext context)
         {
+            Thread.Sleep(10);
         }
 
         public void IterationTearDown(ITestContext context)

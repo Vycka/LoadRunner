@@ -23,29 +23,29 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             SetDelay(delayTicks, timerValue);
         }
 
-        public void SetDelay(long delayTicks, TimeSpan timerValue)
+        public void SetDelay(long delayBetweenIterationsTicks, TimeSpan timerValue)
         {
-            _delayTicks = delayTicks;
+            _delayTicks = delayBetweenIterationsTicks;
 
             Interlocked.Exchange(ref _next, timerValue.Ticks - _delayTicks);
         }
 
-        public void Next(IThreadContext context, IScheduler scheduler)
+        public void Next(IThreadContext context, ISchedule schedule)
         {
             long timerTicks = context.Timer.Value.Ticks;
-            long deltaTimeline = timerTicks + ScheduleAheadTicks - _next;
-            if (deltaTimeline >= 0)
+            long delta = timerTicks + ScheduleAheadTicks - _next;
+            if (delta >= 0)
             {
                 long current = Interlocked.Add(ref _next, _delayTicks);
-                scheduler.ExecuteAt(TimeSpan.FromTicks(current));
+                schedule.ExecuteAt(TimeSpan.FromTicks(current));
             }
             else
             {
-                scheduler.Idle(TimeSpan.FromTicks(Math.Abs(deltaTimeline) + TimeSpan.TicksPerMillisecond));
+                schedule.Idle(TimeSpan.FromTicks(Math.Abs(delta) + TimeSpan.TicksPerMillisecond));
             }
         }
 
-        public void Adjust(IThreadPoolContext context)
+        public void HeartBeat(IThreadPoolContext context)
         {
             // Catch up _next if lagging behind timeline
             long deltaLag = context.Timer.Value.Ticks - _next;

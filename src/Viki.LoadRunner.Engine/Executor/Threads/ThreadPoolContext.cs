@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
     public class ThreadPoolContext : IThreadPoolContext
     {
         public IUniqueIdFactory<int> IdFactory { get; set; }
-        public ISpeedStrategy Scheduler { get; set; }
+        public ISpeedStrategy Speed { get; set; }
         public object UserData { get; set; }
         public Type Scenario { get; set; }
         public IResultsAggregator Aggregator { get; set; }

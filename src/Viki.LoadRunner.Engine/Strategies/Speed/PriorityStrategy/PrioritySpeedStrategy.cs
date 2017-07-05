@@ -22,12 +22,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
         }
 
         // TODO:
-        public void Next(IThreadContext context, IScheduler scheduler)
+        public void Next(IThreadContext context, ISchedule schedule)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Adjust(IThreadPoolContext context)
+        public void HeartBeat(IThreadPoolContext context)
         {
             throw new System.NotImplementedException();
         }
