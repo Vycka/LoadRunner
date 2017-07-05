@@ -12,7 +12,7 @@
   - [RawDataAggregationDemo.cs](/demo/RawDataAggregationDemo.cs) - Advanced RnD feature to checkout.
 * [DemoResults.xlsx](/demo/DemoResults.xlsx) - import results to excel and do some charting :)
 ![](https://raw.githubusercontent.com/Vycka/LoadRunner/master/diagrams/Architecture.png)
-* [Far future](../../wiki/TODOs)
+* [Future](../../wiki/TODOs)
 
 ***Sorry for poor documentation, I don't have much time to work on it ATM, but if having any questions/suggestions/etc, feel free to contact me.***
 
