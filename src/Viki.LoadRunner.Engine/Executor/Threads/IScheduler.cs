@@ -5,8 +5,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 {
     public enum ScheduleAction
     {
-        Idle,
-        Execute
+        Execute,
+        Idle
+        
     }
 
     public interface IScheduler
@@ -39,8 +40,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         }
 
         public ITimer Timer { get; }
-        public ScheduleAction Action { get; set; }
-        public TimeSpan At { get; set; }
+        public ScheduleAction Action { get; set; } = ScheduleAction.Execute;
+        public TimeSpan At { get; set; } = TimeSpan.Zero;
     }
 
     public static class SchedulerExtensions

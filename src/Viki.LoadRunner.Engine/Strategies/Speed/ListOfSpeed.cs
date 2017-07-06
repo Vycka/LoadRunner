@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Viki.LoadRunner.Engine.Executor.Threads;
+using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
@@ -25,12 +26,13 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             if (iterationPerSecValues == null)
                 throw new ArgumentNullException(nameof(iterationPerSecValues));
             if (iterationPerSecValues.Length == 0)
-                throw new ArgumentException("At least one iteration speed must be provided", nameof(iterationPerSecValues));
+                throw new ArgumentException("At least one iteration speed must be provided",
+                    nameof(iterationPerSecValues));
 
             _period = period;
             _iterationPerSecValues = iterationPerSecValues;
-            _currentIndex = 0;
-            SetSpeed(iterationPerSecValues[0], TimeSpan.Zero);
+
+            HeartBeatInner(TimeSpan.Zero);
         }
 
         protected int GetIndex(TimeSpan timerValue)
@@ -43,20 +45,24 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             return index;
         }
 
-        private int _currentIndex = -1;
-
+        
         public new void HeartBeat(IThreadPoolContext context)
         {
-            int index = GetIndex(context.Timer.Value);
+            HeartBeatInner(context.Timer.Value);
+            base.HeartBeat(context);
+        }
+
+        private int _currentIndex = -1;
+
+        private void HeartBeatInner(TimeSpan timerValue)
+        {
+            int index = GetIndex(timerValue);
             if (index != _currentIndex)
             {
                 _currentIndex = index;
 
-                SetSpeed(_iterationPerSecValues[_currentIndex], context.Timer.Value);
-            }
-            
-
-            base.HeartBeat(context);
+                SetSpeed(_iterationPerSecValues[_currentIndex], timerValue);
+            } 
         }
     }
 }

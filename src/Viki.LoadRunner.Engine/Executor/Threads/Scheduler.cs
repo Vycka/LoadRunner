@@ -30,8 +30,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             Timer = context.Timer;
         }
 
-        public ScheduleAction Action { get; set; }
-        public TimeSpan At { get; set; }
+        public ScheduleAction Action { get; set; } = ScheduleAction.Execute; 
+        public TimeSpan At { get; set; } = TimeSpan.Zero;
 
         public virtual void Idle(TimeSpan delay)
         {

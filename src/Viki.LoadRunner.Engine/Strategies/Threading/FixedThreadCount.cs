@@ -5,20 +5,21 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
     public class FixedThreadCount : IThreadingStrategy
     {
-        private readonly int _threadCount;
+        public int ThreadCount;
 
         public FixedThreadCount(int threadCount)
         {
-            _threadCount = threadCount;
+            ThreadCount = threadCount;
         }
 
         public void Setup(IThreadPoolContext context, IThreadPoolControl control)
         {
-            control.StartWorkersAsync(_threadCount);
+            control.StartWorkersAsync(ThreadCount);
         }
 
         public void HeartBeat(IThreadPoolContext context, IThreadPoolControl control)
         {
+            control.SetWorkerCountAsync(ThreadCount);
         }
     }
 }

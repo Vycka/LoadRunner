@@ -6,12 +6,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
     /// <summary>
     /// WiP Strategy, not yet fully finallized.
     /// </summary>
-    public class ClockedListOfSpeed
-    {
-        private readonly DateTime _initialTime;
-        private readonly TimeSpan _minSpeed;
+    //public class ClockedListOfSpeed
+    //{
+    //    private readonly DateTime _initialTime;
+    //    private readonly TimeSpan _minSpeed;
 
-        public Func<DateTime> ClockSelector = () => DateTime.UtcNow;
+    //    public Func<DateTime> ClockSelector = () => DateTime.UtcNow;
 
         //public ClockedListOfSpeed(double minIterationsPerSec, DateTime initialTime, TimeSpan period, params double[] iterationPerSecValues) 
         //    : base(period, iterationPerSecValues)
@@ -31,5 +31,5 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
         //        return _minSpeed;
 
         //}
-    }
+    //}
 }

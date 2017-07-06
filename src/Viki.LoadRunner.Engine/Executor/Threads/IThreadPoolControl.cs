@@ -11,7 +11,7 @@
         int CreatedThreadCount { get; }
     }
 
-    public static class IThreadPoolControlExtensions
+    public static class ThreadPoolControlExtensions
     {
         public static void SetWorkerCountAsync(this IThreadPoolControl control, int threadCount)
         {

@@ -27,18 +27,20 @@ namespace Viki.LoadRunner.Playground
             {
                 Limits = new LimitStrategy
                 {
-                    MaxDuration = TimeSpan.FromSeconds(10),
+                    MaxDuration = TimeSpan.FromSeconds(15),
 
                     MaxIterationsCount = Int32.MaxValue,
 
                     FinishTimeout = TimeSpan.FromSeconds(60)
                 },
 
-                Speed = new ISpeedStrategy[] { new MaxSpeed() },
+                Speed = new ISpeedStrategy[] { new LimitWorkingThreads(2), new IncrementalSpeed(2, TimeSpan.FromSeconds(15), 5), },
+                //Speed = new ISpeedStrategy[] { new LimitWorkingThreads(2), new ListOfSpeed(TimeSpan.FromSeconds(5), 100, 20)   },
+                //Speed = new ISpeedStrategy[] { new MaxSpeed() },
                 //Speed = new ISpeedStrategy[] { new MaxSpeed(), new MaxSpeed() },
-                
 
-                Threading = new ListOfCounts(TimeSpan.FromSeconds(10), 4)
+
+                Threading = new ListOfCounts(TimeSpan.FromSeconds(10), 10)
             };
 
             // Initialize aggregator
@@ -50,9 +52,10 @@ namespace Viki.LoadRunner.Playground
             };
 
             HistogramAggregator histogramAggregator = new HistogramAggregator()
-                //.Add(new TimeDimension(TimeSpan.FromSeconds(10)))
+                .Add(new TimeDimension(TimeSpan.FromSeconds(5)))
                 .Add(new FuncMetric<TimeSpan>("TMin", TimeSpan.MaxValue, (span, result) => span > result.IterationStarted ? result.IterationStarted : span))
                 .Add(new FuncMetric<TimeSpan>("TMax", TimeSpan.MinValue, (span, result) => span < result.IterationFinished ? result.IterationFinished : span))
+                .Add(new FuncMetric<int>("Threads",0, (i, result) => result.IdleThreads))
                 //.Add(new MinDurationMetric(ignoredCheckpoints))
                 .Add(new AvgDurationMetric(ignoredCheckpoints))
                 .Add(new MaxDurationMetric(ignoredCheckpoints))
