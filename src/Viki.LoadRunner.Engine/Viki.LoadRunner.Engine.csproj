@@ -95,8 +95,7 @@
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\ITestContext.cs" />
     <Compile Include="LoadTestScenarioValidator.cs" />
-    <Compile Include="Parameters\ExecutionLimits.cs" />
-    <Compile Include="Parameters\LoadRunnerParameters.cs" />
+    <Compile Include="Settings\LoadRunnerSettings.cs" />
     <Compile Include="ILoadTestScenario.cs" />
     <Compile Include="Executor\Context\TestContext.cs" />
     <Compile Include="LoadRunnerEngine.cs" />
@@ -106,7 +105,8 @@
     <Compile Include="Strategies\ISpeedStrategy.cs" />
     <Compile Include="Strategies\Limit\ILimitStrategy.cs" />
     <Compile Include="Strategies\IThreadingStrategy.cs" />
-    <Compile Include="Strategies\Limit\LimitStrategy.cs" />
+    <Compile Include="Strategies\Limit\IterationLimit.cs" />
+    <Compile Include="Strategies\Limit\TimiLimit.cs" />
     <Compile Include="Strategies\Speed\ClockedListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\FixedSpeed.cs" />
     <Compile Include="Strategies\Speed\IncrementalSpeed.cs" />

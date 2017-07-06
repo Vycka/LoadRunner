@@ -13,6 +13,7 @@ using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Parameters;
+using Viki.LoadRunner.Engine.Settings;
 using Viki.LoadRunner.Engine.Utils;
 
 namespace Viki.LoadRunner.Tools.Windows
@@ -38,18 +39,18 @@ namespace Viki.LoadRunner.Tools.Windows
         /// Initializes new executor instance
         /// </summary>
         /// <typeparam name="TTestScenario">ILoadTestScenario to be executed object type</typeparam>
-        /// <param name="parameters">LoadTest parameters</param>
+        /// <param name="settings">LoadTest parameters</param>
         /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
         /// <returns></returns>
-        public static LoadRunnerUi Create<TTestScenario>(LoadRunnerParameters parameters, params IResultsAggregator[] resultsAggregators)
+        public static LoadRunnerUi Create<TTestScenario>(LoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
             where TTestScenario : ILoadTestScenario
         {
-            LoadRunnerUi ui = new LoadRunnerUi(parameters, typeof(TTestScenario), resultsAggregators);
+            LoadRunnerUi ui = new LoadRunnerUi(settings, typeof(TTestScenario), resultsAggregators);
 
             return ui;
         }
 
-        private LoadRunnerUi(LoadRunnerParameters parameters, Type iTestScenarioType, IResultsAggregator[] resultsAggregators)
+        private LoadRunnerUi(LoadRunnerSettings settings, Type iTestScenarioType, IResultsAggregator[] resultsAggregators)
         {
             if (iTestScenarioType == null)
                 throw new ArgumentNullException(nameof(iTestScenarioType));
@@ -66,7 +67,7 @@ namespace Viki.LoadRunner.Tools.Windows
                 new TransactionsPerSecMetric()
             });
 
-            Instance = new LoadRunnerEngine(parameters, iTestScenarioType, resultsAggregators.Concat(new [] { this }).ToArray());
+            Instance = new LoadRunnerEngine(settings, resultsAggregators.Concat(new [] { this }).ToArray());
 
             InitializeComponent();
         }

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Threads;
 using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Parameters;
+using Viki.LoadRunner.Engine.Settings;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy;
@@ -19,10 +21,7 @@ namespace Viki.LoadRunner.Engine
         #region Fields
 
         private readonly ILoadRunnerSettings _settings;
-        private readonly Type _iTestScenarioObjectType;
-
-        private ILimitStrategy _limits;
-
+        private ILimitStrategy[] _limits;
         private readonly IResultsAggregator _aggregator;
 
         private Thread _rootThread;
@@ -71,34 +70,16 @@ namespace Viki.LoadRunner.Engine
         /// <summary>
         /// Initializes new executor instance
         /// </summary>
-        /// <param name="settings">LoadTest parameters</param>
-        /// <param name="iTestScenarioObjectType">ILoadTestScenario to be executed object type</param>
+        /// <param name="settings">LoadTest settings</param>
         /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        public LoadRunnerEngine(ILoadRunnerSettings settings, Type iTestScenarioObjectType, params IResultsAggregator[] resultsAggregators)
+        public LoadRunnerEngine(ILoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
-            if (iTestScenarioObjectType == null)
-                throw new ArgumentNullException(nameof(iTestScenarioObjectType));
 
             _settings = settings;
 
-            _iTestScenarioObjectType = iTestScenarioObjectType;
-
             _aggregator = new AsyncResultsAggregator(resultsAggregators);
-        }
-
-        /// <summary>
-        /// Initializes new executor instance
-        /// </summary>
-        /// <typeparam name="TTestScenario">ILoadTestScenario to be executed object type</typeparam>
-        /// <param name="parameters">LoadTest parameters</param>
-        /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        /// <returns></returns>
-        public static LoadRunnerEngine Create<TTestScenario>(LoadRunnerParameters parameters, params IResultsAggregator[] resultsAggregators) 
-            where TTestScenario : ILoadTestScenario
-        {
-            return new LoadRunnerEngine(parameters, typeof(TTestScenario), resultsAggregators);
         }
 
         #endregion
@@ -106,8 +87,7 @@ namespace Viki.LoadRunner.Engine
         #region Async/Run()
 
         /// <summary>
-        /// Start LoadTest execution.
-        /// This is a blocking call and will finish only, once the test is over and all results are aggregated by IResultsAggregator's
+        /// Start LoadTest execution on separate thread & blocks till test execution & data aggregation is completed.
         /// </summary>
         public void Run()
         {
@@ -134,13 +114,7 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         public void CancelAsync(bool blocking = true)
         {
-            // TODO: Refactor a bit to allow clean way to stop this
-            // This inits the stop.
-            _limits = new LimitStrategy
-            {
-                MaxIterationsCount = 0,
-                FinishTimeout = _limits.FinishTimeout,
-            };
+            _limits = new ILimitStrategy[]{ new IterationLimit(0)  };
 
             if (blocking)
                 Wait();
@@ -182,7 +156,7 @@ namespace Viki.LoadRunner.Engine
         private void RunInner()
         {
             if (_pool != null)
-                throw new InvalidOperationException("Async instance is already running");
+                throw new InvalidOperationException("Engine is already running");
 
             Exception = null;
 
@@ -194,22 +168,22 @@ namespace Viki.LoadRunner.Engine
                 _pool = new ThreadPool(new ThreadPoolSettings
                 {
                     InitialUserData = _settings.InitialUserData,
-                    Scenario = _iTestScenarioObjectType,
+                    Scenario = _settings.TestScenarioType,
+
                     SpeedStrategy = speed,
                     Timer = _timer,
+
                     Aggregator = _aggregator
                 });
 
                 IThreadPoolContext context = _pool.Context;
-
-
                 IThreadingStrategy threading = _settings.Threading;
 
                 InitialThreadingSetup(_pool, threading);
 
                 StartTest(context, _timer);
 
-                while (!_limits.StopTest(context))
+                while (!_limits.Any(l => l.StopTest(context)))
                 {
                     _pool.AssertThreadErrors();
 
@@ -226,7 +200,7 @@ namespace Viki.LoadRunner.Engine
             }
             finally
             {
-                _pool?.StopAndDispose((int)_limits.FinishTimeout.TotalMilliseconds);
+                _pool?.StopAndDispose((int)_settings.FinishTimeout.TotalMilliseconds);
 
                 _aggregator.End();
                 _timer.Stop();
