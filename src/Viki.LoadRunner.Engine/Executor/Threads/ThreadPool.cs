@@ -166,9 +166,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 newThread.StartThread();
 
                 _allThreads.TryAdd(newThread.ThreadId, newThread);
-
-                AddCreated(threadCount);
             }
+
+            AddCreated(threadCount);
         }
 
         private IEnumerable<WorkerThread> CreateThreads(int threadCount)

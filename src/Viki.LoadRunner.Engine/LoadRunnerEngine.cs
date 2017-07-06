@@ -5,6 +5,7 @@ using Viki.LoadRunner.Engine.Executor.Threads;
 using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Engine.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy;
 using ThreadPool = Viki.LoadRunner.Engine.Executor.Threads.ThreadPool;
 

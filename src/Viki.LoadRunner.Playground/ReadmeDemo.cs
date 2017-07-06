@@ -10,8 +10,8 @@ using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Engine.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Speed;
-using Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 using Viki.LoadRunner.Tools.Aggregators;
 using Viki.LoadRunner.Tools.Windows;
@@ -27,15 +27,15 @@ namespace Viki.LoadRunner.Playground
             {
                 Limits = new LimitStrategy
                 {
-                    MaxDuration = TimeSpan.FromSeconds(20),
+                    MaxDuration = TimeSpan.FromSeconds(10),
 
                     MaxIterationsCount = Int32.MaxValue,
 
                     FinishTimeout = TimeSpan.FromSeconds(60)
                 },
 
-                //Speed = new ISpeedStrategy[] { new MaxSpeed() },
-                Speed = new ISpeedStrategy[] { new ListOfSpeed(TimeSpan.FromSeconds(10), 200, 50, Double.MaxValue), new MaxSpeed(),  },
+                Speed = new ISpeedStrategy[] { new MaxSpeed() },
+                //Speed = new ISpeedStrategy[] { new MaxSpeed(), new MaxSpeed() },
                 
 
                 Threading = new ListOfCounts(TimeSpan.FromSeconds(10), 4)
@@ -50,11 +50,13 @@ namespace Viki.LoadRunner.Playground
             };
 
             HistogramAggregator histogramAggregator = new HistogramAggregator()
-                .Add(new TimeDimension(TimeSpan.FromSeconds(10)))
-                .Add(new MinDurationMetric(ignoredCheckpoints))
+                //.Add(new TimeDimension(TimeSpan.FromSeconds(10)))
+                .Add(new FuncMetric<TimeSpan>("TMin", TimeSpan.MaxValue, (span, result) => span > result.IterationStarted ? result.IterationStarted : span))
+                .Add(new FuncMetric<TimeSpan>("TMax", TimeSpan.MinValue, (span, result) => span < result.IterationFinished ? result.IterationFinished : span))
+                //.Add(new MinDurationMetric(ignoredCheckpoints))
                 .Add(new AvgDurationMetric(ignoredCheckpoints))
                 .Add(new MaxDurationMetric(ignoredCheckpoints))
-                .Add(new PercentileMetric(new[] {0.95}, ignoredCheckpoints))
+                .Add(new PercentileMetric(new[] {0.99999}, ignoredCheckpoints))
                 .Add(new CountMetric(ignoredCheckpoints))
                 .Add(new TransactionsPerSecMetric())
                 .Add(new ErrorCountMetric())
@@ -65,7 +67,7 @@ namespace Viki.LoadRunner.Playground
                 .Alias($"80%: {Checkpoint.Names.IterationEnd}", "80% (ms)")
                 .Alias($"90%: {Checkpoint.Names.IterationEnd}", "90% (ms)")
                 .Alias($"95%: {Checkpoint.Names.IterationEnd}", "95% (ms)")
-                .Alias($"99%: {Checkpoint.Names.IterationEnd}", "99% (ms)")
+                .Alias($"99.99%: {Checkpoint.Names.IterationEnd}", "99.99% (ms)")
                 .Alias($"Count: {Checkpoint.Names.IterationEnd}", "Success: Count")
                 .Alias($"Errors: {Checkpoint.Names.Setup}", "Errors: Setup")
                 .Alias($"Errors: {Checkpoint.Names.IterationStart}", "Errors: Iteration")
@@ -150,3 +152,41 @@ namespace Viki.LoadRunner.Playground
         }
     }
 }
+
+/*
+ 
+
+Speed = new ISpeedStrategy[] { new MaxSpeed() },
+ 
+
+DEBUG,  ATTACHED
+
+[
+  {
+    "TMin": "00:00:00.0029506",
+    "TMax": "00:00:10.0996174",
+    "Avg (ms)": 0,
+    "Max (ms)": 169,
+    "99,999%: ITERATION_END": 47,
+    "Success: Count": 3893384,
+    "TPS": 385610.82356406969,
+    "Errors: Totals": 0
+  }
+]
+
+RELEASE, NOT ATTACHED
+
+[
+  {
+    "TMin": "00:00:00.0037797",
+    "TMax": "00:00:10.0053868",
+    "Avg (ms)": 0,
+    "Max (ms)": 94,
+    "99,999%: ITERATION_END": 14,
+    "Success: Count": 5273961,
+    "TPS": 527311.35579201067,
+    "Errors: Totals": 0
+  }
+]
+ 
+*/

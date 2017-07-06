@@ -78,7 +78,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
                     foreach (double targetPercentile in _percentiles)
                     {
-                        string key = string.Concat(Math.Round(targetPercentile*100, 1), "%: ", pair.Key);
+                        string key = string.Concat(targetPercentile*100, "%: ", pair.Key);
 
                         _percentileCache[key] = Convert.ToInt64(CalculatePercentile(sortedData, targetPercentile));
                     }

@@ -125,8 +125,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Thread Func
 
-        //private static readonly TimeSpan MilliSecond = TimeSpan.FromMilliseconds(1);
-
         private void ExecuteScenarioThreadFunction()
         {
             try
@@ -165,7 +163,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             {
                 OnThreadFinished();
             }
-
         }
 
         public static void ExecuteIteration(TestContext context, ILoadTestScenario scenario)

@@ -1,4 +1,5 @@
 ﻿using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Engine.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 

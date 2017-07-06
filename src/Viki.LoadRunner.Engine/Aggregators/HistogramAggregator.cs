@@ -11,6 +11,11 @@ using Viki.LoadRunner.Engine.Utils;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
+    // TODO: Add's should have formatters, e.g. .Add(metric, formatter);
+    // Parallelism can be achieved by making a processing chain
+    // -> Enrich with Dim keys -> duplicate queues for each metric and feed them
+    // because Parallel.Foreach(metrics,...) on each received cause really bad TPL overhead.
+
     /// <summary>
     /// Modular 2D grid histogram aggregator/builder. Use Add() method to register concrete IDiminension's and IMetric's
     /// </summary>

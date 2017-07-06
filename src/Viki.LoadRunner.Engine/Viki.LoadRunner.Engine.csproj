@@ -104,10 +104,11 @@
     <Compile Include="Executor\Result\IterationResult.cs" />
     <Compile Include="Executor\Threads\WorkerThread.cs" />
     <Compile Include="Strategies\ISpeedStrategy.cs" />
-    <Compile Include="Strategies\ILimitStrategy.cs" />
+    <Compile Include="Strategies\Limit\ILimitStrategy.cs" />
     <Compile Include="Strategies\ISpeedStrategyLegacy.cs" />
     <Compile Include="Strategies\IThreadingStrategy.cs" />
     <Compile Include="Strategies\IThreadingStrategyLegacy.cs" />
+    <Compile Include="Strategies\Limit\LimitStrategy.cs" />
     <Compile Include="Strategies\Speed\ClockedListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\FixedSpeed.cs" />
     <Compile Include="Strategies\Speed\IncrementalSpeed.cs" />
@@ -124,9 +125,7 @@
     <Compile Include="Utils\ArrayExtensions.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Strategies\Limit\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
