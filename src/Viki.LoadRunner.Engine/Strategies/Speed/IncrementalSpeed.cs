@@ -9,6 +9,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
         private readonly TimeSpan _increasePeriod;
         private readonly double _increaseStep;
 
+        /// <summary>
+        ///  Limits executed iterations per second and incrementally changes the limit in a way defined by parameters
+        /// </summary>
+        /// <param name="initialRequestsPerSec">initial iterations per second limit</param>
+        /// <param name="increasePeriod">Time period for increases</param>
+        /// <param name="increaseStep">delta change</param>
         public IncrementalSpeed(double initialRequestsPerSec, TimeSpan increasePeriod, double increaseStep) : base(initialRequestsPerSec)
         {
             _initialRequestsPerSec = initialRequestsPerSec;

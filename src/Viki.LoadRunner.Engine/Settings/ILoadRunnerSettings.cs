@@ -17,7 +17,7 @@ namespace Viki.LoadRunner.Engine.Settings
         ILimitStrategy[] Limits { get; }
 
         /// <summary>
-        /// Speed strategy is like iteration scheduler. It defines limitations related to executed iteration-per-time capping.
+        /// Speed strategies will limit executed iteration per second.
         /// See this.SpeedPriority for prioritization.
         /// </summary>
         ISpeedStrategy[] Speed { get; }

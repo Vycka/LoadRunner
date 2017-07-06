@@ -36,7 +36,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
 
         public void HeartBeat(IThreadPoolContext context)
         {
-            
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Executor.Context;
@@ -10,6 +11,8 @@ namespace LoadRunner.Demo
 
 
     // To create scenario, either implement ILoadTestScenario or extend LoadTestBase
+    //
+    [DebuggerStepThrough] // this flag prevents debugger from catching exceptions and breaking code execution.
     public class DemoTestScenario : ILoadTestScenario
     {
         private static readonly Random Random = new Random(42);
@@ -17,7 +20,7 @@ namespace LoadRunner.Demo
         public void ScenarioSetup(ITestContext testContext)
         {
             //Debug.WriteLine("ScenarioSetup Executes on thread creation");
-            //Debug.WriteLine("Exceptions here are not handled!");
+            //Debug.WriteLine("Exceptions here are not handled and breaks the test!");
 
             Console.WriteLine($"Created Thread {testContext.ThreadId}");
         }
@@ -60,7 +63,7 @@ namespace LoadRunner.Demo
         public void ScenarioTearDown(ITestContext testContext)
         {
             //Debug.WriteLine("ScenarioTearDown Executes once LoadTest execution is over");
-            //Debug.WriteLine("Exceptions here are not handled!");
+            //Debug.WriteLine("Exceptions here are not handled and breaks the test!");
         }
     }
 }

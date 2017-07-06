@@ -1,11 +1,10 @@
-﻿using System;
-using Viki.LoadRunner.Engine.Executor.Threads;
+﻿using Viki.LoadRunner.Engine.Executor.Threads;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
     public class FixedThreadCount : IThreadingStrategy
     {
-        public int ThreadCount;
+        protected int ThreadCount;
 
         public FixedThreadCount(int threadCount)
         {

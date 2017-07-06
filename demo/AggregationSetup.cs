@@ -11,9 +11,9 @@ namespace LoadRunner.Demo
     {
         private static readonly string[] IgnoredCheckpoints =
 {
-                Checkpoint.IterationSetupCheckpointName,
-                Checkpoint.IterationStartCheckpointName,
-                Checkpoint.IterationTearDownCheckpointName
+                Checkpoint.Names.Setup,
+                Checkpoint.Names.IterationStart,
+                Checkpoint.Names.TearDown
         };
 
         public static HistogramAggregator BuildHistogram()
@@ -26,30 +26,41 @@ namespace LoadRunner.Demo
             // HistogramAggregator is a modular Dimension/Metric style aggregator tool, which can be expanded by implementing IMetric or IDimension
             //
             // Dimensions are like row keys (Adding multiple dimensions would multiply result row count)
-            // * Currently only TimeDimension and FuncDimension is available
+            // Available IDimension's:
+            //   TimeDimension(TimeSpan interval, string dimensionName = "Time (s)")
+            //   FuncDimension(string dimensionName, Func<IResult,string> dimensionValueSelector)
+            //
             // Metrics are like values, which will be meassured in test execution
-            // * Most usable metrics are all defined below
+            // Available IMetric's:
+            //   AvgDurationMetric(params string[] ignoredCheckpoints)
+            //   BreakByMetric(IDimension subDimension, params IMetric[] actualMetrics)
+            //   CountMetric(params string[] ignoredCheckpoints)
+            //   ErrorCountMetric(bool includeTotals = true)
+            //   ErrorRatioMetric(params string[] ignoredCheckpoints)
+            //   FuncMetric(string keyName, TValue initialValue, Func<TValue, IResult, TValue> metricFunc) 
+            //   FuncMultiMetric(Action<FlexiRow<string,TValue>, IResult> metricProcedure, Func<TValue> cellBuilderFunc)
+            //   MaxDurationMetric(params string[] ignoredCheckpoints)
+            //   MinDurationMetric(params string[] ignoredCheckpoints)
+            //   PercentileMetric(double[] percentiles, string[] ignoredCheckpoints)
+            //   TransactionsPerSecMetric()
             HistogramAggregator histogramAggregator = new HistogramAggregator()
                 .Add(new TimeDimension(TimeSpan.FromSeconds(10)))
                 .Add(new MinDurationMetric(IgnoredCheckpoints))
                 .Add(new AvgDurationMetric(IgnoredCheckpoints))
                 .Add(new MaxDurationMetric(IgnoredCheckpoints))
-                .Add(new PercentileMetric(new[] { 0.5, 0.8, 0.9, 0.95, 0.99 }, IgnoredCheckpoints))
+                .Add(new PercentileMetric(new[] { 0.95, 0.99 }, IgnoredCheckpoints))
                 .Add(new CountMetric(IgnoredCheckpoints))
                 .Add(new ErrorCountMetric())
                 .Add(new FuncMetric<int>("Created Threads", 0, (i, result) => result.CreatedThreads))
-                .Alias($"Min: {Checkpoint.IterationEndCheckpointName}", "Min (ms)")
-                .Alias($"Avg: {Checkpoint.IterationEndCheckpointName}", "Avg (ms)")
-                .Alias($"Max: {Checkpoint.IterationEndCheckpointName}", "Max (ms)")
-                .Alias($"50%: {Checkpoint.IterationEndCheckpointName}", "50% (ms)")
-                .Alias($"80%: {Checkpoint.IterationEndCheckpointName}", "80% (ms)")
-                .Alias($"90%: {Checkpoint.IterationEndCheckpointName}", "90% (ms)")
-                .Alias($"95%: {Checkpoint.IterationEndCheckpointName}", "95% (ms)")
-                .Alias($"99%: {Checkpoint.IterationEndCheckpointName}", "99% (ms)")
-                .Alias($"Count: {Checkpoint.IterationEndCheckpointName}", "Success: Count")
-                .Alias($"Errors: {Checkpoint.IterationSetupCheckpointName}", "Errors: Setup")
-                .Alias($"Errors: {Checkpoint.IterationStartCheckpointName}", "Errors: Iteration")
-                .Alias($"Errors: {Checkpoint.IterationTearDownCheckpointName}", "Errors: Teardown");
+                .Alias($"Min: {Checkpoint.Names.IterationEnd}", "Min (ms)")
+                .Alias($"Avg: {Checkpoint.Names.IterationEnd}", "Avg (ms)")
+                .Alias($"Max: {Checkpoint.Names.IterationEnd}", "Max (ms)")
+                .Alias($"95%: {Checkpoint.Names.IterationEnd}", "95% (ms)")
+                .Alias($"99%: {Checkpoint.Names.IterationEnd}", "99% (ms)")
+                .Alias($"Count: {Checkpoint.Names.IterationEnd}", "Success: Count")
+                .Alias($"Errors: {Checkpoint.Names.Setup}", "Errors: Setup")
+                .Alias($"Errors: {Checkpoint.Names.IterationStart}", "Errors: Iteration")
+                .Alias($"Errors: {Checkpoint.Names.TearDown}", "Errors: Teardown");
 
             return histogramAggregator;
         }

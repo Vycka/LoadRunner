@@ -3,7 +3,7 @@ using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
-    abstract public class MetricBase<TValue> : IMetric
+    public abstract class MetricBase<TValue> : IMetric
     {
         protected readonly string _keyName;
         protected readonly TValue _initialValue;

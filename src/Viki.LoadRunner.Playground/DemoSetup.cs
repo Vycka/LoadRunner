@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
+using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Settings;
@@ -23,9 +24,9 @@ namespace Viki.LoadRunner.Playground
 
             LoadRunnerSettings loadRunnerSettings = new LoadRunnerSettings()
                 .SetScenario<BlankScenario>()
-                .SetLimits(new IterationLimit(200))
-                .SetSpeed(new FixedSpeed(20))
-                .SetThreading(new FixedThreadCount(10))
+                .SetLimits(new TimiLimit(TimeSpan.FromSeconds(5)))
+                .SetSpeed(new IncrementalLimitWorkingThreads(1, TimeSpan.FromSeconds(1), 1))
+                .SetThreading(new FixedThreadCount(20))
                 .SetFinishTimeout(TimeSpan.FromSeconds(60));
 
             // Initialize aggregator
@@ -37,10 +38,10 @@ namespace Viki.LoadRunner.Playground
             };
 
             HistogramAggregator histogramAggregator = new HistogramAggregator()
-                //.Add(new TimeDimension(TimeSpan.FromSeconds(5)))
+                .Add(new TimeDimension(TimeSpan.FromSeconds(1)))
                 .Add(new FuncMetric<TimeSpan>("TMin", TimeSpan.MaxValue, (span, result) => span > result.IterationStarted ? result.IterationStarted : span))
                 .Add(new FuncMetric<TimeSpan>("TMax", TimeSpan.MinValue, (span, result) => span < result.IterationFinished ? result.IterationFinished : span))
-                .Add(new FuncMetric<int>("Threads",0, (i, result) => result.IdleThreads))
+                .Add(new FuncMetric<int>("Working Threads",0, (i, result) => result.CreatedThreads + result.IdleThreads))
                 //.Add(new MinDurationMetric(ignoredCheckpoints))
                 .Add(new AvgDurationMetric(ignoredCheckpoints))
                 .Add(new MaxDurationMetric(ignoredCheckpoints))

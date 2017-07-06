@@ -110,6 +110,7 @@
     <Compile Include="Strategies\Limit\TimiLimit.cs" />
     <Compile Include="Strategies\Speed\ClockedListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\FixedSpeed.cs" />
+    <Compile Include="Strategies\Speed\IncrementalLimitWorkingThreads.cs" />
     <Compile Include="Strategies\Speed\IncrementalSpeed.cs" />
     <Compile Include="Strategies\Speed\LimitWorkingThreads.cs" />
     <Compile Include="Strategies\Speed\ListOfSpeed.cs" />

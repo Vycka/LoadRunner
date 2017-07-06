@@ -16,14 +16,14 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             SetSpeed(maxIterationsPerSec, TimeSpan.Zero);
         }
         
-        public void SetSpeed(double maxIterationsPerSec, TimeSpan timerValue)
+        protected void SetSpeed(double maxIterationsPerSec, TimeSpan timerValue)
         {
             long delayTicks = (long)(TimeSpan.TicksPerSecond / maxIterationsPerSec) + 1;
 
             SetDelay(delayTicks, timerValue);
         }
 
-        public void SetDelay(long delayBetweenIterationsTicks, TimeSpan timerValue)
+        protected void SetDelay(long delayBetweenIterationsTicks, TimeSpan timerValue)
         {
             _delayTicks = delayBetweenIterationsTicks;
 
