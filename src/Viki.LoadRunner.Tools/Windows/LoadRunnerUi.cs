@@ -19,9 +19,9 @@ namespace Viki.LoadRunner.Tools.Windows
 {
     public partial class LoadRunnerUi : Form, IResultsAggregator
     {
+        private readonly LoadRunnerSettings _settings;
         public string TextTemplate = "LR-UI {0}";
 
-        private readonly Type _iTestScenarioType;
         private readonly MetricMultiplexer _metricMultiplexerTemplate;
         private IMetric _metricMultiplexer;
 
@@ -37,23 +37,19 @@ namespace Viki.LoadRunner.Tools.Windows
         /// <summary>
         /// Initializes new executor instance
         /// </summary>
-        /// <typeparam name="TTestScenario">ILoadTestScenario to be executed object type</typeparam>
         /// <param name="settings">LoadTest parameters</param>
         /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        /// <returns></returns>
-        public static LoadRunnerUi Create<TTestScenario>(LoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
-            where TTestScenario : ILoadTestScenario
+        public static LoadRunnerUi Create(LoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
         {
-            LoadRunnerUi ui = new LoadRunnerUi(settings, typeof(TTestScenario), resultsAggregators);
+            LoadRunnerUi ui = new LoadRunnerUi(settings, resultsAggregators);
 
             return ui;
         }
 
-        private LoadRunnerUi(LoadRunnerSettings settings, Type iTestScenarioType, IResultsAggregator[] resultsAggregators)
+        private LoadRunnerUi(LoadRunnerSettings settings, IResultsAggregator[] resultsAggregators)
         {
-            if (iTestScenarioType == null)
-                throw new ArgumentNullException(nameof(iTestScenarioType));
-            _iTestScenarioType = iTestScenarioType;
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings));
 
             _metricMultiplexerTemplate = new MetricMultiplexer(new IMetric[]
             {
@@ -66,7 +62,9 @@ namespace Viki.LoadRunner.Tools.Windows
                 new TransactionsPerSecMetric()
             });
 
-            Instance = new LoadRunnerEngine(settings, resultsAggregators.Concat(new [] { this }).ToArray());
+            _settings = settings;
+
+            Instance = new LoadRunnerEngine(_settings, resultsAggregators.Concat(new [] { this }).ToArray());
 
             InitializeComponent();
         }
@@ -86,7 +84,6 @@ namespace Viki.LoadRunner.Tools.Windows
             Invoke(new InvokeDelegate(() => _backgroundWorker1.RunWorkerAsync()));
         }
 
-
         void IResultsAggregator.TestContextResultReceived(IResult result)
         {
             _resultsQueue.Enqueue(result);
@@ -98,8 +95,6 @@ namespace Viki.LoadRunner.Tools.Windows
 
             TestEndedEnableButtons();
         }
-
-
 
         private void _startButton_Click(object sender, EventArgs e)
         {
@@ -166,7 +161,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void _validateButton_Click(object sender, EventArgs e)
         {
-            IterationResult result = LoadTestScenarioValidator.Validate((ILoadTestScenario) Activator.CreateInstance(_iTestScenarioType));
+            IterationResult result = LoadTestScenarioValidator.Validate((ILoadTestScenario) Activator.CreateInstance(_settings.TestScenarioType));
             ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.Names.IterationEnd);
 
             AppendMessage($"Validation OK: {checkpoint.TimePoint.TotalMilliseconds}ms.");

@@ -81,6 +81,16 @@ namespace Viki.LoadRunner.Engine
             _aggregator = new AsyncResultsAggregator(resultsAggregators);
         }
 
+        /// <summary>
+        /// Initializes new executor instance
+        /// </summary>
+        /// <param name="settings">LoadTest settings</param>
+        /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
+        public static LoadRunnerEngine Create(ILoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
+        {
+            return new LoadRunnerEngine(settings, resultsAggregators);
+        }
+
         #endregion
 
         #region Async/Run()

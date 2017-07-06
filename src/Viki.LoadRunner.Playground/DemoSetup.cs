@@ -69,7 +69,7 @@ namespace Viki.LoadRunner.Playground
             // Initializing LoadTest Client
             //LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(loadRunnerParameters, histogramAggregator, _jsonStreamAggregator);
 
-            LoadRunnerUi loadRunnerUi = LoadRunnerUi.Create<BlankScenario>(loadRunnerSettings, jsonStreamAggregator, histogramAggregator);
+            LoadRunnerUi loadRunnerUi = LoadRunnerUi.Create(loadRunnerSettings, jsonStreamAggregator, histogramAggregator);
 
             Application.Run(loadRunnerUi);
 
