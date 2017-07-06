@@ -9,12 +9,9 @@ namespace Viki.LoadRunner.Engine.Strategies
     public interface ILimitStrategy
     {
         /// <summary>
-        /// CanStop() gets called before each iteration gets enqueued.
+        /// StopTest() gets called before each iteration gets enqueued.
         /// once returned value is [true] engine will initiate graceful shutdown respecting [FinishTimeout] value
         /// </summary>
-        /// <param name="timeStamp">Internal timestamp of test execution duration</param>
-        /// <param name="iteration">Iteration number (starting from zero) which is about to get started.</param>
-        /// <returns></returns>
         bool StopTest(IThreadPoolContext context);
 
         /// <summary>

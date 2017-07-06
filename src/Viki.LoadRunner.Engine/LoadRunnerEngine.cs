@@ -188,7 +188,7 @@ namespace Viki.LoadRunner.Engine
             try
             {
                 _limits = _settings.Limits;
-                ISpeedStrategy speed = StrategyBuilder.Create(_settings.Speed, _settings.SpeedPriority, _timer);
+                ISpeedStrategy speed = StrategyBuilder.Create(_settings.Speed, _timer);
 
                 _pool = new ThreadPool(new ThreadPoolSettings
                 {

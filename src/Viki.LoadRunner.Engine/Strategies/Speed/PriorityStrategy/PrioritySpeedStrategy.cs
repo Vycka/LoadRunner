@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Viki.LoadRunner.Engine.Executor.Threads;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
@@ -8,8 +9,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
     internal class PrioritySpeedStrategy : ISpeedStrategy
     {
         private readonly IPriorityResolver _strategy;
+        private readonly ITimer _timer;
         private readonly ISpeedStrategy[] _strategies;
-        private readonly ISchedule[] _schedules;
+        private readonly ConditionalWeakTable<ISchedule, ISchedule[]> _schedules;
+
 
         public PrioritySpeedStrategy(IPriorityResolver strategy, ITimer timer, ISpeedStrategy[] strategies)
         {
@@ -23,21 +26,24 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
                 throw new ArgumentException("At least one strategy has to be provided", nameof(strategies));
 
             _strategy = strategy;
+            _timer = timer;
             _strategies = strategies;
-            _schedules = Enumerable.Repeat(1,_strategies.Length).Select(i => (ISchedule)new Schedule(timer)).ToArray();
+            _schedules = new ConditionalWeakTable<ISchedule, ISchedule[]>();
         }
 
-        public void Next(IThreadContext context, ISchedule schedule)
+        public void Next(IThreadContext context, ISchedule target)
         {
-            TimeSpan time = schedule.Timer.Value;
+            ISchedule[] schedules = GetScheduleTable(target);
+
+            TimeSpan time = target.Timer.Value;
 
             for (int i = 0; i < _strategies.Length; i++)
             {
-                if (_schedules[i].At < time)
-                    _strategies[i].Next(context, _schedules[i]);
+                if (schedules[i].At < time)
+                    _strategies[i].Next(context, schedules[i]);
             }
 
-            _strategy.Apply(_schedules, schedule);
+            _strategy.Apply(schedules, target);
         }
 
         public void HeartBeat(IThreadPoolContext context)
@@ -47,9 +53,21 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
                 _strategies[i].HeartBeat(context);
             }
         }
+
+        private ISchedule[] GetScheduleTable(ISchedule key)
+        {
+            ISchedule[] result;
+            if (_schedules.TryGetValue(key, out result) == false)
+            {
+                result = Enumerable.Repeat(1, _strategies.Length).Select(i => (ISchedule)new Schedule(_timer)).ToArray();
+                _schedules.Add(key, result);
+            }
+
+            return result;
+        }
     }
 
-    internal interface IPriorityResolver
+    public interface IPriorityResolver
     {
         void Apply(ISchedule[] schedules, ISchedule target);
     }

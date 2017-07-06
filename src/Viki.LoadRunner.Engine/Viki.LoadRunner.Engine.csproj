@@ -115,7 +115,6 @@
     <Compile Include="Strategies\Speed\MaxSpeed.cs" />
     <Compile Include="Strategies\Speed\PriorityStrategy\FastestPriority.cs" />
     <Compile Include="Strategies\Speed\PriorityStrategy\PrioritySpeedStrategy.cs" />
-    <Compile Include="Strategies\Speed\PriorityStrategy\PriorityStrategyFactory.cs" />
     <Compile Include="Strategies\Speed\PriorityStrategy\SlowestPriority.cs" />
     <Compile Include="Strategies\Speed\PriorityStrategy\StrategyBuilder.cs" />
     <Compile Include="Strategies\Threading\FixedThreadCount.cs" />

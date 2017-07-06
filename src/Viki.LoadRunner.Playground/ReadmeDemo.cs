@@ -11,6 +11,7 @@ using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Speed;
+using Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 using Viki.LoadRunner.Tools.Aggregators;
 using Viki.LoadRunner.Tools.Windows;
@@ -34,7 +35,8 @@ namespace Viki.LoadRunner.Playground
                 },
 
                 //Speed = new ISpeedStrategy[] { new MaxSpeed() },
-                Speed = new ISpeedStrategy[] { new ListOfSpeed(TimeSpan.FromSeconds(10), 10, 5, Double.MaxValue) },
+                Speed = new ISpeedStrategy[] { new ListOfSpeed(TimeSpan.FromSeconds(10), 200, 50, Double.MaxValue), new MaxSpeed(),  },
+                
 
                 Threading = new ListOfCounts(TimeSpan.FromSeconds(10), 4)
             };

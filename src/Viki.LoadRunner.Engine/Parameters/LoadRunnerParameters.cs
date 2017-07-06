@@ -1,7 +1,5 @@
-﻿using System;
-using Viki.LoadRunner.Engine.Strategies;
+﻿using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Speed;
-using Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 
 namespace Viki.LoadRunner.Engine.Parameters
@@ -25,13 +23,6 @@ namespace Viki.LoadRunner.Engine.Parameters
         ISpeedStrategy[] Speed { get; }
 
         /// <summary>
-        /// ISpeedStrategy strategy prioritization
-        /// Default - Prioritize slowest
-        /// </summary>
-        Priority SpeedPriority { get; }
-
-
-        /// <summary>
         /// Threading strategy defines created and working parallel thread count throughout the LoadTest
         /// </summary>
         IThreadingStrategy Threading { get; }
@@ -49,7 +40,7 @@ namespace Viki.LoadRunner.Engine.Parameters
     {
         /// <summary>
         /// Limits defines Test-stopping related parameters
-        /// (Defaults are unlimited except for 3 min timeout)
+        /// (Defaults are unlimited except for 3 min thread-timeout)
         /// </summary>
         public ILimitStrategy Limits { get; set; } = new LimitStrategy();
 
@@ -59,12 +50,6 @@ namespace Viki.LoadRunner.Engine.Parameters
         /// See this.SpeedPriority for prioritization.
         /// </summary>
         public ISpeedStrategy[] Speed { get; set; } = { new MaxSpeed() };
-
-        /// <summary>
-        /// Only one ISpeedStrategy result can be used for each iteration.
-        /// This property defines which ISpeedStrategy result to prioritize.
-        /// </summary>
-        public Priority SpeedPriority { get; set; } = Priority.Slowest;
 
         /// <summary>
         /// ThreadingStrategy Defines Created and Working parallel thread count throughout the LoadTest

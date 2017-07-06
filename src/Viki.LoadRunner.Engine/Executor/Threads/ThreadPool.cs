@@ -107,7 +107,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Events
 
-        private void NewThread_ScenarioSetupSucceeded(WorkerThread sender)
+        private void OnScenarioSetupSucceeded(WorkerThread sender)
         {
             if (!_disposing && !sender.QueuedToStop)
             {
@@ -115,7 +115,12 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
         }
 
-        private void ExecutorThread_ThreadFailed(WorkerThread sender, IterationResult result, Exception ex)
+        private void OnThreadFinished(WorkerThread sender)
+        {
+            AddCreated(-1);
+        }
+
+        private void OnThreadFailed(WorkerThread sender, IterationResult result, Exception ex)
         {
             if (ex.GetType() != typeof(ThreadAbortException) && !_disposing)
             {
@@ -154,12 +159,15 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
             foreach (WorkerThread newThread in newThreads)
             {
-                newThread.ThreadFailed += ExecutorThread_ThreadFailed;
-                newThread.ScenarioSetupSucceeded += NewThread_ScenarioSetupSucceeded;
+                newThread.ThreadFailed += OnThreadFailed;
+                newThread.ScenarioSetupSucceeded += OnScenarioSetupSucceeded;
+                newThread.ThreadFinished += OnThreadFinished;
 
                 newThread.StartThread();
 
                 _allThreads.TryAdd(newThread.ThreadId, newThread);
+
+                AddCreated(threadCount);
             }
         }
 

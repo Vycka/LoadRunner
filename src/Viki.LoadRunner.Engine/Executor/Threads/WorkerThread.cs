@@ -104,6 +104,14 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             ThreadFailed?.Invoke(this, new IterationResult(_testContext, _context.ThreadPool), ex);
         }
 
+        public delegate void ThreadFinishedEvent(WorkerThread sender);
+        public event ThreadFinishedEvent ThreadFinished;
+
+        private void OnThreadFinished()
+        {
+            ThreadFinished?.Invoke(this);
+        }
+
         #endregion
 
         #region IDisposable
@@ -121,8 +129,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         private void ExecuteScenarioThreadFunction()
         {
-            _context.ThreadPool.AddCreated(1);
-
             try
             { 
                 IThreadContext threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
@@ -157,8 +163,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
             finally
             {
-                // TODO: Replace with Finished event
-                _context.ThreadPool.AddCreated(-1);
+                OnThreadFinished();
             }
 
         }
