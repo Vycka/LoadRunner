@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Speed;
@@ -73,7 +74,65 @@ namespace Viki.LoadRunner.Engine.Settings
         {
         }
 
+        public LoadRunnerSettings SetScenario<TScenario>()
+            where TScenario : ILoadTestScenario
+        {
+            TestScenarioType = typeof(TScenario);
+            return this;
+        }
 
+        public LoadRunnerSettings SetScenario(Type scenarioType)
+        {
+            TestScenarioType = scenarioType;
+            return this;
+        }
+
+        public LoadRunnerSettings SetLimits(params ILimitStrategy[] limits)
+        {
+            Limits = limits;
+            return this;
+        }
+
+        public LoadRunnerSettings AddLimits(params ILimitStrategy[] limits)
+        {
+            Limits = Limits.Concat(limits).ToArray();
+            return this;
+        }
+
+        public LoadRunnerSettings SetSpeed(params ISpeedStrategy[] speed)
+        {
+            Speed = speed;
+            return this;
+        }
+
+        public LoadRunnerSettings AddSpeed(params ISpeedStrategy[] speed)
+        {
+            Speed = Speed.Concat(speed).ToArray();
+            return this;
+        }
+
+        public LoadRunnerSettings SetThreading(IThreadingStrategy threadingStrategy)
+        {
+            Threading = threadingStrategy;
+            return this;
+        }
+
+        public LoadRunnerSettings SetFinishTimeout(TimeSpan timeout)
+        {
+            FinishTimeout = timeout;
+            return this;
+        }
+
+        public LoadRunnerSettings SetUserData(object userData)
+        {
+            InitialUserData = userData;
+            return this;
+        }
+
+        /// <summary>
+        /// Scenario to execute, type must implement ILoadTestScenario.
+        /// </summary>
+        public Type TestScenarioType { get; set; }
 
         /// <summary>
         /// Limits define when test execution will be scheduled to stop.
@@ -101,11 +160,6 @@ namespace Viki.LoadRunner.Engine.Settings
         /// Default value: 3 minutes
         /// </summary>
         public TimeSpan FinishTimeout { get; set; } = TimeSpan.FromMinutes(3);
-
-        /// <summary>
-        /// Scenario to execute, type must implement ILoadTestScenario.
-        /// </summary>
-        public Type TestScenarioType { get; set; }
 
         /// <summary>
         /// This object-value will be set to testContext.UserData for each created test thread.

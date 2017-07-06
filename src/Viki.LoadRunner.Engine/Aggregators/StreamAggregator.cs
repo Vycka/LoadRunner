@@ -96,8 +96,6 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// <summary>
         /// Replays raw result stream to provided aggregators.
         /// You can use this to replay saved masterdata of previously executed loadtest to differently configured aggregators - allowing to see the results from different angles.
-        /// 
-        /// Contact me in github if interested.
         /// </summary>
         /// <param name="results">LoadTest masterdata result stream</param>
         /// <param name="targetAggregators">Result aggregators</param>

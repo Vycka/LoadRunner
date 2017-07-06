@@ -46,7 +46,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Viki.LoadRunner.Engine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Viki.LoadRunner.0.8.0-alpha\lib\net45\Viki.LoadRunner.Engine.dll</HintPath>
+      <HintPath>packages\Viki.LoadRunner.0.7.33\lib\net45\Viki.LoadRunner.Engine.dll</HintPath>
     </Reference>
     <Reference Include="Viki.LoadRunner.Tools, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Viki.LoadRunner.Tools.0.0.8-alpha\lib\net45\Viki.LoadRunner.Tools.dll</HintPath>
