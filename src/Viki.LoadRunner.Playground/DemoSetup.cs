@@ -24,7 +24,7 @@ namespace Viki.LoadRunner.Playground
 
             LoadRunnerSettings loadRunnerSettings = new LoadRunnerSettings()
                 .SetScenario<BlankScenario>()
-                .SetLimits(new TimiLimit(TimeSpan.FromSeconds(5)))
+                .SetLimits(new TimeLimit(TimeSpan.FromSeconds(5)))
                 .SetSpeed(new IncrementalLimitWorkingThreads(1, TimeSpan.FromSeconds(1), 1))
                 .SetThreading(new FixedThreadCount(20))
                 .SetFinishTimeout(TimeSpan.FromSeconds(60));

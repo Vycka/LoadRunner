@@ -6,7 +6,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Limit
     /// <summary>
     /// Inits test execution stop once execution time reaches defined limit.
     /// </summary>
-    public class TimiLimit : ILimitStrategy
+    public class TimeLimit : ILimitStrategy
     {
         private readonly TimeSpan _timeLimit;
 
@@ -14,7 +14,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Limit
         /// Inits test execution stop once execution time reaches defined limit.
         /// </summary>
         /// <param name="timeLimit">How long tests should be executed</param>
-        public TimiLimit(TimeSpan timeLimit)
+        public TimeLimit(TimeSpan timeLimit)
         {
             _timeLimit = timeLimit;
         }

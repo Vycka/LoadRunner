@@ -107,7 +107,7 @@
     <Compile Include="Strategies\Limit\ILimitStrategy.cs" />
     <Compile Include="Strategies\IThreadingStrategy.cs" />
     <Compile Include="Strategies\Limit\IterationLimit.cs" />
-    <Compile Include="Strategies\Limit\TimiLimit.cs" />
+    <Compile Include="Strategies\Limit\TimeLimit.cs" />
     <Compile Include="Strategies\Speed\ClockedListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\FixedSpeed.cs" />
     <Compile Include="Strategies\Speed\IncrementalLimitWorkingThreads.cs" />

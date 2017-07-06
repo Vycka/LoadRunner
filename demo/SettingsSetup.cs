@@ -2,7 +2,6 @@
 using Viki.LoadRunner.Engine.Settings;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Limit;
-using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 
 
@@ -19,7 +18,7 @@ namespace LoadRunner.Demo
                 .SetScenario<DemoTestScenario>()
 
                 // Stop execution after 30 secs.
-                .SetLimits(new TimiLimit(TimeSpan.FromSeconds(30)))
+                .SetLimits(new TimeLimit(TimeSpan.FromSeconds(30)))
 
                 // Incremental strategy here increases thread count every 10 seconds.
                 // This can be aligned with TimeDimension in HistogramAggregator as shown later in this example.
@@ -37,6 +36,8 @@ namespace LoadRunner.Demo
             // Scenario to execute.
             //
             // No scenario is defined by default and will cause undefined behavior, so it must be set.
+            // SetScenario()/SetScenario<>()/Create<>()/Create()
+            //
             TestScenarioType = null,
 
             // Limits define when test execution will be scheduled to stop.
@@ -50,7 +51,7 @@ namespace LoadRunner.Demo
             //   IterationLimit(int iterationsLimit)
             //
             // - Stop after specified duration
-            //   TimiLimit(TimeSpan timeLimit)
+            //   TimeLimit(TimeSpan timeLimit)
             Limits = new ILimitStrategy[0],
 
             // Speed strategies will limit executed iteration per second.
