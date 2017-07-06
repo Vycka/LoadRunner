@@ -1,4 +1,4 @@
-### Load/Stress generic test library for executing load-tests written in c# ###
+### Generic performance testing library for executing load-tests written in .NET c# ###
 * NuGet: `Install-Package Viki.LoadRunner`
 
 
