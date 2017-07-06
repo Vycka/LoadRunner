@@ -5,12 +5,9 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
-using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Settings;
-using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
@@ -19,26 +16,17 @@ using Viki.LoadRunner.Tools.Windows;
 
 namespace Viki.LoadRunner.Playground
 {
-    public static class ReadmeDemo
+    public static class DemoSetup
     {
         public static void Run()
         {
 
-            LoadRunnerSettings loadRunnerSettings = new LoadRunnerSettings(typeof(BlankScenario))
-            {
-                Limits = new ILimitStrategy[] { new TimiLimit(TimeSpan.FromSeconds(50)), new IterationLimit(2000)  },
-
-                Speed = new ISpeedStrategy[] {},
-
-                //Speed = new ISpeedStrategy[] { new LimitWorkingThreads(2), new ListOfSpeed(TimeSpan.FromSeconds(5), 100, 20)   },
-                //Speed = new ISpeedStrategy[] { new MaxSpeed() },
-                //Speed = new ISpeedStrategy[] { new MaxSpeed(), new MaxSpeed() },
-
-
-                Threading = new ListOfCounts(TimeSpan.FromSeconds(10), 30),
-
-                FinishTimeout = TimeSpan.FromSeconds(60)
-            };
+            LoadRunnerSettings loadRunnerSettings = new LoadRunnerSettings()
+                .SetScenario<BlankScenario>()
+                .SetLimits(new IterationLimit(200))
+                .SetSpeed(new FixedSpeed(20))
+                .SetThreading(new FixedThreadCount(10))
+                .SetFinishTimeout(TimeSpan.FromSeconds(60));
 
             // Initialize aggregator
             string[] ignoredCheckpoints =

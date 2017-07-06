@@ -16,7 +16,7 @@ namespace Viki.LoadRunner.Playground
         static void Main()
         {
 
-            ReadmeDemo.Run();
+            DemoSetup.Run();
             
 
             return;

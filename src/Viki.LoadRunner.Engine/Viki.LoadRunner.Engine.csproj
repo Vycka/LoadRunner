@@ -95,6 +95,7 @@
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\ITestContext.cs" />
     <Compile Include="LoadTestScenarioValidator.cs" />
+    <Compile Include="Settings\ILoadRunnerSettings.cs" />
     <Compile Include="Settings\LoadRunnerSettings.cs" />
     <Compile Include="ILoadTestScenario.cs" />
     <Compile Include="Executor\Context\TestContext.cs" />

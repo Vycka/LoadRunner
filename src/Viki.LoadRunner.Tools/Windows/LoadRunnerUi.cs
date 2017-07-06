@@ -12,7 +12,6 @@ using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
-using Viki.LoadRunner.Engine.Parameters;
 using Viki.LoadRunner.Engine.Settings;
 using Viki.LoadRunner.Engine.Utils;
 

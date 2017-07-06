@@ -17,7 +17,7 @@ Sorry for name clash with H P LoadRunner, but this library has no relations to i
     <releaseNotes></releaseNotes>
 	<licenseUrl>https://github.com/Vycka/LoadRunner/blob/master/LICENSE</licenseUrl>
 	<projectUrl>https://github.com/Vycka/LoadRunner</projectUrl>
-    <copyright>2015</copyright>
+    <copyright>2017</copyright>
     <tags>Load Stress Performance Test Testing c# Runner Parallel Thread Library Framework Tool Addin .NET</tags>
   </metadata>
 </package>

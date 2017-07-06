@@ -15,11 +15,11 @@
     <releaseNotes></releaseNotes>
 	<licenseUrl>https://github.com/Vycka/LoadRunner/blob/master/LICENSE</licenseUrl>
 	<projectUrl>https://github.com/Vycka/LoadRunner</projectUrl>
-    <copyright>2015</copyright>
-    <tags>Load Stress Test Tester c# Runner Parallel Thread Client Library Framework Tool Addin .NET utils</tags>
+    <copyright>2017</copyright>
+    <tags>Load performance Test Tester c# Runner Parallel Thread Client Library Framework Tool Addin .NET utils</tags>
 	<dependencies>
         <dependency id="Newtonsoft.Json" version="8.0.0" />
-		<dependency id="Viki.LoadRunner" version="0.7.28" />
+		<dependency id="Viki.LoadRunner" version="0.8.1-alpha" />
     </dependencies>
   </metadata>
 </package>
