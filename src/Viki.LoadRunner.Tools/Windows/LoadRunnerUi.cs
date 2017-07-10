@@ -19,7 +19,7 @@ namespace Viki.LoadRunner.Tools.Windows
 {
     public partial class LoadRunnerUi : Form, IResultsAggregator
     {
-        private readonly LoadRunnerSettings _settings;
+        private readonly ILoadRunnerSettings _settings;
         public string TextTemplate = "LR-UI {0}";
 
         private readonly MetricMultiplexer _metricMultiplexerTemplate;
@@ -39,14 +39,14 @@ namespace Viki.LoadRunner.Tools.Windows
         /// </summary>
         /// <param name="settings">LoadTest parameters</param>
         /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        public static LoadRunnerUi Create(LoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
+        public static LoadRunnerUi Create(ILoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
         {
             LoadRunnerUi ui = new LoadRunnerUi(settings, resultsAggregators);
 
             return ui;
         }
 
-        private LoadRunnerUi(LoadRunnerSettings settings, IResultsAggregator[] resultsAggregators)
+        private LoadRunnerUi(ILoadRunnerSettings settings, IResultsAggregator[] resultsAggregators)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
