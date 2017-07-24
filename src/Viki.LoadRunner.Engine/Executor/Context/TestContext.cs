@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
-    public class TestContext : ITestContext
+    public class TestContext : ITestContext, ITestContextResult
     {
         private readonly ITimer _timer;
 
@@ -27,23 +28,23 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         #endregion
 
-        public IReadOnlyList<Checkpoint> LoggedCheckpoints => _checkpoints;
+        ICheckpoint[] ITestContextResult.Checkpoints => _checkpoints.Cast<ICheckpoint>().ToArray();
         public TimeSpan IterationStarted { get; private set; }
         public TimeSpan IterationFinished { get; private set; }
 
-        #region Internal methods
+        #region Internals methods
 
-        internal void Start()
+        public void Start()
         {
             IterationStarted = _timer.Value;
         }
 
-        internal void Stop()
+        public void Stop()
         {
             IterationFinished = _timer.Value;
         }
 
-        internal void Reset(int threadIterationId, int globalIterationId)
+        public void Reset(int threadIterationId, int globalIterationId)
         {
             GlobalIterationId = globalIterationId;
             ThreadIterationId = threadIterationId;
@@ -54,7 +55,7 @@ namespace Viki.LoadRunner.Engine.Executor.Context
             IterationFinished = TimeSpan.MinValue;
         }
 
-        internal void SetError(Exception error)
+        public void SetError(Exception error)
         {
             _checkpoints[_checkpoints.Count - 1].Error = error;
         }

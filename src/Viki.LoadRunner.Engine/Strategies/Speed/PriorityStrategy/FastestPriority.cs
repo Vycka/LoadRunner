@@ -1,6 +1,4 @@
-﻿using Viki.LoadRunner.Engine.Executor.Threads;
-
-namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
+﻿namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
 {
     // This is fundamentally broken, no idea how to implement it properly.
     //

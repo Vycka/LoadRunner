@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Result;
-using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Timer;
 
 #pragma warning disable 1591
 
@@ -13,21 +12,20 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
     /// Worker-Thread once created, will initialize ASAP.
     /// After initialization, it will start execution of iterations ASAP but not until ITimer is started.
     /// </summary>
-    public class WorkerThread : IDisposable
+    public class WorkerThreadEx : IDisposable
     {
-        private readonly ThreadPoolContext _context;
+        //private readonly IThreadPoolCounter _counter;
+
+        private readonly Executor _executor;
+
+        private readonly ITimer _timer;
 
         #region Properties
 
         private readonly Thread _handlerThread;
-        private readonly ILoadTestScenario _scenario;
-
-        private readonly TestContext _testContext;
         private bool _stopQueued;
 
         public bool QueuedToStop => _stopQueued;
-        public bool ScenarioInitialized { get; private set; }
-        public int ThreadId => _testContext.ThreadId;
         public bool IsAlive => _handlerThread.IsAlive;
         public bool Idle { get; private set; } = false;
 
@@ -35,16 +33,10 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Ctor
 
-        public WorkerThread(ThreadPoolContext context, int threadId)
+        public WorkerThreadEx(Executor executor, ITimer timer)
         {
-            if (context == null)
-                throw new ArgumentNullException(nameof(context));
-
-            _context = context;
-
-
-            _testContext = new TestContext(threadId, _context.Timer, _context.UserData);
-            _scenario = (ILoadTestScenario)Activator.CreateInstance(_context.Scenario);
+            _executor = executor;
+            _timer = timer;
 
             _handlerThread = new Thread(ExecuteScenarioThreadFunction);
         }
@@ -84,7 +76,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         #region Events
 
 
-        public delegate void ScenarioSetupSucceededEvent(WorkerThread sender);
+        public delegate void ScenarioSetupSucceededEvent(WorkerThreadEx sender);
         public event ScenarioSetupSucceededEvent ScenarioSetupSucceeded;
 
         private void OnScenarioSetupSucceeded()
@@ -92,20 +84,16 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             ScenarioSetupSucceeded?.Invoke(this);
         }
 
-        private void OnScenarioIterationFinished()
-        {
-            _context.Aggregator.TestContextResultReceived(new IterationResult(_testContext, _context.ThreadPool));
-        }
 
-        public delegate void ThreadFailedEvent(WorkerThread sender, IterationResult result, Exception ex);
+        public delegate void ThreadFailedEvent(WorkerThreadEx sender, Exception ex);
         public event ThreadFailedEvent ThreadFailed;
 
         private void OnThreadFailed(Exception ex)
         {
-            ThreadFailed?.Invoke(this, new IterationResult(_testContext, _context.ThreadPool), ex);
+            ThreadFailed?.Invoke(this, ex);
         }
 
-        public delegate void ThreadFinishedEvent(WorkerThread sender);
+        public delegate void ThreadFinishedEvent(WorkerThreadEx sender);
         public event ThreadFinishedEvent ThreadFinished;
 
         private void OnThreadFinished()
@@ -130,31 +118,23 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         {
             try
             { 
-                IThreadContext threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
-                Scheduler.Scheduler scheduler = new Scheduler.Scheduler(_context.Speed, threadContext, _context.ThreadPool);
+                //IThreadContext threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
+                //Scheduler scheduler = new Scheduler(_context.Speed, threadContext, _context.ThreadPool);
 
-                int threadIterationId = 0;
-
-                ExecuteScenarioSetup();
+                _executor.Setup();
+                OnScenarioSetupSucceeded();
 
                 // Wait for ITimer to start.
-                while (_context.Timer.IsRunning == false && _stopQueued == false)
+                while (_timer.IsRunning == false && _stopQueued == false)
                     Thread.Sleep(1);
 
-                if (!_stopQueued)
-                    _testContext.Reset(threadIterationId++, _context.IdFactory.Next());
-
-                while (scheduler.Wait(ref _stopQueued) == false)
+                while (!_stopQueued)
                 {
-                    ExecuteIteration(_testContext, _scenario);
-
-                    OnScenarioIterationFinished();
-
-                    _testContext.Reset(threadIterationId++, _context.IdFactory.Next());
+                    _executor.Execute();
                 }
 
-                _testContext.Reset(-1, -1);
-                _scenario.ScenarioTearDown(_testContext);
+                _executor.Teardown();
+
             }
             catch (Exception ex)
             {
@@ -194,16 +174,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             ExecuteWithExceptionHandling(() => scenario.IterationTearDown(context), context);
         }
 
-        private void ExecuteScenarioSetup()
-        {
-            if (ScenarioInitialized == false)
-            { 
-                _testContext.Reset(-1,-1);
-                _scenario.ScenarioSetup(_testContext);
-                ScenarioInitialized = true;
-                OnScenarioSetupSucceeded();
-            }
-        }
 
         private static bool ExecuteWithExceptionHandling(Action action, TestContext testContext)
         {

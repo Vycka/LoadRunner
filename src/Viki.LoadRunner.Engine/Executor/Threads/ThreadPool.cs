@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Executor.Threads.Factory;
+using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Scheduler;
+using Viki.LoadRunner.Engine.Executor.Threads.Stats;
+using Viki.LoadRunner.Engine.Executor.Threads.Strategy;
 
 #pragma warning disable 1591
 
@@ -175,6 +180,16 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         {
             for (int i = 0; i < threadCount; i++)
             {
+                ScenarioInstance instance = new ScenarioInstance(_context.IdFactory, _context.Scenario, _nextThreadId++, _context.UserData, _context.Timer);
+
+                SpeedStrategyHandler strategyHandler = new SpeedStrategyHandler(_context.Speed, instance.Context, this);
+                SchedulerEx scheduler = new SchedulerEx(strategyHandler, this, _context.Timer);
+
+                DataCollector collector = new DataCollector(_context.Aggregator, this);
+
+                Executor executor = new Executor(scheduler, instance, collector);
+                WorkerThreadEx worker = new WorkerThreadEx(executor, _context.Timer);
+
                 yield return new WorkerThread(_context, _nextThreadId++);
             }
         }

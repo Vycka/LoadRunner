@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Viki.LoadRunner.Engine.Executor.Threads;
+using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy

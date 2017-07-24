@@ -11,23 +11,8 @@ namespace Viki.LoadRunner.Engine.Executor.Result
     /// this can be seen as fundamental raw data.
     /// Only the list of these IResult's are needed for meassured data aggregation.
     /// </summary>
-    public interface IResult : IIterationMetadata<object>
+    public interface IResult : ITestContextResult 
     {
-        /// <summary>
-        /// All checkpoints containing meassurements from whole iteration
-        /// </summary>
-        ICheckpoint[] Checkpoints { get; }
-
-        /// <summary>
-        /// It contains value when this iteration  started (relative to LoadTest start)
-        /// </summary>
-        TimeSpan IterationStarted { get;  }
-
-        /// <summary>
-        /// It contains value when this iteration ended (relative to LoadTest start)
-        /// </summary>
-        TimeSpan IterationFinished { get; }
-
         /// <summary>
         /// Count of currently created worker threads at the end of this iteration
         /// This value will be set at the [IterationFinished] moment.

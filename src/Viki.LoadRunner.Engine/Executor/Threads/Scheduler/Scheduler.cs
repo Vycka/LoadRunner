@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Threading;
+using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Strategies;
 
-namespace Viki.LoadRunner.Engine.Executor.Threads
+namespace Viki.LoadRunner.Engine.Executor.Threads.Scheduler
 {
     public class Scheduler : ISchedule
     {
+        private bool _cencellationToken;
+
         private readonly ISpeedStrategy _strategy;
         private readonly IThreadContext _context;
         private readonly IThreadPoolCounter _counter;
@@ -52,7 +55,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             return At - Timer.Value;
         }
 
-        public bool Execute(ref bool cancellationToken)
+        public bool Wait(ref bool cancellationToken)
         {
             _strategy.Next(_context, this);
 
@@ -83,6 +86,17 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
 
             return cancellationToken;
+        }
+
+        private void SemiWait(TimeSpan delay)
+        {
+            while (delay > _oneSecond && _cencellationToken == false)
+            {
+                Thread.Sleep(_oneSecond);
+                delay = CalculateDelay();
+            }
+            if (delay > TimeSpan.Zero && _cencellationToken == false)
+                Thread.Sleep(delay);
         }
     }
 }

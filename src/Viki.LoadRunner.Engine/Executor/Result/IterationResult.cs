@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Threads;
+using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Result
 {
@@ -27,7 +27,7 @@ namespace Viki.LoadRunner.Engine.Executor.Result
         public int CreatedThreads { get; set; }
         public int IdleThreads { get; set; }
 
-        public IterationResult(TestContext testContext, IThreadPoolStats threadPoolContext)
+        public IterationResult(ITestContextResult testContext, IThreadPoolStats threadPoolContext)
         {
             ThreadId = testContext.ThreadId;
             GlobalIterationId = testContext.GlobalIterationId;
@@ -41,7 +41,7 @@ namespace Viki.LoadRunner.Engine.Executor.Result
             CreatedThreads = threadPoolContext.CreatedThreadCount;
             IdleThreads = threadPoolContext.IdleThreadCount;
 
-            Checkpoints = testContext.LoggedCheckpoints.Select(c => c).Cast<ICheckpoint>().ToArray();
+            Checkpoints = testContext.Checkpoints;
         }
     }
 }

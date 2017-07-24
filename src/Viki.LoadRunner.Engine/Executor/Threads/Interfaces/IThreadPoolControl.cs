@@ -1,4 +1,4 @@
-﻿namespace Viki.LoadRunner.Engine.Executor.Threads
+﻿namespace Viki.LoadRunner.Engine.Executor.Threads.Interfaces
 {
 
     // TODO: Handle no threads, try delete  threads from lowest index

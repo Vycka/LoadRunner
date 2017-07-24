@@ -1,7 +1,7 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
-namespace Viki.LoadRunner.Engine.Executor.Threads
+namespace Viki.LoadRunner.Engine.Executor.Threads.Interfaces
 {
     public interface IThreadContext
     {

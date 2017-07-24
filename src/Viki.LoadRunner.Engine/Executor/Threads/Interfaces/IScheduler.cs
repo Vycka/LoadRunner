@@ -1,7 +1,7 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
-namespace Viki.LoadRunner.Engine.Executor.Threads
+namespace Viki.LoadRunner.Engine.Executor.Threads.Interfaces
 {
     public enum ScheduleAction
     {
@@ -12,13 +12,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
     public interface IScheduler
     {
-        ITimer Timer { get; }
-
-        ScheduleAction Action { get; set; }
-        TimeSpan At { get; set; }
-
-        void Idle(TimeSpan delay);
-        void ExecuteAt(TimeSpan at);
+        void Wait();
     }
 
     public interface ISchedule
@@ -44,7 +38,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         public TimeSpan At { get; set; } = TimeSpan.Zero;
     }
 
-    public static class SchedulerExtensions
+    public static class ScheduleExtensions
     {
         public static void Execute(this ISchedule scheduler)
         {
