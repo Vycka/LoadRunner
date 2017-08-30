@@ -17,7 +17,7 @@ namespace LoadRunner.Demo
         public void ScenarioSetup(ITestContext testContext)
         {
             //Debug.WriteLine("ScenarioSetup Executes on thread creation");
-            //Debug.WriteLine("Exceptions here are not handled!");
+            //Debug.WriteLine("Exceptions here are not handled and will stop the execution!");
 
             Console.WriteLine($"Created Thread {testContext.ThreadId}");
         }
@@ -60,7 +60,7 @@ namespace LoadRunner.Demo
         public void ScenarioTearDown(ITestContext testContext)
         {
             //Debug.WriteLine("ScenarioTearDown Executes once LoadTest execution is over");
-            //Debug.WriteLine("Exceptions here are not handled!");
+            //Debug.WriteLine("Exceptions here are not handled and will stop the execution!");
         }
     }
 }
