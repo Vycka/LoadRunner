@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Executor.Context;
@@ -10,6 +11,8 @@ namespace LoadRunner.Demo
 
 
     // To create scenario, either implement ILoadTestScenario or extend LoadTestBase
+    //
+    [DebuggerStepThrough] // this flag prevents debugger from catching exceptions and breaking code execution.
     public class DemoTestScenario : ILoadTestScenario
     {
         private static readonly Random Random = new Random(42);
