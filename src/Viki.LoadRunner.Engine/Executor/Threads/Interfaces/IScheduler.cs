@@ -12,7 +12,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Interfaces
 
     public interface IScheduler
     {
-        void Wait();
+        void WaitNext();
+
+        ITimer Timer { get; }
     }
 
     public interface ISchedule

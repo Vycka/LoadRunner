@@ -11,7 +11,7 @@ namespace Viki.LoadRunner.Engine
         /// <summary>
         /// Test scenario for single thread
         /// </summary>
-        /// <param name="testContext"></param>
+        /// <param name="context"></param>
         void ExecuteScenario(ITestContext context);
 
 

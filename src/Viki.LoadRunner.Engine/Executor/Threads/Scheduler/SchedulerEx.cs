@@ -9,21 +9,21 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scheduler
     {
         private bool _cancellationToken;
 
-        private readonly ISpeedStrategyHandler _handler;
+        private readonly ISpeedStrategyHandler _strategy;
         private readonly IThreadPoolCounter _counter;
 
         private readonly TimeSpan _oneSecond = TimeSpan.FromSeconds(1);
 
         public ITimer Timer { get; }
 
-        public SchedulerEx(ISpeedStrategyHandler handler, IThreadPoolCounter counter, ITimer timer)
+        public SchedulerEx(ISpeedStrategyHandler strategy, IThreadPoolCounter counter, ITimer timer)
         {
-            if (handler == null)
-                throw new ArgumentNullException(nameof(handler));
+            if (strategy == null)
+                throw new ArgumentNullException(nameof(strategy));
             if (counter == null)
                 throw new ArgumentNullException(nameof(counter));
 
-            _handler = handler;
+            _strategy = strategy;
             _counter = counter;
             Timer = timer;
         }
@@ -50,9 +50,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scheduler
             return At - Timer.Value;
         }
 
-        public void Wait()
+        public void WaitNext()
         {
-            _handler.Next(this);
+            _strategy.Next(this);
 
             TimeSpan delay = CalculateDelay();
             if (delay > TimeSpan.Zero)
@@ -63,7 +63,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scheduler
                 {
                     SemiWait(delay);
 
-                    _handler.Next(this);
+                    _strategy.Next(this);
                 }
 
                 SemiWait(delay);

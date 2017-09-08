@@ -20,7 +20,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             WorkingThreads = workingThreads;
         }
 
-        public void Next(IThreadContext context, ISchedule scheduler)
+        public void Next(IThreadContextWat context, ISchedule scheduler)
         {
             int includeSelf = scheduler.Action == ScheduleAction.Execute ? 1 : 0; 
             int workingThreads = context.ThreadPool.CreatedThreadCount - context.ThreadPool.IdleThreadCount - includeSelf;

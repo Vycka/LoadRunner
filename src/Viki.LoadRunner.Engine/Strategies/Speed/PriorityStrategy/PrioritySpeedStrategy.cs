@@ -31,7 +31,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
             _schedules = new ConditionalWeakTable<ISchedule, ISchedule[]>();
         }
 
-        public void Next(IThreadContext context, ISchedule target)
+        public void Next(IThreadContextWat context, ISchedule target)
         {
             ISchedule[] schedules = GetScheduleTable(target);
 

@@ -22,7 +22,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         private readonly Thread _handlerThread;
         private readonly ILoadTestScenario _scenario;
 
-        private readonly TestContext _testContext;
+        private readonly Context.TestContext _testContext;
         private bool _stopQueued;
 
         public bool QueuedToStop => _stopQueued;
@@ -43,7 +43,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             _context = context;
 
 
-            _testContext = new TestContext(threadId, _context.Timer, _context.UserData);
+            _testContext = new Context.TestContext(threadId, _context.Timer, _context.UserData);
             _scenario = (ILoadTestScenario)Activator.CreateInstance(_context.Scenario);
 
             _handlerThread = new Thread(ExecuteScenarioThreadFunction);
@@ -130,7 +130,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         {
             try
             { 
-                IThreadContext threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
+                IThreadContextWat threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
                 Scheduler.Scheduler scheduler = new Scheduler.Scheduler(_context.Speed, threadContext, _context.ThreadPool);
 
                 int threadIterationId = 0;
@@ -166,7 +166,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
         }
 
-        public static void ExecuteIteration(TestContext context, ILoadTestScenario scenario)
+        public static void ExecuteIteration(Context.TestContext context, ILoadTestScenario scenario)
         {
             context.Checkpoint(Checkpoint.Names.Setup);
             bool setupSuccess = ExecuteWithExceptionHandling(() => scenario.IterationSetup(context), context);
@@ -205,7 +205,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             }
         }
 
-        private static bool ExecuteWithExceptionHandling(Action action, TestContext testContext)
+        private static bool ExecuteWithExceptionHandling(Action action, Context.TestContext testContext)
         {
             bool result = false;
 

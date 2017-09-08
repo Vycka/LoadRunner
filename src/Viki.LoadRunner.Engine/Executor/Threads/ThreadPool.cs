@@ -6,6 +6,7 @@ using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Threads.Factory;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Scenario;
 using Viki.LoadRunner.Engine.Executor.Threads.Scheduler;
 using Viki.LoadRunner.Engine.Executor.Threads.Stats;
 using Viki.LoadRunner.Engine.Executor.Threads.Strategy;
@@ -32,6 +33,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         private int _nextThreadId;
         private readonly ThreadPoolContext _context;
 
+        private readonly ScenarioTaskFactory _taskFactory;
+
         #endregion
 
         #region Ctor
@@ -45,6 +48,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             _initializedThreads = new ConcurrentDictionary<int, WorkerThread>();
             _threadErrors = new ConcurrentBag<Exception>();
 
+            _taskFactory = new ScenarioTaskFactory(settings.Scenario, settings.Timer, settings.SpeedStrategy, this, settings.InitialUserData);
 
             _context = new ThreadPoolContext
             {
@@ -180,15 +184,17 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         {
             for (int i = 0; i < threadCount; i++)
             {
-                ScenarioInstance instance = new ScenarioInstance(_context.IdFactory, _context.Scenario, _nextThreadId++, _context.UserData, _context.Timer);
+                ILoadTestScenario scenarioInstance = (ILoadTestScenario) Activator.CreateInstance(_context.Scenario);
 
-                SpeedStrategyHandler strategyHandler = new SpeedStrategyHandler(_context.Speed, instance.Context, this);
+                ScenarioHandler handler = new ScenarioHandler(_context.IdFactory, scenarioInstance, _nextThreadId++, _context.UserData, _context.Timer);
+
+                SpeedStrategyHandler strategyHandler = new SpeedStrategyHandler(_context.Speed, handler.Context, this);
                 SchedulerEx scheduler = new SchedulerEx(strategyHandler, this, _context.Timer);
 
                 DataCollector collector = new DataCollector(_context.Aggregator, this);
 
-                Executor executor = new Executor(scheduler, instance, collector);
-                WorkerThreadEx worker = new WorkerThreadEx(executor, _context.Timer);
+                ScenarioWorkerTask scenarioWorkerTask = new ScenarioWorkerTask(scheduler, handler, collector);
+                WorkerThreadEx worker = new WorkerThreadEx(scenarioWorkerTask, _context.Timer);
 
                 yield return new WorkerThread(_context, _nextThreadId++);
             }

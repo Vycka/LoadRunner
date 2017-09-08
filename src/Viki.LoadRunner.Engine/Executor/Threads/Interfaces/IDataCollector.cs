@@ -6,6 +6,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Interfaces
 {
     public interface IDataCollector
     {
-        void Collect(ITestContextResult result);
+        void Collect();
     }
 }

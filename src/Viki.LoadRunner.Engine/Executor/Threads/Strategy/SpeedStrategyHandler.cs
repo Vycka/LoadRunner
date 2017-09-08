@@ -10,7 +10,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Strategy
         private readonly ISpeedStrategy _strategy;
         private readonly IExecutionState _state;
 
-        public SpeedStrategyHandler(ISpeedStrategy strategy, IIterationContext iteration, IThreadPoolStats stats)
+        public SpeedStrategyHandler(ISpeedStrategy strategy, IIterationId iteration, IThreadPoolStats stats)
         {
             if (strategy == null)
                 throw new ArgumentNullException(nameof(strategy));

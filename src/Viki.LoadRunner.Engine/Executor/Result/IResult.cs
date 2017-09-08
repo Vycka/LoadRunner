@@ -11,7 +11,7 @@ namespace Viki.LoadRunner.Engine.Executor.Result
     /// this can be seen as fundamental raw data.
     /// Only the list of these IResult's are needed for meassured data aggregation.
     /// </summary>
-    public interface IResult : ITestContextResult 
+    public interface IResult : IIterationResult 
     {
         /// <summary>
         /// Count of currently created worker threads at the end of this iteration

@@ -1,6 +1,6 @@
 ﻿namespace Viki.LoadRunner.Engine.Executor.Context
 {
-    public interface IIterationContext
+    public interface IIterationId
     {
         /// <summary>
         /// Unique Iteration ID withing all worker-threads (Starts from zero)

@@ -2,7 +2,7 @@
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
-    public interface ITestContextResult : IIterationMetadata<object>
+    public interface IIterationResult : IIterationMetadata<object>
     {
         /// <summary>
         /// All checkpoints containing meassurements from whole iteration

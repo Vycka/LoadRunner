@@ -3,40 +3,44 @@ using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
-namespace Viki.LoadRunner.Engine.Executor.Threads
+namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
 {
     // TODO: Interface it
-    public class ScenarioInstance
+    public class ScenarioHandler
     {
-        private readonly IUniqueIdFactory<int> _idFactory;
+        private readonly IUniqueIdFactory<int> _globalIdFactory;
         private readonly ILoadTestScenario _scenario;
-
-        public bool Initialized { get; private set; }
 
         private int _threadIterationId = 0;
 
-        private TestContext _context;
-        public ITestContextResult Context => _context;
+        private Context.TestContext _context;
+        public IIterationResult Context => _context;
 
-        public ScenarioInstance(IUniqueIdFactory<int> idFactory, Type scenarioType, int threadId, object initialUserData, ITimer timer)
+        public ScenarioHandler(IUniqueIdFactory<int> globalIdFactory, ILoadTestScenario scenario, int threadId, object initialUserData, ITimer timer)
         {
             if (timer == null)
                 throw new ArgumentNullException(nameof(timer));
-            if (idFactory == null)
-                throw new ArgumentNullException(nameof(idFactory));
+            if (globalIdFactory == null)
+                throw new ArgumentNullException(nameof(globalIdFactory));
 
-            _scenario = (ILoadTestScenario)Activator.CreateInstance(scenarioType);
-            _context = new TestContext(threadId, timer, initialUserData);
-            _idFactory = idFactory;
+            _scenario = scenario;
+            _context = new Context.TestContext(threadId, timer, initialUserData);
+            _globalIdFactory = globalIdFactory;
         }
 
-        public void Setup()
+        /// <summary>
+        /// Initial setup
+        /// </summary>
+        public void Init()
         {
             _context.Reset(-1, -1);
             _scenario.ScenarioSetup(_context);
         }
 
-        public void Teardown()
+        /// <summary>
+        /// Final cleanup
+        /// </summary>
+        public void Cleanup()
         {
             _context.Reset(-1, -1);
             _scenario.ScenarioTearDown(_context);
@@ -47,9 +51,12 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         /// </summary>
         public void PrepareNext()
         {
-            _context.Reset(_threadIterationId++, _idFactory.Next());
+            _context.Reset(_threadIterationId++, _globalIdFactory.Next());
         }
 
+        /// <summary>
+        /// Executes iteration
+        /// </summary>
         public void Execute()
         {
             _context.Checkpoint(Checkpoint.Names.Setup);

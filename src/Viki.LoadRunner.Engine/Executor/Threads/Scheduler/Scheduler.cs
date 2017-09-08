@@ -11,14 +11,14 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scheduler
         private bool _cencellationToken;
 
         private readonly ISpeedStrategy _strategy;
-        private readonly IThreadContext _context;
+        private readonly IThreadContextWat _context;
         private readonly IThreadPoolCounter _counter;
 
         private readonly TimeSpan _oneSecond = TimeSpan.FromSeconds(1);
 
         public ITimer Timer { get; }
 
-        public Scheduler(ISpeedStrategy strategy, IThreadContext context, IThreadPoolCounter counter)
+        public Scheduler(ISpeedStrategy strategy, IThreadContextWat context, IThreadPoolCounter counter)
         {
             if (strategy == null)
                 throw new ArgumentNullException(nameof(strategy));

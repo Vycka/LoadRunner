@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
@@ -93,13 +95,14 @@ namespace Viki.LoadRunner.Playground
     {
         private static readonly Random Random = new Random(42);
 
-        public void ScenarioSetup(ITestContext testContext)
+
+        public void ScenarioSetup(ITestContext context)
         {
             Debug.WriteLine("ScenarioSetup Executes on thread creation");
             Debug.WriteLine("Exceptions here are not handled!");
         }
 
-        public void IterationSetup(ITestContext testContext)
+        public void IterationSetup(ITestContext context)
         {
             Debug.WriteLine("IterationSetup is executed before each ExecuteScenario call");
 
@@ -107,7 +110,7 @@ namespace Viki.LoadRunner.Playground
                 throw new Exception("2% error chance for testing");
         }
 
-        public void ExecuteScenario(ITestContext testContext)
+        public void ExecuteScenario(ITestContext context)
         {
             Debug.WriteLine(
                 "ExecuteScenario defines single iteration for load test scenario, " +
@@ -124,7 +127,7 @@ namespace Viki.LoadRunner.Playground
         }
 
 
-        public void IterationTearDown(ITestContext testContext)
+        public void IterationTearDown(ITestContext context)
         {
             Debug.WriteLine("IterationTearDown is executed each time after ExecuteScenario iteration is finished.");
             Debug.WriteLine("It is also executed even when IterationSetup or ExecuteScenario fails");
@@ -133,7 +136,7 @@ namespace Viki.LoadRunner.Playground
                 throw new Exception("4% error chance for testing");
         }
 
-        public void ScenarioTearDown(ITestContext testContext)
+        public void ScenarioTearDown(ITestContext context)
         {
             Debug.WriteLine("ScenarioTearDown Executes once LoadTest execution is over");
 

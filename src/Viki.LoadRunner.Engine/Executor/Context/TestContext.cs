@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
-    public class TestContext : ITestContext, ITestContextResult
+    public class TestContext : ITestContextControl
     {
         private readonly ITimer _timer;
 
@@ -28,11 +27,11 @@ namespace Viki.LoadRunner.Engine.Executor.Context
 
         #endregion
 
-        ICheckpoint[] ITestContextResult.Checkpoints => _checkpoints.Cast<ICheckpoint>().ToArray();
+        ICheckpoint[] IIterationResult.Checkpoints => _checkpoints.Cast<ICheckpoint>().ToArray();
         public TimeSpan IterationStarted { get; private set; }
         public TimeSpan IterationFinished { get; private set; }
 
-        #region Internals methods
+        #region IIterationContextControl methods
 
         public void Start()
         {

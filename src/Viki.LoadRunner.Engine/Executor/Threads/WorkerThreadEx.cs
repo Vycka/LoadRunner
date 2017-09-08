@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Threads.Scenario;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
 #pragma warning disable 1591
@@ -16,9 +17,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
     {
         //private readonly IThreadPoolCounter _counter;
 
-        private readonly Executor _executor;
-
-        private readonly ITimer _timer;
+        private readonly ScenarioWorkerTask _task;
 
         #region Properties
 
@@ -33,10 +32,9 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Ctor
 
-        public WorkerThreadEx(Executor executor, ITimer timer)
+        public WorkerThreadEx(ScenarioWorkerTask task)
         {
-            _executor = executor;
-            _timer = timer;
+            _task = task;
 
             _handlerThread = new Thread(ExecuteScenarioThreadFunction);
         }
@@ -121,19 +119,18 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
                 //IThreadContext threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
                 //Scheduler scheduler = new Scheduler(_context.Speed, threadContext, _context.ThreadPool);
 
-                _executor.Setup();
+                _task.Init();
                 OnScenarioSetupSucceeded();
 
                 // Wait for ITimer to start.
-                while (_timer.IsRunning == false && _stopQueued == false)
-                    Thread.Sleep(1);
+                _task.Wait();
 
                 while (!_stopQueued)
                 {
-                    _executor.Execute();
+                    _task.Execute();
                 }
 
-                _executor.Teardown();
+                _task.Cleanup();
 
             }
             catch (Exception ex)
@@ -144,52 +141,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             {
                 OnThreadFinished();
             }
-        }
-
-        public static void ExecuteIteration(TestContext context, ILoadTestScenario scenario)
-        {
-            context.Checkpoint(Checkpoint.Names.Setup);
-            bool setupSuccess = ExecuteWithExceptionHandling(() => scenario.IterationSetup(context), context);
-
-            if (setupSuccess)
-            {
-                context.Checkpoint(Checkpoint.Names.IterationStart);
-
-                context.Start();
-                bool iterationSuccess = ExecuteWithExceptionHandling(() => scenario.ExecuteScenario(context), context);
-                context.Stop();
-
-                if (iterationSuccess)
-                {
-                    context.Checkpoint(Checkpoint.Names.IterationEnd);
-                }
-            }
-            else
-            {
-                context.Start();
-                context.Stop();
-            }
-
-            context.Checkpoint(Checkpoint.Names.TearDown);
-            ExecuteWithExceptionHandling(() => scenario.IterationTearDown(context), context);
-        }
-
-
-        private static bool ExecuteWithExceptionHandling(Action action, TestContext testContext)
-        {
-            bool result = false;
-
-            try
-            {
-                action.Invoke();
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                testContext.SetError(ex);
-            }
-
-            return result;
         }
 
         #endregion

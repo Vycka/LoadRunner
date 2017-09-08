@@ -27,21 +27,21 @@ namespace Viki.LoadRunner.Engine.Executor.Result
         public int CreatedThreads { get; set; }
         public int IdleThreads { get; set; }
 
-        public IterationResult(ITestContextResult testContext, IThreadPoolStats threadPoolContext)
+        public IterationResult(IIterationResult iteration, IThreadPoolStats threadPoolContext)
         {
-            ThreadId = testContext.ThreadId;
-            GlobalIterationId = testContext.GlobalIterationId;
-            ThreadIterationId = testContext.ThreadIterationId;
-            UserData = testContext.UserData;
+            ThreadId = iteration.ThreadId;
+            GlobalIterationId = iteration.GlobalIterationId;
+            ThreadIterationId = iteration.ThreadIterationId;
+            UserData = iteration.UserData;
 
 
-            IterationStarted = testContext.IterationStarted;
-            IterationFinished = testContext.IterationFinished;
+            IterationStarted = iteration.IterationStarted;
+            IterationFinished = iteration.IterationFinished;
 
             CreatedThreads = threadPoolContext.CreatedThreadCount;
             IdleThreads = threadPoolContext.IdleThreadCount;
 
-            Checkpoints = testContext.Checkpoints;
+            Checkpoints = iteration.Checkpoints;
         }
     }
 }

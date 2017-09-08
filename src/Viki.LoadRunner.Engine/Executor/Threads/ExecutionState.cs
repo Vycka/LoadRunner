@@ -7,7 +7,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 {
     public class ExecutionState : IExecutionState
     {
-        public IIterationContext Iteration { get; set; }
+        public IIterationId Iteration { get; set; }
         public IThreadPoolStats ThreadPool { get; set; }
     }
 }

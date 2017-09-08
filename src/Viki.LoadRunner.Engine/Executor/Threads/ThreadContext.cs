@@ -5,7 +5,7 @@ using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
 {
-    public class ThreadContext : IThreadContext
+    public class ThreadContext : IThreadContextWat
     {
         public ThreadContext(IThreadPoolStats threadPool, ITimer timer, IIterationMetadata<object> iteration)
         {

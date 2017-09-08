@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+
+using System;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
@@ -10,23 +12,26 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Stats
 {
     public class DataCollector : IDataCollector
     {
+        private readonly ITestContext _context;
         private readonly IResultsAggregator _aggregator;
-        private readonly IThreadPoolStats _stats;
+        private readonly IThreadPoolStats _poolStats;
 
-        public DataCollector(IResultsAggregator aggregator, IThreadPoolCounter stats)
+        public DataCollector(ITestContext context, IResultsAggregator aggregator, IThreadPoolCounter poolStats)
         {
+            if (context == null) throw new ArgumentNullException(nameof(context));
             if (aggregator == null)
                 throw new ArgumentNullException(nameof(aggregator));
-            if (stats == null)
-                throw new ArgumentNullException(nameof(stats));
+            if (poolStats == null)
+                throw new ArgumentNullException(nameof(poolStats));
 
+            _context = context;
             _aggregator = aggregator;
-            _stats = stats;
+            _poolStats = poolStats;
         }
 
-        public void Collect(ITestContextResult result)
+        public void Collect()
         {
-            _aggregator.TestContextResultReceived(new IterationResult(result, _stats));
+            _aggregator.TestContextResultReceived(new IterationResult(_context, _poolStats));
         }
     }
 }

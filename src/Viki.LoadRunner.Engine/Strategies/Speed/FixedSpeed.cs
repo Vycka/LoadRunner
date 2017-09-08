@@ -30,7 +30,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             Interlocked.Exchange(ref _next, timerValue.Ticks - _delayTicks);
         }
 
-        public void Next(IThreadContext context, ISchedule schedule)
+        public void Next(IThreadContextWat context, ISchedule schedule)
         {
             long timerTicks = context.Timer.Value.Ticks;
             long delta = timerTicks + ScheduleAheadTicks - _next;
