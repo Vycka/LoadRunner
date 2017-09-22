@@ -3,5 +3,9 @@
     public interface IThreadPoolCounter : IThreadPoolStats
     {
         void AddIdle(int count);
+
+        void AddInitialized(int count);
+
+        void AddCreated(int count);
     }
 }

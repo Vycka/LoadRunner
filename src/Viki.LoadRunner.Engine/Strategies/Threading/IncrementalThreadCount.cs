@@ -2,6 +2,7 @@
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
@@ -29,16 +30,16 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
             return (((int)(testExecutionTime.TotalMilliseconds / _increaseTimePeriod.TotalMilliseconds)) * _threadCreateBatchSize) + _initialThreadCount;
         }
 
-        public void Setup(IThreadPoolContext context, IThreadPoolControl control)
+        public void Setup(IThreadPool pool)
         {
-            control.SetWorkerCountAsync(_initialThreadCount);
+            pool.StartWorkersAsync(_initialThreadCount);
         }
 
-        public void HeartBeat(IThreadPoolContext context, IThreadPoolControl control)
+        public void HeartBeat(IThreadPool pool, ITestState state)
         {
-            int threadCount = GetAllowedCreatedThreadCount(context.Timer.Value);
+            int threadCount = GetAllowedCreatedThreadCount(state.Timer.Value);
 
-            control.SetWorkerCountAsync(threadCount);
+            pool.SetWorkerCountAsync(state, threadCount);
         }
 
         public string DimensionName => "Created Threads";

@@ -1,40 +1,38 @@
 ﻿using System;
 using System.Threading;
-using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Scenario;
-using Viki.LoadRunner.Engine.Executor.Timer;
 
-#pragma warning disable 1591
+//#pragma warning disable 1591
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
 {
     /// <summary>
-    /// Executor defines worker-thread logic
-    /// Worker-Thread once created, will initialize ASAP.
+    /// Executes work provided with IWork 
+    /// Worker-Thread once StartThread()'ed, will initialize ASAP.
     /// After initialization, it will start execution of iterations ASAP but not until ITimer is started.
     /// </summary>
-    public class WorkerThreadEx : IDisposable
+    public class WorkerThreadEx : IWorkerThread
     {
-        //private readonly IThreadPoolCounter _counter;
+        #region Fields
 
-        private readonly ScenarioWorkerTask _task;
-
-        #region Properties
-
+        private readonly IWork _work;
         private readonly Thread _handlerThread;
         private bool _stopQueued;
 
-        public bool QueuedToStop => _stopQueued;
-        public bool IsAlive => _handlerThread.IsAlive;
-        public bool Idle { get; private set; } = false;
+        #endregion
+
+        #region Properties
+
+        public bool Initialized { get; private set; }
 
         #endregion
 
         #region Ctor
 
-        public WorkerThreadEx(ScenarioWorkerTask task)
+        public WorkerThreadEx(IWork work)
         {
-            _task = task;
+            _work = work;
 
             _handlerThread = new Thread(ExecuteScenarioThreadFunction);
         }
@@ -45,7 +43,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         public void StartThread()
         {
-            if (IsAlive)
+            if (_handlerThread.IsAlive)
                 throw new Exception("TestScenarioThread already started");
 
             _handlerThread.Start();
@@ -73,30 +71,25 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Events
 
-
-        public delegate void ScenarioSetupSucceededEvent(WorkerThreadEx sender);
-        public event ScenarioSetupSucceededEvent ScenarioSetupSucceeded;
+        public event WorkerThreadDelegates.ThreadInitializedEvent ThreadInitialized;
 
         private void OnScenarioSetupSucceeded()
         {
-            ScenarioSetupSucceeded?.Invoke(this);
+            ThreadInitialized?.Invoke(this);
         }
 
-
-        public delegate void ThreadFailedEvent(WorkerThreadEx sender, Exception ex);
-        public event ThreadFailedEvent ThreadFailed;
+        public event WorkerThreadDelegates.ThreadErrorEvent ThreadError;
 
         private void OnThreadFailed(Exception ex)
         {
-            ThreadFailed?.Invoke(this, ex);
+            ThreadError?.Invoke(this, ex);
         }
 
-        public delegate void ThreadFinishedEvent(WorkerThreadEx sender);
-        public event ThreadFinishedEvent ThreadFinished;
+        public event WorkerThreadDelegates.ThreadStoppedEvent ThreadStopped;
 
         private void OnThreadFinished()
         {
-            ThreadFinished?.Invoke(this);
+            ThreadStopped?.Invoke(this);
         }
 
         #endregion
@@ -110,27 +103,26 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #endregion
 
-        #region Thread Func
+        #region Thread Function
 
         private void ExecuteScenarioThreadFunction()
         {
             try
-            { 
-                //IThreadContext threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
-                //Scheduler scheduler = new Scheduler(_context.Speed, threadContext, _context.ThreadPool);
-
-                _task.Init();
+            {
+                _work.Init();
+                Initialized = true;
                 OnScenarioSetupSucceeded();
 
+                // TODO: Wrong place
                 // Wait for ITimer to start.
-                _task.Wait();
+                _work.Wait();
 
                 while (!_stopQueued)
                 {
-                    _task.Execute();
+                    _work.Execute();
                 }
 
-                _task.Cleanup();
+                _work.Cleanup();
 
             }
             catch (Exception ex)

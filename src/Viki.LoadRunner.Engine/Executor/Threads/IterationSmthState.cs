@@ -5,7 +5,7 @@ using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads
 {
-    public class ExecutionState : IExecutionState
+    public class IterationSmthState : IIterationSmthState
     {
         public IIterationId Iteration { get; set; }
         public IThreadPoolStats ThreadPool { get; set; }

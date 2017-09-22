@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
@@ -20,10 +21,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             WorkingThreads = workingThreads;
         }
 
-        public void Next(IThreadContextWat context, ISchedule scheduler)
+        public void Next(IIterationState state, ISchedule scheduler)
         {
             int includeSelf = scheduler.Action == ScheduleAction.Execute ? 1 : 0; 
-            int workingThreads = context.ThreadPool.CreatedThreadCount - context.ThreadPool.IdleThreadCount - includeSelf;
+            int workingThreads = state.ThreadPool.CreatedThreadCount - state.ThreadPool.IdleThreadCount - includeSelf;
             if (workingThreads < WorkingThreads)
             {
                 scheduler.Execute();
@@ -34,7 +35,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             }
         }
 
-        public void HeartBeat(IThreadPoolContext context)
+        public void HeartBeat(ITestState state)
         {
         }
     }

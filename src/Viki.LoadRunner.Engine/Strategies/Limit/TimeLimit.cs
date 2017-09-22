@@ -1,5 +1,5 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies.Limit
 {
@@ -19,9 +19,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Limit
             _timeLimit = timeLimit;
         }
 
-        public bool StopTest(IThreadPoolContext context)
+        public bool StopTest(ITestState state)
         {
-            return _timeLimit <= context.Timer.Value;
+            return _timeLimit <= state.Timer.Value;
         }
     }
 }

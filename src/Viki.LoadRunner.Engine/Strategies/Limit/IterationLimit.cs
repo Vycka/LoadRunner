@@ -1,4 +1,4 @@
-﻿using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+﻿using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies.Limit
 {
@@ -18,9 +18,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Limit
             _iterationsLimit = iterationsLimit;
         }
 
-        bool ILimitStrategy.StopTest(IThreadPoolContext context)
+        bool ILimitStrategy.StopTest(ITestState state)
         {
-            return _iterationsLimit <= context.IdFactory.Current - context.ThreadPool.IdleThreadCount;
+            return _iterationsLimit <= state.GlobalIterationId - state.ThreadPool.IdleThreadCount;
         }
     }
 }

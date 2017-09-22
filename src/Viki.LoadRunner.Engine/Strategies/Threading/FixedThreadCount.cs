@@ -1,4 +1,5 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
@@ -11,14 +12,14 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
             ThreadCount = threadCount;
         }
 
-        public void Setup(IThreadPoolContext context, IThreadPoolControl control)
+        public void Setup(IThreadPool pool)
         {
-            control.StartWorkersAsync(ThreadCount);
+            pool.StartWorkersAsync(ThreadCount);
         }
 
-        public void HeartBeat(IThreadPoolContext context, IThreadPoolControl control)
+        public void HeartBeat(IThreadPool pool, ITestState state)
         {
-            control.SetWorkerCountAsync(ThreadCount);
+            pool.SetWorkerCountAsync(state, ThreadCount);
         }
     }
 }

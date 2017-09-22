@@ -3,13 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Threads.Factory;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Threads.Scenario;
-using Viki.LoadRunner.Engine.Executor.Threads.Scheduler;
-using Viki.LoadRunner.Engine.Executor.Threads.Stats;
-using Viki.LoadRunner.Engine.Executor.Threads.Strategy;
 
 #pragma warning disable 1591
 
@@ -19,46 +14,38 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
     {
         #region Properties
 
-        public IThreadPoolContext Context => _context;
+        //public IThreadPoolContext Context => _context;
 
         #endregion
 
         #region Fields
 
-        private readonly ConcurrentDictionary<int, WorkerThread> _allThreads;
-        private readonly ConcurrentDictionary<int, WorkerThread> _initializedThreads;
+        private readonly IThreadFactory _factory;
+        private readonly IThreadPoolCounter _counter;
+
+        private readonly ConcurrentDictionary<IWorkerThread, IWorkerThread> _allThreads;
+
         private readonly ConcurrentBag<Exception> _threadErrors;
 
         private bool _disposing;
-        private int _nextThreadId;
-        private readonly ThreadPoolContext _context;
-
-        private readonly ScenarioTaskFactory _taskFactory;
 
         #endregion
 
         #region Ctor
 
-        public ThreadPool(ThreadPoolSettings settings)
+        public ThreadPool(IThreadFactory factory, IThreadPoolCounter counter)
         {
-            if (settings == null)
-                throw new ArgumentNullException(nameof(settings));
+            if (factory == null)
+                throw new ArgumentNullException(nameof(factory));
+            if (counter == null)
+                throw new ArgumentNullException(nameof(counter));
 
-            _allThreads = new ConcurrentDictionary<int, WorkerThread>();
-            _initializedThreads = new ConcurrentDictionary<int, WorkerThread>();
+            _factory = factory;
+            _counter = counter;
+
+
+            _allThreads = new ConcurrentDictionary<IWorkerThread, IWorkerThread>();
             _threadErrors = new ConcurrentBag<Exception>();
-
-            _taskFactory = new ScenarioTaskFactory(settings.Scenario, settings.Timer, settings.SpeedStrategy, this, settings.InitialUserData);
-
-            _context = new ThreadPoolContext
-            {
-                Aggregator = settings.Aggregator,
-                IdFactory = new IdFactory(),
-                Scenario = settings.Scenario,
-                Speed = settings.SpeedStrategy,
-                ThreadPool = this,
-                Timer = settings.Timer,
-            };
         }
 
         #endregion
@@ -85,7 +72,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         {
             _disposing = true;
 
-            foreach (WorkerThread testExecutorThread in _allThreads.Values)
+            foreach (IWorkerThread testExecutorThread in _allThreads.Values)
             {
                 testExecutorThread.Dispose();
             }
@@ -95,12 +82,12 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         {
             DateTime timeoutThreshold = DateTime.UtcNow.AddMilliseconds(timeoutMilliseconds);
 
-            foreach (WorkerThread testExecutorThread in _allThreads.Values)
+            foreach (IWorkerThread testExecutorThread in _allThreads.Values)
             {
                 testExecutorThread.QueueStopThreadAsync();
             }
 
-            foreach (WorkerThread testExecutorThread in _allThreads.Values)
+            foreach (IWorkerThread testExecutorThread in _allThreads.Values)
             {
                 int timeleftTillTimeout = (int) (timeoutThreshold - DateTime.UtcNow).TotalMilliseconds;
                 if (timeleftTillTimeout < 0)
@@ -116,38 +103,35 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         #region Events
 
-        private void OnScenarioSetupSucceeded(WorkerThread sender)
+        private void OnThreadInitialized(IWorkerThread sender)
         {
-            if (!_disposing && !sender.QueuedToStop)
-            {
-                _initializedThreads.TryAdd(sender.ThreadId, sender);
-            }
+            _counter.AddInitialized(1);
         }
 
-        private void OnThreadFinished(WorkerThread sender)
+        private void OnThreadStopped(IWorkerThread sender)
         {
-            AddCreated(-1);
+            if (sender.Initialized)
+                _counter.AddInitialized(-1);
+
+            _counter.AddCreated(-1);
+
+            TryRemoveThread(sender);
         }
 
-        private void OnThreadFailed(WorkerThread sender, IterationResult result, Exception ex)
+        private void OnThreadError(IWorkerThread sender, Exception ex)
         {
-            if (ex.GetType() != typeof(ThreadAbortException) && !_disposing)
+            if (ex.GetType() != typeof(ThreadAbortException))
             {
-                TryRemoveThread(sender.ThreadId);
-
                 _threadErrors.Add(ex);
             }
         }
 
-        private void TryRemoveThread(int threadId)
+        private void TryRemoveThread(IWorkerThread thread)
         {
-            WorkerThread removedThread;
+            IWorkerThread removedThread;
 
-            _allThreads.TryRemove(threadId, out removedThread);
-
-            removedThread.QueueStopThreadAsync();
-
-            _initializedThreads.TryRemove(threadId, out removedThread);
+            if (_allThreads.TryRemove(thread, out removedThread))
+                removedThread.QueueStopThreadAsync();
         }
 
         #endregion
@@ -164,65 +148,30 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         public void StartWorkersAsync(int threadCount)
         {
-            IEnumerable<WorkerThread> newThreads = CreateThreads(threadCount);
+            IEnumerable<IWorkerThread> newThreads = CreateThreads(threadCount);
 
-            foreach (WorkerThread newThread in newThreads)
+            foreach (IWorkerThread newThread in newThreads)
             {
-                newThread.ThreadFailed += OnThreadFailed;
-                newThread.ScenarioSetupSucceeded += OnScenarioSetupSucceeded;
-                newThread.ThreadFinished += OnThreadFinished;
+                newThread.ThreadError +=  OnThreadError;
+                newThread.ThreadInitialized += OnThreadInitialized;
+                newThread.ThreadStopped += OnThreadStopped;
 
                 newThread.StartThread();
 
-                _allThreads.TryAdd(newThread.ThreadId, newThread);
+                _allThreads.TryAdd(newThread, newThread);
             }
 
-            AddCreated(threadCount);
+            _counter.AddCreated(threadCount);
         }
 
-        private IEnumerable<WorkerThread> CreateThreads(int threadCount)
+        private IEnumerable<IWorkerThread> CreateThreads(int threadCount)
         {
             for (int i = 0; i < threadCount; i++)
             {
-                ILoadTestScenario scenarioInstance = (ILoadTestScenario) Activator.CreateInstance(_context.Scenario);
+                IWorkerThread thread = _factory.Create(); 
 
-                ScenarioHandler handler = new ScenarioHandler(_context.IdFactory, scenarioInstance, _nextThreadId++, _context.UserData, _context.Timer);
-
-                SpeedStrategyHandler strategyHandler = new SpeedStrategyHandler(_context.Speed, handler.Context, this);
-                SchedulerEx scheduler = new SchedulerEx(strategyHandler, this, _context.Timer);
-
-                DataCollector collector = new DataCollector(_context.Aggregator, this);
-
-                ScenarioWorkerTask scenarioWorkerTask = new ScenarioWorkerTask(scheduler, handler, collector);
-                WorkerThreadEx worker = new WorkerThreadEx(scenarioWorkerTask, _context.Timer);
-
-                yield return new WorkerThread(_context, _nextThreadId++);
+                yield return thread;
             }
-        }
-
-        #endregion
-
-        #region IThreadPoolStats
-
-        public int CreatedThreadCount => _createdCount;
-        public int InitializedThreadCount => _initializedThreads.Count;
-        public int IdleThreadCount => _idleCount;
-
-        #endregion
-
-        #region IThreadPoolCounter
-
-        private int _idleCount;
-        private int _createdCount;
-
-        public void AddIdle(int count)
-        {
-            Interlocked.Add(ref _idleCount, count);
-        }
-
-        public void AddCreated(int count)
-        {
-            Interlocked.Add(ref _createdCount, count);
         }
 
         #endregion

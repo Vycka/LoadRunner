@@ -2,7 +2,7 @@
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
-    public interface ITestContextControl : ITestContext, IIterationResult
+    public interface IIterationContextControl : IIterationContext, IIterationResult
     {
         void Start();
         void Stop();

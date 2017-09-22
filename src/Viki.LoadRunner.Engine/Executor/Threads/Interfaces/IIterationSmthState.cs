@@ -4,7 +4,7 @@
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Interfaces
 {
-    public interface IExecutionState
+    public interface IIterationSmthState
     {
         IIterationId Iteration { get; }
         IThreadPoolStats ThreadPool { get; }

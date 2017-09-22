@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {
@@ -25,15 +25,15 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
         }
 
         public int InitialThreadCount => _threadCountValues[0];
-        public int ThreadCreateBatchSize => 1;
-        public void Setup(IThreadPoolContext context, IThreadPoolControl control)
+
+        public void Setup(IThreadPool pool)
         {
-            control.SetWorkerCountAsync(InitialThreadCount);
+            pool.StartWorkersAsync(InitialThreadCount);
         }
 
-        public void HeartBeat(IThreadPoolContext context, IThreadPoolControl control)
+        public void HeartBeat(IThreadPool pool, ITestState state)
         {
-            long index = context.Timer.Value.Ticks / _period.Ticks;
+            long index = state.Timer.Value.Ticks / _period.Ticks;
             int result = 0;
 
             if (index < _threadCountValues.Length)
@@ -41,7 +41,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Threading
             else
                 result =  _lastValue;
 
-            control.SetWorkerCountAsync(result);
+            pool.SetWorkerCountAsync(state, result);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies.Limit
 {
@@ -12,6 +13,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Limit
         /// StopTest() gets called before each iteration gets enqueued.
         /// once returned value is [true] engine will initiate graceful shutdown respecting [FinishTimeout] value.
         /// </summary>
-        bool StopTest(IThreadPoolContext context);
+        bool StopTest(ITestState state);
     }
 }

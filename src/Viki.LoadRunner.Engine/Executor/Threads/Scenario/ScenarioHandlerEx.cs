@@ -9,13 +9,13 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
     {
         private readonly IUniqueIdFactory<int> _globalIdFactory;
         private readonly ILoadTestScenario _scenario;
-        private readonly ITestContextControl _context;
+        private readonly IIterationContextControl _context;
 
         private int _threadIterationId;
 
         public bool Initialized { get; private set; }
 
-        public ScenarioHandlerEx(IUniqueIdFactory<int> globalIdFactory, ILoadTestScenario scenario, ITestContextControl context)
+        public ScenarioHandlerEx(IUniqueIdFactory<int> globalIdFactory, ILoadTestScenario scenario, IIterationContextControl context)
         {
 
             if (globalIdFactory == null)

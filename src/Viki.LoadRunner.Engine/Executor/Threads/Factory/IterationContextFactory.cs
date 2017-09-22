@@ -7,7 +7,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Factory
 {
     public interface IIterationContextFactory
     {
-        ITestContextControl Create();
+        IIterationContextControl Create();
     }
 
     public class IterationContextFactory : IIterationContextFactory
@@ -29,11 +29,11 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Factory
             _threadIdFactory = new IdFactory();
         }
 
-        public ITestContextControl Create()
+        public IIterationContextControl Create()
         {
             int newThreadId = _threadIdFactory.Next();
 
-            return new TestContext(newThreadId, _timer, _initialUserData);
+            return new IterationContext(newThreadId, _timer, _initialUserData);
         }
     }
 }

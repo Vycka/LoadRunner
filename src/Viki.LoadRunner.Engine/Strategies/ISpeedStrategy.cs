@@ -1,12 +1,13 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies
 {
     public interface ISpeedStrategy
     {
-        void Next(IThreadContextWat context, ISchedule scheduler); // Must be thread safe
+        void Next(IIterationState state, ISchedule scheduler); // Must be thread safe
 
-        void HeartBeat(IThreadPoolContext context);
+        void HeartBeat(ITestState state);
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Timer;
+using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
 {
@@ -31,7 +32,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
             _schedules = new ConditionalWeakTable<ISchedule, ISchedule[]>();
         }
 
-        public void Next(IThreadContextWat context, ISchedule target)
+        public void Next(IIterationState state, ISchedule target)
         {
             ISchedule[] schedules = GetScheduleTable(target);
 
@@ -40,17 +41,17 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy
             for (int i = 0; i < _strategies.Length; i++)
             {
                 if (schedules[i].At < time)
-                    _strategies[i].Next(context, schedules[i]);
+                    _strategies[i].Next(state, schedules[i]);
             }
 
             _strategy.Apply(schedules, target);
         }
 
-        public void HeartBeat(IThreadPoolContext context)
+        public void HeartBeat(ITestState state)
         {
             for (int i = 0; i < _strategies.Length; i++)
             {
-                _strategies[i].HeartBeat(context);
+                _strategies[i].HeartBeat(state);
             }
         }
 

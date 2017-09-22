@@ -24,32 +24,32 @@ namespace Viki.LoadRunner.Engine
         {
             ExecutionTimer timer = new ExecutionTimer();
 
-            TestContext testContext =  new TestContext(threadId, timer);
-            testContext.Reset(-1, -1);
-            loadTestScenario.ScenarioSetup(testContext);
+            IterationContext iterationContext =  new IterationContext(threadId, timer);
+            iterationContext.Reset(-1, -1);
+            loadTestScenario.ScenarioSetup(iterationContext);
 
-            testContext.Reset(threadIterationId, globalIterationId);
-            testContext.Checkpoint(Checkpoint.Names.Setup);
+            iterationContext.Reset(threadIterationId, globalIterationId);
+            iterationContext.Checkpoint(Checkpoint.Names.Setup);
 
-            loadTestScenario.IterationSetup(testContext);
+            loadTestScenario.IterationSetup(iterationContext);
 
-            testContext.Checkpoint(Checkpoint.Names.IterationStart);
+            iterationContext.Checkpoint(Checkpoint.Names.IterationStart);
 
             timer.Start();
-            testContext.Start();
-            loadTestScenario.ExecuteScenario(testContext);
-            testContext.Stop();
+            iterationContext.Start();
+            loadTestScenario.ExecuteScenario(iterationContext);
+            iterationContext.Stop();
             timer.Stop();
 
-            testContext.Checkpoint(Checkpoint.Names.IterationEnd);
+            iterationContext.Checkpoint(Checkpoint.Names.IterationEnd);
 
-            testContext.Checkpoint(Checkpoint.Names.TearDown);
-            loadTestScenario.IterationTearDown(testContext);
+            iterationContext.Checkpoint(Checkpoint.Names.TearDown);
+            loadTestScenario.IterationTearDown(iterationContext);
 
-            IterationResult result = new IterationResult(testContext, new WorkerThreadStats());
+            IterationResult result = new IterationResult(iterationContext, new WorkerThreadStats());
 
-            testContext.Reset(-1, -1);
-            loadTestScenario.ScenarioTearDown(testContext);
+            iterationContext.Reset(-1, -1);
+            loadTestScenario.ScenarioTearDown(iterationContext);
 
             return result;
         }

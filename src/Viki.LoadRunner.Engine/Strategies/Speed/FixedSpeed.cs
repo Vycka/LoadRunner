@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
@@ -30,9 +31,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             Interlocked.Exchange(ref _next, timerValue.Ticks - _delayTicks);
         }
 
-        public void Next(IThreadContextWat context, ISchedule schedule)
+        public void Next(IIterationState state, ISchedule schedule)
         {
-            long timerTicks = context.Timer.Value.Ticks;
+            long timerTicks = state.Timer.Value.Ticks;
             long delta = timerTicks + ScheduleAheadTicks - _next;
             if (delta >= 0)
             {
@@ -45,10 +46,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             }
         }
 
-        public void HeartBeat(IThreadPoolContext context)
+        public void HeartBeat(ITestState state)
         {
             // Catch up _next if lagging behind timeline
-            long deltaLag = context.Timer.Value.Ticks - _next;
+            long deltaLag = state.Timer.Value.Ticks - _next;
             long threshold = 2 * _delayTicks;
             if (deltaLag > threshold)
             {

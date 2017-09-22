@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
@@ -31,10 +32,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
             return delay;
         }
 
-        public new void HeartBeat(IThreadPoolContext context)
+        public new void HeartBeat(ITestState state)
         {
-            HeartBeatInner(context.Timer.Value);
-            base.HeartBeat(context);
+            HeartBeatInner(state.Timer.Value);
+            base.HeartBeat(state);
         }
 
         private int _multiplier = 0;

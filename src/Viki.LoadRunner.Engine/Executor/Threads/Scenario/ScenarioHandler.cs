@@ -13,7 +13,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
 
         private int _threadIterationId = 0;
 
-        private Context.TestContext _context;
+        private Context.IterationContext _context;
         public IIterationResult Context => _context;
 
         public ScenarioHandler(IUniqueIdFactory<int> globalIdFactory, ILoadTestScenario scenario, int threadId, object initialUserData, ITimer timer)
@@ -24,7 +24,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
                 throw new ArgumentNullException(nameof(globalIdFactory));
 
             _scenario = scenario;
-            _context = new Context.TestContext(threadId, timer, initialUserData);
+            _context = new Context.IterationContext(threadId, timer, initialUserData);
             _globalIdFactory = globalIdFactory;
         }
 

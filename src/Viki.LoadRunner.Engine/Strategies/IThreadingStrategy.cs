@@ -1,11 +1,12 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Framework;
 
 namespace Viki.LoadRunner.Engine.Strategies
 {
     public interface IThreadingStrategy
     {
-        void Setup(IThreadPoolContext context, IThreadPoolControl control);
+        void Setup(IThreadPool pool);
 
-        void HeartBeat(IThreadPoolContext context, IThreadPoolControl control);
+        void HeartBeat(IThreadPool pool, ITestState state);
     }
 }

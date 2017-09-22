@@ -6,27 +6,27 @@ namespace Viki.LoadRunner.Playground
 {
     public class BlankScenario : ILoadTestScenario
     {
-        public void ScenarioSetup(ITestContext context)
+        public void ScenarioSetup(IIterationContext context)
         {
             
         }
 
-        public void IterationSetup(ITestContext context)
+        public void IterationSetup(IIterationContext context)
         {
 
         }
 
-        public void ExecuteScenario(ITestContext context)
+        public void ExecuteScenario(IIterationContext context)
         {
             Thread.Sleep(200);
         }
 
-        public void IterationTearDown(ITestContext context)
+        public void IterationTearDown(IIterationContext context)
         {
 
         }
 
-        public void ScenarioTearDown(ITestContext context)
+        public void ScenarioTearDown(IIterationContext context)
         {
 
         }

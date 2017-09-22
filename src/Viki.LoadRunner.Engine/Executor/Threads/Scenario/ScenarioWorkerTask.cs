@@ -5,7 +5,7 @@ using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
 {
-    public interface IWorkerTask
+    public interface IWork
     {
         void Init();
         void Wait();
@@ -15,17 +15,15 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
         void Stop();
     }
 
-    public class ScenarioWorkerTask : IWorkerTask
+    public class ScenarioWorkerTask : IWork
     {
         private readonly IScheduler _scheduler;
-        private readonly ITestContext _context;
-
 
         private readonly IDataCollector _collector;
 
         private bool _stopping = false;
 
-        public ScenarioWorkerTask(IScheduler scheduler, ITestContext context, IDataCollector collector)
+        public ScenarioWorkerTask(IScheduler scheduler, IIterationContext context, IDataCollector collector)
         {
             if (scheduler == null)
                 throw new ArgumentNullException(nameof(scheduler));
@@ -35,7 +33,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
                 throw new ArgumentNullException(nameof(collector));
 
             _scheduler = scheduler;
-            _context = context;
             _collector = collector;
         }
 
@@ -61,7 +58,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
             {
                 _handler.Execute();
 
-                _collector.Collect(_context);
+                _collector.Collect();
             }
         }
 

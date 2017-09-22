@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {
-    public interface ITestContext : IIterationMetadata<object>
+    public interface IIterationContext : IIterationMetadata<object>
     {
         /// <summary>
         /// Marks time checkpoint for current scenario itaration
