@@ -5,9 +5,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
     public class MaxSpeed : ISpeedStrategy
     {
-        public void Next(ITestState state, ISchedule schedule)
+        public void Next(IIterationState state, ISchedule scheduler)
         {
-            schedule.Execute();
+            scheduler.Execute();
         }
 
         public void HeartBeat(ITestState state)

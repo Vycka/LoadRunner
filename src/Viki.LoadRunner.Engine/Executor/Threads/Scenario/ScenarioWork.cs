@@ -15,24 +15,26 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
         void Stop();
     }
 
-    public class ScenarioWorkerTask : IWork
+    public class ScenarioWork : IWork
     {
         private readonly IScheduler _scheduler;
+        private readonly IScenarioHandler _handler;
 
         private readonly IDataCollector _collector;
 
         private bool _stopping = false;
 
-        public ScenarioWorkerTask(IScheduler scheduler, IIterationContext context, IDataCollector collector)
+        public ScenarioWork(IScheduler scheduler, IScenarioHandler handler, IDataCollector collector)
         {
             if (scheduler == null)
                 throw new ArgumentNullException(nameof(scheduler));
-            if (context == null)
-                throw new ArgumentNullException(nameof(context));
+            if (handler == null)
+                throw new ArgumentNullException(nameof(handler));
             if (collector == null)
                 throw new ArgumentNullException(nameof(collector));
 
             _scheduler = scheduler;
+            _handler = handler;
             _collector = collector;
         }
 

@@ -19,7 +19,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Counters
 
         public void AddIdle(int count)
         {
-            _created.Add(count);
+            _idle.Add(count);
         }
 
         public void AddInitialized(int count)
@@ -29,7 +29,8 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Counters
 
         public void AddCreated(int count)
         {
-            _idle.Add(count);
+            
+            _created.Add(count);
         }
     }
 }

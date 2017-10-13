@@ -11,11 +11,16 @@ namespace Viki.LoadRunner.Engine.Executor.Timer
 
         public void Start()
         {
-            _stopwatch.Reset();
-            //UpdateCurrent();
+            Reset();
 
             _beginTime = DateTime.UtcNow;
             _stopwatch.Start();
+        }
+
+        public void Reset()
+        {
+            _stopwatch.Reset();
+            _beginTime = DateTime.MinValue;
         }
 
         public void Stop()

@@ -89,7 +89,7 @@
     <Compile Include="Executor\Threads\Interfaces\ICounter.cs" />
     <Compile Include="Executor\Threads\Interfaces\IWorkerThread.cs" />
     <Compile Include="Executor\Threads\Scenario\ScenarioHandlerEx.cs" />
-    <Compile Include="Executor\Threads\Scenario\ScenarioWorkerTask.cs" />
+    <Compile Include="Executor\Threads\Scenario\ScenarioWork.cs" />
     <Compile Include="Executor\Threads\Factory\IdFactory.cs" />
     <Compile Include="Executor\Threads\Interfaces\IDataCollector.cs" />
     <Compile Include="Executor\Threads\Interfaces\IIterationSmthState.cs" />
@@ -115,7 +115,6 @@
     <Compile Include="Executor\Threads\ThreadingContext.cs" />
     <Compile Include="Executor\Threads\ThreadPoolSettings.cs" />
     <Compile Include="Executor\Threads\WorkerThread.cs" />
-    <Compile Include="Executor\Threads\WorkerThreadEx.cs" />
     <Compile Include="Executor\Timer\ITimer.cs" />
     <Compile Include="Executor\Timer\ExecutionTimer.cs" />
     <Compile Include="Executor\Timer\StopWatchEx.cs" />

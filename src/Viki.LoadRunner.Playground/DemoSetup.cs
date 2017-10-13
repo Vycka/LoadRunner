@@ -26,8 +26,9 @@ namespace Viki.LoadRunner.Playground
 
             LoadRunnerSettings loadRunnerSettings = new LoadRunnerSettings()
                 .SetScenario<BlankScenario>()
-                .SetLimits(new TimeLimit(TimeSpan.FromSeconds(5)))
-                .SetSpeed(new IncrementalLimitWorkingThreads(1, TimeSpan.FromSeconds(1), 1))
+                .SetLimits(new TimeLimit(TimeSpan.FromSeconds(20)))
+                //.SetSpeed(new IncrementalLimitWorkingThreads(1, TimeSpan.FromSeconds(1), 1))
+                .SetSpeed(new FixedSpeed(20))
                 .SetThreading(new FixedThreadCount(20))
                 .SetFinishTimeout(TimeSpan.FromSeconds(60));
 
@@ -40,7 +41,7 @@ namespace Viki.LoadRunner.Playground
             };
 
             HistogramAggregator histogramAggregator = new HistogramAggregator()
-                .Add(new TimeDimension(TimeSpan.FromSeconds(1)))
+                .Add(new TimeDimension(TimeSpan.FromSeconds(5)))
                 .Add(new FuncMetric<TimeSpan>("TMin", TimeSpan.MaxValue, (span, result) => span > result.IterationStarted ? result.IterationStarted : span))
                 .Add(new FuncMetric<TimeSpan>("TMax", TimeSpan.MinValue, (span, result) => span < result.IterationFinished ? result.IterationFinished : span))
                 .Add(new FuncMetric<int>("Working Threads",0, (i, result) => result.CreatedThreads + result.IdleThreads))

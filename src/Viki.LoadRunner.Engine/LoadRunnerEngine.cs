@@ -30,7 +30,7 @@ namespace Viki.LoadRunner.Engine
 
         #region Run() globals
 
-        private ExecutionTimer _timer;
+        private readonly ExecutionTimer _timer = new ExecutionTimer();
         private ThreadPool _pool;
         private IThreadPoolCounter _counter;
         private ILimitStrategy[] _limits;
@@ -177,7 +177,7 @@ namespace Viki.LoadRunner.Engine
             try
             {
                 _counter = new ThreadPoolCounter();
-                _timer = new ExecutionTimer();
+                _timer.Reset();
 
                 _limits = _settings.Limits;
 
@@ -235,7 +235,7 @@ namespace Viki.LoadRunner.Engine
         private static void StartTest(IResultsAggregator aggregator, ExecutionTimer timer)
         {
             aggregator.Begin();
-            timer.Start(); // This line also releases Worker-Threads from wait.
+            timer.Start(); // This line also releases Worker-Threads from wait in ScenarioWork.Wait()
         }
 
         private static void InitialThreadingSetup(ThreadPool pool, IThreadingContext context, IThreadingStrategy strategy)

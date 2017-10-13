@@ -21,8 +21,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Factory
         {
             if (timer == null)
                 throw new ArgumentNullException(nameof(timer));
-            if (initialUserData == null)
-                throw new ArgumentNullException(nameof(initialUserData));
+
             _timer = timer;
             _initialUserData = initialUserData;
 

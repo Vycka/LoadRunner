@@ -50,34 +50,36 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Factory
 
         public IWorkerThread Create()
         {
+            // Scenario handler
             ILoadTestScenario scenarioInstance = (ILoadTestScenario)Activator.CreateInstance(_scenarioType);
             IIterationContextControl iterationContext = _iterationContextFactory.Create();
 
             ScenarioHandlerEx scenarioHandler = new ScenarioHandlerEx(_globalIdFactory, scenarioInstance, iterationContext);
 
-            IIterationState iterationState = new IterationState(_timer, iterationContext, _counter);
 
+            // Scheduler for ISpeedStrategy
+            IIterationState iterationState = new IterationState(_timer, iterationContext, _counter);
             SpeedStrategyHandler strategyHandler = new SpeedStrategyHandler(_speedStrategy, iterationState);
+
             SchedulerEx scheduler = new SchedulerEx(strategyHandler, _counter, _timer);
 
-            // TestContext still needs to have a split here, otherwise DataCollector looks like crap
-            // smth like IIterationResult to keep modifieble state
-            // Control part controls one part, and Context part controls other.
-            // Or still monolith context with redesigned interfaces on it from scratch
-            // SHould not compile atm
 
+            // Data collector for results aggregation
             DataCollector collector = new DataCollector(iterationContext, _aggregator, _counter);
 
-            //  
 
-            ScenarioWorkerTask scenarioWorkerTask = new ScenarioWorkerTask(scheduler, scenarioHandler, collector);
+            // Put it all together to create IWork
+            ScenarioWork scenarioWork = new ScenarioWork(scheduler, scenarioHandler, collector);
 
-            IWorkerThread thread = new WorkerThreadEx(scenarioWorkerTask);
+
+
+            IWorkerThread thread = new WorkerThread(scenarioWork);
 
             return thread;
         }
     }
 
+    // TODO: This needs to go up to the ILoadRunnerSettings
     public interface IThreadFactory
     {
         IWorkerThread Create();

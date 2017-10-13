@@ -1,227 +1,138 @@
-﻿//using System;
-//using System.Threading;
-//using Viki.LoadRunner.Engine.Executor.Context;
-//using Viki.LoadRunner.Engine.Executor.Result;
-//using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+﻿using System;
+using System.Threading;
+using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Scenario;
 
 //#pragma warning disable 1591
 
-//namespace Viki.LoadRunner.Engine.Executor.Threads
-//{
-//    /// <summary>
-//    /// Executor defines worker-thread logic
-//    /// Worker-Thread once created, will initialize ASAP.
-//    /// After initialization, it will start execution of iterations ASAP but not until ITimer is started.
-//    /// </summary>
-//    public class WorkerThread : IDisposable
-//    {
-//        private readonly ThreadPoolContext _context;
+namespace Viki.LoadRunner.Engine.Executor.Threads
+{
+    /// <summary>
+    /// Executes work provided with IWork 
+    /// Worker-Thread once StartThread()'ed, will initialize ASAP.
+    /// After initialization, it will start execution of iterations ASAP but not until ITimer is started.
+    /// </summary>
+    public class WorkerThread : IWorkerThread
+    {
+        #region Fields
 
-//        #region Properties
+        private readonly IWork _work;
+        private readonly Thread _handlerThread;
+        private bool _stopQueued;
 
-//        private readonly Thread _handlerThread;
-//        private readonly ILoadTestScenario _scenario;
+        #endregion
 
-//        private readonly Context.TestContext _testContext;
-//        private bool _stopQueued;
+        #region Properties
 
-//        public bool QueuedToStop => _stopQueued;
-//        public bool ScenarioInitialized { get; private set; }
-//        public int ThreadId => _testContext.ThreadId;
-//        public bool IsAlive => _handlerThread.IsAlive;
-//        public bool Idle { get; private set; } = false;
+        public bool Initialized { get; private set; }
 
-//        #endregion
+        #endregion
 
-//        #region Ctor
+        #region Ctor
 
-//        public WorkerThread(ThreadPoolContext context, int threadId)
-//        {
-//            if (context == null)
-//                throw new ArgumentNullException(nameof(context));
+        public WorkerThread(IWork work)
+        {
+            _work = work;
 
-//            _context = context;
+            _handlerThread = new Thread(ExecuteScenarioThreadFunction);
+        }
 
+        #endregion
 
-//            _testContext = new Context.TestContext(threadId, _context.Timer, _context.UserData);
-//            _scenario = (ILoadTestScenario)Activator.CreateInstance(_context.Scenario);
+        #region Thread Control Functions
 
-//            _handlerThread = new Thread(ExecuteScenarioThreadFunction);
-//        }
+        public void StartThread()
+        {
+            if (_handlerThread.IsAlive)
+                throw new Exception("TestScenarioThread already started");
 
-//        #endregion
+            _handlerThread.Start();
+        }
 
-//        #region Thread Control Functions
+        public void QueueStopThreadAsync()
+        {
+            _stopQueued = true;
+        }
 
-//        public void StartThread()
-//        {
-//            if (IsAlive)
-//                throw new Exception("TestScenarioThread already started");
+        public void StopThread(int timeoutMilliseconds)
+        {
+            if (_handlerThread.IsAlive)
+            {
+                _stopQueued = true;
 
-//            _handlerThread.Start();
-//        }
+                if (!_handlerThread.Join(timeoutMilliseconds))
+                {
+                    _handlerThread.Abort();
+                }
+            }
+        }
 
-//        public void QueueStopThreadAsync()
-//        {
-//            _stopQueued = true;
-//        }
+        #endregion
 
-//        public void StopThread(int timeoutMilliseconds)
-//        {
-//            if (_handlerThread.IsAlive)
-//            {
-//                _stopQueued = true;
+        #region Events
 
-//                if (!_handlerThread.Join(timeoutMilliseconds))
-//                {
-//                    _handlerThread.Abort();
-//                }
-//            }
-//        }
+        public event WorkerThreadDelegates.ThreadInitializedEvent ThreadInitialized;
 
-//        #endregion
+        private void OnThreadInitialized()
+        {
+            ThreadInitialized?.Invoke(this);
+        }
 
-//        #region Events
+        public event WorkerThreadDelegates.ThreadErrorEvent ThreadError;
 
+        private void OnThreadFailed(Exception ex)
+        {
+            ThreadError?.Invoke(this, ex);
+        }
 
-//        public delegate void ScenarioSetupSucceededEvent(WorkerThread sender);
-//        public event ScenarioSetupSucceededEvent ThreadInitialized;
+        public event WorkerThreadDelegates.ThreadStoppedEvent ThreadStopped;
 
-//        private void OnScenarioSetupSucceeded()
-//        {
-//            ThreadInitialized?.Invoke(this);
-//        }
+        private void OnThreadFinished()
+        {
+            ThreadStopped?.Invoke(this);
+        }
 
-//        private void OnScenarioIterationFinished()
-//        {
-//            _context.Aggregator.TestContextResultReceived(new IterationResult(_testContext, _context.ThreadPool));
-//        }
+        #endregion
 
-//        public delegate void ThreadFailedEvent(WorkerThread sender, IterationResult result, Exception ex);
-//        public event ThreadFailedEvent ThreadError;
+        #region IDisposable
 
-//        private void OnThreadFailed(Exception ex)
-//        {
-//            ThreadError?.Invoke(this, new IterationResult(_testContext, _context.ThreadPool), ex);
-//        }
+        public void Dispose()
+        {
+            StopThread(0);
+        }
 
-//        public delegate void ThreadFinishedEvent(WorkerThread sender);
-//        public event ThreadFinishedEvent ThreadStopped;
+        #endregion
 
-//        private void OnThreadFinished()
-//        {
-//            ThreadStopped?.Invoke(this);
-//        }
+        #region Thread Function
 
-//        #endregion
+        private void ExecuteScenarioThreadFunction()
+        {
+            try
+            {
+                _work.Init();
+                Initialized = true;
+                OnThreadInitialized();
 
-//        #region IDisposable
+                _work.Wait();
 
-//        public void Dispose()
-//        {
-//            StopThread(0);
-//        }
+                while (!_stopQueued)
+                {
+                    _work.Execute();
+                }
 
-//        #endregion
+                _work.Cleanup();
 
-//        #region Thread Func
+            }
+            catch (Exception ex)
+            {
+                OnThreadFailed(ex);
+            }
+            finally
+            {
+                OnThreadFinished();
+            }
+        }
 
-//        private void ExecuteScenarioThreadFunction()
-//        {
-//            try
-//            { 
-//                IThreadContextWat threadContext = new ThreadContext(_context.ThreadPool, _context.Timer, _testContext);
-//                Scheduler.Scheduler scheduler = new Scheduler.Scheduler(_context.Speed, threadContext, _context.ThreadPool);
-
-//                int threadIterationId = 0;
-
-//                ExecuteScenarioSetup();
-
-//                // Wait for ITimer to start.
-//                while (_context.Timer.IsRunning == false && _stopQueued == false)
-//                    Thread.Sleep(1);
-
-//                if (!_stopQueued)
-//                    _testContext.Reset(threadIterationId++, _context.IdFactory.Next());
-
-//                while (scheduler.Wait(ref _stopQueued) == false)
-//                {
-//                    ExecuteIteration(_testContext, _scenario);
-
-//                    OnScenarioIterationFinished();
-
-//                    _testContext.Reset(threadIterationId++, _context.IdFactory.Next());
-//                }
-
-//                _testContext.Reset(-1, -1);
-//                _scenario.ScenarioTearDown(_testContext);
-//            }
-//            catch (Exception ex)
-//            {
-//                OnThreadFailed(ex);
-//            }
-//            finally
-//            {
-//                OnThreadFinished();
-//            }
-//        }
-
-//        public static void ExecuteIteration(Context.TestContext context, ILoadTestScenario scenario)
-//        {
-//            context.Checkpoint(Checkpoint.Names.Setup);
-//            bool setupSuccess = ExecuteWithExceptionHandling(() => scenario.IterationSetup(context), context);
-
-//            if (setupSuccess)
-//            {
-//                context.Checkpoint(Checkpoint.Names.IterationStart);
-
-//                context.Start();
-//                bool iterationSuccess = ExecuteWithExceptionHandling(() => scenario.ExecuteScenario(context), context);
-//                context.Stop();
-
-//                if (iterationSuccess)
-//                {
-//                    context.Checkpoint(Checkpoint.Names.IterationEnd);
-//                }
-//            }
-//            else
-//            {
-//                context.Start();
-//                context.Stop();
-//            }
-
-//            context.Checkpoint(Checkpoint.Names.TearDown);
-//            ExecuteWithExceptionHandling(() => scenario.IterationTearDown(context), context);
-//        }
-
-//        private void ExecuteScenarioSetup()
-//        {
-//            if (ScenarioInitialized == false)
-//            { 
-//                _testContext.Reset(-1,-1);
-//                _scenario.ScenarioSetup(_testContext);
-//                ScenarioInitialized = true;
-//                OnScenarioSetupSucceeded();
-//            }
-//        }
-
-//        private static bool ExecuteWithExceptionHandling(Action action, Context.TestContext testContext)
-//        {
-//            bool result = false;
-
-//            try
-//            {
-//                action.Invoke();
-//                result = true;
-//            }
-//            catch (Exception ex)
-//            {
-//                testContext.SetError(ex);
-//            }
-
-//            return result;
-//        }
-
-//        #endregion
-//    }
-//}
+        #endregion
+    }
+}

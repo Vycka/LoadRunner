@@ -4,8 +4,33 @@ using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
 {
+    
+
     // TODO: Interface it
-    public class ScenarioHandlerEx
+    public interface IScenarioHandler
+    {
+        /// <summary>
+        /// Initial setup
+        /// </summary>
+        void Init();
+
+        /// <summary>
+        /// Final cleanup
+        /// </summary>
+        void Cleanup();
+
+        /// <summary>
+        /// Prepares context for next iteration
+        /// </summary>
+        void PrepareNext();
+
+        /// <summary>
+        /// Executes iteration
+        /// </summary>
+        void Execute();
+    }
+
+    public class ScenarioHandlerEx : IScenarioHandler
     {
         private readonly IUniqueIdFactory<int> _globalIdFactory;
         private readonly ILoadTestScenario _scenario;

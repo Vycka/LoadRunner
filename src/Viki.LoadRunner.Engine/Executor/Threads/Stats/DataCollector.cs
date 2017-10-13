@@ -12,11 +12,11 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Stats
 {
     public class DataCollector : IDataCollector
     {
-        private readonly IIterationContext _context;
+        private readonly IIterationResult _context;
         private readonly IResultsAggregator _aggregator;
         private readonly IThreadPoolStats _poolStats;
 
-        public DataCollector(IIterationContext context, IResultsAggregator aggregator, IThreadPoolCounter poolStats)
+        public DataCollector(IIterationResult context, IResultsAggregator aggregator, IThreadPoolCounter poolStats)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (aggregator == null)
