@@ -2,14 +2,13 @@
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Scheduler
 {
     public class Scheduler : IScheduler, ISchedule
     {
-        private bool _cancellationToken;
-
         private readonly ISpeedStrategyHandler _strategy;
         private readonly IThreadPoolCounter _counter;
 
@@ -51,6 +50,10 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scheduler
             return At - Timer.Value;
         }
 
+
+        // Scheduler has no cancellation token now
+        // Maybe redesign strategies a bit so they just don't schedule that far ahead or pass cancellation somehow.
+        // ref not works
         public void WaitNext()
         {
             _strategy.Next(this);

@@ -83,10 +83,10 @@
     <Compile Include="Executor\Threads\Factory\Interfaces\IIterationContextFactory.cs" />
     <Compile Include="Executor\Threads\Factory\Interfaces\IThreadFactory.cs" />
     <Compile Include="Executor\Threads\Scenario\Interfaces\IScenarioHandler.cs" />
+    <Compile Include="Executor\Threads\Scenario\Interfaces\IWork.cs" />
     <Compile Include="Framework\IIterationState.cs" />
     <Compile Include="Framework\IterationState.cs" />
     <Compile Include="Framework\Interfaces\ITestState.cs" />
-    <Compile Include="Executor\Threads\IterationSmthState.cs" />
     <Compile Include="Executor\Threads\Factory\IterationContextFactory.cs" />
     <Compile Include="Executor\Threads\Factory\ScenarioTaskFactory.cs" />
     <Compile Include="Executor\Threads\Counters\Interfaces\ICounter.cs" />
@@ -95,9 +95,7 @@
     <Compile Include="Executor\Threads\Scenario\ScenarioWork.cs" />
     <Compile Include="Executor\Threads\Factory\IdFactory.cs" />
     <Compile Include="Executor\Threads\Stats\Interfaces\IDataCollector.cs" />
-    <Compile Include="Executor\Threads\Interfaces\IIterationSmthState.cs" />
-    <Compile Include="Executor\Threads\Interfaces\IScheduler.cs" />
-    <Compile Include="Executor\Threads\Interfaces\ISchedulerContext.cs" />
+    <Compile Include="Executor\Threads\Scheduler\Interfaces\IScheduler.cs" />
     <Compile Include="Executor\Threads\Interfaces\ISpeedStrategyHandler.cs" />
     <Compile Include="Executor\Threads\Interfaces\IThreadContextWat.cs" />
     <Compile Include="Executor\Threads\Interfaces\IThreadPool.cs" />

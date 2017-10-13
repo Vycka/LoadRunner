@@ -1,5 +1,4 @@
-﻿using Viki.LoadRunner.Engine.Aggregators;
-using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+﻿using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Result;
 
 namespace Viki.LoadRunner.Playground

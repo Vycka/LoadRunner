@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Threads.Scenario;
+using Viki.LoadRunner.Engine.Executor.Threads.Scenario.Interfaces;
 
 //#pragma warning disable 1591
 

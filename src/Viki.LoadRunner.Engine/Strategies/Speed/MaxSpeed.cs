@@ -1,4 +1,4 @@
-﻿using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+﻿using Viki.LoadRunner.Engine.Executor.Threads.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Framework;
 using Viki.LoadRunner.Engine.Framework.Interfaces;
 

@@ -1,21 +1,11 @@
 ﻿using System;
 using System.Threading;
-using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Stats.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
 {
-    public interface IWork
-    {
-        void Init();
-        void Wait();
-        void Execute();
-        void Cleanup();
-
-        void Stop();
-    }
-
     public class ScenarioWork : IWork
     {
         private readonly IScheduler _scheduler;
@@ -55,7 +45,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
         {
             _handler.PrepareNext();
 
-            _scheduler.WaitNext();
+            _scheduler.WaitNext(ref _stopping);
 
             if (!_stopping)
             {

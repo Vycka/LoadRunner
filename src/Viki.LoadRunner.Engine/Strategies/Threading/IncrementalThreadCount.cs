@@ -1,5 +1,4 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Result;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Context.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Result;
 

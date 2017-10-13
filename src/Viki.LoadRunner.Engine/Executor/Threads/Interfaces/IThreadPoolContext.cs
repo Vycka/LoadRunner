@@ -1,5 +1,4 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Timer;
