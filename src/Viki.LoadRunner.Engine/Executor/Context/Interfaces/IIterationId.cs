@@ -1,4 +1,4 @@
-﻿namespace Viki.LoadRunner.Engine.Executor.Context
+﻿namespace Viki.LoadRunner.Engine.Executor.Context.Interfaces
 {
     public interface IIterationId
     {

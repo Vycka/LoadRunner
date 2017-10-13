@@ -1,6 +1,6 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Result;
 
-namespace Viki.LoadRunner.Engine.Aggregators.Metrics
+namespace Viki.LoadRunner.Engine.Aggregators.Interfaces
 {
     public interface IMetric
     {

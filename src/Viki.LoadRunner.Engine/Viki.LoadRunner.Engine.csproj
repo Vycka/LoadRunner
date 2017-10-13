@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="Aggregators\Dimensions\TimeDimension.cs" />
     <Compile Include="Aggregators\Dimensions\FuncDimension.cs" />
-    <Compile Include="Aggregators\Dimensions\IDimension.cs" />
+    <Compile Include="Aggregators\Interfaces\IDimension.cs" />
     <Compile Include="Aggregators\HistogramAggregator.cs" />
     <Compile Include="Aggregators\NullAggregator.cs" />
     <Compile Include="Aggregators\AsyncResultsAggregator.cs" />
@@ -55,7 +55,7 @@
     <Compile Include="Aggregators\Metrics\ErrorRatioMetric.cs" />
     <Compile Include="Aggregators\Metrics\FuncMetric.cs" />
     <Compile Include="Aggregators\Metrics\FuncMultiMetric.cs" />
-    <Compile Include="Aggregators\Metrics\IMetric.cs" />
+    <Compile Include="Aggregators\Interfaces\IMetric.cs" />
     <Compile Include="Aggregators\Metrics\MaxDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\MetricBase.cs" />
     <Compile Include="Aggregators\Metrics\MultiMetricBase.cs" />
@@ -64,7 +64,7 @@
     <Compile Include="Aggregators\Metrics\TransactionsPerSecMetric.cs" />
     <Compile Include="Aggregators\Results\HistogramResults.cs" />
     <Compile Include="Aggregators\StreamAggregator.cs" />
-    <Compile Include="Aggregators\IResultsAggregator.cs" />
+    <Compile Include="Aggregators\Interfaces\IResultsAggregator.cs" />
     <Compile Include="Aggregators\Utils\DimensionsKeyBuilder.cs" />
     <Compile Include="Aggregators\Utils\DimensionValues.cs" />
     <Compile Include="Aggregators\Utils\FlexiRow.cs" />
@@ -72,12 +72,12 @@
     <Compile Include="Aggregators\Utils\ReplayResult.cs" />
     <Compile Include="Aggregators\Utils\UnixDateTimeExtensions.cs" />
     <Compile Include="Aggregators\Utils\OrderLearner.cs" />
-    <Compile Include="Executor\Context\IIterationContextControl.cs" />
-    <Compile Include="Executor\Context\IIterationMetadata.cs" />
-    <Compile Include="Executor\Context\ICheckpoint.cs" />
+    <Compile Include="Executor\Context\Interfaces\IIterationContextControl.cs" />
+    <Compile Include="Executor\Context\Interfaces\IIterationMetadata.cs" />
+    <Compile Include="Executor\Context\Interfaces\ICheckpoint.cs" />
     <Compile Include="Executor\Result\IResult.cs" />
-    <Compile Include="Executor\Context\IIterationId.cs" />
-    <Compile Include="Executor\Context\IIterationResult.cs" />
+    <Compile Include="Executor\Context\Interfaces\IIterationId.cs" />
+    <Compile Include="Executor\Context\Interfaces\IIterationResult.cs" />
     <Compile Include="Executor\Threads\Counters\ThreadPoolCounter.cs" />
     <Compile Include="Executor\Threads\Counters\ThreadSafeCounter.cs" />
     <Compile Include="Executor\Threads\Factory\Interfaces\IIterationContextFactory.cs" />
@@ -119,7 +119,7 @@
     <Compile Include="Framework\TestState.cs" />
     <Compile Include="LoadTestBase.cs" />
     <Compile Include="Executor\Context\Checkpoint.cs" />
-    <Compile Include="Executor\Context\IIterationContext.cs" />
+    <Compile Include="Executor\Context\Interfaces\IIterationContext.cs" />
     <Compile Include="LoadTestScenarioValidator.cs" />
     <Compile Include="Settings\ILoadRunnerSettings.cs" />
     <Compile Include="Settings\LoadRunnerSettings.cs" />

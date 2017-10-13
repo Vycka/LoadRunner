@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators;
+using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads;
 using Viki.LoadRunner.Engine.Executor.Threads.Counters;
 using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;

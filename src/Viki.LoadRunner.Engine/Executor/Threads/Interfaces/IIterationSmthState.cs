@@ -1,4 +1,5 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Context.Interfaces;
 
 #pragma warning disable 1591
 

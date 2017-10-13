@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Viki.LoadRunner.Engine.Executor.Context
+namespace Viki.LoadRunner.Engine.Executor.Context.Interfaces
 {
     public interface IIterationContext : IIterationMetadata<object>
     {

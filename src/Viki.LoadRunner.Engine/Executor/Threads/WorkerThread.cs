@@ -52,13 +52,14 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
         public void QueueStopThreadAsync()
         {
             _stopQueued = true;
+            _work.Stop();
         }
 
         public void StopThread(int timeoutMilliseconds)
         {
             if (_handlerThread.IsAlive)
             {
-                _stopQueued = true;
+                QueueStopThreadAsync();
 
                 if (!_handlerThread.Join(timeoutMilliseconds))
                 {

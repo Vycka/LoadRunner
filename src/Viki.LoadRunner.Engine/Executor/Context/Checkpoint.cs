@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Viki.LoadRunner.Engine.Executor.Context.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Context
 {

@@ -1,5 +1,5 @@
 ﻿
-namespace Viki.LoadRunner.Engine.Executor.Context
+namespace Viki.LoadRunner.Engine.Executor.Context.Interfaces
 {
     /// <summary>
     /// Only iteration metadata containing values (no meassurements)

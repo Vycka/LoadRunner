@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Viki.LoadRunner.Engine.Executor.Context
+namespace Viki.LoadRunner.Engine.Executor.Context.Interfaces
 {
     public interface IIterationResult : IIterationMetadata<object>
     {

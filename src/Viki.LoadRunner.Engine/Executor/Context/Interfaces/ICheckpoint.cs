@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Viki.LoadRunner.Engine.Executor.Context
+namespace Viki.LoadRunner.Engine.Executor.Context.Interfaces
 {
     /// <summary>
     /// Checkpoint acts as meassurement point in test iteration

@@ -28,8 +28,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         private readonly ConcurrentBag<Exception> _threadErrors;
 
-        private bool _disposing;
-
         #endregion
 
         #region Ctor
@@ -71,8 +69,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
         public void Dispose()
         {
-            _disposing = true;
-
             foreach (IWorkerThread testExecutorThread in _allThreads.Values)
             {
                 testExecutorThread.Dispose();

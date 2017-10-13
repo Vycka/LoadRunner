@@ -1,6 +1,6 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Result;
 
-namespace Viki.LoadRunner.Engine.Aggregators
+namespace Viki.LoadRunner.Engine.Aggregators.Interfaces
 {
     /// <summary>
     /// This interface defines handling of raw results received from ongoing test.

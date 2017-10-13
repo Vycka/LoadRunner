@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Context.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Result
