@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Threading;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;

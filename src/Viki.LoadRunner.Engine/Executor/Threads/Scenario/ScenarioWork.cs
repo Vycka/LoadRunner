@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading;
-using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Stats.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
 {

@@ -4,7 +4,9 @@ using System;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Stats.Interfaces;
 
 #pragma warning disable 1591
 

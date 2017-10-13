@@ -1,4 +1,4 @@
-﻿using Viki.LoadRunner.Engine.Framework;
+﻿using Viki.LoadRunner.Engine.Framework.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Limit
 {

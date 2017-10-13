@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Viki.LoadRunner.Engine.Strategies.Speed
+﻿namespace Viki.LoadRunner.Engine.Strategies.Speed
 {
     // TODO: Rework it using new IThreadingStrategy
     /// <summary>

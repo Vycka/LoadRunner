@@ -1,15 +1,10 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Factory
 {
-    public interface IIterationContextFactory
-    {
-        IIterationContextControl Create();
-    }
-
     public class IterationContextFactory : IIterationContextFactory
     {
         private readonly ITimer _timer;

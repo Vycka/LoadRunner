@@ -1,4 +1,4 @@
-﻿using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+﻿using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Counters
 {

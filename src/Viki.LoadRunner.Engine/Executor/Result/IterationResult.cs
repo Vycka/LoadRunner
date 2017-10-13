@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 

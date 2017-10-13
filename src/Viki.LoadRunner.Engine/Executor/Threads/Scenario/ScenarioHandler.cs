@@ -1,31 +1,37 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Timer;
+using Viki.LoadRunner.Engine.Executor.Threads.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
 {
+    
+
     // TODO: Interface it
-    public class ScenarioHandler
+
+    public class ScenarioHandler : IScenarioHandler
     {
         private readonly IUniqueIdFactory<int> _globalIdFactory;
         private readonly ILoadTestScenario _scenario;
+        private readonly IIterationContextControl _context;
 
-        private int _threadIterationId = 0;
+        private int _threadIterationId;
 
-        private Context.IterationContext _context;
-        public IIterationResult Context => _context;
+        public bool Initialized { get; private set; }
 
-        public ScenarioHandler(IUniqueIdFactory<int> globalIdFactory, ILoadTestScenario scenario, int threadId, object initialUserData, ITimer timer)
+        public ScenarioHandler(IUniqueIdFactory<int> globalIdFactory, ILoadTestScenario scenario, IIterationContextControl context)
         {
-            if (timer == null)
-                throw new ArgumentNullException(nameof(timer));
+
             if (globalIdFactory == null)
                 throw new ArgumentNullException(nameof(globalIdFactory));
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
 
             _scenario = scenario;
-            _context = new Context.IterationContext(threadId, timer, initialUserData);
+            _context = context;
+
             _globalIdFactory = globalIdFactory;
+            _threadIterationId = 0;
         }
 
         /// <summary>

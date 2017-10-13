@@ -3,7 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Viki.LoadRunner.Engine.Executor.Threads.Factory;
+using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 
 #pragma warning disable 1591

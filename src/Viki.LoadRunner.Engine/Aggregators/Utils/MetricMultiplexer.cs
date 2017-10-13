@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Executor.Result;
 

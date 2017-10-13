@@ -1,6 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
-using Viki.LoadRunner.Engine.Framework;
+using Viki.LoadRunner.Engine.Framework.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {

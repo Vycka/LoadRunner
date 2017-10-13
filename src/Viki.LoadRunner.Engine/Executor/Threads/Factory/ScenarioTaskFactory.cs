@@ -1,9 +1,10 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Scenario;
-using Viki.LoadRunner.Engine.Executor.Threads.Scheduler;
 using Viki.LoadRunner.Engine.Executor.Threads.Stats;
 using Viki.LoadRunner.Engine.Executor.Threads.Strategy;
 using Viki.LoadRunner.Engine.Executor.Timer;
@@ -54,14 +55,14 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Factory
             ILoadTestScenario scenarioInstance = (ILoadTestScenario)Activator.CreateInstance(_scenarioType);
             IIterationContextControl iterationContext = _iterationContextFactory.Create();
 
-            ScenarioHandlerEx scenarioHandler = new ScenarioHandlerEx(_globalIdFactory, scenarioInstance, iterationContext);
+            ScenarioHandler scenarioHandler = new ScenarioHandler(_globalIdFactory, scenarioInstance, iterationContext);
 
 
             // Scheduler for ISpeedStrategy
             IIterationState iterationState = new IterationState(_timer, iterationContext, _counter);
             SpeedStrategyHandler strategyHandler = new SpeedStrategyHandler(_speedStrategy, iterationState);
 
-            SchedulerEx scheduler = new SchedulerEx(strategyHandler, _counter, _timer);
+            Scheduler.Scheduler scheduler = new Scheduler.Scheduler(strategyHandler, _counter, _timer);
 
 
             // Data collector for results aggregation
@@ -80,8 +81,4 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Factory
     }
 
     // TODO: This needs to go up to the ILoadRunnerSettings
-    public interface IThreadFactory
-    {
-        IWorkerThread Create();
-    }
 }
