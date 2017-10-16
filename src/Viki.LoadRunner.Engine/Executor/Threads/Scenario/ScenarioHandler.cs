@@ -6,10 +6,6 @@ using Viki.LoadRunner.Engine.Executor.Threads.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
 {
-    
-
-    // TODO: Interface it
-
     public class ScenarioHandler : IScenarioHandler
     {
         private readonly IUniqueIdFactory<int> _globalIdFactory;
@@ -17,8 +13,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
         private readonly IIterationContextControl _context;
 
         private int _threadIterationId;
-
-        public bool Initialized { get; private set; }
 
         public ScenarioHandler(IUniqueIdFactory<int> globalIdFactory, ILoadTestScenario scenario, IIterationContextControl context)
         {

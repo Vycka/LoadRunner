@@ -5,15 +5,23 @@ using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Scenario;
+using Viki.LoadRunner.Engine.Executor.Threads.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Stats;
+using Viki.LoadRunner.Engine.Executor.Threads.Stats.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Strategy;
+using Viki.LoadRunner.Engine.Executor.Threads.Workers;
+using Viki.LoadRunner.Engine.Executor.Threads.Workers.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Framework;
 using Viki.LoadRunner.Engine.Strategies;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Factory
 {
-    public class ScenarioThreadFactory : IThreadFactory
+    // TODO: parts of this factory can easily go to ILoadRunnerSettings 
+    // Like final ISpeedStrategy could be built there
+    //
+    public class ScenarioThreadFactory : IWorkerThreadFactory
     {
         private readonly Type _scenarioType;
         private readonly ITimer _timer;
@@ -23,8 +31,10 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Factory
 
         private readonly IterationContextFactory _iterationContextFactory;
         private readonly IUniqueIdFactory<int> _globalIdFactory;
+        private readonly IErrorHandler _errorHandler;
+        private readonly IPrewait _prewait;
 
-        public ScenarioThreadFactory(Type scenarioType, ITimer timer, ISpeedStrategy speedStrategy, IThreadPoolCounter counter, object initialUserData, IResultsAggregator aggregator, IUniqueIdFactory<int> globalIdFactory)
+        public ScenarioThreadFactory(Type scenarioType, ITimer timer, ISpeedStrategy speedStrategy, IThreadPoolCounter counter, object initialUserData, IResultsAggregator aggregator, IUniqueIdFactory<int> globalIdFactory, IErrorHandler errorHandler)
         {
             if (scenarioType == null)
                 throw new ArgumentNullException(nameof(scenarioType));
@@ -38,15 +48,20 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Factory
                 throw new ArgumentNullException(nameof(aggregator));
             if (globalIdFactory == null)
                 throw new ArgumentNullException(nameof(globalIdFactory));
+            if (errorHandler == null)
+                throw new ArgumentNullException(nameof(errorHandler));
 
             _scenarioType = scenarioType;
             _timer = timer;
             _speedStrategy = speedStrategy;
             _counter = counter;
             _aggregator = aggregator;
+            _errorHandler = errorHandler;
 
             _iterationContextFactory = new IterationContextFactory(_timer, initialUserData);
             _globalIdFactory = globalIdFactory;
+            
+            _prewait = new TimerBasedPrewait(timer);
         }
 
         public IWorkerThread Create()
@@ -55,26 +70,27 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Factory
             ILoadTestScenario scenarioInstance = (ILoadTestScenario)Activator.CreateInstance(_scenarioType);
             IIterationContextControl iterationContext = _iterationContextFactory.Create();
 
-            ScenarioHandler scenarioHandler = new ScenarioHandler(_globalIdFactory, scenarioInstance, iterationContext);
+            IScenarioHandler scenarioHandler = new ScenarioHandler(_globalIdFactory, scenarioInstance, iterationContext);
 
 
             // Scheduler for ISpeedStrategy
             IIterationState iterationState = new IterationState(_timer, iterationContext, _counter);
             SpeedStrategyHandler strategyHandler = new SpeedStrategyHandler(_speedStrategy, iterationState);
 
-            Scheduler.Scheduler scheduler = new Scheduler.Scheduler(strategyHandler, _counter, _timer);
+            IScheduler scheduler = new Scheduler.Scheduler(strategyHandler, _counter, _timer);
 
 
             // Data collector for results aggregation
-            DataCollector collector = new DataCollector(iterationContext, _aggregator, _counter);
+            IDataCollector collector = new DataCollector(iterationContext, _aggregator, _counter);
 
 
-            // Put it all together to create IWork
-            ScenarioWork scenarioWork = new ScenarioWork(scheduler, scenarioHandler, collector);
+            // Put it all together to create IWork.
+            IWork scenarioWork = new ScenarioWork(scheduler, scenarioHandler, collector);
 
 
 
-            IWorkerThread thread = new WorkerThread(scenarioWork);
+            IWorkerThread thread = new WorkerThread(scenarioWork, _prewait);
+            _errorHandler.Register(thread);
 
             return thread;
         }

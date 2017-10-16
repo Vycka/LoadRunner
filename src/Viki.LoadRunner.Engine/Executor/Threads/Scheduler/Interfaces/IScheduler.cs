@@ -12,7 +12,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scheduler.Interfaces
 
     public interface IScheduler
     {
-        void WaitNext();
+        void WaitNext(ref bool stop);
 
         ITimer Timer { get; }
     }

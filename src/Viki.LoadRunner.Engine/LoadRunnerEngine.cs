@@ -9,13 +9,16 @@ using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Factory;
 using Viki.LoadRunner.Engine.Executor.Threads.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Threads.Workers;
+using Viki.LoadRunner.Engine.Executor.Threads.Workers.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Framework;
 using Viki.LoadRunner.Engine.Framework.Interfaces;
-using Viki.LoadRunner.Engine.Settings;
+using Viki.LoadRunner.Engine.Presets.Interfaces;
+using Viki.LoadRunner.Engine.Presets.Strategies.Aggregator;
+using Viki.LoadRunner.Engine.Presets.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Limit;
-using Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy;
 using ThreadPool = Viki.LoadRunner.Engine.Executor.Threads.ThreadPool;
 
 namespace Viki.LoadRunner.Engine
@@ -25,20 +28,18 @@ namespace Viki.LoadRunner.Engine
     /// </summary>
     public class LoadRunnerEngine
     {
+        private readonly IExecutionStrategy _strategy;
+
         #region Fields
 
-        private readonly ILoadRunnerSettings _settings;
-        private readonly IResultsAggregator _aggregator;
-
         private Thread _rootThread;
+        private bool _stopping;
 
         #region Run() globals
 
-        private readonly ExecutionTimer _timer = new ExecutionTimer();
+        //private readonly ExecutionTimer _timer = new ExecutionTimer();
         private ThreadPool _pool;
         private IThreadPoolCounter _counter;
-        private ILimitStrategy[] _limits;
-
 
         #endregion
 
@@ -49,16 +50,16 @@ namespace Viki.LoadRunner.Engine
         /// <summary>
         /// Current duration of currently executing load test
         /// </summary>
-        public TimeSpan TestDuration => _timer.Value;
+        //public TimeSpan TestDuration => _timer.Value;
         /// <summary>
         /// Start UTC time for currently executing load test
         /// </summary>
-        public DateTime TestBeginTimeUtc => _timer.BeginTime;
+        //public DateTime TestBeginTimeUtc => _timer.BeginTime;
 
         /// <summary>
         /// Indicates whether LoadTest is currently running
         /// </summary>
-        public bool IsRunning => _timer.IsRunning;
+        //public bool IsRunning => _timer.IsRunning;
 
         /// <summary>
         /// Controls, how often root thread will ping strategies with HeartBeat()
@@ -66,6 +67,8 @@ namespace Viki.LoadRunner.Engine
         /// E.g. ListOfSpeed strategy will readjust speed only at this heart-beat.
         /// </summary>
         public int HeartBeatMs = 100;
+
+        public TimeSpan FinishTimeout = TimeSpan.FromMinutes(3);
 
         /// <summary>
         /// If execution failed due to unhandled exception, it will be set here.
@@ -81,14 +84,13 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         /// <param name="settings">LoadTest settings</param>
         /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        public LoadRunnerEngine(ILoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
+        public LoadRunnerEngine(IExecutionStrategy strategy)
         {
-            if (settings == null)
-                throw new ArgumentNullException(nameof(settings));
+            if (strategy == null)
+                throw new ArgumentNullException(nameof(strategy));
+            _strategy = strategy;
 
-            _settings = settings;
-
-            _aggregator = new AsyncResultsAggregator(resultsAggregators);
+            //_aggregator = new AsyncResultsAggregator(resultsAggregators);
         }
 
         /// <summary>
@@ -96,9 +98,9 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         /// <param name="settings">LoadTest settings</param>
         /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        public static LoadRunnerEngine Create(ILoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
+        public static LoadRunnerEngine Create(IExecutionStrategy strategy)
         {
-            return new LoadRunnerEngine(settings, resultsAggregators);
+            return new LoadRunnerEngine(strategy);
         }
 
         #endregion
@@ -132,14 +134,14 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         public void CancelAsync(bool blocking = true)
         {
-            _limits = new ILimitStrategy[]{ new IterationLimit(0)  };
+            _stopping = true;
 
             if (blocking)
                 Wait();
         }
 
         /// <summary>
-        /// Waits, till execution is finished.
+        /// Waits, till execution is finished gracefully with graceful waiting for ExecutionStrategy and FinishTimeout.
         /// </summary>
         /// <param name="timeOut">timeout time period to wait before returning</param>
         /// <param name="abortOnTimeOut">if execution won't finish within desired timeout, should it be terminated prematurely?</param>
@@ -177,44 +179,20 @@ namespace Viki.LoadRunner.Engine
                 throw new InvalidOperationException("Engine is already running");
 
             Exception = null;
-
             try
             {
                 _counter = new ThreadPoolCounter();
-                _timer.Reset();
 
-                _limits = _settings.Limits;
+                _strategy.Initialize(_counter);
 
-                ISpeedStrategy speed = StrategyBuilder.Create(_settings.Speed, _timer);
-                IUniqueIdFactory<int> globalIdFactory = new IdFactory();
-
-                IThreadFactory threadFactory = new ScenarioThreadFactory(
-                    _settings.TestScenarioType,
-                    _timer,
-                    speed,
-                    _counter,
-                    _settings.InitialUserData,
-                    _aggregator,
-                    globalIdFactory
-                );
+                IWorkerThreadFactory threadFactory = _strategy.CreateWorkerThreadFactory(); 
 
                 _pool = new ThreadPool(threadFactory, _counter);
 
-                IThreadingContext threadingContext = new ThreadingContext(_pool, _counter, _timer);
-                IThreadingStrategy threading = _settings.Threading;
-                ITestState state = new TestState(_timer, globalIdFactory, _counter);
+                _strategy.Start(_pool);
 
-                InitialThreadingSetup(_pool, threadingContext, threading);
-
-                StartTest(_aggregator, _timer);
-
-                while (!_limits.Any(l => l.StopTest(state)))
+                while (_strategy.HeartBeat() && !_stopping)
                 {
-                    _pool.AssertThreadErrors();
-
-                    threading.HeartBeat(_pool, state);
-                    speed.HeartBeat(state);
-
                     Thread.Sleep(HeartBeatMs);
                 }
             }
@@ -225,31 +203,10 @@ namespace Viki.LoadRunner.Engine
             }
             finally
             {
-                _pool?.StopAndDispose((int)_settings.FinishTimeout.TotalMilliseconds);
-
-                _aggregator.End();
-                _timer.Stop();
-
-                ThreadPool local = _pool;
+                _pool?.StopAndDispose((int)FinishTimeout.TotalMilliseconds);
                 _pool = null;
-                local?.AssertThreadErrors();
-            }
-        }
 
-        private static void StartTest(IResultsAggregator aggregator, ExecutionTimer timer)
-        {
-            aggregator.Begin();
-            timer.Start(); // This line also releases Worker-Threads from wait in ScenarioWork.Wait()
-        }
-
-        private static void InitialThreadingSetup(ThreadPool pool, IThreadingContext context, IThreadingStrategy strategy)
-        {
-            strategy.Setup(pool);
-
-            while (context.CreatedThreadCount != context.InitializedThreadCount)
-            {
-                Thread.Sleep(100);
-                pool.AssertThreadErrors();
+                _strategy.Stop();
             }
         }
 

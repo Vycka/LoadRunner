@@ -4,24 +4,19 @@ using System.Diagnostics;
 
 namespace Viki.LoadRunner.Engine.Executor.Timer
 {
-    public class ExecutionTimer : ITimer
+    public class ExecutionTimer : ITimerControl
     {
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private DateTime _beginTime;
 
         public void Start()
         {
-            Reset();
-
             _beginTime = DateTime.UtcNow;
+
+            _stopwatch.Reset();
             _stopwatch.Start();
         }
 
-        public void Reset()
-        {
-            _stopwatch.Reset();
-            _beginTime = DateTime.MinValue;
-        }
 
         public void Stop()
         {

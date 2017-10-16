@@ -54,7 +54,7 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scheduler
         // Scheduler has no cancellation token now
         // Maybe redesign strategies a bit so they just don't schedule that far ahead or pass cancellation somehow.
         // ref not works
-        public void WaitNext()
+        public void WaitNext(ref bool stop)
         {
             _strategy.Next(this);
 
@@ -63,27 +63,27 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scheduler
             {
                 _counter.AddIdle(1);
 
-                while (Action == ScheduleAction.Idle && _cancellationToken == false)
+                while (Action == ScheduleAction.Idle && stop == false)
                 {
-                    SemiWait(delay);
+                    SemiWait(delay, ref stop);
 
                     _strategy.Next(this);
                 }
 
-                SemiWait(delay);
+                SemiWait(delay, ref stop);
 
                 _counter.AddIdle(-1);
             }
         }
 
-        private void SemiWait(TimeSpan delay)
+        private void SemiWait(TimeSpan delay, ref bool stop)
         {
-            while (delay > _oneSecond && _cancellationToken == false)
+            while (delay > _oneSecond && stop == false)
             {
                 Thread.Sleep(_oneSecond);
                 delay = CalculateDelay();
             }
-            if (delay > TimeSpan.Zero && _cancellationToken == false)
+            if (delay > TimeSpan.Zero && stop == false)
                 Thread.Sleep(delay);
         }
     }

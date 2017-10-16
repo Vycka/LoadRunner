@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
@@ -13,26 +12,18 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 {
     public class ThreadPool : IThreadPool
     {
-        #region Properties
-
-        //public IThreadPoolContext Context => _context;
-
-        #endregion
-
         #region Fields
 
-        private readonly IThreadFactory _factory;
+        private readonly IWorkerThreadFactory _factory;
         private readonly IThreadPoolCounter _counter;
 
         private readonly ConcurrentDictionary<IWorkerThread, IWorkerThread> _allThreads;
-
-        private readonly ConcurrentBag<Exception> _threadErrors;
 
         #endregion
 
         #region Ctor
 
-        public ThreadPool(IThreadFactory factory, IThreadPoolCounter counter)
+        public ThreadPool(IWorkerThreadFactory factory, IThreadPoolCounter counter)
         {
             if (factory == null)
                 throw new ArgumentNullException(nameof(factory));
@@ -44,26 +35,10 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
 
             _allThreads = new ConcurrentDictionary<IWorkerThread, IWorkerThread>();
-            _threadErrors = new ConcurrentBag<Exception>();
         }
 
         #endregion
 
-        #region Asserts
-
-        public void AssertThreadErrors()
-        {
-            if (_threadErrors.Count != 0)
-            {
-                Exception resultError;
-                _threadErrors.TryTake(out resultError);
-
-                if (resultError != null)
-                    throw resultError;
-            }
-        }
-
-        #endregion
 
         #region IDisposable
 
@@ -115,14 +90,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
             TryRemoveThread(sender);
         }
 
-        private void OnThreadError(IWorkerThread sender, Exception ex)
-        {
-            if (ex.GetType() != typeof(ThreadAbortException))
-            {
-                _threadErrors.Add(ex);
-            }
-        }
-
         private void TryRemoveThread(IWorkerThread thread)
         {
             IWorkerThread removedThread;
@@ -149,7 +116,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads
 
             foreach (IWorkerThread newThread in newThreads)
             {
-                newThread.ThreadError +=  OnThreadError;
                 newThread.ThreadInitialized += OnThreadInitialized;
                 newThread.ThreadStopped += OnThreadStopped;
 

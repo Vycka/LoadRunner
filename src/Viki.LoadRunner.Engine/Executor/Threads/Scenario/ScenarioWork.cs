@@ -34,13 +34,6 @@ namespace Viki.LoadRunner.Engine.Executor.Threads.Scenario
             _handler.Init();
         }
 
-        public void Wait()
-        {
-            // Wait for ITimer to start.
-            while (_scheduler.Timer.IsRunning == false && _stopping == false)
-                Thread.Sleep(1);
-        }
-
         public void Execute()
         {
             _handler.PrepareNext();

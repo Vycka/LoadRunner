@@ -1,4 +1,5 @@
 ﻿using System;
+using Viki.LoadRunner.Engine.Executor.Threads.Workers;
 
 namespace Viki.LoadRunner.Engine.Executor.Threads.Interfaces
 {
