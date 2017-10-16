@@ -2,7 +2,7 @@
 using System.Threading;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
 
-namespace Viki.LoadRunner.Engine.Executor
+namespace Viki.LoadRunner.Engine
 {
     /// <summary>
     /// ILoadTestScenario executor
@@ -12,21 +12,17 @@ namespace Viki.LoadRunner.Engine.Executor
         #region Fields
 
         private readonly IStrategy _strategy;
-
         private Thread _rootThread;
-        public bool Running { get; private set; }
-
-        #region Run() globals
-
-        //private readonly ExecutionTimer _timer = new ExecutionTimer();
-        //private ThreadPool _pool;
-        //private IThreadPoolCounter _counter;
-
-        #endregion
 
         #endregion
 
         #region Properties
+
+
+        /// <summary>
+        /// Is test running
+        /// </summary>
+        public bool Running { get; private set; }
 
         /// <summary>
         /// Controls, how often root thread will ping strategies with HeartBeat()
@@ -72,7 +68,7 @@ namespace Viki.LoadRunner.Engine.Executor
         /// </summary>
         public void RunAsync()
         {
-            if (IsLoadEngineRunning)
+            if (Running)
                 throw new InvalidOperationException("Another instance is already running");
 
             _rootThread = new Thread(RunInner);
@@ -118,8 +114,6 @@ namespace Viki.LoadRunner.Engine.Executor
         {
             _rootThread?.Join();
         }
-
-        private bool IsLoadEngineRunning => Running;
 
         #endregion
 

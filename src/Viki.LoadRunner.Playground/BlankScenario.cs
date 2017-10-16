@@ -1,5 +1,4 @@
-﻿using Viki.LoadRunner.Engine;
-using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
+﻿using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Playground
 {

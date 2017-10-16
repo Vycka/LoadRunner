@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Strategy.Counters;
-using Viki.LoadRunner.Engine.Executor.Strategy.Counters.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Strategy.Factory;
-using Viki.LoadRunner.Engine.Executor.Strategy.Factory.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Strategy.State;
-using Viki.LoadRunner.Engine.Executor.Strategy.State.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Strategy.Timer;
-using Viki.LoadRunner.Engine.Executor.Strategy.Timer.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Strategy.Workers;
-using Viki.LoadRunner.Engine.Executor.Strategy.Workers.Interfaces;
-using Viki.LoadRunner.Engine.Presets.Adapters.Aggregator;
-using Viki.LoadRunner.Engine.Presets.Adapters.Limits;
-using Viki.LoadRunner.Engine.Presets.Factories;
+using Viki.LoadRunner.Engine.Executor.Counter;
+using Viki.LoadRunner.Engine.Executor.Counter.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Factory;
+using Viki.LoadRunner.Engine.Executor.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Executor.State;
+using Viki.LoadRunner.Engine.Executor.State.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Timer;
+using Viki.LoadRunner.Engine.Executor.Timer.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Worker;
+using Viki.LoadRunner.Engine.Executor.Worker.Interfaces;
+using Viki.LoadRunner.Engine.Presets.Adapter.Aggregator;
+using Viki.LoadRunner.Engine.Presets.Adapter.Limit;
+using Viki.LoadRunner.Engine.Presets.Factory;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
-using ThreadPool = Viki.LoadRunner.Engine.Executor.Strategy.Pool.ThreadPool;
+using ThreadPool = Viki.LoadRunner.Engine.Executor.Pool.ThreadPool;
 
 namespace Viki.LoadRunner.Engine.Presets
 {
@@ -24,12 +24,13 @@ namespace Viki.LoadRunner.Engine.Presets
     public class CustomStrategy : IStrategy
     {
         public ITimer Timer => _timer;
+        private readonly ExecutionTimer _timer;
 
         private readonly ICustomStrategySettings _settings;
 
         private IErrorHandler _errorHandler;
         private IUniqueIdFactory<int> _globalIdFactory;
-        private ITimerControl _timer;
+        
 
         private ThreadPool _pool;
         private IThreadPoolCounter _counter;

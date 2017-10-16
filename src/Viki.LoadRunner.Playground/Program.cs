@@ -4,7 +4,6 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Strategies.Threading;
-using Viki.LoadRunner.Tools.Aggregators;
 
 namespace Viki.LoadRunner.Playground
 {

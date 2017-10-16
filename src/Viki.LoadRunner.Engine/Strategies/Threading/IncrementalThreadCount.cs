@@ -1,8 +1,8 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Strategy.Pool.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Strategy.State.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Strategy.Stats.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Pool.Interfaces;
+using Viki.LoadRunner.Engine.Executor.State.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading

@@ -1,7 +1,7 @@
-﻿using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Strategy.Pool;
-using Viki.LoadRunner.Engine.Executor.Strategy.Stats;
-using Viki.LoadRunner.Engine.Executor.Strategy.Timer;
+﻿using Viki.LoadRunner.Engine.Executor.Collector;
+using Viki.LoadRunner.Engine.Executor.Pool;
+using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Executor.Scenario
 {

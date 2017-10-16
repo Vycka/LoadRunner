@@ -1,5 +1,5 @@
 ﻿using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Strategy.Stats.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {

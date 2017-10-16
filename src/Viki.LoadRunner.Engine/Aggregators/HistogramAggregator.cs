@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Aggregators.Results;
+using Viki.LoadRunner.Engine.Aggregators.Result;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Strategy.Stats.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
 
 namespace Viki.LoadRunner.Engine.Aggregators
@@ -22,7 +22,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     {
         #region Fields
 
-        private FlexiRow<DimensionValues, IMetric> _row;
+        private FlexiRow<DimensionKey, IMetric> _row;
 
         private DimensionsKeyBuilder _dimensionsKeyBuilder;
         private MetricMultiplexer _metricMultiplexer;
@@ -96,14 +96,14 @@ namespace Viki.LoadRunner.Engine.Aggregators
         void IResultsAggregator.Begin()
         {
             _metricMultiplexer = new MetricMultiplexer(_metricTemplates);
-            _row = new FlexiRow<DimensionValues, IMetric>(() => ((IMetric)_metricMultiplexer).CreateNew());
+            _row = new FlexiRow<DimensionKey, IMetric>(() => ((IMetric)_metricMultiplexer).CreateNew());
 
             _dimensionsKeyBuilder = new DimensionsKeyBuilder(_dimensions);
         }
 
         void IResultsAggregator.TestContextResultReceived(IResult result)
         {
-            DimensionValues key = _dimensionsKeyBuilder.GetValue(result);
+            DimensionKey key = _dimensionsKeyBuilder.GetValue(result);
             _row[key].Add(result);
         }
 
@@ -135,11 +135,11 @@ namespace Viki.LoadRunner.Engine.Aggregators
             object[][] resultValues = new object[_row.Count][];
 
             int rowIndex = 0;
-            foreach (KeyValuePair<DimensionValues, IMetric> pair in _row)
+            foreach (KeyValuePair<DimensionKey, IMetric> pair in _row)
             {
                 resultValues[rowIndex] = new object[columnNames.Length];
 
-                DimensionValues dimensions = pair.Key;
+                DimensionKey dimensions = pair.Key;
                 IMetric metrics = pair.Value;
 
                 for (int i = 0; i < dimensions.Values.Count; i++)

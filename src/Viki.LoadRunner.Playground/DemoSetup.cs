@@ -9,7 +9,6 @@ using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Executor.Scenario;
 using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Presets;
-using Viki.LoadRunner.Engine.Presets.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 using Viki.LoadRunner.Tools.Windows;

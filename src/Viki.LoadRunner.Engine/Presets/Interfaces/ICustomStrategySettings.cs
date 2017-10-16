@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Executor;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Presets.Interfaces
