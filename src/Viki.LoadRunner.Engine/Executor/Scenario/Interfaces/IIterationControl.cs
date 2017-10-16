@@ -2,7 +2,7 @@
 
 namespace Viki.LoadRunner.Engine.Executor.Scenario.Interfaces
 {
-    public interface IIterationContextControl : IIterationContext, IIterationResult
+    public interface IIterationControl : IIteration, IIterationResult
     {
         void Start();
         void Stop();

@@ -4,6 +4,6 @@ namespace Viki.LoadRunner.Engine.Executor.Strategy.Factory.Interfaces
 {
     public interface IIterationContextFactory
     {
-        IIterationContextControl Create();
+        IIterationControl Create();
     }
 }

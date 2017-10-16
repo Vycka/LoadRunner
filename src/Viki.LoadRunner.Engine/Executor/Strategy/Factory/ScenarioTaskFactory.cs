@@ -15,6 +15,7 @@ using Viki.LoadRunner.Engine.Executor.Strategy.Timer.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Strategy.Workers;
 using Viki.LoadRunner.Engine.Executor.Strategy.Workers.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Strategy.Factory
 {
@@ -67,21 +68,21 @@ namespace Viki.LoadRunner.Engine.Executor.Strategy.Factory
         public IWorkerThread Create()
         {
             // Scenario handler
-            ILoadTestScenario scenarioInstance = (ILoadTestScenario)Activator.CreateInstance(_scenarioType);
-            IIterationContextControl iterationContext = _iterationContextFactory.Create();
+            IScenario scenarioInstance = (IScenario)Activator.CreateInstance(_scenarioType);
+            IIterationControl iteration = _iterationContextFactory.Create();
 
-            IScenarioHandler scenarioHandler = new ScenarioHandler(_globalIdFactory, scenarioInstance, iterationContext);
+            IScenarioHandler scenarioHandler = new ScenarioHandler(_globalIdFactory, scenarioInstance, iteration);
 
 
             // Scheduler for ISpeedStrategy
-            IIterationState iterationState = new IterationState(_timer, iterationContext, _counter);
+            IIterationState iterationState = new IterationState(_timer, iteration, _counter);
             SpeedStrategyHandler strategyHandler = new SpeedStrategyHandler(_speedStrategy, iterationState);
 
             IScheduler scheduler = new Scheduler.Scheduler(strategyHandler, _counter, _timer);
 
 
             // Data collector for results aggregation
-            IDataCollector collector = new DataCollector(iterationContext, _aggregator, _counter);
+            IDataCollector collector = new DataCollector(iteration, _aggregator, _counter);
 
 
             // Put it all together to create IWork.

@@ -15,41 +15,41 @@ namespace Viki.LoadRunner.Engine.Executor.Scenario
         /// from ScenarioSetup to ScenarioTearDown on the same thread.
         /// Exceptions are not handled on purpose to ease problem identification while developing.
         /// </summary>
-        /// <param name="loadTestScenario">ILoadTestScenario object</param>
+        /// <param name="scenario">ILoadTestScenario object</param>
         /// <param name="threadId">TheardId to set in TestContext</param>
         /// <param name="threadIterationId">ThreadIterationId to set in TestContext</param>
         /// <param name="globalIterationId">GlobalIterationId to set in TestContext</param>
         /// <returns>Raw result from single iteration</returns>
-        public static IterationResult Validate(ILoadTestScenario loadTestScenario, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
+        public static IterationResult Validate(IScenario scenario, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
         {
             ExecutionTimer timer = new ExecutionTimer();
 
-            IterationContext iterationContext =  new IterationContext(threadId, timer);
-            iterationContext.Reset(-1, -1);
-            loadTestScenario.ScenarioSetup(iterationContext);
+            Iteration iteration =  new Iteration(threadId, timer);
+            iteration.Reset(-1, -1);
+            scenario.ScenarioSetup(iteration);
 
-            iterationContext.Reset(threadIterationId, globalIterationId);
-            iterationContext.Checkpoint(Checkpoint.Names.Setup);
+            iteration.Reset(threadIterationId, globalIterationId);
+            iteration.Checkpoint(Checkpoint.Names.Setup);
 
-            loadTestScenario.IterationSetup(iterationContext);
+            scenario.IterationSetup(iteration);
 
-            iterationContext.Checkpoint(Checkpoint.Names.IterationStart);
+            iteration.Checkpoint(Checkpoint.Names.IterationStart);
 
             timer.Start();
-            iterationContext.Start();
-            loadTestScenario.ExecuteScenario(iterationContext);
-            iterationContext.Stop();
+            iteration.Start();
+            scenario.ExecuteScenario(iteration);
+            iteration.Stop();
             timer.Stop();
 
-            iterationContext.Checkpoint(Checkpoint.Names.IterationEnd);
+            iteration.Checkpoint(Checkpoint.Names.IterationEnd);
 
-            iterationContext.Checkpoint(Checkpoint.Names.TearDown);
-            loadTestScenario.IterationTearDown(iterationContext);
+            iteration.Checkpoint(Checkpoint.Names.TearDown);
+            scenario.IterationTearDown(iteration);
 
-            IterationResult result = new IterationResult(iterationContext, new WorkerThreadStats());
+            IterationResult result = new IterationResult(iteration, new WorkerThreadStats());
 
-            iterationContext.Reset(-1, -1);
-            loadTestScenario.ScenarioTearDown(iterationContext);
+            iteration.Reset(-1, -1);
+            scenario.ScenarioTearDown(iteration);
 
             return result;
         }

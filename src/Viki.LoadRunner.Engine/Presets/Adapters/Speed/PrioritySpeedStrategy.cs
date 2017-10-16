@@ -6,6 +6,7 @@ using Viki.LoadRunner.Engine.Executor.Strategy.State.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Strategy.Timer.Interfaces;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Presets.Adapters.Speed
 {

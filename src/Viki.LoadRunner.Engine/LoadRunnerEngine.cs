@@ -2,19 +2,19 @@
 using System.Threading;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
 
-namespace Viki.LoadRunner.Engine
+namespace Viki.LoadRunner.Engine.Executor
 {
     /// <summary>
     /// ILoadTestScenario executor
     /// </summary>
-    public class LoadRunner
+    public class LoadRunnerEngine
     {
         #region Fields
 
         private readonly IStrategy _strategy;
 
         private Thread _rootThread;
-        private bool _running = false;
+        public bool Running { get; private set; }
 
         #region Run() globals
 
@@ -48,7 +48,7 @@ namespace Viki.LoadRunner.Engine
         /// Initializes new executor instance
         /// </summary>
         /// <param name="strategy">Test strategy</param>
-        public LoadRunner(IStrategy strategy)
+        public LoadRunnerEngine(IStrategy strategy)
         {
             if (strategy == null)
                 throw new ArgumentNullException(nameof(strategy));
@@ -86,7 +86,7 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         public void CancelAsync(bool blocking = true)
         {
-            _running = false;
+            Running = false;
 
             if (blocking)
                 Wait();
@@ -119,7 +119,7 @@ namespace Viki.LoadRunner.Engine
             _rootThread?.Join();
         }
 
-        private bool IsLoadEngineRunning => _running;
+        private bool IsLoadEngineRunning => Running;
 
         #endregion
 
@@ -127,16 +127,16 @@ namespace Viki.LoadRunner.Engine
 
         private void RunInner()
         {
-            if (_running)
+            if (Running)
                 throw new InvalidOperationException("Engine is already running");
 
             Exception = null;
             try
             {
-                _running = true;
+                Running = true;
                 _strategy.Start();
 
-                while (_strategy.HeartBeat() == false && _running)
+                while (_strategy.HeartBeat() == false && Running)
                 {
                     Thread.Sleep(HeartBeatMs);
                 }
@@ -149,7 +149,7 @@ namespace Viki.LoadRunner.Engine
             finally
             {
                 _strategy.Stop();
-                _running = false;
+                Running = false;
             }
         }
 

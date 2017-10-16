@@ -1,6 +1,6 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Strategy.State.Interfaces;
 
-namespace Viki.LoadRunner.Engine.Strategies.Limit
+namespace Viki.LoadRunner.Engine.Strategies.Interfaces
 {
     /// <summary>
     /// Limit-Strategy controls when test execution should be stopped and how gracefully

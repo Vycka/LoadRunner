@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Strategies;
-using Viki.LoadRunner.Engine.Strategies.Limit;
+using Viki.LoadRunner.Engine.Executor;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Presets.Interfaces
 {
@@ -51,9 +52,23 @@ namespace Viki.LoadRunner.Engine.Presets.Interfaces
     }
 
     public static class ICustomStrategySettingsExtensions {
-        public static LoadRunner Build(this ICustomStrategySettings settings)
+        public static LoadRunnerEngine Build(this ICustomStrategySettings settings)
         {
-            return new LoadRunner(new CustomStrategy(settings));
+            return new LoadRunnerEngine(new CustomStrategy(settings));
+        }
+
+        public static StrategyBuilder Clone(this ICustomStrategySettings settings)
+        {
+            return new StrategyBuilder
+            {
+                Limits = settings.Limits.ToArray(),
+                Speed = settings.Speed.ToArray(),
+                Threading = settings.Threading,
+                FinishTimeout = settings.FinishTimeout,
+                TestScenarioType = settings.TestScenarioType,
+                InitialUserData = settings.InitialUserData,
+                Aggregators = settings.Aggregators
+            };
         }
     }
 

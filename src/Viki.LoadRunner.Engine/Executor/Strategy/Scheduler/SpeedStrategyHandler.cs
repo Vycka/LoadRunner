@@ -3,6 +3,7 @@ using Viki.LoadRunner.Engine.Executor.Strategy.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Strategy.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Strategy.State.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Strategy.Scheduler
 {

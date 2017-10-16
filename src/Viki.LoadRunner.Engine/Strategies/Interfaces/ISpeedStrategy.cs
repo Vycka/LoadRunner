@@ -1,7 +1,7 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Strategy.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Strategy.State.Interfaces;
 
-namespace Viki.LoadRunner.Engine.Strategies
+namespace Viki.LoadRunner.Engine.Strategies.Interfaces
 {
     public interface ISpeedStrategy
     {

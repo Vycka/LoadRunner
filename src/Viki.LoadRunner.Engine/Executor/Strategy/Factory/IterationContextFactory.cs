@@ -24,11 +24,11 @@ namespace Viki.LoadRunner.Engine.Executor.Strategy.Factory
             _threadIdFactory = new IdFactory();
         }
 
-        public IIterationContextControl Create()
+        public IIterationControl Create()
         {
             int newThreadId = _threadIdFactory.Next();
 
-            return new IterationContext(newThreadId, _timer, _initialUserData);
+            return new Iteration(newThreadId, _timer, _initialUserData);
         }
     }
 }

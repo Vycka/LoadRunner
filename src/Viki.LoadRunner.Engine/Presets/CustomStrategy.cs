@@ -15,8 +15,7 @@ using Viki.LoadRunner.Engine.Presets.Adapters.Aggregator;
 using Viki.LoadRunner.Engine.Presets.Adapters.Limits;
 using Viki.LoadRunner.Engine.Presets.Factories;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
-using Viki.LoadRunner.Engine.Strategies;
-using Viki.LoadRunner.Engine.Strategies.Limit;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using ThreadPool = Viki.LoadRunner.Engine.Executor.Strategy.Pool.ThreadPool;
 
 namespace Viki.LoadRunner.Engine.Presets
@@ -24,6 +23,8 @@ namespace Viki.LoadRunner.Engine.Presets
     // TODO: Derrive this class and one could can have UI.
     public class CustomStrategy : IStrategy
     {
+        public ITimer Timer => _timer;
+
         private readonly ICustomStrategySettings _settings;
 
         private IErrorHandler _errorHandler;
@@ -45,15 +46,16 @@ namespace Viki.LoadRunner.Engine.Presets
                 throw new ArgumentNullException(nameof(settings));
 
             _settings = settings;
+
+            _timer = new ExecutionTimer();
         }
 
-        void IStrategy.Start()
+        public virtual void Start()
         {
             _counter = new ThreadPoolCounter();
             
             _errorHandler = new ErrorHandler();
             _globalIdFactory = new IdFactory();
-            _timer = new ExecutionTimer();
 
             _speed = PriorityStrategyFactory.Create(_settings.Speed, _timer);
             _limit = new LimitsHandler(_settings.Limits);
@@ -70,7 +72,7 @@ namespace Viki.LoadRunner.Engine.Presets
             _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
         }
 
-        bool IStrategy.HeartBeat()
+        public virtual bool HeartBeat()
         {
             _errorHandler.Assert();
 
@@ -80,7 +82,7 @@ namespace Viki.LoadRunner.Engine.Presets
             return _limit.StopTest(_state);
         }
 
-        void IStrategy.Stop()
+        public virtual void Stop()
         {
             _pool?.StopAndDispose((int)_settings.FinishTimeout.TotalMilliseconds);
             _pool = null;

@@ -9,12 +9,12 @@ namespace Viki.LoadRunner.Engine.Executor.Strategy.Scenario
     public class ScenarioHandler : IScenarioHandler
     {
         private readonly IUniqueIdFactory<int> _globalIdFactory;
-        private readonly ILoadTestScenario _scenario;
-        private readonly IIterationContextControl _context;
+        private readonly IScenario _scenario;
+        private readonly IIterationControl _context;
 
         private int _threadIterationId;
 
-        public ScenarioHandler(IUniqueIdFactory<int> globalIdFactory, ILoadTestScenario scenario, IIterationContextControl context)
+        public ScenarioHandler(IUniqueIdFactory<int> globalIdFactory, IScenario scenario, IIterationControl context)
         {
 
             if (globalIdFactory == null)

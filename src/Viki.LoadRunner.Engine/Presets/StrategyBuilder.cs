@@ -4,6 +4,7 @@ using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 
@@ -21,7 +22,7 @@ namespace Viki.LoadRunner.Engine.Presets
         /// </summary>
         /// <typeparam name="TLoadTestScenario">Scenario to execute</typeparam>
         public static StrategyBuilder Create<TLoadTestScenario>()
-            where TLoadTestScenario : ILoadTestScenario
+            where TLoadTestScenario : IScenario
         {
             return new StrategyBuilder(typeof(TLoadTestScenario));
         }
@@ -51,7 +52,7 @@ namespace Viki.LoadRunner.Engine.Presets
         /// </summary>
         /// <typeparam name="TScenario">Scenario class type</typeparam>
         public StrategyBuilder SetScenario<TScenario>()
-            where TScenario : ILoadTestScenario
+            where TScenario : IScenario
         {
             TestScenarioType = typeof(TScenario);
             return this;

@@ -1,5 +1,6 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Strategy.Pool.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Strategy.State.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Threading
 {

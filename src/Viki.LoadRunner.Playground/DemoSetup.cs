@@ -1,11 +1,8 @@
-﻿
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
@@ -14,9 +11,7 @@ using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Presets;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Limit;
-using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
-using Viki.LoadRunner.Tools.Aggregators;
 using Viki.LoadRunner.Tools.Windows;
 
 namespace Viki.LoadRunner.Playground
@@ -73,12 +68,12 @@ namespace Viki.LoadRunner.Playground
             //TotalsResultsAggregator resultsAggregator = new TotalsResultsAggregator();
 
             // Initializing LoadTest Client
-            Engine.LoadRunner loadRunner = strategy.Build();
-            loadRunner.Run();
+            //Engine.Executor.LoadRunnerEngine loadRunner = strategy.Build();
+            //loadRunner.Run();
 
-            //LoadRunnerUi loadRunnerUi = LoadRunnerUi.Create(loadRunnerSettings, jsonStreamAggregator, histogramAggregator);
+            LoadRunnerUi loadRunnerUi = new LoadRunnerUi(strategy);
 
-            //Application.Run(loadRunnerUi);
+            Application.Run(loadRunnerUi);
 
             // Run test (blocking call)
             //loadRunner.Run();
@@ -95,18 +90,17 @@ namespace Viki.LoadRunner.Playground
     }
 
 
-    public class TestScenario : ILoadTestScenario
+    public class TestScenario : IScenario
     {
         private static readonly Random Random = new Random(42);
 
-
-        public void ScenarioSetup(IIterationContext context)
+        public void ScenarioSetup(IIteration context)
         {
             Debug.WriteLine("ScenarioSetup Executes on thread creation");
             Debug.WriteLine("Exceptions here are not handled!");
         }
 
-        public void IterationSetup(IIterationContext context)
+        public void IterationSetup(IIteration context)
         {
             Debug.WriteLine("IterationSetup is executed before each ExecuteScenario call");
 
@@ -114,7 +108,7 @@ namespace Viki.LoadRunner.Playground
                 throw new Exception("2% error chance for testing");
         }
 
-        public void ExecuteScenario(IIterationContext context)
+        public void ExecuteScenario(IIteration context)
         {
             Debug.WriteLine(
                 "ExecuteScenario defines single iteration for load test scenario, " +
@@ -131,7 +125,7 @@ namespace Viki.LoadRunner.Playground
         }
 
 
-        public void IterationTearDown(IIterationContext context)
+        public void IterationTearDown(IIteration context)
         {
             Debug.WriteLine("IterationTearDown is executed each time after ExecuteScenario iteration is finished.");
             Debug.WriteLine("It is also executed even when IterationSetup or ExecuteScenario fails");
@@ -140,7 +134,7 @@ namespace Viki.LoadRunner.Playground
                 throw new Exception("4% error chance for testing");
         }
 
-        public void ScenarioTearDown(IIterationContext context)
+        public void ScenarioTearDown(IIteration context)
         {
             Debug.WriteLine("ScenarioTearDown Executes once LoadTest execution is over");
 
