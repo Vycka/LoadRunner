@@ -92,7 +92,7 @@ namespace Viki.LoadRunner.Engine.Presets
         /// <param name="speed">list of strategies set</param>
         public StrategyBuilder Set(params ISpeedStrategy[] speed)
         {
-            Speed = speed;
+            Speeds = speed;
             return this;
         }
 
@@ -102,7 +102,7 @@ namespace Viki.LoadRunner.Engine.Presets
         /// <param name="speed">list of strategies add</param>
         public StrategyBuilder Add(params ISpeedStrategy[] speed)
         {
-            Speed = Speed.Concat(speed).ToArray();
+            Speeds = Speeds.Concat(speed).ToArray();
             return this;
         }
 
@@ -179,7 +179,7 @@ namespace Viki.LoadRunner.Engine.Presets
         /// SpeedStrategies defines limitations related to executed iteration-per-second capping.
         /// (Default: Unlimited, aka MaxSpeed())
         /// </summary>
-        public ISpeedStrategy[] Speed { get; set; } = { };
+        public ISpeedStrategy[] Speeds { get; set; } = { };
 
         /// <summary>
         /// Threading strategy defines Created worker-thread count throughout the test.

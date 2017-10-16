@@ -21,5 +21,10 @@ namespace Viki.LoadRunner.Engine.Executor.Scenario
         public virtual void ScenarioTearDown(IIteration context)
         {
         }
+
+        public  IIterationResult Validate()
+        {
+            return ScenarioValidator.Validate(this);
+        }
     }
 }

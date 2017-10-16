@@ -21,7 +21,7 @@ namespace Viki.LoadRunner.Engine.Presets.Interfaces
         /// Speed strategies will limit executed iteration per second.
         /// See this.SpeedPriority for prioritization.
         /// </summary>
-        ISpeedStrategy[] Speed { get; }
+        ISpeedStrategy[] Speeds { get; }
 
         /// <summary>
         /// Threading strategy defines created and working parallel thread count throughout the LoadTest
@@ -61,7 +61,7 @@ namespace Viki.LoadRunner.Engine.Presets.Interfaces
             return new StrategyBuilder
             {
                 Limits = settings.Limits.ToArray(),
-                Speed = settings.Speed.ToArray(),
+                Speeds = settings.Speeds.ToArray(),
                 Threading = settings.Threading,
                 FinishTimeout = settings.FinishTimeout,
                 TestScenarioType = settings.TestScenarioType,

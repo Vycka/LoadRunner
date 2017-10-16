@@ -10,6 +10,7 @@ using Viki.LoadRunner.Engine.Executor.Scenario;
 using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Presets;
 using Viki.LoadRunner.Engine.Strategies.Limit;
+using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;
 using Viki.LoadRunner.Tools.Windows;
 
@@ -57,7 +58,8 @@ namespace Viki.LoadRunner.Playground
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario<BlankScenario>()
                 .Set(new TimeLimit(TimeSpan.FromSeconds(6)))
-                .Set(new FixedThreadCount(5))
+                .Set(new FixedThreadCount(20))
+                .Set(new FixedSpeed(1000))
                 .SetFinishTimeout(TimeSpan.FromSeconds(60))
                 .Set(histogramAggregator);
 

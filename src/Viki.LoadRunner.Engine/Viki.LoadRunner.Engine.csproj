@@ -47,6 +47,7 @@
     <Compile Include="Aggregators\Interfaces\IDimension.cs" />
     <Compile Include="Aggregators\HistogramAggregator.cs" />
     <Compile Include="Aggregators\NullAggregator.cs" />
+    <Compile Include="Executor\Pool\WorkerThreadStats.cs" />
     <Compile Include="Presets\Adapter\Aggregator\AsyncResultsAggregator.cs" />
     <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\BreakByMetric.cs" />

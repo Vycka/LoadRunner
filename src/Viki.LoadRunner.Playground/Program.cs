@@ -12,6 +12,7 @@ namespace Viki.LoadRunner.Playground
 
         static void Main()
         {
+            new BlankFromBase().Validate();
 
             DemoSetup.Run();
             

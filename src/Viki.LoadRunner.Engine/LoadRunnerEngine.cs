@@ -18,7 +18,6 @@ namespace Viki.LoadRunner.Engine
 
         #region Properties
 
-
         /// <summary>
         /// Is test running
         /// </summary>
@@ -56,7 +55,7 @@ namespace Viki.LoadRunner.Engine
         #region Async/Run()
 
         /// <summary>
-        /// Start LoadTest execution on main thread & blocks till test execution & data aggregation is completed.
+        /// Start LoadTest execution on main thread. This blocks until test execution is finished by defined rules if any.
         /// </summary>
         public void Run()
         {
@@ -64,7 +63,7 @@ namespace Viki.LoadRunner.Engine
         }
 
         /// <summary>
-        /// Executes load test in seperate thread (non-blocking call)
+        /// Executes test in seperate thread (non-blocking call)
         /// </summary>
         public void RunAsync()
         {

@@ -16,9 +16,8 @@ using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Executor.Factory
 {
-    // TODO: parts of this factory can easily go to ILoadRunnerSettings 
-    // Like final ISpeedStrategy could be built there
-    //
+    // TODO: Split into smaller factories
+
     public class ScenarioThreadFactory : IWorkerThreadFactory
     {
         private readonly Type _scenarioType;

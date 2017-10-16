@@ -2,8 +2,6 @@ using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Worker.Interfaces;
 
-//#pragma warning disable 1591
-
 namespace Viki.LoadRunner.Engine.Executor.Worker
 {
     /// <summary>

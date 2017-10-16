@@ -20,7 +20,6 @@ using ThreadPool = Viki.LoadRunner.Engine.Executor.Pool.ThreadPool;
 
 namespace Viki.LoadRunner.Engine.Presets
 {
-    // TODO: Derrive this class and one could can have UI.
     public class CustomStrategy : IStrategy
     {
         public ITimer Timer => _timer;
@@ -58,7 +57,7 @@ namespace Viki.LoadRunner.Engine.Presets
             _errorHandler = new ErrorHandler();
             _globalIdFactory = new IdFactory();
 
-            _speed = PriorityStrategyFactory.Create(_settings.Speed, _timer);
+            _speed = PriorityStrategyFactory.Create(_settings.Speeds, _timer);
             _limit = new LimitsHandler(_settings.Limits);
             _threading = _settings.Threading;
             _state = new TestState(_timer, _globalIdFactory, _counter);
