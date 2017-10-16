@@ -1,4 +1,4 @@
-﻿using Viki.LoadRunner.Engine.Executor.Timer;
+﻿using Viki.LoadRunner.Engine.Executor.Strategy.Timer.Interfaces;
 using Viki.LoadRunner.Engine.Presets.Adapters.Speed;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Speed;

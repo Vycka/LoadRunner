@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Context.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Executor.Scenario;
+using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Strategy.Stats;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {

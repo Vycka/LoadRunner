@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Executor.Strategy.Stats.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Presets.Adapters.Aggregator
 {

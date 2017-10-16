@@ -28,7 +28,7 @@ namespace Viki.LoadRunner.Playground
                 .Add(new PercentileMetric(0.95) { Formatter =  l => l });
 
 
-            JsonStreamAggregator.Replay("17_13_22__1859.json", histo);
+            //JsonStreamAggregator.Replay("17_13_22__1859.json", histo);
 
             Console.WriteLine(JsonConvert.SerializeObject(histo.BuildResultsObjects(), Formatting.Indented));
         }

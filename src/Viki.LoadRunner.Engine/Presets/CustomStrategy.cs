@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Threads.Factory;
-using Viki.LoadRunner.Engine.Executor.Threads.Factory.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Threads.Workers;
-using Viki.LoadRunner.Engine.Executor.Threads.Workers.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Timer;
-using Viki.LoadRunner.Engine.Framework;
-using Viki.LoadRunner.Engine.Framework.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Strategy.Counters;
+using Viki.LoadRunner.Engine.Executor.Strategy.Counters.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Strategy.Factory;
+using Viki.LoadRunner.Engine.Executor.Strategy.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Strategy.State;
+using Viki.LoadRunner.Engine.Executor.Strategy.State.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Strategy.Timer;
+using Viki.LoadRunner.Engine.Executor.Strategy.Timer.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Strategy.Workers;
+using Viki.LoadRunner.Engine.Executor.Strategy.Workers.Interfaces;
 using Viki.LoadRunner.Engine.Presets.Adapters.Aggregator;
 using Viki.LoadRunner.Engine.Presets.Adapters.Limits;
 using Viki.LoadRunner.Engine.Presets.Factories;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Limit;
+using ThreadPool = Viki.LoadRunner.Engine.Executor.Strategy.Pool.ThreadPool;
 
 namespace Viki.LoadRunner.Engine.Presets
 {
@@ -28,7 +30,7 @@ namespace Viki.LoadRunner.Engine.Presets
         private IUniqueIdFactory<int> _globalIdFactory;
         private ITimerControl _timer;
 
-        private IThreadPool _pool;
+        private ThreadPool _pool;
         private IThreadPoolCounter _counter;
         
         private ISpeedStrategy _speed;
@@ -45,13 +47,10 @@ namespace Viki.LoadRunner.Engine.Presets
             _settings = settings;
         }
 
-        void IStrategy.Initialize(IThreadPoolCounter counter)
+        void IStrategy.Start()
         {
-            if (counter == null)
-                throw new ArgumentNullException(nameof(counter));
-
-            _counter = counter;
-
+            _counter = new ThreadPoolCounter();
+            
             _errorHandler = new ErrorHandler();
             _globalIdFactory = new IdFactory();
             _timer = new ExecutionTimer();
@@ -61,14 +60,8 @@ namespace Viki.LoadRunner.Engine.Presets
             _threading = _settings.Threading;
             _state = new TestState(_timer, _globalIdFactory, _counter);
             _aggregator = new AsyncResultsAggregator(_settings.Aggregators);
-        }
 
-        void IStrategy.Start(IThreadPool pool)
-        {
-            if (pool == null)
-                throw new ArgumentNullException(nameof(pool));
-
-            _pool = pool;
+            _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
 
             InitialThreadingSetup();
 
@@ -89,13 +82,16 @@ namespace Viki.LoadRunner.Engine.Presets
 
         void IStrategy.Stop()
         {
+            _pool?.StopAndDispose((int)_settings.FinishTimeout.TotalMilliseconds);
+            _pool = null;
+
             _timer.Stop();
             _aggregator.End();
 
             _errorHandler.Assert();
         }
 
-        IWorkerThreadFactory IStrategy.CreateWorkerThreadFactory()
+        private IWorkerThreadFactory CreateWorkerThreadFactory()
         {
             IWorkerThreadFactory threadFactory = new ScenarioThreadFactory(
                     _settings.TestScenarioType,

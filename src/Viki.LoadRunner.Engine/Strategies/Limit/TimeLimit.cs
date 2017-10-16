@@ -1,5 +1,5 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Framework.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Strategy.State.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Limit
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Framework.Interfaces;
+using Viki.LoadRunner.Engine.Executor.Strategy.State.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Limit;
 
 namespace Viki.LoadRunner.Engine.Presets.Adapters.Limits

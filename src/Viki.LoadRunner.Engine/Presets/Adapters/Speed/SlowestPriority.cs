@@ -1,4 +1,4 @@
-﻿using Viki.LoadRunner.Engine.Executor.Threads.Scheduler.Interfaces;
+﻿using Viki.LoadRunner.Engine.Executor.Strategy.Scheduler.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Presets.Adapters.Speed
 {

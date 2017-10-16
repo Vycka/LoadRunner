@@ -1,7 +1,7 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Executor.Strategy.Stats.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {

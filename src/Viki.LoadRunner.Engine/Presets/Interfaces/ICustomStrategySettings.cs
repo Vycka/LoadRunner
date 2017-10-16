@@ -49,5 +49,13 @@ namespace Viki.LoadRunner.Engine.Presets.Interfaces
         /// </summary>
         IResultsAggregator[] Aggregators { get; }
     }
+
+    public static class ICustomStrategySettingsExtensions {
+        public static LoadRunner Build(this ICustomStrategySettings settings)
+        {
+            return new LoadRunner(new CustomStrategy(settings));
+        }
+    }
+
 }
 
