@@ -8,7 +8,7 @@ using Viki.LoadRunner.Engine.Framework.Interfaces;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
 
-namespace Viki.LoadRunner.Engine.Presets.Strategies.Speed
+namespace Viki.LoadRunner.Engine.Presets.Adapters.Speed
 {
     internal class PrioritySpeedStrategy : IMultiSpeedStrategy
     {

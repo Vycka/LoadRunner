@@ -1,11 +1,10 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Timer;
 
 namespace Viki.LoadRunner.Engine.Presets.Interfaces
 {
-    public interface IExecutionStrategy
+    public interface IStrategy
     {
         void Initialize(IThreadPoolCounter counter);
 

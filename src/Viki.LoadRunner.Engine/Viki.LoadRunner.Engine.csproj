@@ -49,7 +49,7 @@
     <Compile Include="Aggregators\NullAggregator.cs" />
     <Compile Include="Executor\Timer\ITimerControl.cs" />
     <Compile Include="Presets\Interfaces\IMultiSpeedStrategy.cs" />
-    <Compile Include="Presets\Strategies\Aggregator\AsyncResultsAggregator.cs" />
+    <Compile Include="Presets\Adapters\Aggregator\AsyncResultsAggregator.cs" />
     <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\BreakByMetric.cs" />
     <Compile Include="Aggregators\Metrics\CountMetric.cs" />
@@ -126,10 +126,10 @@
     <Compile Include="Executor\Context\Checkpoint.cs" />
     <Compile Include="Executor\Context\Interfaces\IIterationContext.cs" />
     <Compile Include="LoadTestScenarioValidator.cs" />
-    <Compile Include="Presets\CustomExecutionStrategy.cs" />
-    <Compile Include="Presets\Interfaces\IExecutionStrategy.cs" />
-    <Compile Include="Presets\Interfaces\IBuilderSettings.cs" />
-    <Compile Include="Presets\Strategies\Limits\LimitsHandler.cs" />
+    <Compile Include="Presets\CustomStrategy.cs" />
+    <Compile Include="Presets\Interfaces\IStrategy.cs" />
+    <Compile Include="Presets\Interfaces\ICustomStrategySettings.cs" />
+    <Compile Include="Presets\Adapters\Limits\LimitsHandler.cs" />
     <Compile Include="Presets\StrategyBuilder.cs" />
     <Compile Include="ILoadTestScenario.cs" />
     <Compile Include="Executor\Context\IterationContext.cs" />
@@ -148,9 +148,9 @@
     <Compile Include="Strategies\Speed\LimitWorkingThreads.cs" />
     <Compile Include="Strategies\Speed\ListOfSpeed.cs" />
     <Compile Include="Strategies\Speed\MaxSpeed.cs" />
-    <Compile Include="Presets\Strategies\Speed\FastestPriority.cs" />
-    <Compile Include="Presets\Strategies\Speed\PrioritySpeedStrategy.cs" />
-    <Compile Include="Presets\Strategies\Speed\SlowestPriority.cs" />
+    <Compile Include="Presets\Adapters\Speed\FastestPriority.cs" />
+    <Compile Include="Presets\Adapters\Speed\PrioritySpeedStrategy.cs" />
+    <Compile Include="Presets\Adapters\Speed\SlowestPriority.cs" />
     <Compile Include="Presets\Factories\PriorityStrategyFactory.cs" />
     <Compile Include="Strategies\Threading\FixedThreadCount.cs" />
     <Compile Include="Strategies\Threading\IncrementalThreadCount.cs" />

@@ -10,20 +10,19 @@ using Viki.LoadRunner.Engine.Executor.Threads.Workers.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Framework;
 using Viki.LoadRunner.Engine.Framework.Interfaces;
+using Viki.LoadRunner.Engine.Presets.Adapters.Aggregator;
+using Viki.LoadRunner.Engine.Presets.Adapters.Limits;
 using Viki.LoadRunner.Engine.Presets.Factories;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
-using Viki.LoadRunner.Engine.Presets.Strategies.Aggregator;
-using Viki.LoadRunner.Engine.Presets.Strategies.Limits;
-using Viki.LoadRunner.Engine.Presets.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Limit;
 
 namespace Viki.LoadRunner.Engine.Presets
 {
     // TODO: Derrive this class and one could can have UI.
-    public class CustomExecutionStrategy : IExecutionStrategy
+    public class CustomStrategy : IStrategy
     {
-        private readonly IBuilderSettings _settings;
+        private readonly ICustomStrategySettings _settings;
 
         private IErrorHandler _errorHandler;
         private IUniqueIdFactory<int> _globalIdFactory;
@@ -38,7 +37,7 @@ namespace Viki.LoadRunner.Engine.Presets
         private ITestState _state;
         private IResultsAggregator _aggregator;
 
-        public CustomExecutionStrategy(IBuilderSettings settings)
+        public CustomStrategy(ICustomStrategySettings settings)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
@@ -46,7 +45,7 @@ namespace Viki.LoadRunner.Engine.Presets
             _settings = settings;
         }
 
-        void IExecutionStrategy.Initialize(IThreadPoolCounter counter)
+        void IStrategy.Initialize(IThreadPoolCounter counter)
         {
             if (counter == null)
                 throw new ArgumentNullException(nameof(counter));
@@ -64,7 +63,7 @@ namespace Viki.LoadRunner.Engine.Presets
             _aggregator = new AsyncResultsAggregator(_settings.Aggregators);
         }
 
-        void IExecutionStrategy.Start(IThreadPool pool)
+        void IStrategy.Start(IThreadPool pool)
         {
             if (pool == null)
                 throw new ArgumentNullException(nameof(pool));
@@ -78,7 +77,7 @@ namespace Viki.LoadRunner.Engine.Presets
             _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
         }
 
-        bool IExecutionStrategy.HeartBeat()
+        bool IStrategy.HeartBeat()
         {
             _errorHandler.Assert();
 
@@ -88,7 +87,7 @@ namespace Viki.LoadRunner.Engine.Presets
             return _limit.StopTest(_state);
         }
 
-        void IExecutionStrategy.Stop()
+        void IStrategy.Stop()
         {
             _timer.Stop();
             _aggregator.End();
@@ -96,7 +95,7 @@ namespace Viki.LoadRunner.Engine.Presets
             _errorHandler.Assert();
         }
 
-        IWorkerThreadFactory IExecutionStrategy.CreateWorkerThreadFactory()
+        IWorkerThreadFactory IStrategy.CreateWorkerThreadFactory()
         {
             IWorkerThreadFactory threadFactory = new ScenarioThreadFactory(
                     _settings.TestScenarioType,

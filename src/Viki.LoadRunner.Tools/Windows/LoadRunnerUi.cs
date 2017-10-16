@@ -40,14 +40,14 @@ namespace Viki.LoadRunner.Tools.Windows
         /// Initializes new executor instance
         /// </summary>
         /// <param name="settings">LoadTest parameters</param>
-        public static LoadRunnerUi Create(IExecutionStrategy strategy)
+        public static LoadRunnerUi Create(IStrategy strategy)
         {
             LoadRunnerUi ui = new LoadRunnerUi(strategy);
 
             return ui;
         }
 
-        private LoadRunnerUi(IExecutionStrategy strategy)
+        private LoadRunnerUi(IStrategy strategy)
         {
             if (strategy == null)
                 throw new ArgumentNullException(nameof(strategy));

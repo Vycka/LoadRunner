@@ -11,7 +11,7 @@ namespace Viki.LoadRunner.Engine.Presets
     /// <summary>
     /// LoadRunner custom settings builder & default ILoadRunnerSettings implementation template.
     /// </summary>
-    public class StrategyBuilder : IBuilderSettings
+    public class StrategyBuilder : ICustomStrategySettings
     {
         #region Constructors & Static creators
 

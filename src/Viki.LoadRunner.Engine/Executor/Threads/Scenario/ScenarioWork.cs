@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using Viki.LoadRunner.Engine.Executor.Threads.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Threads.Stats.Interfaces;

@@ -11,7 +11,6 @@ using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Executor.Context;
 using Viki.LoadRunner.Engine.Executor.Context.Interfaces;
-using Viki.LoadRunner.Engine.Presets;
 using Viki.LoadRunner.Engine.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Threading;

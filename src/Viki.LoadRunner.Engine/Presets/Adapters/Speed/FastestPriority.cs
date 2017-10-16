@@ -1,4 +1,4 @@
-﻿namespace Viki.LoadRunner.Engine.Presets.Strategies.Speed
+﻿namespace Viki.LoadRunner.Engine.Presets.Adapters.Speed
 {
     // This is fundamentally broken, no idea how to implement it properly.
     //

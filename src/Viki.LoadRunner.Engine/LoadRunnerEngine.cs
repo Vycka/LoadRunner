@@ -1,24 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
-using Viki.LoadRunner.Engine.Aggregators;
-using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Threads;
 using Viki.LoadRunner.Engine.Executor.Threads.Counters;
 using Viki.LoadRunner.Engine.Executor.Threads.Counters.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Threads.Factory;
 using Viki.LoadRunner.Engine.Executor.Threads.Factory.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Threads.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Threads.Workers;
-using Viki.LoadRunner.Engine.Executor.Threads.Workers.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Timer;
-using Viki.LoadRunner.Engine.Framework;
-using Viki.LoadRunner.Engine.Framework.Interfaces;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
-using Viki.LoadRunner.Engine.Presets.Strategies.Aggregator;
-using Viki.LoadRunner.Engine.Presets.Strategies.Speed;
-using Viki.LoadRunner.Engine.Strategies;
-using Viki.LoadRunner.Engine.Strategies.Limit;
 using ThreadPool = Viki.LoadRunner.Engine.Executor.Threads.ThreadPool;
 
 namespace Viki.LoadRunner.Engine
@@ -28,7 +13,7 @@ namespace Viki.LoadRunner.Engine
     /// </summary>
     public class LoadRunnerEngine
     {
-        private readonly IExecutionStrategy _strategy;
+        private readonly IStrategy _strategy;
 
         #region Fields
 
@@ -84,7 +69,7 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         /// <param name="settings">LoadTest settings</param>
         /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        public LoadRunnerEngine(IExecutionStrategy strategy)
+        public LoadRunnerEngine(IStrategy strategy)
         {
             if (strategy == null)
                 throw new ArgumentNullException(nameof(strategy));
@@ -98,7 +83,7 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         /// <param name="settings">LoadTest settings</param>
         /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        public static LoadRunnerEngine Create(IExecutionStrategy strategy)
+        public static LoadRunnerEngine Create(IStrategy strategy)
         {
             return new LoadRunnerEngine(strategy);
         }

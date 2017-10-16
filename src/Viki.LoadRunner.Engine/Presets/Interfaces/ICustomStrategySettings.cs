@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Presets.Interfaces
     /// <summary>
     /// LoadRunner engine configuration root
     /// </summary>
-    public interface IBuilderSettings
+    public interface ICustomStrategySettings
     {
         /// <summary>
         /// Limits define when test execution will be scheduled to stop.
