@@ -47,6 +47,12 @@
     <Compile Include="Aggregators\Interfaces\IDimension.cs" />
     <Compile Include="Aggregators\HistogramAggregator.cs" />
     <Compile Include="Aggregators\NullAggregator.cs" />
+    <Compile Include="Executor\Factory\DataCollectorFactory.cs" />
+    <Compile Include="Executor\Factory\Interfaces\IDataCollectorFactory.cs" />
+    <Compile Include="Executor\Factory\Interfaces\IScenarioHandlerFactory.cs" />
+    <Compile Include="Executor\Factory\Interfaces\ISchedulerFactory.cs" />
+    <Compile Include="Executor\Factory\ScenarioHandlerFactory.cs" />
+    <Compile Include="Executor\Factory\SchedulerFactory.cs" />
     <Compile Include="Executor\Pool\WorkerThreadStats.cs" />
     <Compile Include="Presets\Custom\Adapter\Aggregator\AsyncResultsAggregator.cs" />
     <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
@@ -127,6 +133,9 @@
     <Compile Include="Presets\ReplayLogsBuilder.cs" />
     <Compile Include="Presets\Replay\Factory\ReplayScenarioFactory.cs" />
     <Compile Include="Presets\Replay\Interfaces\IReplayScenario.cs" />
+    <Compile Include="Presets\Replay\Reader\LogItem.cs" />
+    <Compile Include="Presets\Replay\Reader\Interfaces\ILogReader.cs" />
+    <Compile Include="Presets\Replay\Scheduler\ReplayScheduler.cs" />
     <Compile Include="Presets\StrategyBuilder.cs" />
     <Compile Include="Executor\Scenario\Interfaces\IScenario.cs" />
     <Compile Include="Executor\Scenario\Iteration.cs" />

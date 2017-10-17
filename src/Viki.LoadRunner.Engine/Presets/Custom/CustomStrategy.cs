@@ -53,24 +53,29 @@ namespace Viki.LoadRunner.Engine.Presets.Custom
 
         public virtual void Start()
         {
-            _counter = new ThreadPoolCounter();
-            
-            _errorHandler = new ErrorHandler();
-            _globalIdFactory = new IdFactory();
-
-            _speed = PriorityStrategyFactory.Create(_settings.Speeds, _timer);
-            _limit = new LimitsHandler(_settings.Limits);
-            _threading = _settings.Threading;
-            _state = new TestState(_timer, _globalIdFactory, _counter);
-            _aggregator = new AsyncResultsAggregator(_settings.Aggregators);
-
-            _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
+            InitializeState();
 
             InitialThreadingSetup();
 
             _aggregator.Begin();
 
             _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
+        }
+
+        protected virtual void InitializeState()
+        {
+            _counter = new ThreadPoolCounter();
+
+            _errorHandler = new ErrorHandler();
+            _globalIdFactory = new IdFactory();
+            _state = new TestState(_timer, _globalIdFactory, _counter);
+
+            _speed = PriorityStrategyFactory.Create(_settings.Speeds, _timer);
+            _limit = new LimitsHandler(_settings.Limits);
+            _threading = _settings.Threading;
+            _aggregator = new AsyncResultsAggregator(_settings.Aggregators);
+
+            _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
         }
 
         public virtual bool HeartBeat()
@@ -94,20 +99,45 @@ namespace Viki.LoadRunner.Engine.Presets.Custom
             _errorHandler.Assert();
         }
 
-        private IWorkerThreadFactory CreateWorkerThreadFactory()
+        protected virtual IWorkerThreadFactory CreateWorkerThreadFactory()
         {
+            IIterationContextFactory iterationContextFactory = CreateIterationContextFactory();
+            IScenarioHandlerFactory scenarioHandlerFactory = CreateScenarioHandlerFactory();
+            ISchedulerFactory schedulerFactory = CreateSchedulerFactory();
+            IDataCollectorFactory dataCollectorFactory = CreateDataCollectorFactory();
+
+            IPrewait prewait = new TimerBasedPrewait(_timer);
+
             IWorkerThreadFactory threadFactory = new ScenarioThreadFactory(
-                    _settings.TestScenarioType,
-                    _timer,
-                    _speed,
-                    _counter,
-                    _settings.InitialUserData,
-                    _aggregator,
-                    _globalIdFactory,
-                    _errorHandler
-                );
+                iterationContextFactory,
+                scenarioHandlerFactory,
+                schedulerFactory,
+                dataCollectorFactory,
+                prewait,
+                _errorHandler
+            );
 
             return threadFactory;
+        }
+
+        protected virtual IDataCollectorFactory CreateDataCollectorFactory()
+        {
+            return new DataCollectorFactory(_aggregator, _counter);
+        }
+
+        protected virtual ISchedulerFactory CreateSchedulerFactory()
+        {
+            return new SchedulerFactory(_timer, _speed, _counter);
+        }
+
+        protected virtual IScenarioHandlerFactory CreateScenarioHandlerFactory()
+        {
+            return new ScenarioHandlerFactory(_settings.TestScenarioType, _globalIdFactory);
+        }
+
+        protected virtual IIterationContextFactory CreateIterationContextFactory()
+        {
+            return new IterationContextFactory(_timer, _settings.InitialUserData);
         }
 
         private void InitialThreadingSetup()
