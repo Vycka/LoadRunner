@@ -27,32 +27,10 @@ namespace Viki.LoadRunner.Engine.Executor.Scheduler
             Timer = timer;
         }
 
-        public ScheduleAction Action { get; set; } = ScheduleAction.Execute; 
+        public ScheduleAction Action { get; set; } = ScheduleAction.Execute;
         public TimeSpan At { get; set; } = TimeSpan.Zero;
 
-        public virtual void Idle(TimeSpan delay)
-        {
-            At = Timer.Value + delay;
 
-            Action = ScheduleAction.Idle;
-        }
-
-        public virtual void ExecuteAt(TimeSpan at)
-        {
-            At = at;
-
-            Action = ScheduleAction.Execute;
-        }
-
-        public TimeSpan CalculateDelay()
-        {
-            return At - Timer.Value;
-        }
-
-
-        // Scheduler has no cancellation token now
-        // Maybe redesign strategies a bit so they just don't schedule that far ahead or pass cancellation somehow.
-        // ref not works
         public void WaitNext(ref bool stop)
         {
             _strategy.Next(this);
@@ -74,6 +52,12 @@ namespace Viki.LoadRunner.Engine.Executor.Scheduler
                 _counter.AddIdle(-1);
             }
         }
+
+        private TimeSpan CalculateDelay()
+        {
+            return At - Timer.Value;
+        }
+
 
         private void SemiWait(TimeSpan delay, ref bool stop)
         {

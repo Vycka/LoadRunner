@@ -85,7 +85,6 @@ namespace Viki.LoadRunner.Engine.Executor.Factory
             IWork scenarioWork = new ScenarioWork(scheduler, scenarioHandler, collector);
 
 
-
             IWorkerThread thread = new WorkerThread(scenarioWork, _prewait);
             _errorHandler.Register(thread);
 
