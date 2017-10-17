@@ -10,14 +10,12 @@ using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Collector;
-using Viki.LoadRunner.Engine.Executor.Collector.Interfaces;
-using Viki.LoadRunner.Engine.Executor.Scenario;
-using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
-using Viki.LoadRunner.Engine.Presets;
-using Viki.LoadRunner.Engine.Presets.Custom;
-using Viki.LoadRunner.Engine.Presets.Custom.Interfaces;
-using Viki.LoadRunner.Engine.Presets.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Custom;
+using Viki.LoadRunner.Engine.Strategies.Custom.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
 
 

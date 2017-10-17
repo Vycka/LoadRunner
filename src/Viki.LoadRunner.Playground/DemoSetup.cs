@@ -6,12 +6,12 @@ using Newtonsoft.Json;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Engine.Executor.Scenario;
-using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
-using Viki.LoadRunner.Engine.Presets;
-using Viki.LoadRunner.Engine.Strategies.Limit;
-using Viki.LoadRunner.Engine.Strategies.Speed;
-using Viki.LoadRunner.Engine.Strategies.Threading;
+using Viki.LoadRunner.Engine.Core.Scenario;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 using Viki.LoadRunner.Tools.Windows;
 
 namespace Viki.LoadRunner.Playground

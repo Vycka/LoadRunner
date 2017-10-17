@@ -1,4 +1,4 @@
-﻿using Viki.LoadRunner.Engine.Executor.Collector.Interfaces;
+﻿using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Interfaces
 {
