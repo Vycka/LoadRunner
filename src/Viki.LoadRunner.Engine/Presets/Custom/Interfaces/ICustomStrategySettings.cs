@@ -3,7 +3,7 @@ using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
-namespace Viki.LoadRunner.Engine.Presets.Interfaces
+namespace Viki.LoadRunner.Engine.Presets.Custom.Interfaces
 {
     /// <summary>
     /// LoadRunner engine configuration root

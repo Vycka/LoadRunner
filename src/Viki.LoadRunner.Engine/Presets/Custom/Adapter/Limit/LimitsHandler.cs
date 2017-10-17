@@ -2,7 +2,7 @@
 using Viki.LoadRunner.Engine.Executor.State.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
-namespace Viki.LoadRunner.Engine.Presets.Adapter.Limit
+namespace Viki.LoadRunner.Engine.Presets.Custom.Adapter.Limit
 {
     public class LimitsHandler : ILimitStrategy
     {

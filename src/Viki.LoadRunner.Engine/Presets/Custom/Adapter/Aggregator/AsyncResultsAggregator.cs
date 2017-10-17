@@ -4,7 +4,7 @@ using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Collector.Interfaces;
 
-namespace Viki.LoadRunner.Engine.Presets.Adapter.Aggregator
+namespace Viki.LoadRunner.Engine.Presets.Custom.Adapter.Aggregator
 {
     /// <summary>
     /// Since TestContextResultReceived calls are synchronous from benchmarking threads, this class unloads processing to its own seperate thread

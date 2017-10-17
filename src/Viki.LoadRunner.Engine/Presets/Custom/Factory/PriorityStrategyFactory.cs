@@ -1,10 +1,10 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Timer.Interfaces;
-using Viki.LoadRunner.Engine.Presets.Adapter.Speed;
+using Viki.LoadRunner.Engine.Presets.Custom.Adapter.Speed;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Speed;
 using Viki.LoadRunner.Engine.Utils;
 
-namespace Viki.LoadRunner.Engine.Presets.Factory
+namespace Viki.LoadRunner.Engine.Presets.Custom.Factory
 {
     public static class PriorityStrategyFactory
     {

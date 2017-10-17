@@ -1,6 +1,6 @@
 ﻿using Viki.LoadRunner.Engine.Executor.Scheduler.Interfaces;
 
-namespace Viki.LoadRunner.Engine.Presets.Adapter.Speed
+namespace Viki.LoadRunner.Engine.Presets.Custom.Adapter.Speed
 {
     public class SlowestPriority : IPriorityResolver
     {

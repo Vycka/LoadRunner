@@ -6,7 +6,7 @@ using Viki.LoadRunner.Engine.Executor.State.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Timer.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
-namespace Viki.LoadRunner.Engine.Presets.Adapter.Speed
+namespace Viki.LoadRunner.Engine.Presets.Custom.Adapter.Speed
 {
     internal class PrioritySpeedStrategy : ISpeedStrategy
     {

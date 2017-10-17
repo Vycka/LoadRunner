@@ -11,14 +11,15 @@ using Viki.LoadRunner.Engine.Executor.Timer;
 using Viki.LoadRunner.Engine.Executor.Timer.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Worker;
 using Viki.LoadRunner.Engine.Executor.Worker.Interfaces;
-using Viki.LoadRunner.Engine.Presets.Adapter.Aggregator;
-using Viki.LoadRunner.Engine.Presets.Adapter.Limit;
-using Viki.LoadRunner.Engine.Presets.Factory;
+using Viki.LoadRunner.Engine.Presets.Custom.Adapter.Aggregator;
+using Viki.LoadRunner.Engine.Presets.Custom.Adapter.Limit;
+using Viki.LoadRunner.Engine.Presets.Custom.Factory;
+using Viki.LoadRunner.Engine.Presets.Custom.Interfaces;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using ThreadPool = Viki.LoadRunner.Engine.Executor.Pool.ThreadPool;
 
-namespace Viki.LoadRunner.Engine.Presets
+namespace Viki.LoadRunner.Engine.Presets.Custom
 {
     public class CustomStrategy : IStrategy
     {

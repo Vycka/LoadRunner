@@ -15,6 +15,8 @@ using Viki.LoadRunner.Engine.Executor.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Executor.Scenario;
 using Viki.LoadRunner.Engine.Executor.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Presets;
+using Viki.LoadRunner.Engine.Presets.Custom;
+using Viki.LoadRunner.Engine.Presets.Custom.Interfaces;
 using Viki.LoadRunner.Engine.Presets.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
 
