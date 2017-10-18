@@ -46,13 +46,14 @@ namespace Viki.LoadRunner.Engine.Core.Worker
             if (_handlerThread.IsAlive)
                 throw new Exception("TestScenarioThread already started");
 
+            _stopQueued = false;
             _handlerThread.Start();
         }
 
         public void QueueStopThreadAsync()
         {
             _stopQueued = true;
-            _work.Stop();
+
         }
 
         public void StopThread(int timeoutMilliseconds)
@@ -118,7 +119,7 @@ namespace Viki.LoadRunner.Engine.Core.Worker
 
                 while (!_stopQueued)
                 {
-                    _work.Execute();
+                    _work.Execute(ref _stopQueued);
                 }
 
                 _work.Cleanup();

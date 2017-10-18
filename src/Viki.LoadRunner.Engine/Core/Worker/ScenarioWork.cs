@@ -12,8 +12,6 @@ namespace Viki.LoadRunner.Engine.Core.Worker
 
         private readonly IDataCollector _collector;
 
-        private bool _stopping = false;
-
         public ScenarioWork(IScheduler scheduler, IScenarioHandler handler, IDataCollector collector)
         {
             if (scheduler == null)
@@ -33,13 +31,13 @@ namespace Viki.LoadRunner.Engine.Core.Worker
             _handler.Init();
         }
 
-        public void Execute()
+        public void Execute(ref bool stop)
         {
             _handler.PrepareNext();
 
-            _scheduler.WaitNext(ref _stopping);
+            _scheduler.WaitNext(ref stop);
 
-            if (!_stopping)
+            if (!stop)
             {
                 _handler.Execute();
 
@@ -52,9 +50,5 @@ namespace Viki.LoadRunner.Engine.Core.Worker
             _handler.Cleanup();
         }
 
-        public void Stop()
-        {
-            _stopping = true;
-        }
     }
 }

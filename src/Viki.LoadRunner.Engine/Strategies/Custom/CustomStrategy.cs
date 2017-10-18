@@ -26,7 +26,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
         public ITimer Timer => _timer;
         private readonly ExecutionTimer _timer;
 
-        protected readonly ICustomStrategySettings Settings;
+        private readonly ICustomStrategySettings _settings;
 
 
         private IErrorHandler _errorHandler;
@@ -49,23 +49,21 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 
-            Settings = settings;
+            _settings = settings;
 
             _timer = new ExecutionTimer();
         }
 
-        public virtual void Start()
+        public void Start()
         {
             InitializeState();
-
-            InitialThreadingSetup();
 
             _aggregator.Begin();
 
             _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
         }
 
-        protected virtual void InitializeState()
+        private void InitializeState()
         {
             _counter = new ThreadPoolCounter();
             _errorHandler = new ErrorHandler();
@@ -73,15 +71,19 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
             _state = new TestState(_timer, _globalIdFactory, _counter);
 
-            _speed = PriorityStrategyFactory.Create(Settings.Speeds, _timer);
-            _limit = new LimitsHandler(Settings.Limits);
-            _threading = Settings.Threading;
-            _aggregator = new AsyncResultsAggregator(Settings.Aggregators);
+            _speed = PriorityStrategyFactory.Create(_settings.Speeds, _timer);
+            _speed.Setup(_state);
+
+            _limit = new LimitsHandler(_settings.Limits);
+            _threading = _settings.Threading;
+            _aggregator = new AsyncResultsAggregator(_settings.Aggregators);
 
             _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
+
+            InitialThreadingSetup();
         }
 
-        public virtual bool HeartBeat()
+        public bool HeartBeat()
         {
             _errorHandler.Assert();
 
@@ -91,9 +93,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             return _limit.StopTest(_state);
         }
 
-        public virtual void Stop()
+        public void Stop()
         {
-            _pool?.StopAndDispose((int)Settings.FinishTimeout.TotalMilliseconds);
+            _pool?.StopAndDispose((int)_settings.FinishTimeout.TotalMilliseconds);
             _pool = null;
 
             _timer.Stop();
@@ -102,7 +104,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             _errorHandler.Assert();
         }
 
-        protected virtual IWorkerThreadFactory CreateWorkerThreadFactory()
+        private IWorkerThreadFactory CreateWorkerThreadFactory()
         {
             IIterationContextFactory iterationContextFactory = CreateIterationContextFactory();
             IScenarioHandlerFactory scenarioHandlerFactory = CreateScenarioHandlerFactory();
@@ -123,24 +125,24 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             return threadFactory;
         }
 
-        protected virtual IDataCollectorFactory CreateDataCollectorFactory()
+        private IDataCollectorFactory CreateDataCollectorFactory()
         {
             return new DataCollectorFactory(_aggregator, _counter);
         }
 
-        protected virtual ISchedulerFactory CreateSchedulerFactory()
+        private ISchedulerFactory CreateSchedulerFactory()
         {
             return new SchedulerFactory(_timer, _speed, _counter);
         }
 
-        protected virtual IScenarioHandlerFactory CreateScenarioHandlerFactory()
+        private IScenarioHandlerFactory CreateScenarioHandlerFactory()
         {
-            return new ScenarioHandlerFactory(Settings.TestScenarioType, _globalIdFactory);
+            return new ScenarioHandlerFactory(_settings.TestScenarioType, _globalIdFactory);
         }
 
-        protected virtual IIterationContextFactory CreateIterationContextFactory()
+        private IIterationContextFactory CreateIterationContextFactory()
         {
-            return new IterationContextFactory(_timer, Settings.InitialUserData);
+            return new IterationContextFactory(_timer, _settings.InitialUserData);
         }
 
         private void InitialThreadingSetup()

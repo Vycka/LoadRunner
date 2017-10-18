@@ -1,0 +1,65 @@
+﻿using System;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
+using Viki.LoadRunner.Engine.Core.Worker;
+using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Replay.Scenario.Interfaces;
+
+namespace Viki.LoadRunner.Engine.Strategies.Replay.Factory
+{
+    public class ReplayScenarioThreadFactory : IWorkerThreadFactory
+    {
+        private readonly IReplayScenarioHandlerFactory _scenarioHandlerFactory;
+        private readonly IReplaySchedulerFactory _schedulerFactory;
+        private readonly IDataCollectorFactory _dataCollectorFactory;
+        private readonly IIterationContextFactory _iterationContextFactory;
+        private readonly IErrorHandler _errorHandler;
+        private readonly IPrewait _prewait;
+
+        public ReplayScenarioThreadFactory(IIterationContextFactory iterationContextFactory, IReplayScenarioHandlerFactory scenarioHandlerFactory, IReplaySchedulerFactory schedulerFactory, IDataCollectorFactory dataCollectorFactory, IPrewait prewait, IErrorHandler errorHandler)
+        {
+            if (iterationContextFactory == null)
+                throw new ArgumentNullException(nameof(iterationContextFactory));
+            if (scenarioHandlerFactory == null)
+                throw new ArgumentNullException(nameof(scenarioHandlerFactory));
+            if (schedulerFactory == null)
+                throw new ArgumentNullException(nameof(schedulerFactory));
+            if (dataCollectorFactory == null)
+                throw new ArgumentNullException(nameof(dataCollectorFactory));
+            if (prewait == null)
+                throw new ArgumentNullException(nameof(prewait));
+            if (errorHandler == null)
+                throw new ArgumentNullException(nameof(errorHandler));
+
+
+            _iterationContextFactory = iterationContextFactory;
+            _scenarioHandlerFactory = scenarioHandlerFactory;
+            _schedulerFactory = schedulerFactory;
+            _dataCollectorFactory = dataCollectorFactory;
+            _prewait = prewait;
+            _errorHandler = errorHandler;
+        }
+
+        public IWorkerThread Create()
+        {
+            IIterationControl iterationContext = _iterationContextFactory.Create();
+
+            // IScenario handler
+            IReplayScenarioHandler scenarioHandler = _scenarioHandlerFactory.Create(iterationContext);
+            // Scheduler for ISpeedStrategy
+            IScheduler scheduler = _schedulerFactory.Create(scenarioHandler);
+            // Data collector for results aggregation
+            IDataCollector collector = _dataCollectorFactory.Create(iterationContext);
+
+            // Put it all together to create IWork.
+            IWork scenarioWork = new ScenarioWork(scheduler, scenarioHandler, collector);
+            IWorkerThread thread = new WorkerThread(scenarioWork, _prewait);
+            _errorHandler.Register(thread);
+
+            return thread;
+        }
+    }
+}

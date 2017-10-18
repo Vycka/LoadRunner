@@ -3,9 +3,7 @@
     public interface IWork
     {
         void Init();
-        void Execute();
+        void Execute(ref bool stop);
         void Cleanup();
-
-        void Stop();
     }
 }

@@ -8,11 +8,12 @@ namespace Viki.LoadRunner.Engine.Core.Worker
 {
     public class ScenarioHandler : IScenarioHandler
     {
-        private readonly IUniqueIdFactory<int> _globalIdFactory;
         private readonly IScenario _scenario;
-        private readonly IIterationControl _context;
 
-        private int _threadIterationId;
+        protected readonly IUniqueIdFactory<int> _globalIdFactory;
+        protected readonly IIterationControl _context;
+
+        protected int _threadIterationId;
 
         public ScenarioHandler(IUniqueIdFactory<int> globalIdFactory, IScenario scenario, IIterationControl context)
         {

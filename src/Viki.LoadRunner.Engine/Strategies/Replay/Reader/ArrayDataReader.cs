@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay.Reader
 {
-    public class EnumerableDataReader<T> : IDataReader<T>
+    public class ArrayDataReader : IReplayDataReader
     {
-        private readonly LogItem<T>[] _data;
+        private readonly DataItem[] _data;
         private int _readIndex;
 
-        public EnumerableDataReader(ICollection<LogItem<T>> data)
+        public ArrayDataReader(DataItem[] data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -19,16 +18,20 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Reader
             _data = data.ToArray();
         }
 
-        public void Start()
+        public void Begin()
         {
             _readIndex = -1;
         }
 
-        public LogItem<T> Next()
+        public DataItem Next()
         {
             int current = Interlocked.Increment(ref _readIndex);
 
-            return _data[current];
+            DataItem result = null;
+            if (current < _data.Length)
+                result = _data[current];
+
+            return result;
         }
 
         public void End()
