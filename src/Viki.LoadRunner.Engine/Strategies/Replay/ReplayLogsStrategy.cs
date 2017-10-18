@@ -1,6 +1,4 @@
-﻿using Viki.LoadRunner.Engine.Strategies.Custom;
-using Viki.LoadRunner.Engine.Strategies.Custom.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Interfaces;
+﻿using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay
 {

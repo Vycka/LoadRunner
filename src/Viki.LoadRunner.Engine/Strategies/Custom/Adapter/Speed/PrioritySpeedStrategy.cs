@@ -33,6 +33,14 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Speed
             _schedules = new ConditionalWeakTable<ISchedule, ISchedule[]>();
         }
 
+        public void Setup(ITestState state)
+        {
+            for (int i = 0; i < _strategies.Length; i++)
+            {
+                _strategies[i].Setup(state);
+            }
+        }
+
         public void Next(IIterationState state, ISchedule target)
         {
             ISchedule[] schedules = GetScheduleTable(target);

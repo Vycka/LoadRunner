@@ -38,6 +38,7 @@ namespace Viki.LoadRunner.Engine.Core.Factory
             _schedulerFactory = schedulerFactory;
             _dataCollectorFactory = dataCollectorFactory;
             _prewait = prewait;
+            _errorHandler = errorHandler;
         }
 
         public IWorkerThread Create()

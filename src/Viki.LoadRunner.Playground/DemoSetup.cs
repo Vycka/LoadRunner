@@ -59,7 +59,7 @@ namespace Viki.LoadRunner.Playground
                 .SetScenario<BlankScenario>()
                 .Set(new TimeLimit(TimeSpan.FromSeconds(6)))
                 .Set(new FixedThreadCount(20))
-                .Set(new FixedSpeed(1000))
+                .Set(new FixedSpeed(200000))
                 .SetFinishTimeout(TimeSpan.FromSeconds(60))
                 .Set(histogramAggregator);
 

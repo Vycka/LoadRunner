@@ -18,7 +18,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies
 {
-    public class ReplayLogsBuilder : CustomStrategy
+    public class ReplayLogsBuilder 
     {
 
         public abstract class ReplayLogsScenarioBase : IScenario

@@ -22,6 +22,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
             WorkingThreads = workingThreads;
         }
 
+        public void Setup(ITestState state)
+        {
+        }
+
         public void Next(IIterationState state, ISchedule scheduler)
         {
             int includeSelf = scheduler.Action == ScheduleAction.Execute ? 1 : 0; 

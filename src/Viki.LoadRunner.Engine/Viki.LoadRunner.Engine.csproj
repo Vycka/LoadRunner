@@ -132,6 +132,7 @@
     <Compile Include="Strategies\Custom\Adapter\Limit\LimitsHandler.cs" />
     <Compile Include="Strategies\ReplayLogsBuilder.cs" />
     <Compile Include="Strategies\Replay\Factory\ReplayScenarioFactory.cs" />
+    <Compile Include="Strategies\Replay\Reader\EnumerableDataReader.cs" />
     <Compile Include="Strategies\Replay\Interfaces\IReplayScenario.cs" />
     <Compile Include="Strategies\Replay\Reader\LogItem.cs" />
     <Compile Include="Strategies\Replay\Reader\Interfaces\ILogReader.cs" />
