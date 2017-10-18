@@ -26,27 +26,30 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
         public ITimer Timer => _timer;
         private readonly ExecutionTimer _timer;
 
-        private readonly ICustomStrategySettings _settings;
+        protected readonly ICustomStrategySettings Settings;
+
 
         private IErrorHandler _errorHandler;
         private IUniqueIdFactory<int> _globalIdFactory;
-        
+        private IThreadPoolCounter _counter;
 
         private ThreadPool _pool;
-        private IThreadPoolCounter _counter;
-        
+
+
         private ISpeedStrategy _speed;
         private IThreadingStrategy _threading;
         private ILimitStrategy _limit;
         private ITestState _state;
         private IResultsAggregator _aggregator;
 
+
+        // Could ICustomStrategySettings
         public CustomStrategy(ICustomStrategySettings settings)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 
-            _settings = settings;
+            Settings = settings;
 
             _timer = new ExecutionTimer();
         }
@@ -65,15 +68,15 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
         protected virtual void InitializeState()
         {
             _counter = new ThreadPoolCounter();
-
             _errorHandler = new ErrorHandler();
             _globalIdFactory = new IdFactory();
+
             _state = new TestState(_timer, _globalIdFactory, _counter);
 
-            _speed = PriorityStrategyFactory.Create(_settings.Speeds, _timer);
-            _limit = new LimitsHandler(_settings.Limits);
-            _threading = _settings.Threading;
-            _aggregator = new AsyncResultsAggregator(_settings.Aggregators);
+            _speed = PriorityStrategyFactory.Create(Settings.Speeds, _timer);
+            _limit = new LimitsHandler(Settings.Limits);
+            _threading = Settings.Threading;
+            _aggregator = new AsyncResultsAggregator(Settings.Aggregators);
 
             _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
         }
@@ -90,7 +93,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
         public virtual void Stop()
         {
-            _pool?.StopAndDispose((int)_settings.FinishTimeout.TotalMilliseconds);
+            _pool?.StopAndDispose((int)Settings.FinishTimeout.TotalMilliseconds);
             _pool = null;
 
             _timer.Stop();
@@ -132,17 +135,17 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
         protected virtual IScenarioHandlerFactory CreateScenarioHandlerFactory()
         {
-            return new ScenarioHandlerFactory(_settings.TestScenarioType, _globalIdFactory);
+            return new ScenarioHandlerFactory(Settings.TestScenarioType, _globalIdFactory);
         }
 
         protected virtual IIterationContextFactory CreateIterationContextFactory()
         {
-            return new IterationContextFactory(_timer, _settings.InitialUserData);
+            return new IterationContextFactory(_timer, Settings.InitialUserData);
         }
 
         private void InitialThreadingSetup()
         {
-            _settings.Threading.Setup(_pool);
+            _threading.Setup(_pool);
 
             while (_counter.CreatedThreadCount != _counter.InitializedThreadCount)
             {
