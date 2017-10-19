@@ -7,19 +7,23 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
-using Viki.LoadRunner.Engine.Aggregators;
+using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Result;
-using Viki.LoadRunner.Engine.Settings;
+using Viki.LoadRunner.Engine.Core.Collector;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Custom;
+using Viki.LoadRunner.Engine.Strategies.Custom.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
+
 
 namespace Viki.LoadRunner.Tools.Windows
 {
     public partial class LoadRunnerUi : Form, IResultsAggregator
     {
-        private readonly ILoadRunnerSettings _settings;
+        private readonly ICustomStrategySettings _settingsTemplate;
         public string TextTemplate = "LR-UI {0}";
 
         private readonly MetricMultiplexer _metricMultiplexerTemplate;
@@ -30,26 +34,19 @@ namespace Viki.LoadRunner.Tools.Windows
         /// 
         /// But It shouldn't be controlled from here, use UI buttons instead.
         /// </summary>
-        public readonly LoadRunnerEngine Instance;
+        private readonly LoadRunnerEngine _instance;
+        private readonly CustomStrategy _strategy;
 
-        private readonly ConcurrentQueue<IResult> _resultsQueue = new ConcurrentQueue<IResult>(); 
+        private readonly ConcurrentQueue<IResult> _resultsQueue = new ConcurrentQueue<IResult>();
 
-        /// <summary>
-        /// Initializes new executor instance
-        /// </summary>
-        /// <param name="settings">LoadTest parameters</param>
-        /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        public static LoadRunnerUi Create(ILoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
-        {
-            LoadRunnerUi ui = new LoadRunnerUi(settings, resultsAggregators);
+        
 
-            return ui;
-        }
-
-        private LoadRunnerUi(ILoadRunnerSettings settings, IResultsAggregator[] resultsAggregators)
+        public LoadRunnerUi(ICustomStrategySettings settings)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
+
+            _settingsTemplate = settings;
 
             _metricMultiplexerTemplate = new MetricMultiplexer(new IMetric[]
             {
@@ -62,16 +59,10 @@ namespace Viki.LoadRunner.Tools.Windows
                 new TransactionsPerSecMetric()
             });
 
-            _settings = settings;
-
-            Instance = new LoadRunnerEngine(_settings, resultsAggregators.Concat(new [] { this }).ToArray());
+            _strategy = new CustomStrategy(settings.Clone().Add(this));
+            _instance = new LoadRunnerEngine(_strategy);
 
             InitializeComponent();
-        }
-
-        private void ResetStats()
-        {
-            _metricMultiplexer = ((IMetric)_metricMultiplexerTemplate).CreateNew();
         }
 
         void IResultsAggregator.Begin()
@@ -83,6 +74,12 @@ namespace Viki.LoadRunner.Tools.Windows
             // This will allow BW ProcessChange to work properly.
             Invoke(new InvokeDelegate(() => _backgroundWorker1.RunWorkerAsync()));
         }
+
+        private void ResetStats()
+        {
+            _metricMultiplexer = ((IMetric)_metricMultiplexerTemplate).CreateNew();
+        }
+
 
         void IResultsAggregator.TestContextResultReceived(IResult result)
         {
@@ -102,7 +99,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
             if (dialogResult == DialogResult.Yes)
             {
-                Instance.RunAsync();
+                _instance.RunAsync();
 
                 TestStartedDisableButtons();
             }
@@ -127,7 +124,7 @@ namespace Viki.LoadRunner.Tools.Windows
             DialogResult dialogResult = MessageBox.Show("Stop?", "Stop?", MessageBoxButtons.YesNo);
 
             if (dialogResult == DialogResult.Yes)
-                Task.Run(() => Instance.Wait(TimeSpan.Zero, true));
+                Task.Run(() => _instance.Wait(TimeSpan.Zero, true));
         }
 
         private void _backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -161,7 +158,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void _validateButton_Click(object sender, EventArgs e)
         {
-            IterationResult result = LoadTestScenarioValidator.Validate((ILoadTestScenario) Activator.CreateInstance(_settings.TestScenarioType));
+            IterationResult result = ScenarioValidator.Validate((IScenario) Activator.CreateInstance(_settingsTemplate.TestScenarioType));
             ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.Names.IterationEnd);
 
             AppendMessage($"Validation OK: {checkpoint.TimePoint.TotalMilliseconds}ms.");
@@ -211,7 +208,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void LoadRunnerUi_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (Instance.IsRunning)
+            if (_instance.Running)
             {
                 e.Cancel = true;
 
@@ -226,7 +223,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void RefreshWindowTitle()
         {
-            Text = string.Format(TextTemplate, Instance.TestDuration.ToString("g"));
+            Text = string.Format(TextTemplate, _strategy.Timer.Value.ToString("g"));
         }
     }
 }

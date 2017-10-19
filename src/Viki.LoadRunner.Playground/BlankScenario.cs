@@ -1,32 +1,30 @@
-﻿using System.Threading;
-using Viki.LoadRunner.Engine;
-using Viki.LoadRunner.Engine.Executor.Context;
+﻿using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Playground
 {
-    public class BlankScenario : ILoadTestScenario
+    public class BlankScenario : IScenario
     {
-        public void ScenarioSetup(ITestContext context)
+        public void ScenarioSetup(IIteration context)
         {
             
         }
 
-        public void IterationSetup(ITestContext context)
+        public void IterationSetup(IIteration context)
         {
 
         }
 
-        public void ExecuteScenario(ITestContext context)
+        public void ExecuteScenario(IIteration context)
         {
-            Thread.Sleep(200);
+            //Thread.Sleep(200);
         }
 
-        public void IterationTearDown(ITestContext context)
+        public void IterationTearDown(IIteration context)
         {
 
         }
 
-        public void ScenarioTearDown(ITestContext context)
+        public void ScenarioTearDown(IIteration context)
         {
 
         }

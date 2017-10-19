@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
     /// <summary>

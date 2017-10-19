@@ -3,16 +3,15 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using Newtonsoft.Json;
-using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Settings;
-using Viki.LoadRunner.Engine.Strategies.Limit;
-using Viki.LoadRunner.Engine.Strategies.Speed;
-using Viki.LoadRunner.Engine.Strategies.Threading;
-using Viki.LoadRunner.Tools.Aggregators;
+using Viki.LoadRunner.Engine.Core.Scenario;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 using Viki.LoadRunner.Tools.Windows;
 
 namespace Viki.LoadRunner.Playground
@@ -21,13 +20,6 @@ namespace Viki.LoadRunner.Playground
     {
         public static void Run()
         {
-
-            LoadRunnerSettings loadRunnerSettings = new LoadRunnerSettings()
-                .SetScenario<BlankScenario>()
-                .SetLimits(new TimeLimit(TimeSpan.FromSeconds(5)))
-                .SetSpeed(new IncrementalLimitWorkingThreads(1, TimeSpan.FromSeconds(1), 1))
-                .SetThreading(new FixedThreadCount(20))
-                .SetFinishTimeout(TimeSpan.FromSeconds(60));
 
             // Initialize aggregator
             string[] ignoredCheckpoints =
@@ -38,7 +30,7 @@ namespace Viki.LoadRunner.Playground
             };
 
             HistogramAggregator histogramAggregator = new HistogramAggregator()
-                .Add(new TimeDimension(TimeSpan.FromSeconds(1)))
+                .Add(new TimeDimension(TimeSpan.FromSeconds(2)))
                 .Add(new FuncMetric<TimeSpan>("TMin", TimeSpan.MaxValue, (span, result) => span > result.IterationStarted ? result.IterationStarted : span))
                 .Add(new FuncMetric<TimeSpan>("TMax", TimeSpan.MinValue, (span, result) => span < result.IterationFinished ? result.IterationFinished : span))
                 .Add(new FuncMetric<int>("Working Threads",0, (i, result) => result.CreatedThreads + result.IdleThreads))
@@ -62,15 +54,25 @@ namespace Viki.LoadRunner.Playground
                 .Alias($"Errors: {Checkpoint.Names.IterationStart}", "Errors: Iteration")
                 .Alias($"Errors: {Checkpoint.Names.TearDown}", "Errors: Teardown");
 
-            JsonStreamAggregator jsonStreamAggregator =
-                new JsonStreamAggregator(() => DateTime.Now.ToString("HH_mm_ss__ffff") + ".json");
+
+            StrategyBuilder strategy = new StrategyBuilder()
+                .SetScenario<BlankScenario>()
+                .Set(new TimeLimit(TimeSpan.FromSeconds(6)))
+                .Set(new FixedThreadCount(20))
+                .Set(new FixedSpeed(200000))
+                .SetFinishTimeout(TimeSpan.FromSeconds(60))
+                .Set(histogramAggregator);
+
+            //JsonStreamAggregator jsonStreamAggregator =
+            //    new JsonStreamAggregator(() => DateTime.Now.ToString("HH_mm_ss__ffff") + ".json");
 
             //TotalsResultsAggregator resultsAggregator = new TotalsResultsAggregator();
 
             // Initializing LoadTest Client
-            //LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<TestScenario>(loadRunnerParameters, histogramAggregator, _jsonStreamAggregator);
+            //Engine.Executor.LoadRunnerEngine loadRunner = strategy.Build();
+            //loadRunner.Run();
 
-            LoadRunnerUi loadRunnerUi = LoadRunnerUi.Create(loadRunnerSettings, jsonStreamAggregator, histogramAggregator);
+            LoadRunnerUi loadRunnerUi = new LoadRunnerUi(strategy);
 
             Application.Run(loadRunnerUi);
 
@@ -89,17 +91,17 @@ namespace Viki.LoadRunner.Playground
     }
 
 
-    public class TestScenario : ILoadTestScenario
+    public class TestScenario : IScenario
     {
         private static readonly Random Random = new Random(42);
 
-        public void ScenarioSetup(ITestContext testContext)
+        public void ScenarioSetup(IIteration context)
         {
             Debug.WriteLine("ScenarioSetup Executes on thread creation");
             Debug.WriteLine("Exceptions here are not handled!");
         }
 
-        public void IterationSetup(ITestContext testContext)
+        public void IterationSetup(IIteration context)
         {
             Debug.WriteLine("IterationSetup is executed before each ExecuteScenario call");
 
@@ -107,7 +109,7 @@ namespace Viki.LoadRunner.Playground
                 throw new Exception("2% error chance for testing");
         }
 
-        public void ExecuteScenario(ITestContext testContext)
+        public void ExecuteScenario(IIteration context)
         {
             Debug.WriteLine(
                 "ExecuteScenario defines single iteration for load test scenario, " +
@@ -124,7 +126,7 @@ namespace Viki.LoadRunner.Playground
         }
 
 
-        public void IterationTearDown(ITestContext testContext)
+        public void IterationTearDown(IIteration context)
         {
             Debug.WriteLine("IterationTearDown is executed each time after ExecuteScenario iteration is finished.");
             Debug.WriteLine("It is also executed even when IterationSetup or ExecuteScenario fails");
@@ -133,7 +135,7 @@ namespace Viki.LoadRunner.Playground
                 throw new Exception("4% error chance for testing");
         }
 
-        public void ScenarioTearDown(ITestContext testContext)
+        public void ScenarioTearDown(IIteration context)
         {
             Debug.WriteLine("ScenarioTearDown Executes once LoadTest execution is over");
 

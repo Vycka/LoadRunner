@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Threading;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Engine.Strategies.Threading;
-using Viki.LoadRunner.Tools.Aggregators;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
+using Viki.LoadRunner.Playground.Replay;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -15,8 +13,11 @@ namespace Viki.LoadRunner.Playground
 
         static void Main()
         {
+            ReplayDemo.Run();
 
-            DemoSetup.Run();
+            //new BlankFromBase().Validate();
+
+            //DemoSetup.Run();
             
 
             return;
@@ -30,7 +31,7 @@ namespace Viki.LoadRunner.Playground
                 .Add(new PercentileMetric(0.95) { Formatter =  l => l });
 
 
-            JsonStreamAggregator.Replay("17_13_22__1859.json", histo);
+            //JsonStreamAggregator.Replay("17_13_22__1859.json", histo);
 
             Console.WriteLine(JsonConvert.SerializeObject(histo.BuildResultsObjects(), Formatting.Indented));
         }

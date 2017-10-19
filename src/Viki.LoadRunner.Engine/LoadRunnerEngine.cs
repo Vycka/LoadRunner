@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
-using Viki.LoadRunner.Engine.Aggregators;
-using Viki.LoadRunner.Engine.Executor.Threads;
-using Viki.LoadRunner.Engine.Executor.Timer;
-using Viki.LoadRunner.Engine.Settings;
-using Viki.LoadRunner.Engine.Strategies;
-using Viki.LoadRunner.Engine.Strategies.Limit;
-using Viki.LoadRunner.Engine.Strategies.Speed.PriorityStrategy;
-using ThreadPool = Viki.LoadRunner.Engine.Executor.Threads.ThreadPool;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine
 {
@@ -19,36 +11,17 @@ namespace Viki.LoadRunner.Engine
     {
         #region Fields
 
-        private readonly ILoadRunnerSettings _settings;
-        private ILimitStrategy[] _limits;
-        private readonly IResultsAggregator _aggregator;
-
+        private readonly IStrategy _strategy;
         private Thread _rootThread;
-
-        #region Run() globals
-
-        private readonly ExecutionTimer _timer = new ExecutionTimer();
-        private ThreadPool _pool;
-
-        #endregion
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Current duration of currently executing load test
+        /// Is test running
         /// </summary>
-        public TimeSpan TestDuration => _timer.Value;
-        /// <summary>
-        /// Start UTC time for currently executing load test
-        /// </summary>
-        public DateTime TestBeginTimeUtc => _timer.BeginTime;
-
-        /// <summary>
-        /// Indicates whether LoadTest is currently running
-        /// </summary>
-        public bool IsRunning => _timer.IsRunning;
+        public bool Running { get; private set; }
 
         /// <summary>
         /// Controls, how often root thread will ping strategies with HeartBeat()
@@ -69,26 +42,12 @@ namespace Viki.LoadRunner.Engine
         /// <summary>
         /// Initializes new executor instance
         /// </summary>
-        /// <param name="settings">LoadTest settings</param>
-        /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        public LoadRunnerEngine(ILoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
+        /// <param name="strategy">Test strategy</param>
+        public LoadRunnerEngine(IStrategy strategy)
         {
-            if (settings == null)
-                throw new ArgumentNullException(nameof(settings));
-
-            _settings = settings;
-
-            _aggregator = new AsyncResultsAggregator(resultsAggregators);
-        }
-
-        /// <summary>
-        /// Initializes new executor instance
-        /// </summary>
-        /// <param name="settings">LoadTest settings</param>
-        /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        public static LoadRunnerEngine Create(ILoadRunnerSettings settings, params IResultsAggregator[] resultsAggregators)
-        {
-            return new LoadRunnerEngine(settings, resultsAggregators);
+            if (strategy == null)
+                throw new ArgumentNullException(nameof(strategy));
+            _strategy = strategy;
         }
 
         #endregion
@@ -96,20 +55,19 @@ namespace Viki.LoadRunner.Engine
         #region Async/Run()
 
         /// <summary>
-        /// Start LoadTest execution on separate thread & blocks till test execution & data aggregation is completed.
+        /// Start LoadTest execution on main thread. This blocks until test execution is finished by defined rules if any.
         /// </summary>
         public void Run()
         {
-            RunAsync();
-            Wait();
+            RunInner();
         }
 
         /// <summary>
-        /// Executes load test in seperate thread (non-blocking call)
+        /// Executes test in seperate thread (non-blocking call)
         /// </summary>
         public void RunAsync()
         {
-            if (IsLoadEngineRunning)
+            if (Running)
                 throw new InvalidOperationException("Another instance is already running");
 
             _rootThread = new Thread(RunInner);
@@ -123,14 +81,14 @@ namespace Viki.LoadRunner.Engine
         /// </summary>
         public void CancelAsync(bool blocking = true)
         {
-            _limits = new ILimitStrategy[]{ new IterationLimit(0)  };
+            Running = false;
 
             if (blocking)
                 Wait();
         }
 
         /// <summary>
-        /// Waits, till execution is finished.
+        /// Waits, till execution is finished gracefully with graceful waiting for ExecutionStrategy and FinishTimeout.
         /// </summary>
         /// <param name="timeOut">timeout time period to wait before returning</param>
         /// <param name="abortOnTimeOut">if execution won't finish within desired timeout, should it be terminated prematurely?</param>
@@ -138,7 +96,7 @@ namespace Viki.LoadRunner.Engine
         public bool Wait(TimeSpan timeOut, bool abortOnTimeOut = false)
         {
             bool result = _rootThread.Join(timeOut);
-            if (abortOnTimeOut == true && result == false)
+            if (abortOnTimeOut && result == false)
             {
                 _rootThread.Abort();
                 _rootThread?.Join();
@@ -156,49 +114,23 @@ namespace Viki.LoadRunner.Engine
             _rootThread?.Join();
         }
 
-        private bool IsLoadEngineRunning => _rootThread?.IsAlive == true;
-
         #endregion
 
         #region RunInner() Stuff
 
         private void RunInner()
         {
-            if (_pool != null)
+            if (Running)
                 throw new InvalidOperationException("Engine is already running");
 
             Exception = null;
-
             try
             {
-                _limits = _settings.Limits;
-                ISpeedStrategy speed = StrategyBuilder.Create(_settings.Speed, _timer);
+                Running = true;
+                _strategy.Start();
 
-                _pool = new ThreadPool(new ThreadPoolSettings
+                while (_strategy.HeartBeat() == false && Running)
                 {
-                    InitialUserData = _settings.InitialUserData,
-                    Scenario = _settings.TestScenarioType,
-
-                    SpeedStrategy = speed,
-                    Timer = _timer,
-
-                    Aggregator = _aggregator
-                });
-
-                IThreadPoolContext context = _pool.Context;
-                IThreadingStrategy threading = _settings.Threading;
-
-                InitialThreadingSetup(_pool, threading);
-
-                StartTest(context, _timer);
-
-                while (!_limits.Any(l => l.StopTest(context)))
-                {
-                    _pool.AssertThreadErrors();
-
-                    threading.HeartBeat(context, _pool);
-                    speed.HeartBeat(context);
-
                     Thread.Sleep(HeartBeatMs);
                 }
             }
@@ -209,31 +141,8 @@ namespace Viki.LoadRunner.Engine
             }
             finally
             {
-                _pool?.StopAndDispose((int)_settings.FinishTimeout.TotalMilliseconds);
-
-                _aggregator.End();
-                _timer.Stop();
-
-                ThreadPool local = _pool;
-                _pool = null;
-                local?.AssertThreadErrors();
-            }
-        }
-
-        private static void StartTest(IThreadPoolContext context, ExecutionTimer timer)
-        {
-            context.Aggregator.Begin();
-            timer.Start(); // This line also releases Worker-Threads from wait.
-        }
-
-        private static void InitialThreadingSetup(ThreadPool pool, IThreadingStrategy threading)
-        {
-            threading.Setup(pool.Context, pool);
-
-            while (pool.CreatedThreadCount != pool.InitializedThreadCount)
-            {
-                Thread.Sleep(100);
-                pool.AssertThreadErrors();
+                _strategy.Stop();
+                Running = false;
             }
         }
 
