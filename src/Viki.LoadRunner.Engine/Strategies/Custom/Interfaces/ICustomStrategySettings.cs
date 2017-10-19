@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 
@@ -49,27 +48,5 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
         /// </summary>
         IResultsAggregator[] Aggregators { get; }
     }
-
-    public static class ICustomStrategySettingsExtensions {
-        public static LoadRunnerEngine Build(this ICustomStrategySettings settings)
-        {
-            return new LoadRunnerEngine(new CustomStrategy(settings));
-        }
-
-        public static StrategyBuilder Clone(this ICustomStrategySettings settings)
-        {
-            return new StrategyBuilder
-            {
-                Limits = settings.Limits.ToArray(),
-                Speeds = settings.Speeds.ToArray(),
-                Threading = settings.Threading,
-                FinishTimeout = settings.FinishTimeout,
-                TestScenarioType = settings.TestScenarioType,
-                InitialUserData = settings.InitialUserData,
-                Aggregators = settings.Aggregators
-            };
-        }
-    }
-
 }
 

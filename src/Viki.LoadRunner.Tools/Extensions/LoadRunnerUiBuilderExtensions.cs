@@ -1,18 +1,21 @@
 ﻿using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Custom;
 using Viki.LoadRunner.Engine.Strategies.Replay;
+using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
 using Viki.LoadRunner.Tools.Windows;
 
 namespace Viki.LoadRunner.Tools.Extensions
 {
     public static class LoadRunnerUiBuilderExtensions
     {
-        public static LoadRunnerUi BuildUi<>(this ReplayStrategyBuilder settings)
+        public static LoadRunnerUi BuildUi<TData>(this ReplayStrategyBuilder<TData> settings)
         {
             LoadRunnerUi ui = new LoadRunnerUi();
-            settings.Add(ui);
+            ReplayStrategyBuilder<TData> localSettings = settings.Clone();
 
-            ui.Setup(new ReplayStrategy(settings), settings.TestScenarioType);
+            localSettings.Add(ui);
+
+            ui.Setup(new ReplayStrategy<TData>(settings), localSettings.ScenarioType);
 
             return ui;
         }
@@ -20,9 +23,11 @@ namespace Viki.LoadRunner.Tools.Extensions
         public static LoadRunnerUi BuildUi(this StrategyBuilder settings)
         {
             LoadRunnerUi ui = new LoadRunnerUi();
-            settings.Add(ui);
+            var localSettings = settings.Clone();
 
-            ui.Setup(new CustomStrategy(settings), settings.TestScenarioType);
+            localSettings.Add(ui);
+
+            ui.Setup(new CustomStrategy(settings), localSettings.TestScenarioType);
 
             return ui;
         }

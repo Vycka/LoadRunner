@@ -2,6 +2,7 @@
 using System.Linq;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Custom;
 using Viki.LoadRunner.Engine.Strategies.Custom.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
@@ -158,6 +159,11 @@ namespace Viki.LoadRunner.Engine.Strategies
             return this;
         }
 
+        public LoadRunnerEngine Build()
+        {
+            return new LoadRunnerEngine(new CustomStrategy(this));
+        }
+
         #endregion
 
         #region ILoadRunnerSettings & Properties
@@ -205,6 +211,23 @@ namespace Viki.LoadRunner.Engine.Strategies
         public IResultsAggregator[] Aggregators { get; set; } = { };
 
         #endregion
+    }
+
+    public static class CustomStrategySettingsExtensions
+    {
+        public static StrategyBuilder Clone(this ICustomStrategySettings settings)
+        {
+            return new StrategyBuilder
+            {
+                Limits = settings.Limits.ToArray(),
+                Speeds = settings.Speeds.ToArray(),
+                Threading = settings.Threading,
+                FinishTimeout = settings.FinishTimeout,
+                TestScenarioType = settings.TestScenarioType,
+                InitialUserData = settings.InitialUserData,
+                Aggregators = settings.Aggregators.ToArray()
+            };
+        }
     }
 }
 

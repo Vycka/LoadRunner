@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Core.Timer;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
 
@@ -7,8 +8,9 @@ namespace Viki.LoadRunner.Playground.Replay
 {
     public class ReplayScenario : IReplayScenario<string>
     {
-        private ITimer _timer;
-        private string _data;
+        // Defaults are for Ui Validate function
+        private ITimer _timer = new ExecutionTimer();
+        private string _data = "DEFAULT";
 
         public void ScenarioSetup(IIteration context)
         {

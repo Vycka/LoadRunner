@@ -13,11 +13,11 @@ namespace Viki.LoadRunner.Playground
 
         static void Main()
         {
-            //ReplayDemo.Run();
+            ReplayDemo.Run();
 
             //new BlankFromBase().Validate();
 
-            DemoSetup.Run();
+            //DemoSetup.Run();
             
 
             return;

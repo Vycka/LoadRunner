@@ -8,10 +8,9 @@
     <owners></owners>
     <description>Generic performance testing library for executing load-tests written in .NET c#
 
-Visit project website for documentation.
+Visit project website for examples.
 
-WIP Library: Namespace and project name might still change, once proper name is decided.
-Sorry for name clash with H P LoadRunner, but this library has no relations to it.</description>
+WIP Library: Namespace and project name might still change, once proper name is decided.</description>
 	<summary></summary>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes></releaseNotes>

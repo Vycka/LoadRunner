@@ -8,9 +8,9 @@ using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
-using Viki.LoadRunner.Engine.Strategies.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Replay;
 using Viki.LoadRunner.Engine.Strategies.Replay.Reader;
+using Viki.LoadRunner.Tools.Extensions;
+using Viki.LoadRunner.Tools.Windows;
 
 namespace Viki.LoadRunner.Playground.Replay
 {
@@ -25,7 +25,7 @@ namespace Viki.LoadRunner.Playground.Replay
                 .Add(new FuncMetric<int>("Threads", 0, (i, result) => result.CreatedThreads));
 
 
-            ReplayStrategyBuilder settings = new ReplayStrategyBuilder
+            ReplayStrategyBuilder<string> settings = new ReplayStrategyBuilder<string>
             {
                 Aggregators = new IResultsAggregator[] { aggregator },
                 DataReader = new ArrayDataReader(DataGenerator.Create(5, 1, 3, 3).ToArray()),
@@ -33,9 +33,13 @@ namespace Viki.LoadRunner.Playground.Replay
                 ThreadCount = 1
             };
 
-            IStrategy strategy = new ReplayStrategy<string>(settings);
-            //LoadRunnerEngine engine = new LoadRunnerEngine(strategy);
-            //engine.Run();
+            // UI
+            LoadRunnerUi engineUi = settings.BuildUi();
+            engineUi.StartWindow();
+
+            // Non UI
+            LoadRunnerEngine engine = settings.Build();
+            engine.Run();
 
             object defaultResults = aggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
