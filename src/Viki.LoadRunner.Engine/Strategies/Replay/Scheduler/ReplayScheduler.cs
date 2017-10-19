@@ -43,7 +43,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
             {
                 _scenarioHandler.SetData(dataItem.Value);
 
-                SemiWait(dataItem.TimeStamp, ref stop);
+                TimeSpan adjustedTarget = TimeSpan.FromTicks((long)(dataItem.TimeStamp.Ticks / _speedMultiplier));
+
+                SemiWait(adjustedTarget, ref stop);
             }
             else
             {
@@ -65,7 +67,13 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
 
         private TimeSpan CalculateDelay(TimeSpan target)
         {
-            return TimeSpan.FromTicks((long)(_timer.Value.Ticks * _speedMultiplier)) - target;
+            TimeSpan current = _timer.Value;
+
+            TimeSpan delay = target - current;
+
+            //Console.WriteLine($"Current:{current} Target:{target} Delay:{delay}");
+
+            return delay;
         }
     }
 }

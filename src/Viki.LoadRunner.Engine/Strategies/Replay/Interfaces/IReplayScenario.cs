@@ -2,7 +2,7 @@
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay.Interfaces
 {
-    public interface IReplayScenario<TData> : IScenario
+    public interface IReplayScenario<in TData> : IScenario 
     {
         void SetData(TData data);
     }

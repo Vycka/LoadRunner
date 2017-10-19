@@ -30,7 +30,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
         public TimeSpan FinishTimeout = TimeSpan.FromMinutes(3);
     }
 
-    public class ReplayLogsStrategy<TData> : IStrategy
+    public class ReplayStrategy<TData> : IStrategy
     {
         private readonly ReplayStrategySettings _settings;
         private readonly ExecutionTimer _timer;
@@ -42,7 +42,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
         private IThreadPoolCounter _counter;
         private ThreadPool _pool;
 
-        public ReplayLogsStrategy(ReplayStrategySettings settings)
+        public ReplayStrategy(ReplayStrategySettings settings)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));

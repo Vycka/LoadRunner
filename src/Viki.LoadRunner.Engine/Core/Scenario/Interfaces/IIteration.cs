@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
 {
@@ -20,5 +21,10 @@ namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
         /// Current timer value of the currently going on iteration.
         /// </summary>
         TimeSpan IterationElapsedTime { get; }
+
+        /// <summary>
+        /// Root test timer.
+        /// </summary>
+        ITimer Timer { get; }
     }
 }

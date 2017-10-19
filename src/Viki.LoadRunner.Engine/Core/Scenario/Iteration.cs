@@ -62,7 +62,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
 
         #endregion
 
-        #region ITestContext
+        #region IIteration
 
         public void Checkpoint(string checkpointName = null)
         {
@@ -93,6 +93,8 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
                 return TimeSpan.Zero;
             }
         }
+
+        public ITimer Timer => _timer;
 
         public int GlobalIterationId { get; private set; }
         public int ThreadId { get; }

@@ -4,6 +4,7 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
+using Viki.LoadRunner.Playground.Replay;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -12,9 +13,11 @@ namespace Viki.LoadRunner.Playground
 
         static void Main()
         {
-            new BlankFromBase().Validate();
+            ReplayDemo.Run();
 
-            DemoSetup.Run();
+            //new BlankFromBase().Validate();
+
+            //DemoSetup.Run();
             
 
             return;

@@ -12,7 +12,6 @@
         /// <param name="context"></param>
         void ExecuteScenario(IIteration context);
 
-
         void IterationTearDown(IIteration context);
 
         void ScenarioTearDown(IIteration context);

@@ -54,7 +54,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DemoSetup.cs" />
+    <Compile Include="Replay\DataGenerator.cs" />
     <Compile Include="Replay\ReplayScenario.cs" />
+    <Compile Include="Replay\ReplayDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

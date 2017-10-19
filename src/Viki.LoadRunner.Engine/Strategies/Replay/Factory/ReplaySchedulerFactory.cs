@@ -11,7 +11,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Factory
     public class ReplaySchedulerFactory : IReplaySchedulerFactory
     {
         private readonly ITimer _timer;
-        private readonly IReplayScenarioHandler _scenarioHandler;
         private readonly IReplayDataReader _dataReader;
         private readonly double _speedMultiplier;
 
@@ -30,7 +29,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Factory
 
         public IScheduler Create(IReplayScenarioHandler scenarioHandler)
         {
-            IScheduler scheduler = new ReplayScheduler(_timer, _scenarioHandler, _dataReader, _speedMultiplier);
+            IScheduler scheduler = new ReplayScheduler(_timer, scenarioHandler, _dataReader, _speedMultiplier);
 
             return scheduler;
         }
