@@ -1,23 +1,22 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Core.Pool.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
-using Viki.LoadRunner.Engine.Core.Worker;
 using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Factory
 {
-    public class ScenarioThreadFactory : IWorkerThreadFactory
+    public class ScenarioThreadFactory : IThreadFactory
     {
         private readonly IScenarioHandlerFactory _scenarioHandlerFactory;
         private readonly ISchedulerFactory _schedulerFactory;
         private readonly IDataCollectorFactory _dataCollectorFactory;
+        private readonly IScenarioThreadFactory _threadFactory;
         private readonly IIterationContextFactory _iterationContextFactory;
-        private readonly IErrorHandler _errorHandler;
-        private readonly IPrewait _prewait;
 
-        public ScenarioThreadFactory(IIterationContextFactory iterationContextFactory, IScenarioHandlerFactory scenarioHandlerFactory, ISchedulerFactory schedulerFactory, IDataCollectorFactory dataCollectorFactory, IPrewait prewait, IErrorHandler errorHandler)
+        public ScenarioThreadFactory(IIterationContextFactory iterationContextFactory, IScenarioHandlerFactory scenarioHandlerFactory, ISchedulerFactory schedulerFactory, IDataCollectorFactory dataCollectorFactory, IScenarioThreadFactory threadFactory)
         {
             if (iterationContextFactory == null)
                 throw new ArgumentNullException(nameof(iterationContextFactory));
@@ -27,21 +26,20 @@ namespace Viki.LoadRunner.Engine.Core.Factory
                 throw new ArgumentNullException(nameof(schedulerFactory));
             if (dataCollectorFactory == null)
                 throw new ArgumentNullException(nameof(dataCollectorFactory));
-            if (prewait == null)
-                throw new ArgumentNullException(nameof(prewait));
-            if (errorHandler == null)
-                throw new ArgumentNullException(nameof(errorHandler));
+            if (threadFactory == null)
+                throw new ArgumentNullException(nameof(threadFactory));
+
 
 
             _iterationContextFactory = iterationContextFactory;
             _scenarioHandlerFactory = scenarioHandlerFactory;
             _schedulerFactory = schedulerFactory;
             _dataCollectorFactory = dataCollectorFactory;
-            _prewait = prewait;
-            _errorHandler = errorHandler;
+            _threadFactory = threadFactory;
+
         }
 
-        public IWorkerThread Create()
+        public IThread Create()
         {
             IIterationControl iterationContext = _iterationContextFactory.Create();
 
@@ -52,11 +50,7 @@ namespace Viki.LoadRunner.Engine.Core.Factory
             // Data collector for results aggregation
             IDataCollector collector = _dataCollectorFactory.Create(iterationContext);
 
-
-            // Put it all together to create IWork.
-            IWork scenarioWork = new ScenarioWork(scheduler, scenarioHandler, collector);
-            IWorkerThread thread = new WorkerThread(scenarioWork, _prewait);
-            _errorHandler.Register(thread);
+            IThread thread = _threadFactory.Create(scheduler, scenarioHandler, collector);
 
             return thread;
         }

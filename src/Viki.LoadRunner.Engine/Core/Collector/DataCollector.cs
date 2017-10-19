@@ -1,5 +1,4 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Pool.Interfaces;

@@ -4,6 +4,6 @@
     {
         void Assert();
 
-        void Register(IWorkerThread thread);
+        void Register(IThread thread);
     }
 }

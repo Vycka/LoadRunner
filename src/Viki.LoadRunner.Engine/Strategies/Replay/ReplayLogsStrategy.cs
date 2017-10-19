@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading;
-using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Core.Pool.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
 using Viki.LoadRunner.Engine.Core.Worker;
 using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
@@ -12,7 +13,6 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Replay.Reader;
 using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 using ThreadPool = Viki.LoadRunner.Engine.Core.Pool.ThreadPool;
 
@@ -21,7 +21,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
     public class ReplayStrategySettings
     {
         public int ThreadCount = 50;
-        public DataItem[] Data = {};
+        public IReplayDataReader DataReader;
         public double SpeedMultiplier = 1;
         public IResultsAggregator[] Aggregators = { };
 
@@ -67,7 +67,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
             _counter = new ThreadPoolCounter();
             _errorHandler = new ErrorHandler();
             _globalIdFactory = new IdFactory();
-            _dataReader = new ArrayDataReader(_settings.Data);
+            _dataReader = _settings.DataReader;
 
             _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
 
@@ -80,25 +80,31 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
             }
         }
 
-        private IWorkerThreadFactory CreateWorkerThreadFactory()
+        private IThreadFactory CreateWorkerThreadFactory()
         {
             IIterationContextFactory iterationContextFactory = CreateIterationContextFactory();
             IReplayScenarioHandlerFactory scenarioHandlerFactory = CreateScenarioHandlerFactory();
             IReplaySchedulerFactory schedulerFactory = CreateSchedulerFactory();
             IDataCollectorFactory dataCollectorFactory = CreateDataCollectorFactory();
+            IScenarioThreadFactory scenarioThreadFactory = CreateScenarioThreadFactory();
 
-            IPrewait prewait = new TimerBasedPrewait(_timer);
-
-            IWorkerThreadFactory threadFactory = new ReplayScenarioThreadFactory(
+            IThreadFactory threadFactory = new ReplayScenarioThreadFactory(
                 iterationContextFactory,
                 scenarioHandlerFactory,
                 schedulerFactory,
                 dataCollectorFactory,
-                prewait,
-                _errorHandler
+                scenarioThreadFactory
             );
 
             return threadFactory;
+        }
+
+        private IScenarioThreadFactory CreateScenarioThreadFactory()
+        {
+            IPrewait prewait = new TimerBasedPrewait(_timer);
+            IScenarioThreadFactory factory = new ThreadFactory(prewait, _errorHandler);
+
+            return factory;
         }
 
         private IIterationContextFactory CreateIterationContextFactory()
@@ -124,6 +130,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
         public bool HeartBeat()
         {
+            // ReplayScheduler stops threads when IDataReader doesn't return any new jobs.
             return _counter.CreatedThreadCount == 0;
         }
 

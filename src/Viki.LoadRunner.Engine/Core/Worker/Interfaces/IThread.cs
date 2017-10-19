@@ -2,7 +2,7 @@
 
 namespace Viki.LoadRunner.Engine.Core.Worker.Interfaces
 {
-    public interface IWorkerThread : IDisposable
+    public interface IThread : IDisposable
     {
         void StartThread();
         void QueueStopThreadAsync();

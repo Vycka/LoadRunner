@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator

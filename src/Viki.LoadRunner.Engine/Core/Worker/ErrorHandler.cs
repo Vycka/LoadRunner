@@ -9,12 +9,12 @@ namespace Viki.LoadRunner.Engine.Core.Worker
     {
         private readonly ConcurrentBag<Exception> _errors = new ConcurrentBag<Exception>();
 
-        public void Register(IWorkerThread worker)
+        public void Register(IThread worker)
         {
             worker.ThreadError += OnThreadError;
         }
 
-        private void OnThreadError(IWorkerThread sender, Exception ex)
+        private void OnThreadError(IThread sender, Exception ex)
         {
             if (ex.GetType() != typeof(ThreadAbortException))
             {

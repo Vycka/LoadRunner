@@ -1,6 +1,4 @@
-﻿using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
-
-namespace Viki.LoadRunner.Engine.Aggregators.Interfaces
+﻿namespace Viki.LoadRunner.Engine.Core.Collector.Interfaces
 {
     /// <summary>
     /// This interface defines handling of raw results received from ongoing test.

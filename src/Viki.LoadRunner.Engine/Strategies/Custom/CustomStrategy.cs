@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading;
-using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Core.Pool.Interfaces;
 using Viki.LoadRunner.Engine.Core.State;
 using Viki.LoadRunner.Engine.Core.State.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
@@ -104,25 +105,31 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             _errorHandler.Assert();
         }
 
-        private IWorkerThreadFactory CreateWorkerThreadFactory()
+        private IThreadFactory CreateWorkerThreadFactory()
         {
             IIterationContextFactory iterationContextFactory = CreateIterationContextFactory();
             IScenarioHandlerFactory scenarioHandlerFactory = CreateScenarioHandlerFactory();
             ISchedulerFactory schedulerFactory = CreateSchedulerFactory();
             IDataCollectorFactory dataCollectorFactory = CreateDataCollectorFactory();
+            IScenarioThreadFactory scenarioThreadFactory = CreateScenarioThreadFactory();
 
-            IPrewait prewait = new TimerBasedPrewait(_timer);
-
-            IWorkerThreadFactory threadFactory = new ScenarioThreadFactory(
+            IThreadFactory threadFactory = new ScenarioThreadFactory(
                 iterationContextFactory,
                 scenarioHandlerFactory,
                 schedulerFactory,
                 dataCollectorFactory,
-                prewait,
-                _errorHandler
+                scenarioThreadFactory
             );
 
             return threadFactory;
+        }
+
+        private IScenarioThreadFactory CreateScenarioThreadFactory()
+        {
+            IPrewait prewait = new TimerBasedPrewait(_timer);
+            IScenarioThreadFactory factory = new ThreadFactory(prewait, _errorHandler);
+
+            return factory;
         }
 
         private IDataCollectorFactory CreateDataCollectorFactory()

@@ -9,7 +9,7 @@ namespace Viki.LoadRunner.Engine.Core.Worker
     /// Worker-Thread once StartThread()'ed, will initialize ASAP.
     /// After initialization, it will start execution of iterations ASAP but not until ITimer is started.
     /// </summary>
-    public class WorkerThread : IWorkerThread
+    public class WorkerThread : IThread
     {
         #region Fields
 
