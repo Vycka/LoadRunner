@@ -14,39 +14,30 @@ using Viki.LoadRunner.Engine.Core.Collector;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Custom;
-using Viki.LoadRunner.Engine.Strategies.Custom.Interfaces;
+using Viki.LoadRunner.Engine.Core.Timer;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
 
 
 namespace Viki.LoadRunner.Tools.Windows
 {
+    // TODO: Move out IResultsAggregator logic outside.
     public partial class LoadRunnerUi : Form, IResultsAggregator
     {
-        private readonly ICustomStrategySettings _settingsTemplate;
         public string TextTemplate = "LR-UI {0}";
 
         private readonly MetricMultiplexer _metricMultiplexerTemplate;
         private IMetric _metricMultiplexer;
 
-        /// <summary>
-        /// Exposed LoadRunnerEngine instance to give access to its status properties.
-        /// 
-        /// But It shouldn't be controlled from here, use UI buttons instead.
-        /// </summary>
-        private readonly LoadRunnerEngine _instance;
-        private readonly CustomStrategy _strategy;
-
+        private readonly ExecutionTimer _timer;
         private readonly ConcurrentQueue<IResult> _resultsQueue = new ConcurrentQueue<IResult>();
 
-        
+        private Type _scenarioType;
+        private LoadRunnerEngine _engine;
 
-        public LoadRunnerUi(ICustomStrategySettings settings)
+        public LoadRunnerUi()
         {
-            if (settings == null)
-                throw new ArgumentNullException(nameof(settings));
-
-            _settingsTemplate = settings;
+            _timer = new ExecutionTimer();
 
             _metricMultiplexerTemplate = new MetricMultiplexer(new IMetric[]
             {
@@ -59,14 +50,24 @@ namespace Viki.LoadRunner.Tools.Windows
                 new TransactionsPerSecMetric()
             });
 
-            _strategy = new CustomStrategy(settings.Clone().Add(this));
-            _instance = new LoadRunnerEngine(_strategy);
-
             InitializeComponent();
+        }
+
+        public void Setup(IStrategy strategy, Type scenario)
+        {
+            _engine = new LoadRunnerEngine(strategy);
+            _scenarioType = scenario;
+        }
+
+        public void StartWindow()
+        {
+            Application.Run(this);
         }
 
         void IResultsAggregator.Begin()
         {
+            _timer.Start();
+
             ResetStats();
             TestStartedDisableButtons();
 
@@ -88,6 +89,8 @@ namespace Viki.LoadRunner.Tools.Windows
 
         void IResultsAggregator.End()
         {
+            _timer.Start();
+
             _backgroundWorker1.CancelAsync();
 
             TestEndedEnableButtons();
@@ -99,7 +102,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
             if (dialogResult == DialogResult.Yes)
             {
-                _instance.RunAsync();
+                _engine.RunAsync();
 
                 TestStartedDisableButtons();
             }
@@ -124,7 +127,7 @@ namespace Viki.LoadRunner.Tools.Windows
             DialogResult dialogResult = MessageBox.Show("Stop?", "Stop?", MessageBoxButtons.YesNo);
 
             if (dialogResult == DialogResult.Yes)
-                Task.Run(() => _instance.Wait(TimeSpan.Zero, true));
+                Task.Run(() => _engine.CancelAsync());
         }
 
         private void _backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -158,7 +161,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void _validateButton_Click(object sender, EventArgs e)
         {
-            IterationResult result = ScenarioValidator.Validate((IScenario) Activator.CreateInstance(_settingsTemplate.TestScenarioType));
+            IterationResult result = ScenarioValidator.Validate((IScenario) Activator.CreateInstance(_scenarioType));
             ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.Names.IterationEnd);
 
             AppendMessage($"Validation OK: {checkpoint.TimePoint.TotalMilliseconds}ms.");
@@ -208,7 +211,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void LoadRunnerUi_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_instance.Running)
+            if (_engine.Running)
             {
                 e.Cancel = true;
 
@@ -223,7 +226,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void RefreshWindowTitle()
         {
-            Text = string.Format(TextTemplate, _strategy.Timer.Value.ToString("g"));
+            Text = string.Format(TextTemplate, _timer.Value.ToString("g"));
         }
     }
 }

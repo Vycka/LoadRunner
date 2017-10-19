@@ -79,7 +79,7 @@ namespace Viki.LoadRunner.Engine
         /// Stops exeucion safely with time-out handling.
         /// Aggregated data up to this point won't be lost. 
         /// </summary>
-        public void CancelAsync(bool blocking = true)
+        public void CancelAsync(bool blocking = false)
         {
             Running = false;
 

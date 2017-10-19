@@ -71,8 +71,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
 
             TimeSpan delay = target - current;
 
-            //Console.WriteLine($"Current:{current} Target:{target} Delay:{delay}");
-
             return delay;
         }
     }

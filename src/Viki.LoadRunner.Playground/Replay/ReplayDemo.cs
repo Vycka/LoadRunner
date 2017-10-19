@@ -7,6 +7,7 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay;
 using Viki.LoadRunner.Engine.Strategies.Replay.Reader;
@@ -24,7 +25,7 @@ namespace Viki.LoadRunner.Playground.Replay
                 .Add(new FuncMetric<int>("Threads", 0, (i, result) => result.CreatedThreads));
 
 
-            ReplayStrategySettings settings = new ReplayStrategySettings
+            ReplayStrategyBuilder settings = new ReplayStrategyBuilder
             {
                 Aggregators = new IResultsAggregator[] { aggregator },
                 DataReader = new ArrayDataReader(DataGenerator.Create(5, 1, 3, 3).ToArray()),
@@ -33,10 +34,8 @@ namespace Viki.LoadRunner.Playground.Replay
             };
 
             IStrategy strategy = new ReplayStrategy<string>(settings);
-
-            LoadRunnerEngine engine = new LoadRunnerEngine(strategy);
-
-            engine.Run();
+            //LoadRunnerEngine engine = new LoadRunnerEngine(strategy);
+            //engine.Run();
 
             object defaultResults = aggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));

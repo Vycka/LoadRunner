@@ -12,6 +12,7 @@ using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
+using Viki.LoadRunner.Tools.Extensions;
 using Viki.LoadRunner.Tools.Windows;
 
 namespace Viki.LoadRunner.Playground
@@ -72,9 +73,14 @@ namespace Viki.LoadRunner.Playground
             //Engine.Executor.LoadRunnerEngine loadRunner = strategy.Build();
             //loadRunner.Run();
 
-            LoadRunnerUi loadRunnerUi = new LoadRunnerUi(strategy);
+            LoadRunnerUi ui = strategy.BuildUi();
 
-            Application.Run(loadRunnerUi);
+            ui.StartWindow();
+            //Application.Run(loadRunnerUi);
+
+            //LoadRunnerUi loadRunnerUi = new LoadRunnerUi(strategy);
+
+
 
             // Run test (blocking call)
             //loadRunner.Run();

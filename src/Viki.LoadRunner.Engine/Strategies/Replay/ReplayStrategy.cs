@@ -13,26 +13,15 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 using ThreadPool = Viki.LoadRunner.Engine.Core.Pool.ThreadPool;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay
 {
-    public class ReplayStrategySettings
-    {
-        public int ThreadCount = 50;
-        public IReplayDataReader DataReader;
-        public double SpeedMultiplier = 1;
-        public IResultsAggregator[] Aggregators = { };
-
-        public Type ScenarioType;
-        public object InitialUserData;
-        public TimeSpan FinishTimeout = TimeSpan.FromMinutes(3);
-    }
-
     public class ReplayStrategy<TData> : IStrategy
     {
-        private readonly ReplayStrategySettings _settings;
+        private readonly IReplayStrategySettings _settings;
         private readonly ExecutionTimer _timer;
         private readonly IResultsAggregator _aggregator;
 
@@ -42,7 +31,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
         private IThreadPoolCounter _counter;
         private ThreadPool _pool;
 
-        public ReplayStrategy(ReplayStrategySettings settings)
+        public ReplayStrategy(IReplayStrategySettings settings)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
