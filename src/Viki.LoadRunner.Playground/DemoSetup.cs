@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using Newtonsoft.Json;
+using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
@@ -57,36 +58,18 @@ namespace Viki.LoadRunner.Playground
 
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario<BlankScenario>()
-                .Set(new TimeLimit(TimeSpan.FromSeconds(6)))
-                .Set(new FixedThreadCount(20))
-                .Set(new FixedSpeed(200000))
+                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(6)))
+                .SetThreading(new FixedThreadCount(20))
+                .SetSpeed(new FixedSpeed(200000))
                 .SetFinishTimeout(TimeSpan.FromSeconds(60))
-                .Set(histogramAggregator);
+                .SetAggregator(histogramAggregator);
 
-            //JsonStreamAggregator jsonStreamAggregator =
-            //    new JsonStreamAggregator(() => DateTime.Now.ToString("HH_mm_ss__ffff") + ".json");
-
-            //TotalsResultsAggregator resultsAggregator = new TotalsResultsAggregator();
-
-            // Initializing LoadTest Client
-            //Engine.Executor.LoadRunnerEngine loadRunner = strategy.Build();
-            //loadRunner.Run();
 
             LoadRunnerUi ui = strategy.BuildUi();
-
             ui.StartWindow();
-            //Application.Run(loadRunnerUi);
 
-            //LoadRunnerUi loadRunnerUi = new LoadRunnerUi(strategy);
-
-
-
-            // Run test (blocking call)
-            //loadRunner.Run();
-
-            //loadRunner.RunAsync();
-            //Console.WriteLine("Async started");
-            //loadRunner.Wait();
+            LoadRunnerEngine engine = strategy.Build();
+            engine.Run();
 
             object defaultResults = histogramAggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));

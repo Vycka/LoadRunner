@@ -32,7 +32,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <param name="scenarioType">Scenario to execute</param>
         public StrategyBuilder(Type scenarioType)
         {
-            TestScenarioType = scenarioType;
+            ScenarioType = scenarioType;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         public StrategyBuilder SetScenario<TScenario>()
             where TScenario : IScenario
         {
-            TestScenarioType = typeof(TScenario);
+            ScenarioType = typeof(TScenario);
             return this;
         }
 
@@ -61,9 +61,9 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// Set scenario to execute
         /// </summary>
         /// <param name="scenarioType">Scenario class type</param>
-        public StrategyBuilder Set(Type scenarioType)
+        public StrategyBuilder SetScenario(Type scenarioType)
         {
-            TestScenarioType = scenarioType;
+            ScenarioType = scenarioType;
             return this;
         }
 
@@ -71,7 +71,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// Sets rules which decide when test execution should finish.
         /// </summary>
         /// <param name="limits">list of strategies set</param>
-        public StrategyBuilder Set(params ILimitStrategy[] limits)
+        public StrategyBuilder SetLimit(params ILimitStrategy[] limits)
         {
             Limits = limits;
             return this;
@@ -81,7 +81,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// Adds rules which decide when test execution should finish.
         /// </summary>
         /// <param name="limits">list of strategies add</param>
-        public StrategyBuilder Add(params ILimitStrategy[] limits)
+        public StrategyBuilder AddLimit(params ILimitStrategy[] limits)
         {
             Limits = Limits.Concat(limits).ToArray();
             return this;
@@ -91,7 +91,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// Sets test iterations per time limiting strategies.
         /// </summary>
         /// <param name="speed">list of strategies set</param>
-        public StrategyBuilder Set(params ISpeedStrategy[] speed)
+        public StrategyBuilder SetSpeed(params ISpeedStrategy[] speed)
         {
             Speeds = speed;
             return this;
@@ -101,7 +101,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// Adds test iterations per time limiting strategies.
         /// </summary>
         /// <param name="speed">list of strategies add</param>
-        public StrategyBuilder Add(params ISpeedStrategy[] speed)
+        public StrategyBuilder AddSpeed(params ISpeedStrategy[] speed)
         {
             Speeds = Speeds.Concat(speed).ToArray();
             return this;
@@ -112,7 +112,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         /// <param name="threadingStrategy">threading strategy to use</param>
         /// <returns></returns>
-        public StrategyBuilder Set(IThreadingStrategy threadingStrategy)
+        public StrategyBuilder SetThreading(IThreadingStrategy threadingStrategy)
         {
             Threading = threadingStrategy;
             return this;
@@ -142,7 +142,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         /// <param name="aggregagors">aggregators</param>
         /// <returns></returns>
-        public StrategyBuilder Set(params IResultsAggregator[] aggregagors)
+        public StrategyBuilder SetAggregator(params IResultsAggregator[] aggregagors)
         {
             Aggregators = aggregagors;
             return this;
@@ -153,7 +153,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         /// <param name="aggregagors">aggregators</param>
         /// <returns></returns>
-        public StrategyBuilder Add(params IResultsAggregator[] aggregagors)
+        public StrategyBuilder AddAggregator(params IResultsAggregator[] aggregagors)
         {
             Aggregators = Aggregators.Concat(aggregagors).ToArray();
             return this;
@@ -171,7 +171,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <summary>
         /// Scenario to execute, type must implement ILoadTestScenario.
         /// </summary>
-        public Type TestScenarioType { get; set; }
+        public Type ScenarioType { get; set; }
 
         /// <summary>
         /// Limits define when test execution will be scheduled to stop.
@@ -223,7 +223,7 @@ namespace Viki.LoadRunner.Engine.Strategies
                 Speeds = settings.Speeds.ToArray(),
                 Threading = settings.Threading,
                 FinishTimeout = settings.FinishTimeout,
-                TestScenarioType = settings.TestScenarioType,
+                ScenarioType = settings.ScenarioType,
                 InitialUserData = settings.InitialUserData,
                 Aggregators = settings.Aggregators.ToArray()
             };

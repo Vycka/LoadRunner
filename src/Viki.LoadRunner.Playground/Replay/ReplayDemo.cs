@@ -30,7 +30,7 @@ namespace Viki.LoadRunner.Playground.Replay
                 Aggregators = new IResultsAggregator[] { aggregator },
                 DataReader = new ArrayDataReader(DataGenerator.Create(5, 1, 3, 3).ToArray()),
                 ScenarioType = typeof(ReplayScenario),
-                ThreadCount = 1
+                ThreadCount = 5
             };
 
             // UI

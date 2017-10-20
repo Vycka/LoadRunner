@@ -13,9 +13,9 @@ namespace Viki.LoadRunner.Tools.Extensions
             LoadRunnerUi ui = new LoadRunnerUi();
             ReplayStrategyBuilder<TData> localSettings = settings.Clone();
 
-            localSettings.Add(ui);
+            localSettings.AddAggregator(ui);
 
-            ui.Setup(new ReplayStrategy<TData>(settings), localSettings.ScenarioType);
+            ui.Setup(new ReplayStrategy<TData>(localSettings), localSettings.ScenarioType);
 
             return ui;
         }
@@ -25,9 +25,9 @@ namespace Viki.LoadRunner.Tools.Extensions
             LoadRunnerUi ui = new LoadRunnerUi();
             var localSettings = settings.Clone();
 
-            localSettings.Add(ui);
+            localSettings.AddAggregator(ui);
 
-            ui.Setup(new CustomStrategy(settings), localSettings.TestScenarioType);
+            ui.Setup(new CustomStrategy(localSettings), localSettings.ScenarioType);
 
             return ui;
         }

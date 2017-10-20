@@ -36,7 +36,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
         /// <summary>
         /// Scenario to execute, type must implement ILoadTestScenario.
         /// </summary>
-        Type TestScenarioType { get; }
+        Type ScenarioType { get; }
 
         /// <summary>
         /// This object-value will be set to testContext.UserData for each created test thread.

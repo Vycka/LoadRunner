@@ -4,12 +4,39 @@ using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay;
 using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Replay.Reader;
 using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies
 {
     public class ReplayStrategyBuilder<TData> : IReplayStrategySettings<TData>
     {
+        /// <summary>
+        /// Set thread count to use.
+        /// Recommended minimum value should be [Max expected concurrency] * 2.5
+        /// </summary>
+        /// <param name="threadCount">Count of threads to create</param>
+        public ReplayStrategyBuilder<TData> SetThreadCount(int threadCount)
+        {
+            ThreadCount = threadCount;
+
+            return this;
+        }
+
+        public ReplayStrategyBuilder<TData> SetData(DataItem[] data)
+        {
+            DataReader = new ArrayDataReader(data);
+
+            return this;
+        }
+
+        public ReplayStrategyBuilder<TData> SetData(IReplayDataReader dataReader)
+        {
+            DataReader = dataReader;
+
+            return this;
+        }
+
         /// <summary>
         /// Sets timeout time for stopping worker-threads.
         /// </summary>
@@ -34,7 +61,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         /// <param name="aggregagors">aggregators</param>
         /// <returns></returns>
-        public ReplayStrategyBuilder<TData> Set(params IResultsAggregator[] aggregagors)
+        public ReplayStrategyBuilder<TData> SetAggregator(params IResultsAggregator[] aggregagors)
         {
             Aggregators = aggregagors;
             return this;
@@ -45,7 +72,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         /// <param name="aggregagors">aggregators</param>
         /// <returns></returns>
-        public ReplayStrategyBuilder<TData> Add(params IResultsAggregator[] aggregagors)
+        public ReplayStrategyBuilder<TData> AddAggregator(params IResultsAggregator[] aggregagors)
         {
             Aggregators = Aggregators.Concat(aggregagors).ToArray();
             return this;
