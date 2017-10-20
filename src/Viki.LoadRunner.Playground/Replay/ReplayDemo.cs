@@ -22,7 +22,8 @@ namespace Viki.LoadRunner.Playground.Replay
                 .Add(new FuncDimension("Iteration", result => result.GlobalIterationId.ToString()))
                 .Add(new FuncDimension("Time", result => result.IterationStarted.TotalSeconds.ToString(CultureInfo.InvariantCulture)))
                 .Add(new FuncDimension("Data", result => result.UserData.ToString()))
-                .Add(new FuncMetric<int>("Threads", 0, (i, result) => result.CreatedThreads));
+                .Add(new FuncMetric<int>("CThreads", 0, (i, r) => r.CreatedThreads))
+                .Add(new FuncMetric<int>("IThreads", 0, (i, r) => r.IdleThreads));
 
 
             ReplayStrategyBuilder<string> settings = new ReplayStrategyBuilder<string>
@@ -37,9 +38,13 @@ namespace Viki.LoadRunner.Playground.Replay
             LoadRunnerUi engineUi = settings.BuildUi();
             engineUi.StartWindow();
 
-            // Non UI
+            // Non UI blocking
             LoadRunnerEngine engine = settings.Build();
-            engine.Run();
+            //engine.Run();
+
+            // Non UI Async
+            engine.RunAsync();
+            engine.Wait();
 
             object defaultResults = aggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
