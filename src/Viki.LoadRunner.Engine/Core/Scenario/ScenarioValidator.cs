@@ -20,7 +20,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
         /// <param name="threadIterationId">ThreadIterationId to set in TestContext</param>
         /// <param name="globalIterationId">GlobalIterationId to set in TestContext</param>
         /// <returns>Raw result from single iteration</returns>
-        public static IterationResult Validate(IScenario scenario, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
+        public static IterationResult Validate(this IScenario scenario, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
         {
             ExecutionTimer timer = new ExecutionTimer();
 

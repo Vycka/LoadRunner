@@ -22,9 +22,9 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
         {
         }
 
-        public  IIterationResult Validate()
+        public  IIterationResult Validate(int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
         {
-            return ScenarioValidator.Validate(this);
+            return ScenarioValidator.Validate(this, threadId, threadIterationId, globalIterationId);
         }
     }
 }

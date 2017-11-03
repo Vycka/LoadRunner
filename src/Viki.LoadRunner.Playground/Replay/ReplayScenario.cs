@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
@@ -12,8 +13,9 @@ namespace Viki.LoadRunner.Playground.Replay
         private ITimer _timer = new ExecutionTimer();
         private string _data = "DEFAULT";
 
-        public void ScenarioSetup(IIteration context)
+        public async void ScenarioSetup(IIteration context)
         {
+            int x = await Task.FromResult<int>(0);
             _timer = context.Timer;
 
             Console.Out.WriteLine($"[{_timer.Value.TotalSeconds:F2}] Scenario Setup");

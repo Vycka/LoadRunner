@@ -31,7 +31,8 @@ namespace Viki.LoadRunner.Playground.Replay
                 Aggregators = new IResultsAggregator[] { aggregator },
                 DataReader = new ArrayDataReader(DataGenerator.Create(5, 1, 3, 3).ToArray()),
                 ScenarioType = typeof(ReplayScenario),
-                ThreadCount = 5
+                ThreadCount = 50,
+                SpeedMultiplier = 2
             };
 
             // UI
@@ -39,12 +40,12 @@ namespace Viki.LoadRunner.Playground.Replay
             engineUi.StartWindow();
 
             // Non UI blocking
-            LoadRunnerEngine engine = settings.Build();
+            //LoadRunnerEngine engine = settings.Build();
             //engine.Run();
 
             // Non UI Async
-            engine.RunAsync();
-            engine.Wait();
+            //engine.RunAsync();
+            //engine.Wait();
 
             object defaultResults = aggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));

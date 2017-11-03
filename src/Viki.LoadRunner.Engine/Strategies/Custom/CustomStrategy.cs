@@ -44,7 +44,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
         private IResultsAggregator _aggregator;
 
 
-        // Could ICustomStrategySettings
         public CustomStrategy(ICustomStrategySettings settings)
         {
             if (settings == null)
