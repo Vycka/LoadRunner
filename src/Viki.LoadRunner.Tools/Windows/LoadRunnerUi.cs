@@ -161,10 +161,18 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void _validateButton_Click(object sender, EventArgs e)
         {
-            IterationResult result = ScenarioValidator.Validate((IScenario) Activator.CreateInstance(_scenarioType));
-            ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.Names.IterationEnd);
+            Invoke(
+                new InvokeDelegate(() =>
+                {
+                    IterationResult result = ((IScenario) Activator.CreateInstance(_scenarioType)).Validate();
 
-            AppendMessage($"Validation OK: {checkpoint.TimePoint.TotalMilliseconds}ms.");
+                    ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.Names.IterationEnd);
+
+                    AppendMessage($"Validation OK: {checkpoint.TimePoint.TotalMilliseconds}ms.");
+                })
+            );
+
+
         }
 
         private void _clearButton_Click(object sender, EventArgs e)
