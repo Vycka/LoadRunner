@@ -119,6 +119,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
         public bool HeartBeat()
         {
+            _errorHandler.Assert();
             // ReplayScheduler stops threads when IDataReader doesn't return any new jobs.
             return _counter.CreatedThreadCount == 0;
         }
