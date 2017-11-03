@@ -28,7 +28,7 @@ namespace Viki.LoadRunner.Playground.Replay
 
             ReplayStrategyBuilder<string> settings = new ReplayStrategyBuilder<string>
             {
-                Aggregators = new IResultsAggregator[] { aggregator },
+                Aggregators = new IAggregator[] { aggregator },
                 DataReader = new ArrayDataReader(DataGenerator.Create(5, 1, 3, 3).ToArray()),
                 ScenarioType = typeof(ReplayScenario),
                 ThreadCount = 50,

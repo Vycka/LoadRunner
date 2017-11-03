@@ -18,7 +18,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     /// <summary>
     /// Modular 2D grid histogram aggregator/builder. Use Add() method to register concrete IDiminension's and IMetric's
     /// </summary>
-    public class HistogramAggregator : IResultsAggregator
+    public class HistogramAggregator : IAggregator
     {
         #region Fields
 
@@ -93,7 +93,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region IResultsAggregator
 
-        void IResultsAggregator.Begin()
+        void IAggregator.Begin()
         {
             _metricMultiplexer = new MetricMultiplexer(_metricTemplates);
             _row = new FlexiRow<DimensionKey, IMetric>(() => ((IMetric)_metricMultiplexer).CreateNew());
@@ -101,13 +101,13 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _dimensionsKeyBuilder = new DimensionsKeyBuilder(_dimensions);
         }
 
-        void IResultsAggregator.TestContextResultReceived(IResult result)
+        void IAggregator.TestContextResultReceived(IResult result)
         {
             DimensionKey key = _dimensionsKeyBuilder.GetValue(result);
             _row[key].Add(result);
         }
 
-        void IResultsAggregator.End()
+        void IAggregator.End()
         {
         }
 

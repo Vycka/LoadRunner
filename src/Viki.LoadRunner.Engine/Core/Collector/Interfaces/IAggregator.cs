@@ -5,7 +5,7 @@
     /// </summary>
     /// <remarks>Aggregators are expected to contain their errors.
     /// Thrown exceptions will break test execution.</remarks>
-    public interface IResultsAggregator
+    public interface IAggregator
     {
         /// <summary>
         /// Signals aggregator, that new test execution is about to begin

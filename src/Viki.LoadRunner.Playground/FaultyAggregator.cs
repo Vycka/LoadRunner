@@ -2,7 +2,7 @@
 
 namespace Viki.LoadRunner.Playground
 {
-    public class FaultyAggregator : IResultsAggregator
+    public class FaultyAggregator : IAggregator
     {
         private readonly bool _begin, _receive, _end;
 

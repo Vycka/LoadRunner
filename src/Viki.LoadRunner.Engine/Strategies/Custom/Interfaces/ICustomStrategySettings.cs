@@ -46,7 +46,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
         /// <summary>
         /// Aggregators to collect the data
         /// </summary>
-        IResultsAggregator[] Aggregators { get; }
+        IAggregator[] Aggregators { get; }
     }
 }
 

@@ -41,7 +41,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
         private IThreadingStrategy _threading;
         private ILimitStrategy _limit;
         private ITestState _state;
-        private IResultsAggregator _aggregator;
+        private IAggregator _aggregator;
 
 
         public CustomStrategy(ICustomStrategySettings settings)
@@ -76,7 +76,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
             _limit = new LimitsHandler(_settings.Limits);
             _threading = _settings.Threading;
-            _aggregator = new AsyncResultsAggregator(_settings.Aggregators);
+            _aggregator = new AsyncAggregator(_settings.Aggregators);
 
             _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
 

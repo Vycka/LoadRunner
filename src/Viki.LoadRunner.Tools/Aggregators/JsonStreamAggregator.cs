@@ -43,12 +43,12 @@ namespace Viki.LoadRunner.Tools.Aggregators
 
         #region Replay functions
 
-        public static void Replay(string jsonResultsFile, params IResultsAggregator[] targetAggregators)
+        public static void Replay(string jsonResultsFile, params IAggregator[] targetAggregators)
         {
             Replay<object>(jsonResultsFile, targetAggregators);
         }
 
-        public static void Replay<TUserData>(string jsonResultsFile, params IResultsAggregator[] targetAggregators)
+        public static void Replay<TUserData>(string jsonResultsFile, params IAggregator[] targetAggregators)
         {
             IEnumerable<IResult> resultsStream = Load<TUserData>(jsonResultsFile);
 

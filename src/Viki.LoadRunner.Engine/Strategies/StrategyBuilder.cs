@@ -145,7 +145,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         /// <param name="aggregagors">aggregators</param>
         /// <returns></returns>
-        public StrategyBuilder SetAggregator(params IResultsAggregator[] aggregagors)
+        public StrategyBuilder SetAggregator(params IAggregator[] aggregagors)
         {
             Aggregators = aggregagors;
             return this;
@@ -156,7 +156,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         /// <param name="aggregagors">aggregators</param>
         /// <returns></returns>
-        public StrategyBuilder AddAggregator(params IResultsAggregator[] aggregagors)
+        public StrategyBuilder AddAggregator(params IAggregator[] aggregagors)
         {
             Aggregators = Aggregators.Concat(aggregagors).ToArray();
             return this;
@@ -211,7 +211,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <summary>
         /// Aggregators to collect the data
         /// </summary>
-        public IResultsAggregator[] Aggregators { get; set; } = { };
+        public IAggregator[] Aggregators { get; set; } = { };
 
         #endregion
     }

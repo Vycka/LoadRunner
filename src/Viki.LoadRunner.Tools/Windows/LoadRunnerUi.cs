@@ -22,7 +22,7 @@ using Viki.LoadRunner.Engine.Utils;
 namespace Viki.LoadRunner.Tools.Windows
 {
     // TODO: Move out IResultsAggregator logic outside.
-    public partial class LoadRunnerUi : Form, IResultsAggregator
+    public partial class LoadRunnerUi : Form, IAggregator
     {
         public string TextTemplate = "LR-UI {0}";
 
@@ -64,7 +64,7 @@ namespace Viki.LoadRunner.Tools.Windows
             Application.Run(this);
         }
 
-        void IResultsAggregator.Begin()
+        void IAggregator.Begin()
         {
             _timer.Start();
 
@@ -82,12 +82,12 @@ namespace Viki.LoadRunner.Tools.Windows
         }
 
 
-        void IResultsAggregator.TestContextResultReceived(IResult result)
+        void IAggregator.TestContextResultReceived(IResult result)
         {
             _resultsQueue.Enqueue(result);
         }
 
-        void IResultsAggregator.End()
+        void IAggregator.End()
         {
             _timer.Start();
 

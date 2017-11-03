@@ -24,7 +24,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Interfaces
         /// <summary>
         /// Aggregators to collect the data
         /// </summary>
-        IResultsAggregator[] Aggregators { get; }
+        IAggregator[] Aggregators { get; }
 
         /// <summary>
         /// Class type of Scenario to be executed, type must implement IReplayScenario.

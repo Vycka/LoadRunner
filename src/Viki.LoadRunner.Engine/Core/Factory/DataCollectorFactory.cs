@@ -9,10 +9,10 @@ namespace Viki.LoadRunner.Engine.Core.Factory
 {
     public class DataCollectorFactory : IDataCollectorFactory
     {
-        private readonly IResultsAggregator _aggregator;
+        private readonly IAggregator _aggregator;
         private readonly IThreadPoolCounter _counter;
 
-        public DataCollectorFactory(IResultsAggregator aggregator, IThreadPoolCounter counter)
+        public DataCollectorFactory(IAggregator aggregator, IThreadPoolCounter counter)
         {
             if (aggregator == null)
                 throw new ArgumentNullException(nameof(aggregator));

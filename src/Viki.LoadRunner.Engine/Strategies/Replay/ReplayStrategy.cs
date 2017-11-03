@@ -23,7 +23,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
     {
         private readonly IReplayStrategySettings _settings;
         private readonly ExecutionTimer _timer;
-        private readonly IResultsAggregator _aggregator;
+        private readonly IAggregator _aggregator;
 
         private IReplayDataReader _dataReader;
         private IErrorHandler _errorHandler;
@@ -38,7 +38,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
             _settings = settings;
             _timer = new ExecutionTimer();
-            _aggregator = new AsyncResultsAggregator(_settings.Aggregators);
+            _aggregator = new AsyncAggregator(_settings.Aggregators);
         }
 
         public virtual void Start()

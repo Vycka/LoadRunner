@@ -72,7 +72,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// Sets aggregators to use when collecting data
         /// </summary>
         /// <param name="aggregagors">aggregators</param>
-        public ReplayStrategyBuilder<TData> SetAggregator(params IResultsAggregator[] aggregagors)
+        public ReplayStrategyBuilder<TData> SetAggregator(params IAggregator[] aggregagors)
         {
             Aggregators = aggregagors;
             return this;
@@ -82,7 +82,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// Adds aggregators to use when collecting data
         /// </summary>
         /// <param name="aggregagors">aggregators</param>
-        public ReplayStrategyBuilder<TData> AddAggregator(params IResultsAggregator[] aggregagors)
+        public ReplayStrategyBuilder<TData> AddAggregator(params IAggregator[] aggregagors)
         {
             Aggregators = Aggregators.Concat(aggregagors).ToArray();
             return this;
@@ -114,7 +114,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <summary>
         /// Aggregators to collect the data
         /// </summary>
-        public IResultsAggregator[] Aggregators { get; set; } = { };
+        public IAggregator[] Aggregators { get; set; } = { };
 
         /// <summary>
         /// Class type of Scenario to be executed, type must implement IReplayScenario.

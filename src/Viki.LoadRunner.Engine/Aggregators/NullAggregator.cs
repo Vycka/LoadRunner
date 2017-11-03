@@ -2,7 +2,7 @@
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
-    public class NullAggregator : IResultsAggregator
+    public class NullAggregator : IAggregator
     {
         public void Begin()
         {

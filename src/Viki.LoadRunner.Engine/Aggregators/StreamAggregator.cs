@@ -11,7 +11,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     /// <summary>
     /// StreamAggregator provides loadtest raw/masterdata (IResult) IEnumerable stream 
     /// </summary>
-    public class StreamAggregator : IResultsAggregator
+    public class StreamAggregator : IAggregator
     {
         #region Fields
 
@@ -66,7 +66,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #region IResultsAggregator
 
-        void IResultsAggregator.Begin()
+        void IAggregator.Begin()
         {
             _stopTask = false;
 
@@ -74,7 +74,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _writerTask.Start();
         }
 
-        void IResultsAggregator.TestContextResultReceived(IResult result)
+        void IAggregator.TestContextResultReceived(IResult result)
         {
             if (_writerTask?.Exception != null)
                 throw _writerTask.Exception;
@@ -82,7 +82,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _queue.Enqueue(result);
         }
 
-        void IResultsAggregator.End()
+        void IAggregator.End()
         {
             _stopTask = true;
 
@@ -99,7 +99,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// </summary>
         /// <param name="results">LoadTest masterdata result stream</param>
         /// <param name="targetAggregators">Result aggregators</param>
-        public static void Replay(IEnumerable<IResult> results, params IResultsAggregator[] targetAggregators)
+        public static void Replay(IEnumerable<IResult> results, params IAggregator[] targetAggregators)
         {
             targetAggregators.ForEach(aggregator => aggregator.Begin());
 

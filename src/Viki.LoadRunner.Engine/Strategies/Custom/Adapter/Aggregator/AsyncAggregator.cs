@@ -9,11 +9,11 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator
     /// Since TestContextResultReceived calls are synchronous from benchmarking threads, this class unloads processing to its own seperate thread
     /// It's already used in LoadRunnerEngine, so no need to reuse it again.
     /// </summary>
-    internal class AsyncResultsAggregator : IResultsAggregator, IDisposable
+    internal class AsyncAggregator : IAggregator, IDisposable
     {
         #region Fields
 
-        private readonly IResultsAggregator[] _resultsAggregators;
+        private readonly IAggregator[] _aggregators;
         private readonly ConcurrentQueue<IResult> _processingQueue = new ConcurrentQueue<IResult>();
 
         private volatile bool _stopping = true;
@@ -24,16 +24,16 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator
 
         #region Constructor
 
-        public AsyncResultsAggregator(params IResultsAggregator[] resultsAggregators)
+        public AsyncAggregator(params IAggregator[] aggregators)
         {
-            _resultsAggregators = resultsAggregators;
+            _aggregators = aggregators;
         }
 
         #endregion
 
         #region IResultsAggregator
 
-        void IResultsAggregator.Begin()
+        void IAggregator.Begin()
         {
             if (_stopping == true)
             {
@@ -42,24 +42,24 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator
                 _processorThread = new Thread(ProcessorThreadFunction);
                 _processorThread.Start();
 
-                Array.ForEach(_resultsAggregators, aggregator => aggregator.Begin());
+                Array.ForEach(_aggregators, aggregator => aggregator.Begin());
             }
         }
 
-        void IResultsAggregator.End()
+        void IAggregator.End()
         {
             if (_stopping == false)
             {
                 _stopping = true;
                 _processorThread?.Join();
 
-                Array.ForEach(_resultsAggregators, aggregator => aggregator.End());
+                Array.ForEach(_aggregators, aggregator => aggregator.End());
 
                 _processorThread = null;
             }
         }
 
-        void IResultsAggregator.TestContextResultReceived(IResult result)
+        void IAggregator.TestContextResultReceived(IResult result)
         {
             _processingQueue.Enqueue(result);
 
@@ -87,7 +87,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator
                     {
                         IResult localResultObject = resultObject;
 
-                        Array.ForEach(_resultsAggregators, a => a.TestContextResultReceived(localResultObject));
+                        Array.ForEach(_aggregators, a => a.TestContextResultReceived(localResultObject));
                     }
 
                     Thread.Sleep(100);
@@ -109,14 +109,14 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator
 
         #region IDisposable
 
-        ~AsyncResultsAggregator()
+        ~AsyncAggregator()
         {
             Dispose();
         }
 
         public void Dispose()
         {
-            ((IResultsAggregator)this).End();
+            ((IAggregator)this).End();
         }
 
         #endregion
