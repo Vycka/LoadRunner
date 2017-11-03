@@ -21,7 +21,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 {
     public class ReplayStrategy<TData> : IStrategy
     {
-        private readonly IReplayStrategySettings<TData> _settings;
+        private readonly IReplayStrategySettings _settings;
         private readonly ExecutionTimer _timer;
         private readonly IResultsAggregator _aggregator;
 
@@ -31,7 +31,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
         private IThreadPoolCounter _counter;
         private ThreadPool _pool;
 
-        public ReplayStrategy(IReplayStrategySettings<TData> settings)
+        public ReplayStrategy(IReplayStrategySettings settings)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));

@@ -1,38 +1,45 @@
 ﻿using System;
-using System.Linq;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay.Interfaces
 {
-    public interface IReplayStrategySettings<TData>
+    public interface IReplayStrategySettings
     {
+        /// <summary>
+        /// Fixed count of threads to use
+        /// </summary>
         int ThreadCount { get; }
+
+        /// <summary>
+        /// Datasource which defines timeline of replay execution
+        /// </summary>
         IReplayDataReader DataReader { get; }
+
+        /// <summary>
+        /// Speed multiplier at which Replay strategy will run
+        /// </summary>
         double SpeedMultiplier { get; }
+
+        /// <summary>
+        /// Aggregators to collect the data
+        /// </summary>
         IResultsAggregator[] Aggregators { get; }
 
+        /// <summary>
+        /// Class type of Scenario to be executed, type must implement IReplayScenario.
+        /// </summary>
         Type ScenarioType { get; }
+
+        /// <summary>
+        /// Initial user data which will be passed to created thread contexts. (context.UserData)
+        /// </summary>
         object InitialUserData { get; }
+
+        /// <summary>
+        /// Timeout for strategy threads to stop and cleanup.
+        /// This does not affect result IAggregator and execution will still hold indefinetely until its finished.
+        /// </summary>
         TimeSpan FinishTimeout { get; }
-    }
-
-    public static class ReplayStrategySettingsExtensions
-    {
-        public static ReplayStrategyBuilder<TData> Clone<TData>(this IReplayStrategySettings<TData> settings)
-        {
-            return new ReplayStrategyBuilder<TData>()
-            {
-                ThreadCount = settings.ThreadCount,
-                DataReader = settings.DataReader,
-                SpeedMultiplier = settings.SpeedMultiplier,
-                Aggregators = settings.Aggregators.ToArray(),
-
-                ScenarioType = settings.ScenarioType,
-
-                FinishTimeout = settings.FinishTimeout,
-                InitialUserData = settings.InitialUserData,
-            };
-        }
     }
 }

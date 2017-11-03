@@ -9,11 +9,13 @@ using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies
 {
-    public class ReplayStrategyBuilder<TData> : IReplayStrategySettings<TData>
+    public class ReplayStrategyBuilder<TData> : IReplayStrategySettings
     {
         /// <summary>
         /// Set thread count to use.
-        /// Recommended minimum value should be [Max expected concurrency] * 2.5
+        /// Recommended minimum value depends on test case. 
+        /// But it always should be at least bigger than expected maximum concurrency. 
+        /// E.g. [Max expected concurrency] * 2.5
         /// </summary>
         /// <param name="threadCount">Count of threads to create</param>
         public ReplayStrategyBuilder<TData> SetThreadCount(int threadCount)
@@ -23,6 +25,11 @@ namespace Viki.LoadRunner.Engine.Strategies
             return this;
         }
 
+        /// <summary>
+        /// Set fixed list of timestamps and data to execute test.
+        /// It must be already sorted by timestamp or you will starve the threads.
+        /// </summary>
+        /// <param name="data">Fixed list of data</param>
         public ReplayStrategyBuilder<TData> SetData(DataItem[] data)
         {
             DataReader = new ArrayDataReader(data);
@@ -30,6 +37,11 @@ namespace Viki.LoadRunner.Engine.Strategies
             return this;
         }
 
+        /// <summary>
+        /// Set custom data source for ReplayScenario
+        /// </summary>
+        /// <param name="dataReader"></param>
+        /// <returns></returns>
         public ReplayStrategyBuilder<TData> SetData(IReplayDataReader dataReader)
         {
             DataReader = dataReader;
@@ -60,7 +72,6 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// Sets aggregators to use when collecting data
         /// </summary>
         /// <param name="aggregagors">aggregators</param>
-        /// <returns></returns>
         public ReplayStrategyBuilder<TData> SetAggregator(params IResultsAggregator[] aggregagors)
         {
             Aggregators = aggregagors;
@@ -71,7 +82,6 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// Adds aggregators to use when collecting data
         /// </summary>
         /// <param name="aggregagors">aggregators</param>
-        /// <returns></returns>
         public ReplayStrategyBuilder<TData> AddAggregator(params IResultsAggregator[] aggregagors)
         {
             Aggregators = Aggregators.Concat(aggregagors).ToArray();
@@ -86,13 +96,60 @@ namespace Viki.LoadRunner.Engine.Strategies
             return engine;
         }
 
+        /// <summary>
+        /// Fixed count of threads to use
+        /// </summary>
         public int ThreadCount { get; set; } = 50;
+
+        /// <summary>
+        /// Datasource which defines timeline of replay execution
+        /// </summary>
         public IReplayDataReader DataReader { get; set; }
+
+        /// <summary>
+        /// Speed multiplier at which Replay strategy will run
+        /// </summary>
         public double SpeedMultiplier { get; set; } = 1;
+
+        /// <summary>
+        /// Aggregators to collect the data
+        /// </summary>
         public IResultsAggregator[] Aggregators { get; set; } = { };
 
+        /// <summary>
+        /// Class type of Scenario to be executed, type must implement IReplayScenario.
+        /// </summary>
         public Type ScenarioType { get; set; }
+
+        /// <summary>
+        /// Initial user data which will be passed to created thread contexts. (context.UserData)
+        /// </summary>
         public object InitialUserData { get; set; }
+
+
+        /// <summary>
+        /// Timeout for strategy threads to stop and cleanup.
+        /// This does not affect result IAggregator and execution will still hold indefinetely until its finished.
+        /// </summary>
         public TimeSpan FinishTimeout { get; set; } = TimeSpan.FromMinutes(3);
+    }
+
+    public static class ReplayStrategyBuilderExtensions
+    {
+        public static ReplayStrategyBuilder<TData> Clone<TData>(this ReplayStrategyBuilder<TData> settings)
+        {
+            return new ReplayStrategyBuilder<TData>
+            {
+                ThreadCount = settings.ThreadCount,
+                DataReader = settings.DataReader,
+                SpeedMultiplier = settings.SpeedMultiplier,
+                Aggregators = settings.Aggregators.ToArray(),
+
+                ScenarioType = settings.ScenarioType,
+
+                FinishTimeout = settings.FinishTimeout,
+                InitialUserData = settings.InitialUserData,
+            };
+        }
     }
 }

@@ -10,7 +10,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 namespace Viki.LoadRunner.Engine.Strategies
 {
     /// <summary>
-    /// LoadRunner custom settings builder & default ILoadRunnerSettings implementation template.
+    /// LoadRunner custom settings builder and default ILoadRunnerSettings implementation template.
     /// </summary>
     public class StrategyBuilder : ICustomStrategySettings
     {
@@ -63,6 +63,9 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <param name="scenarioType">Scenario class type</param>
         public StrategyBuilder SetScenario(Type scenarioType)
         {
+            if (!scenarioType.GetInterfaces().Contains(typeof(IScenario)))
+                throw new ArgumentException($"provided {nameof(scenarioType)} must implement IScenario", nameof(scenarioType));
+
             ScenarioType = scenarioType;
             return this;
         }
@@ -206,14 +209,14 @@ namespace Viki.LoadRunner.Engine.Strategies
         public object InitialUserData { get; set; } = null;
 
         /// <summary>
-        /// Aggregators receive raw meassurements from each iteration and can either slice/dice the results using analytical HistogramAggregator, or get the raw stream using StreamAggregator.
+        /// Aggregators to collect the data
         /// </summary>
         public IResultsAggregator[] Aggregators { get; set; } = { };
 
         #endregion
     }
 
-    public static class CustomStrategySettingsExtensions
+    public static class StrategyBuilderExtensions
     {
         public static StrategyBuilder Clone(this ICustomStrategySettings settings)
         {

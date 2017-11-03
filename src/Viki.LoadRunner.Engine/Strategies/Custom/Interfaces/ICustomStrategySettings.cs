@@ -34,7 +34,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
         TimeSpan FinishTimeout { get; }
 
         /// <summary>
-        /// Scenario to execute, type must implement ILoadTestScenario.
+        /// Class type of scenario to be executed, type must implement IScenario.
         /// </summary>
         Type ScenarioType { get; }
 
@@ -44,7 +44,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
         object InitialUserData { get; }
 
         /// <summary>
-        /// Aggregators receive raw meassurements from each iteration and can either slice/dice the results using analytical HistogramAggregator, or get the raw stream using StreamAggregator.
+        /// Aggregators to collect the data
         /// </summary>
         IResultsAggregator[] Aggregators { get; }
     }
