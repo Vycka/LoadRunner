@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
-using Viki.LoadRunner.Engine.Settings;
+using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Tools.Extensions;
 
 namespace LoadRunner.Demo
 {
@@ -15,9 +16,14 @@ namespace LoadRunner.Demo
             // * Type of class which implements ILoadTestScenario (e.g DemoTestScenario)
             // * LoadRunnerParameters
             // * As many aggregators as you like 
+
+            StrategyBuilder strategy = SettingsSetup.Create();
+
             HistogramAggregator histogramAggregator = AggregationSetup.BuildHistogram();
-            ILoadRunnerSettings settings = SettingsSetup.Build();
-            LoadRunnerEngine loadRunner = LoadRunnerEngine.Create(settings, histogramAggregator);
+            strategy.SetAggregator(histogramAggregator);
+
+
+            LoadRunnerEngine loadRunner = strategy.Build();
 
             // Run test (blocking call)
             loadRunner.Run();

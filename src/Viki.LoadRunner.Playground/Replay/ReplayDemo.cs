@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Linq;
 using Newtonsoft.Json;
-using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;

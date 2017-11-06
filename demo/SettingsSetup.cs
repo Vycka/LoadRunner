@@ -1,44 +1,45 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Settings;
 using Viki.LoadRunner.Engine.Strategies;
-using Viki.LoadRunner.Engine.Strategies.Limit;
-using Viki.LoadRunner.Engine.Strategies.Threading;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
+
 
 
 namespace LoadRunner.Demo
 {
     public static class SettingsSetup
     {
-        public static ILoadRunnerSettings Build()
+        public static StrategyBuilder Create()
         {
             // For this example we will create a little bit modified default preset (see this.DefaultParametersPreset below).
-            LoadRunnerSettings settings = new LoadRunnerSettings()
+            StrategyBuilder strategy = new StrategyBuilder()
 
                 // Set test scenario to use - DemoTestScenario
                 .SetScenario<DemoTestScenario>()
 
                 // Stop execution after 30 secs.
-                .SetLimits(new TimeLimit(TimeSpan.FromSeconds(30)))
+                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(30)))
 
                 // Incremental strategy here increases thread count every 10 seconds.
                 // This can be aligned with TimeDimension in HistogramAggregator as shown later in this example.
                 .SetThreading(new IncrementalThreadCount(20, TimeSpan.FromSeconds(10), 20));
 
-            return settings;
+            return strategy;
         }
 
         // This demonstrates default parameters of LoadRunnerSettings object for reference.
         // Default presets will cause unlimited execution, so at least one ILimitStrategy must be defined. 
         //
         // All properties can be initialized using either builder methods Set*/Add* or by directly setting parameters.
-        private static readonly LoadRunnerSettings DefaultParametersPreset = new LoadRunnerSettings
+        private static readonly StrategyBuilder DefaultParametersPreset = new StrategyBuilder
         {
             // Scenario to execute.
             //
             // No scenario is defined by default and will cause undefined behavior, so it must be set.
             // SetScenario()/SetScenario<>()/Create<>()/Create()
             //
-            TestScenarioType = null,
+            ScenarioType = null,
 
             // Limits define when test execution will be scheduled to stop.
             //
@@ -75,7 +76,7 @@ namespace LoadRunner.Demo
             //
             // - Periodically changes working thread count.
             //   IncrementalLimitWorkingThreads(int initialWorkingThreadCount, TimeSpan increaseTimePeriod, int increaseBatchSize)
-            Speed = new ISpeedStrategy[0],
+            Speeds = new ISpeedStrategy[0],
 
             // Threading strategy defines Created worker-thread count throughout the test.
             // 

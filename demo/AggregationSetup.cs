@@ -2,7 +2,8 @@
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Engine.Executor.Context;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Tools.Aggregators;
 
 namespace LoadRunner.Demo
@@ -70,7 +71,7 @@ namespace LoadRunner.Demo
         // This allows to do post-test aggregations in any slices you will think later.
         //
         // Checkout RawDataAggregationDemo.cs if interested.
-        public static IResultsAggregator BuildJsonStreamAggregator()
+        public static IAggregator BuildJsonStreamAggregator()
         {
             return new JsonStreamAggregator("masterdata.json");
         }

@@ -1,9 +1,13 @@
-﻿namespace LoadRunner.Demo
+﻿using LoadRunner.Demo.ReadmeDemo;
+
+namespace LoadRunner.Demo
 {
     class Program
     {
         static void Main(string[] args)
         {
+            BareMinimum.Run();
+
             // ProTips: 
             // * If planning to use HttpClient, WebRequest or similar tools to make API Load-Tests
             // Make sure to tweak App.config accordingly to lift up connection limit.
