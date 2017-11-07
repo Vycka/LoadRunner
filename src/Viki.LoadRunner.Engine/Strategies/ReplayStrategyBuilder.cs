@@ -11,6 +11,10 @@ using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies
 {
+    /// <summary>
+    /// Wizzard class for configuring and building replay test strategy.
+    /// </summary>
+    /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
     public class ReplayStrategyBuilder<TData> : IReplayStrategySettings
     {
         /// <summary>
@@ -29,10 +33,18 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <param name="scenarioType">Scenario class type</param>
         public ReplayStrategyBuilder<TData> SetScenario(Type scenarioType)
         {
-            ScenarioFactory = new ScenarioFactory<IReplayScenario<TData>>(scenarioType);
-            return this;
+            return SetScenario(new ScenarioFactory<IReplayScenario<TData>>(scenarioType));
         }
 
+        /// <summary>
+        /// Set own custom IReplayScenario&lt;TData&gt; factory
+        /// </summary>
+        /// <param name="scenarioFactory">IReplayScenario&lt;TData&gt; factory it self</param>
+        public ReplayStrategyBuilder<TData> SetScenario(IScenarioFactory scenarioFactory)
+        {
+            ScenarioFactory = scenarioFactory;
+            return this;
+        }
 
         /// <summary>
         /// Set thread count to use.
@@ -111,6 +123,10 @@ namespace Viki.LoadRunner.Engine.Strategies
             return this;
         }
 
+        /// <summary>
+        /// Initialize IStrategy from this configuration and then LoadRunnerEngine it self using it.
+        /// </summary>
+        /// <returns>LoadRunnerEngine instance with configured strategy</returns>
         public LoadRunnerEngine Build()
         {
             IStrategy strategy = new ReplayStrategy<TData>(this);
@@ -159,6 +175,12 @@ namespace Viki.LoadRunner.Engine.Strategies
 
     public static class ReplayStrategyBuilderExtensions
     {
+        /// <summary>
+        /// Duplicates configuration builder having own configuration lists. But registered configuration instances will still be the same.
+        /// </summary>
+        /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
+        /// <param name="settings">settings builder to clone</param>
+        /// <returns>New instance of ReplayStrategyBuilder</returns>
         public static ReplayStrategyBuilder<TData> Clone<TData>(this ReplayStrategyBuilder<TData> settings)
         {
             return new ReplayStrategyBuilder<TData>

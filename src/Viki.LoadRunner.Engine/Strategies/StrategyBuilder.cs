@@ -12,7 +12,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 namespace Viki.LoadRunner.Engine.Strategies
 {
     /// <summary>
-    /// LoadRunner custom settings builder and default ILoadRunnerSettings implementation template.
+    /// Wizzard class for configuring and building custom test strategy.
     /// </summary>
     public class StrategyBuilder : ICustomStrategySettings
     {
@@ -34,7 +34,16 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <param name="scenarioType">Scenario class type</param>
         public StrategyBuilder SetScenario(Type scenarioType)
         {
-            ScenarioFactory = new ScenarioFactory<IScenario>(scenarioType);
+            return SetScenario(new ScenarioFactory<IScenario>(scenarioType));
+        }
+
+        /// <summary>
+        /// Set own custom IScenario factory
+        /// </summary>
+        /// <param name="scenarioFactory">IScenario factory it self</param>
+        public StrategyBuilder SetScenario(IScenarioFactory scenarioFactory)
+        {
+            ScenarioFactory = scenarioFactory;
             return this;
         }
 
@@ -130,6 +139,10 @@ namespace Viki.LoadRunner.Engine.Strategies
             return this;
         }
 
+        /// <summary>
+        /// Initialize IStrategy from this configuration and then LoadRunnerEngine it self using it.
+        /// </summary>
+        /// <returns>LoadRunnerEngine instance with configured strategy</returns>
         public LoadRunnerEngine Build()
         {
             return new LoadRunnerEngine(new CustomStrategy(this));
