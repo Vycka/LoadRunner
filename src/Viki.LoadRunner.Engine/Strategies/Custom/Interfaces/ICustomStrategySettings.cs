@@ -1,5 +1,7 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
@@ -23,7 +25,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
         ISpeedStrategy[] Speeds { get; }
 
         /// <summary>
-        /// Threading strategy defines created and working parallel thread count throughout the LoadTest
+        /// Threading strategy defines created and working parallel thread count throughout the LoadTest.
         /// </summary>
         IThreadingStrategy Threading { get; }
 
@@ -34,9 +36,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
         TimeSpan FinishTimeout { get; }
 
         /// <summary>
-        /// Class type of scenario to be executed, type must implement IScenario.
+        /// Factory for creating IScenario instances.
         /// </summary>
-        Type ScenarioType { get; }
+        IScenarioFactory ScenarioFactory { get; }
 
         /// <summary>
         /// This object-value will be set to testContext.UserData for each created test thread.
@@ -44,7 +46,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
         object InitialUserData { get; }
 
         /// <summary>
-        /// Aggregators to collect the data
+        /// Aggregators to collect the data.
         /// </summary>
         IAggregator[] Aggregators { get; }
     }

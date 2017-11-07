@@ -12,6 +12,7 @@ using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Core.Collector;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
@@ -32,7 +33,7 @@ namespace Viki.LoadRunner.Tools.Windows
         private readonly ExecutionTimer _timer;
         private readonly ConcurrentQueue<IResult> _resultsQueue = new ConcurrentQueue<IResult>();
 
-        private Type _scenarioType;
+        private IScenarioFactory _scenarioFactory;
         private LoadRunnerEngine _engine;
 
         public LoadRunnerUi()
@@ -53,10 +54,10 @@ namespace Viki.LoadRunner.Tools.Windows
             InitializeComponent();
         }
 
-        public void Setup(IStrategy strategy, Type scenario)
+        public void Setup(IStrategy strategy, IScenarioFactory factory)
         {
             _engine = new LoadRunnerEngine(strategy);
-            _scenarioType = scenario;
+            _scenarioFactory = factory;
         }
 
         public void StartWindow()
@@ -164,7 +165,7 @@ namespace Viki.LoadRunner.Tools.Windows
             Invoke(
                 new InvokeDelegate(() =>
                 {
-                    IterationResult result = ((IScenario) Activator.CreateInstance(_scenarioType)).Validate();
+                    IterationResult result = ((IScenario)_scenarioFactory.Create()).Validate();
 
                     ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.Names.IterationEnd);
 

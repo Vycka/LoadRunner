@@ -15,7 +15,7 @@ namespace Viki.LoadRunner.Tools.Extensions
 
             localSettings.AddAggregator(ui);
 
-            ui.Setup(new ReplayStrategy<TData>(localSettings), localSettings.ScenarioType);
+            ui.Setup(new ReplayStrategy<TData>(localSettings), localSettings.ScenarioFactory);
 
             return ui;
         }
@@ -27,7 +27,7 @@ namespace Viki.LoadRunner.Tools.Extensions
 
             localSettings.AddAggregator(ui);
 
-            ui.Setup(new CustomStrategy(localSettings), localSettings.ScenarioType);
+            ui.Setup(new CustomStrategy(localSettings), localSettings.ScenarioFactory);
 
             return ui;
         }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Factory;
+using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom;
 using Viki.LoadRunner.Engine.Strategies.Custom.Interfaces;
@@ -14,36 +16,6 @@ namespace Viki.LoadRunner.Engine.Strategies
     /// </summary>
     public class StrategyBuilder : ICustomStrategySettings
     {
-        #region Constructors & Static creators
-
-        /// <summary>
-        /// Create new settings instance and sets scenario to execute from this constructor
-        /// </summary>
-        /// <typeparam name="TLoadTestScenario">Scenario to execute</typeparam>
-        public static StrategyBuilder Create<TLoadTestScenario>()
-            where TLoadTestScenario : IScenario
-        {
-            return new StrategyBuilder(typeof(TLoadTestScenario));
-        }
-
-        /// <summary>
-        /// Create new settings instance and sets scenario to execute from this constructor
-        /// </summary>
-        /// <param name="scenarioType">Scenario to execute</param>
-        public StrategyBuilder(Type scenarioType)
-        {
-            ScenarioType = scenarioType;
-        }
-
-        /// <summary>
-        /// Create new settings instance.
-        /// </summary>
-        public StrategyBuilder()
-        {
-        }
-
-        #endregion
-
         #region Settings builder
 
         /// <summary>
@@ -53,8 +25,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         public StrategyBuilder SetScenario<TScenario>()
             where TScenario : IScenario
         {
-            ScenarioType = typeof(TScenario);
-            return this;
+            return SetScenario(typeof(TScenario));
         }
 
         /// <summary>
@@ -63,10 +34,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <param name="scenarioType">Scenario class type</param>
         public StrategyBuilder SetScenario(Type scenarioType)
         {
-            if (!scenarioType.GetInterfaces().Contains(typeof(IScenario)))
-                throw new ArgumentException($"provided {nameof(scenarioType)} must implement IScenario", nameof(scenarioType));
-
-            ScenarioType = scenarioType;
+            ScenarioFactory = new ScenarioFactory<IScenario>(scenarioType);
             return this;
         }
 
@@ -174,7 +142,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <summary>
         /// Scenario to execute, type must implement ILoadTestScenario.
         /// </summary>
-        public Type ScenarioType { get; set; }
+        public IScenarioFactory ScenarioFactory { get; set; }
 
         /// <summary>
         /// Limits define when test execution will be scheduled to stop.
@@ -226,7 +194,7 @@ namespace Viki.LoadRunner.Engine.Strategies
                 Speeds = settings.Speeds.ToArray(),
                 Threading = settings.Threading,
                 FinishTimeout = settings.FinishTimeout,
-                ScenarioType = settings.ScenarioType,
+                ScenarioFactory = settings.ScenarioFactory,
                 InitialUserData = settings.InitialUserData,
                 Aggregators = settings.Aggregators.ToArray()
             };

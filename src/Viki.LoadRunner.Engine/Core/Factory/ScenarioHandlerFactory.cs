@@ -8,23 +8,23 @@ namespace Viki.LoadRunner.Engine.Core.Factory
 {
     public class ScenarioHandlerFactory : IScenarioHandlerFactory
     {
-        private readonly Type _scenarioType;
+        private readonly IScenarioFactory _factory;
         private readonly IUniqueIdFactory<int> _globalIdFactory;
 
-        public ScenarioHandlerFactory(Type scenarioType, IUniqueIdFactory<int> globalIdFactory)
+        public ScenarioHandlerFactory(IScenarioFactory factory, IUniqueIdFactory<int> globalIdFactory)
         {
-            if (scenarioType == null)
-                throw new ArgumentNullException(nameof(scenarioType));
+            if (factory == null)
+                throw new ArgumentNullException(nameof(factory));
             if (globalIdFactory == null)
                 throw new ArgumentNullException(nameof(globalIdFactory));
 
-            _scenarioType = scenarioType;
+            _factory = factory;
             _globalIdFactory = globalIdFactory;
         }
 
         public IScenarioHandler Create(IIterationControl iterationContext)
         {
-            IScenario scenarioInstance = (IScenario)Activator.CreateInstance(_scenarioType);
+            IScenario scenarioInstance = (IScenario)_factory.Create();
             IScenarioHandler scenarioHandler = new ScenarioHandler(_globalIdFactory, scenarioInstance, iterationContext);
 
             return scenarioHandler;

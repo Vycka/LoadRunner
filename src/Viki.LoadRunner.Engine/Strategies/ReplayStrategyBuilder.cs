@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Factory;
+using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay;
 using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
@@ -11,6 +13,27 @@ namespace Viki.LoadRunner.Engine.Strategies
 {
     public class ReplayStrategyBuilder<TData> : IReplayStrategySettings
     {
+        /// <summary>
+        /// Set scenario to execute.
+        /// </summary>
+        /// <typeparam name="TScenario">Scenario class type</typeparam>
+        public ReplayStrategyBuilder<TData> SetScenario<TScenario>()
+            where TScenario : IReplayScenario<TData>
+        {
+            return SetScenario(typeof(TScenario));
+        }
+
+        /// <summary>
+        /// Set scenario to execute.
+        /// </summary>
+        /// <param name="scenarioType">Scenario class type</param>
+        public ReplayStrategyBuilder<TData> SetScenario(Type scenarioType)
+        {
+            ScenarioFactory = new ScenarioFactory<IReplayScenario<TData>>(scenarioType);
+            return this;
+        }
+
+
         /// <summary>
         /// Set thread count to use.
         /// Recommended minimum value depends on test case. 
@@ -119,7 +142,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <summary>
         /// Class type of Scenario to be executed, type must implement IReplayScenario.
         /// </summary>
-        public Type ScenarioType { get; set; }
+        public IScenarioFactory ScenarioFactory { get; set; }
 
         /// <summary>
         /// Initial user data which will be passed to created thread contexts. (context.UserData)
@@ -145,7 +168,7 @@ namespace Viki.LoadRunner.Engine.Strategies
                 SpeedMultiplier = settings.SpeedMultiplier,
                 Aggregators = settings.Aggregators.ToArray(),
 
-                ScenarioType = settings.ScenarioType,
+                ScenarioFactory = settings.ScenarioFactory,
 
                 FinishTimeout = settings.FinishTimeout,
                 InitialUserData = settings.InitialUserData,

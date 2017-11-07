@@ -143,7 +143,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
         private IScenarioHandlerFactory CreateScenarioHandlerFactory()
         {
-            return new ScenarioHandlerFactory(_settings.ScenarioType, _globalIdFactory);
+            return new ScenarioHandlerFactory(_settings.ScenarioFactory, _globalIdFactory);
         }
 
         private IIterationContextFactory CreateIterationContextFactory()

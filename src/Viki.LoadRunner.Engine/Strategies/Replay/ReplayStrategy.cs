@@ -51,7 +51,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
             _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
         }
 
-        protected virtual void InitializeState()
+        private void InitializeState()
         {
             _counter = new ThreadPoolCounter();
             _errorHandler = new ErrorHandler();
@@ -103,7 +103,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
         private IReplayScenarioHandlerFactory CreateScenarioHandlerFactory()
         {
-            return new ReplayScenarioHandlerFactory<TData>(_settings.ScenarioType, _globalIdFactory);
+            return new ReplayScenarioHandlerFactory<TData>(_settings.ScenarioFactory, _globalIdFactory);
         }
 
         private IReplaySchedulerFactory CreateSchedulerFactory()

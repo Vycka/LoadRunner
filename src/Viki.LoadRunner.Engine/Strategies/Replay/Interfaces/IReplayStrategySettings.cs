@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay.Interfaces
@@ -27,9 +28,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Interfaces
         IAggregator[] Aggregators { get; }
 
         /// <summary>
-        /// Class type of Scenario to be executed, type must implement IReplayScenario.
+        /// Factory for creating IReplayScenario instances.
         /// </summary>
-        Type ScenarioType { get; }
+        IScenarioFactory ScenarioFactory { get; }
 
         /// <summary>
         /// Initial user data which will be passed to created thread contexts. (context.UserData)

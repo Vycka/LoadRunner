@@ -49,8 +49,10 @@
     <Compile Include="Aggregators\NullAggregator.cs" />
     <Compile Include="Core\Factory\DataCollectorFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IDataCollectorFactory.cs" />
+    <Compile Include="Core\Factory\Interfaces\IScenarioFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IScenarioHandlerFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\ISchedulerFactory.cs" />
+    <Compile Include="Core\Factory\ScenarioFactory.cs" />
     <Compile Include="Core\Pool\Interfaces\IThreadFactory.cs" />
     <Compile Include="Core\Factory\ScenarioHandlerFactory.cs" />
     <Compile Include="Core\Factory\SchedulerFactory.cs" />
