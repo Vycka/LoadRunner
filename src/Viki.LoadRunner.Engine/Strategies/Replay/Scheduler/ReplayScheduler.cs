@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Reader;
@@ -13,11 +14,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
         private readonly ITimer _timer;
         private readonly IReplayScenarioHandler _scenarioHandler;
         private readonly IReplayDataReader _dataReader;
+        private readonly IThreadPoolCounter _counter;
         private readonly double _speedMultiplier;
 
         private readonly TimeSpan _oneSecond = TimeSpan.FromSeconds(1);
 
-        public ReplayScheduler(ITimer timer, IReplayScenarioHandler scenarioHandler, IReplayDataReader dataReader, double speedMultiplier)
+        public ReplayScheduler(ITimer timer, IReplayScenarioHandler scenarioHandler, IReplayDataReader dataReader, IThreadPoolCounter counter, double speedMultiplier)
         {
             if (timer == null)
                 throw new ArgumentNullException(nameof(timer));
@@ -25,12 +27,15 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
                 throw new ArgumentNullException(nameof(scenarioHandler));
             if (dataReader == null)
                 throw new ArgumentNullException(nameof(dataReader));
+            if (counter == null)
+                throw new ArgumentNullException(nameof(counter));
             if (speedMultiplier <= 0)
                 throw new ArgumentException("speedMultiplier must be above 0", nameof(speedMultiplier));
 
             _timer = timer;
             _scenarioHandler = scenarioHandler;
             _dataReader = dataReader;
+            _counter = counter;
             _speedMultiplier = speedMultiplier;
 
         }
@@ -43,9 +48,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
             {
                 TimeSpan adjustedTarget = TimeSpan.FromTicks((long)(dataItem.TimeStamp.Ticks / _speedMultiplier));
 
-                _scenarioHandler.SetData(dataItem.Value, adjustedTarget);
+                bool execute = _scenarioHandler.SetData(dataItem.Value, adjustedTarget);
 
-                SemiWait(adjustedTarget, ref stop);
+                if (execute)
+                    SemiWait(adjustedTarget, ref stop);
             }
             else
             {
@@ -56,13 +62,20 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
         private void SemiWait(TimeSpan target, ref bool stop)
         {
             TimeSpan delay = CalculateDelay(target);
-            while (delay > _oneSecond && stop == false)
+
+            if (delay > TimeSpan.Zero)
             {
-                Thread.Sleep(_oneSecond);
-                delay = CalculateDelay(target);
+                _counter.AddIdle(1);
+                while (delay > _oneSecond && stop == false)
+                {
+                    Thread.Sleep(_oneSecond);
+                    delay = CalculateDelay(target);
+                }
+                if (delay > TimeSpan.Zero && stop == false)
+                    Thread.Sleep(delay);
+
+                _counter.AddIdle(-1);
             }
-            if (delay > TimeSpan.Zero && stop == false)
-                Thread.Sleep(delay);
         }
 
         private TimeSpan CalculateDelay(TimeSpan target)

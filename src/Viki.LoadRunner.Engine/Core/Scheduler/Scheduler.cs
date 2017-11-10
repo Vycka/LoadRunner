@@ -36,7 +36,7 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
             _strategy.Next(this);
 
             TimeSpan delay = CalculateDelay();
-            if (delay > TimeSpan.Zero)
+            if (Action == ScheduleAction.Idle || delay > TimeSpan.Zero)
             {
                 _counter.AddIdle(1);
 

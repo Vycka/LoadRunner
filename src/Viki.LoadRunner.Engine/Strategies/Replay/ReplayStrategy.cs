@@ -108,7 +108,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
         private IReplaySchedulerFactory CreateSchedulerFactory()
         {
-            return new ReplaySchedulerFactory(_timer,  _dataReader, _settings.SpeedMultiplier);
+            return new ReplaySchedulerFactory(_timer,  _dataReader, _counter, _settings.SpeedMultiplier);
         }
 
         private IDataCollectorFactory CreateDataCollectorFactory()

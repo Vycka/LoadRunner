@@ -23,26 +23,28 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scenario
             _dataContext = new DataContext<TData>
             {
                 Timer = context.Timer,
-                Skip = false
+                Execute = true
             };
         }
 
-        public void SetData(object data, TimeSpan target)
+        public bool SetData(object data, TimeSpan target)
         {
             _dataContext.Set((TData)data, target);
             
             _scenario.SetData(_dataContext);
+
+            return _dataContext.Execute;
         }
 
         public new void Execute()
         {
-            if (_dataContext.Skip)
+            if (_dataContext.Execute)
             {
-                _context.Checkpoint(Checkpoint.Names.Skip);
+                base.Execute();
             }
             else
             {
-                base.Execute();
+                _context.Checkpoint(Checkpoint.Names.Skip);
             }
         }
     }

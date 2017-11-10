@@ -16,7 +16,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
         {
             Value = value;
             TargetTime = target;
-            Skip = false;
+            Execute = true;
         }
 
         /// <summary>
@@ -36,10 +36,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
         public TData Value { get; set; }
 
         /// <summary>
-        /// Setting to true will skip this iteration Setup/Execute/Teardown steps
+        /// Setting to false will skip this iteration Setup/Execute/Teardown steps
         /// Iteration result will only contain (Checkpoint.Names.Skip [default value "ITERATION_SKIP"]) checkpoint
         /// </summary>
         /// <remarks>It can be used to handle execution timeline falling behind and skip few requests</remarks>
-        public bool Skip { get; set; }
+        public bool Execute { get; set; }
     }
 }

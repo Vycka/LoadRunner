@@ -26,7 +26,7 @@ namespace Viki.LoadRunner.Playground.Replay
             TimeSpan fallenBehind = data.Timer.Value - data.TargetTime;
 
             if (fallenBehind > TimeSpan.FromSeconds(1))
-                data.Skip = true;
+                data.Execute = true;
 
             if (fallenBehind < TimeSpan.Zero)
                 Console.WriteLine($@"[{data.Timer.Value.TotalSeconds:F2}] SetData: [{_data}] FALL BEHIND {fallenBehind}");

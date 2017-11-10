@@ -28,7 +28,8 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
 
         #endregion
 
-        ICheckpoint[] IIterationResult.Checkpoints => _checkpoints.Cast<ICheckpoint>().ToArray();
+        // TODO: Create List specific for this job, the one which could perform shallow copy of array to gain performance
+        ICheckpoint[] IIterationResult.Checkpoints =>  _checkpoints.Cast<ICheckpoint>().ToArray();
         public TimeSpan IterationStarted { get; private set; }
         public TimeSpan IterationFinished { get; private set; }
 
