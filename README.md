@@ -2,7 +2,7 @@
 * NuGet: `Install-Package Viki.LoadRunner`
 
 
-## *Quick Intro*
+## *Quick Intro* [for v0.7 only]
 * Take a look at [LoadRunner.Demo](/demo) project and follow commented code :)
   - [DemoTestScenario.cs](/demo/DemoTestScenario.cs) - Setup your Load-test scenario for single thread
   - [AggregationSetup.cs](/demo/AggregationSetup.cs) - Setup what data will be saved/meassured
