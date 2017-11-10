@@ -41,9 +41,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
 
             if (dataItem != null)
             {
-                _scenarioHandler.SetData(dataItem.Value);
-
                 TimeSpan adjustedTarget = TimeSpan.FromTicks((long)(dataItem.TimeStamp.Ticks / _speedMultiplier));
+
+                _scenarioHandler.SetData(dataItem.Value, adjustedTarget);
 
                 SemiWait(adjustedTarget, ref stop);
             }

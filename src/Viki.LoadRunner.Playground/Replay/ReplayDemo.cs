@@ -32,7 +32,7 @@ namespace Viki.LoadRunner.Playground.Replay
                 Aggregators = new IAggregator[] { aggregator },
                 DataReader = new ArrayDataReader(DataGenerator.Create(5, 1, 3, 3).ToArray()),
                 ScenarioFactory = new ScenarioFactory<IReplayScenario<string>>(typeof(ReplayScenario)),
-                ThreadCount = 50,
+                ThreadCount = 1,
                 SpeedMultiplier = 2
             };
 

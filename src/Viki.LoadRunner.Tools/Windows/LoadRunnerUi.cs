@@ -22,7 +22,6 @@ using Viki.LoadRunner.Engine.Utils;
 
 namespace Viki.LoadRunner.Tools.Windows
 {
-    // TODO: Move out IResultsAggregator logic outside.
     public partial class LoadRunnerUi : Form, IAggregator
     {
         public string TextTemplate = "LR-UI {0}";
@@ -90,7 +89,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
         void IAggregator.End()
         {
-            _timer.Start();
+            _timer.Stop();
 
             _backgroundWorker1.CancelAsync();
 
@@ -160,20 +159,12 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private delegate void InvokeDelegate();
 
-        private void _validateButton_Click(object sender, EventArgs e)
+        private async void _validateButton_Click(object sender, EventArgs e)
         {
-            Invoke(
-                new InvokeDelegate(() =>
-                {
-                    IterationResult result = ((IScenario)_scenarioFactory.Create()).Validate();
+            IterationResult result = await Task.Run(() => ((IScenario)_scenarioFactory.Create()).Validate()).ConfigureAwait(false);
+            ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.Names.IterationEnd);
 
-                    ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.Names.IterationEnd);
-
-                    AppendMessage($"Validation OK: {checkpoint.TimePoint.TotalMilliseconds}ms.");
-                })
-            );
-
-
+            Invoke(new InvokeDelegate(() => AppendMessage($"Validation OK: {checkpoint.TimePoint.TotalMilliseconds}ms.")));
         }
 
         private void _clearButton_Click(object sender, EventArgs e)

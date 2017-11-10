@@ -95,6 +95,16 @@ namespace Viki.LoadRunner.Engine.Strategies
         }
 
         /// <summary>
+        /// Set speed multiplier on how fast to replay test data
+        /// </summary>
+        /// <param name="speedMultiplier">Speed multiplier, default is 1x </param>
+        public ReplayStrategyBuilder<TData> SetSpeed(double speedMultiplier)
+        {
+            SpeedMultiplier = speedMultiplier;
+            return this;
+        }
+
+        /// <summary>
         /// Sets initial user data which will be passed to created thread contexts.
         /// </summary>
         /// <param name="userData">User-data object</param>
@@ -103,6 +113,7 @@ namespace Viki.LoadRunner.Engine.Strategies
             InitialUserData = userData;
             return this;
         }
+
         /// <summary>
         /// Sets aggregators to use when collecting data
         /// </summary>
