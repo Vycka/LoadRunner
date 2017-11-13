@@ -18,6 +18,7 @@ using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
+using Viki.LoadRunner.Tools.Validators;
 
 
 namespace Viki.LoadRunner.Tools.Windows
@@ -32,7 +33,7 @@ namespace Viki.LoadRunner.Tools.Windows
         private readonly ExecutionTimer _timer;
         private readonly ConcurrentQueue<IResult> _resultsQueue = new ConcurrentQueue<IResult>();
 
-        private IScenarioFactory _scenarioFactory;
+        private IValidator _validator;
         private LoadRunnerEngine _engine;
 
         public LoadRunnerUi()
@@ -53,10 +54,12 @@ namespace Viki.LoadRunner.Tools.Windows
             InitializeComponent();
         }
 
-        public void Setup(IStrategy strategy, IScenarioFactory factory)
+        public void Setup(IStrategy strategy, IValidator validator)
         {
             _engine = new LoadRunnerEngine(strategy);
-            _scenarioFactory = factory;
+
+            _validateButton.Enabled = validator != null;
+            _validator = validator;
         }
 
         public void StartWindow()
@@ -161,10 +164,9 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private async void _validateButton_Click(object sender, EventArgs e)
         {
-            IterationResult result = await Task.Run(() => ((IScenario)_scenarioFactory.Create()).Validate()).ConfigureAwait(false);
-            ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.Names.IterationEnd);
+            IterationResult result = await Task.Run(() => _validator.Validate()).ConfigureAwait(false);
 
-            Invoke(new InvokeDelegate(() => AppendMessage($"Validation OK: {checkpoint.TimePoint.TotalMilliseconds}ms.")));
+            Invoke(new InvokeDelegate(() => AppendMessage($"Validation OK:\r\n {String.Join("\r\n", result.Checkpoints.Select(c => $"{c.Name}: {c.TimePoint}{(c.Error != null ? $"\r\n{c.Error.ToString()}\r\n" : "")}"))}")));
         }
 
         private void _clearButton_Click(object sender, EventArgs e)

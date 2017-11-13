@@ -28,7 +28,7 @@ namespace Viki.LoadRunner.Engine.Core.Factory
         {
             int newThreadId = _threadIdFactory.Next();
 
-            return new Iteration(newThreadId, _timer, _initialUserData);
+            return new IterationContext(newThreadId, _timer, _initialUserData);
         }
     }
 }

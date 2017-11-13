@@ -37,7 +37,7 @@ namespace Viki.LoadRunner.Playground.Replay
             };
 
             // UI
-            LoadRunnerUi engineUi = settings.BuildUi();
+            LoadRunnerUi engineUi = settings.BuildUi(new DataItem(TimeSpan.Zero, "Validation demo"));
             engineUi.StartWindow();
 
             // Non UI blocking

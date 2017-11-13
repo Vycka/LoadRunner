@@ -6,7 +6,7 @@ using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Scenario
 {
-    public class Iteration : IIterationControl
+    public class IterationContext : IIterationControl
     {
         private readonly ITimer _timer;
 
@@ -14,7 +14,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
 
         private readonly List<Checkpoint> _checkpoints = new List<Checkpoint>();
 
-        public Iteration(int threadId, ITimer timer, object initialUserData = null)
+        public IterationContext(int threadId, ITimer timer, object initialUserData = null)
         {
             if (timer == null)
                 throw new ArgumentNullException(nameof(timer));

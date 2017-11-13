@@ -8,8 +8,7 @@ namespace Viki.LoadRunner.Playground.Replay
 {
     public class ReplayScenario : IReplayScenario<string>
     {
-        // Defaults are for Ui Validate function
-        private string _data = "DEFAULT";
+        private string _data;
 
         private TimeSpan _target = TimeSpan.Zero;
 
