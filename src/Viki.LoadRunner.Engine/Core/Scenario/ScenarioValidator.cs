@@ -1,5 +1,4 @@
 ﻿using Viki.LoadRunner.Engine.Core.Collector;
-using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Pool;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;

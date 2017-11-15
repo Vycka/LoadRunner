@@ -17,6 +17,8 @@ namespace Viki.LoadRunner.Engine.Strategies
     /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
     public class ReplayStrategyBuilder<TData> : IReplayStrategySettings
     {
+        #region Builder methods
+
         /// <summary>
         /// Set scenario to execute.
         /// </summary>
@@ -146,6 +148,10 @@ namespace Viki.LoadRunner.Engine.Strategies
             return engine;
         }
 
+        #endregion
+
+        #region IReplayStrategySettings
+
         /// <summary>
         /// Fixed count of threads to use
         /// </summary>
@@ -176,21 +182,37 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         public object InitialUserData { get; set; }
 
-
         /// <summary>
         /// Timeout for strategy threads to stop and cleanup.
         /// This does not affect result IAggregator and execution will still hold indefinetely until its finished.
         /// </summary>
         public TimeSpan FinishTimeout { get; set; } = TimeSpan.FromMinutes(3);
+
+        #endregion
     }
 
-    public static class ReplayStrategyBuilderExtensions
+    public static class ReplayStrategySettingsExtensions
     {
+
+        /// <summary>
+        /// Initialize IStrategy from this configuration and then LoadRunnerEngine it self using it. 
+        /// </summary>
+        /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
+        /// <param name="settings">Strategy settings</param>
+        /// <returns></returns>
+        public static LoadRunnerEngine Build<TData>(IReplayStrategySettings settings)
+        {
+            IStrategy strategy = new ReplayStrategy<TData>(settings);
+            LoadRunnerEngine engine = new LoadRunnerEngine(strategy);
+
+            return engine;
+        }
+
         /// <summary>
         /// Duplicates configuration builder having own configuration lists. But registered configuration instances will still be the same.
         /// </summary>
         /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
-        /// <param name="settings">settings builder to clone</param>
+        /// <param name="settings">Settings instance to clone</param>
         /// <returns>New instance of ReplayStrategyBuilder</returns>
         public static ReplayStrategyBuilder<TData> ShallowClone<TData>(this IReplayStrategySettings settings)
         {

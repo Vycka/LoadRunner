@@ -68,8 +68,8 @@ namespace Viki.LoadRunner.Playground
             LoadRunnerUi ui = strategy.BuildUi();
             ui.StartWindow();
 
-            //LoadRunnerEngine engine = strategy.Build();
-            //engine.Run();
+            LoadRunnerEngine engine = strategy.Build();
+            engine.Run();
 
             object defaultResults = histogramAggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));

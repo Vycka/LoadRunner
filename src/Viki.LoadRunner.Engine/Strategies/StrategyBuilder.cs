@@ -197,8 +197,12 @@ namespace Viki.LoadRunner.Engine.Strategies
         #endregion
     }
 
-    public static class StrategyBuilderExtensions
+    public static class CustomStrategySettingsExtensions
     {
+        /// <summary>
+        /// Duplicates configuration builder having own configuration lists. But registered configuration instances will still be the same.
+        /// </summary>
+        /// <param name="settings">Settings instance to clone</param>
         public static StrategyBuilder ShallowClone(this ICustomStrategySettings settings)
         {
             return new StrategyBuilder
