@@ -200,7 +200,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
         /// <param name="settings">Strategy settings</param>
         /// <returns></returns>
-        public static LoadRunnerEngine Build<TData>(IReplayStrategySettings settings)
+        public static LoadRunnerEngine Build<TData>(this IReplayStrategySettings settings)
         {
             IStrategy strategy = new ReplayStrategy<TData>(settings);
             LoadRunnerEngine engine = new LoadRunnerEngine(strategy);
