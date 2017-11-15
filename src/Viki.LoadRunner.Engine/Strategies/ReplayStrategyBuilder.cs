@@ -192,7 +192,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
         /// <param name="settings">settings builder to clone</param>
         /// <returns>New instance of ReplayStrategyBuilder</returns>
-        public static ReplayStrategyBuilder<TData> Clone<TData>(this ReplayStrategyBuilder<TData> settings)
+        public static ReplayStrategyBuilder<TData> ShallowClone<TData>(this IReplayStrategySettings settings)
         {
             return new ReplayStrategyBuilder<TData>
             {

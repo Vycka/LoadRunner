@@ -4,7 +4,7 @@ using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
-namespace Viki.LoadRunner.Tools.Validators
+namespace Viki.LoadRunner.Engine.Validators
 {
     public class DefaultValidator : IValidator
     {
@@ -19,6 +19,7 @@ namespace Viki.LoadRunner.Tools.Validators
 
         public IterationResult Validate()
         {
+            // TODO: Move all logic to here
             return ((IScenario)_factory.Create()).Validate();
         }
     }

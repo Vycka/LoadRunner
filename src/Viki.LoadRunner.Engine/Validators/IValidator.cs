@@ -1,6 +1,6 @@
 ﻿using Viki.LoadRunner.Engine.Core.Collector;
 
-namespace Viki.LoadRunner.Tools.Validators
+namespace Viki.LoadRunner.Engine.Validators
 {
     public interface IValidator
     {

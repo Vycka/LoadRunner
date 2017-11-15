@@ -178,6 +178,10 @@
     <Compile Include="Strategies\Custom\Strategies\Threading\ListOfCounts.cs" />
     <Compile Include="Utils\ArrayExtensions.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
+    <Compile Include="Validators\DefaultValidator.cs" />
+    <Compile Include="Validators\IValidator.cs" />
+    <Compile Include="Validators\ReplayScenarioValidator.cs" />
+    <Compile Include="Validators\ScenarioValidatorExtensions.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

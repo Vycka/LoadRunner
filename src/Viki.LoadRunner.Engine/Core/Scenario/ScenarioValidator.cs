@@ -6,33 +6,7 @@ using Viki.LoadRunner.Engine.Core.Timer;
 
 namespace Viki.LoadRunner.Engine.Core.Scenario
 {
-    public static class ScenarioValidatorExtensions
-    {
-        private static readonly ScenarioValidator Validator = new ScenarioValidator();
-
-        /// <summary>
-        /// Validates ILoadTest scenario correctness by executing single test iteration
-        /// from ScenarioSetup to ScenarioTearDown on the same thread.
-        /// Exceptions are not handled on purpose to ease problem identification while developing.
-        /// </summary>
-        /// <param name="scenario">ILoadTestScenario object</param>
-        /// <param name="threadId">TheardId to set in TestContext</param>
-        /// <param name="threadIterationId">ThreadIterationId to set in TestContext</param>
-        /// <param name="globalIterationId">GlobalIterationId to set in TestContext</param>
-        /// <returns>Raw result from single iteration</returns>
-        public static IterationResult Validate(this IScenario scenario, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
-        {
-            return Validator.Validate(scenario, threadId, threadIterationId, globalIterationId);
-        }
-
-        // TODO: Create same for ScenarioFactory
-        //public static IterationResult Validate(this IScenarioFactory factory, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
-        //{
-        //}
-    }
-
     // TODO: Redesign validator so it uses actual handlers.
-
     /// <summary>
     /// ILoadTestScenario validator, to ease development and debugging.
     /// </summary>

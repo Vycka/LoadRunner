@@ -199,7 +199,7 @@ namespace Viki.LoadRunner.Engine.Strategies
 
     public static class StrategyBuilderExtensions
     {
-        public static StrategyBuilder Clone(this ICustomStrategySettings settings)
+        public static StrategyBuilder ShallowClone(this ICustomStrategySettings settings)
         {
             return new StrategyBuilder
             {

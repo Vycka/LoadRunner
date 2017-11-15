@@ -18,7 +18,7 @@ using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
-using Viki.LoadRunner.Tools.Validators;
+using Viki.LoadRunner.Engine.Validators;
 
 
 namespace Viki.LoadRunner.Tools.Windows
@@ -166,7 +166,9 @@ namespace Viki.LoadRunner.Tools.Windows
         {
             IterationResult result = await Task.Run(() => _validator.Validate()).ConfigureAwait(false);
 
-            Invoke(new InvokeDelegate(() => AppendMessage($"Validation OK:\r\n {String.Join("\r\n", result.Checkpoints.Select(c => $"{c.Name}: {c.TimePoint}{(c.Error != null ? $"\r\n{c.Error.ToString()}\r\n" : "")}"))}")));
+            Invoke(new InvokeDelegate(
+                () => AppendMessage($"Validation OK:\r\n{String.Join("\r\n", result.Checkpoints.Select(c => $"{c.Name}: {c.TimePoint}{(c.Error != null ? $"\r\n{c.Error.ToString()}\r\n" : "")}"))}"))
+            );
         }
 
         private void _clearButton_Click(object sender, EventArgs e)
