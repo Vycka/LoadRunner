@@ -5,7 +5,9 @@ using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay.Interfaces
 {
-    public interface IReplayStrategySettings
+    // TODO: Need to make this generic in the end... :(
+    // Rethink Handler/Scheduler/IDataReader to make use of TData from IReplayStrategySettings but it should not spread like it does now.
+    public interface IReplayStrategySettings<TData>
     {
         /// <summary>
         /// Fixed count of threads to use

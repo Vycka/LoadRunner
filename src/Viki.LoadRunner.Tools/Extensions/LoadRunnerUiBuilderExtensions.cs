@@ -13,27 +13,27 @@ namespace Viki.LoadRunner.Tools.Extensions
     {
         public static LoadRunnerUi BuildUi<TData>(this ReplayStrategyBuilder<TData> settings, DataItem validationDataItem = null)
         {
-            return BuildUi<TData>((IReplayStrategySettings)settings, validationDataItem);
+            return BuildUi((IReplayStrategySettings<TData>)settings, validationDataItem);
         }
 
-        public static LoadRunnerUi BuildUi<TData>(this IReplayStrategySettings settings, DataItem validationDataItem = null)
+        public static LoadRunnerUi BuildUi<TData>(this IReplayStrategySettings<TData> settings, DataItem validationDataItem = null)
         {
             ReplayScenarioValidator<TData> validator = validationDataItem != null
                 ? new ReplayScenarioValidator<TData>(settings.ScenarioFactory, validationDataItem)
                 : null;
 
-            return BuildUi<TData>(settings, validator);
+            return BuildUi(settings, validator);
         }
 
         public static LoadRunnerUi BuildUi<TData>(this ReplayStrategyBuilder<TData> settings, IValidator validator)
         {
-            return BuildUi<TData>((IReplayStrategySettings)settings, validator);
+            return BuildUi((IReplayStrategySettings<TData>)settings, validator);
         }
 
-        public static LoadRunnerUi BuildUi<TData>(this IReplayStrategySettings settings, IValidator validator)
+        public static LoadRunnerUi BuildUi<TData>(this IReplayStrategySettings<TData> settings, IValidator validator)
         {
             LoadRunnerUi ui = new LoadRunnerUi();
-            ReplayStrategyBuilder<TData> localSettings = settings.ShallowClone<TData>();
+            ReplayStrategyBuilder<TData> localSettings = settings.ShallowClone();
 
             localSettings.AddAggregator(ui);
 

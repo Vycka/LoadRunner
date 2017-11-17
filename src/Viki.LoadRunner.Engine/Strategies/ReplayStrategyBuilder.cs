@@ -15,7 +15,7 @@ namespace Viki.LoadRunner.Engine.Strategies
     /// Wizzard class for configuring and building replay test strategy.
     /// </summary>
     /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
-    public class ReplayStrategyBuilder<TData> : IReplayStrategySettings
+    public class ReplayStrategyBuilder<TData> : IReplayStrategySettings<TData>
     {
         #region Builder methods
 
@@ -200,7 +200,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
         /// <param name="settings">Strategy settings</param>
         /// <returns></returns>
-        public static LoadRunnerEngine Build<TData>(this IReplayStrategySettings settings)
+        public static LoadRunnerEngine Build<TData>(this IReplayStrategySettings<TData> settings)
         {
             IStrategy strategy = new ReplayStrategy<TData>(settings);
             LoadRunnerEngine engine = new LoadRunnerEngine(strategy);
@@ -214,7 +214,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
         /// <param name="settings">Settings instance to clone</param>
         /// <returns>New instance of ReplayStrategyBuilder</returns>
-        public static ReplayStrategyBuilder<TData> ShallowClone<TData>(this IReplayStrategySettings settings)
+        public static ReplayStrategyBuilder<TData> ShallowClone<TData>(this IReplayStrategySettings<TData> settings)
         {
             return new ReplayStrategyBuilder<TData>
             {
