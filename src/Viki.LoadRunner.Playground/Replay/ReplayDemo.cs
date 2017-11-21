@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using Newtonsoft.Json;
+using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
@@ -27,22 +28,20 @@ namespace Viki.LoadRunner.Playground.Replay
                 .Add(new FuncMetric<int>("IThreads", 0, (i, r) => r.IdleThreads));
 
 
-            ReplayStrategyBuilder<string> settings = new ReplayStrategyBuilder<string>
-            {
-                Aggregators = new IAggregator[] { aggregator },
-                DataReader = new ArrayDataReader(DataGenerator.Create(5, 1, 3, 3).ToArray()),
-                ScenarioFactory = new ScenarioFactory<IReplayScenario<string>>(typeof(ReplayScenario)),
-                ThreadCount = 1,
-                SpeedMultiplier = 2
-            };
+            ReplayStrategyBuilder<string> settings = new ReplayStrategyBuilder<string>()
+                .SetAggregator(aggregator)
+                .SetData(DataGenerator.Create(5, 1, 3, 3).ToArray())
+                .SetScenario<ReplayScenario>()
+                .SetThreadCount(50)
+                .SetSpeed(2);
 
             // UI
-            LoadRunnerUi engineUi = settings.BuildUi(new DataItem(TimeSpan.Zero, "Validation demo"));
-            engineUi.StartWindow();
+            //LoadRunnerUi engineUi = settings.BuildUi(new DataItem(TimeSpan.Zero, "Validation demo"));
+            //engineUi.StartWindow();
 
             // Non UI blocking
-            //LoadRunnerEngine engine = settings.Build();
-            //engine.Run();
+            LoadRunnerEngine engine = settings.Build();
+            engine.Run();
 
             // Non UI Async
             //engine.RunAsync();

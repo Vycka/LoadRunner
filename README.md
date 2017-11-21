@@ -1,6 +1,10 @@
-## Usage examples for v0.8 are yet to be written, until then, one can check this example if feeling lucky
+## Usage examples for v0.8 are yet to be written, until then, one can check these examples if feeling lucky
  * https://github.com/Vycka/LoadRunner/blob/v0.8/demo/ReadmeDemo/BareMinimum.cs
+ * https://github.com/Vycka/LoadRunner/blob/v0.8/src/Viki.LoadRunner.Playground/DemoSetup.cs
 
+ReplayStrategy RnD (e.g. for replaying logs)
+ * https://github.com/Vycka/LoadRunner/blob/v0.8/src/Viki.LoadRunner.Playground/Replay/ReplayDemo.cs
+ 
 ### Generic performance testing library for executing load-tests written in .NET c# ###
 * NuGet: `Install-Package Viki.LoadRunner`
 

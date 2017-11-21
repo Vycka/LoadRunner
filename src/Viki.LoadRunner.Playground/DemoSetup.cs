@@ -60,13 +60,13 @@ namespace Viki.LoadRunner.Playground
                 .SetScenario<BlankScenario>()
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(6)))
                 .SetThreading(new FixedThreadCount(20))
-                .SetSpeed(new FixedSpeed(200000))
+                .SetSpeed(new FixedSpeed(2000))
                 .SetFinishTimeout(TimeSpan.FromSeconds(60))
                 .SetAggregator(histogramAggregator);
 
 
-            LoadRunnerUi ui = strategy.BuildUi();
-            ui.StartWindow();
+            //LoadRunnerUi ui = strategy.BuildUi();
+            //ui.StartWindow();
 
             LoadRunnerEngine engine = strategy.Build();
             engine.Run();
