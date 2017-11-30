@@ -3,8 +3,8 @@ using System.Threading;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Replay.Reader;
-using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Replay.Data;
+using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler

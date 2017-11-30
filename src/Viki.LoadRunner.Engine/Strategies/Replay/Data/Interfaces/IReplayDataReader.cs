@@ -1,4 +1,4 @@
-﻿namespace Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces
+﻿namespace Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces
 {
     /// <summary>
     /// Data provider for ReplayStrategy.

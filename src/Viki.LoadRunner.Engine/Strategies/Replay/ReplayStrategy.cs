@@ -11,10 +11,10 @@ using Viki.LoadRunner.Engine.Core.Worker;
 using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 using ThreadPool = Viki.LoadRunner.Engine.Core.Pool.ThreadPool;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay

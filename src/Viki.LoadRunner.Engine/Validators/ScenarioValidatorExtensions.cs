@@ -2,8 +2,8 @@
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Replay.Data;
 using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Replay.Reader;
 
 namespace Viki.LoadRunner.Engine.Validators
 {

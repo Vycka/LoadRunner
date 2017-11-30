@@ -45,7 +45,7 @@ namespace Viki.LoadRunner.Engine.Core.Factory
 
             // IScenario handler
             IScenarioHandler scenarioHandler = _scenarioHandlerFactory.Create(iterationContext);
-            // Scheduler for ISpeedStrategy
+            // Scheduler which will Sleep() thread if it needs to wait due to speed limiting strategy. 
             IScheduler scheduler = _schedulerFactory.Create(iterationContext);
             // Data collector for results aggregation
             IDataCollector collector = _dataCollectorFactory.Create(iterationContext);

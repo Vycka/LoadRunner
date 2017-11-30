@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Viki.LoadRunner.Engine.Strategies.Replay.Reader
+namespace Viki.LoadRunner.Engine.Strategies.Replay.Data
 {
     public class DataItem
     {

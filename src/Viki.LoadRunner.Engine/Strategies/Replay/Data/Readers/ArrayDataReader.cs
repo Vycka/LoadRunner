@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
 
-namespace Viki.LoadRunner.Engine.Strategies.Replay.Reader
+namespace Viki.LoadRunner.Engine.Strategies.Replay.Data.Readers
 {
     public class ArrayDataReader : IReplayDataReader
     {

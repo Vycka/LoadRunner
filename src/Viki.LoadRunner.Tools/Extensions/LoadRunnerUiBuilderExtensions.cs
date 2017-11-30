@@ -2,8 +2,8 @@
 using Viki.LoadRunner.Engine.Strategies.Custom;
 using Viki.LoadRunner.Engine.Strategies.Custom.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay;
+using Viki.LoadRunner.Engine.Strategies.Replay.Data;
 using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Replay.Reader;
 using Viki.LoadRunner.Engine.Validators;
 using Viki.LoadRunner.Tools.Windows;
 

@@ -5,9 +5,10 @@ using Viki.LoadRunner.Engine.Core.Factory;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay;
+using Viki.LoadRunner.Engine.Strategies.Replay.Data;
+using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Replay.Data.Readers;
 using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Replay.Reader;
-using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies
 {

@@ -141,10 +141,10 @@
     <Compile Include="Strategies\Replay\Factory\ReplayScenarioThreadFactory.cs" />
     <Compile Include="Strategies\Replay\Factory\ReplaySchedulerFactory.cs" />
     <Compile Include="Strategies\Replay\Interfaces\IReplayStrategySettings.cs" />
-    <Compile Include="Strategies\Replay\Reader\ArrayDataReader.cs" />
+    <Compile Include="Strategies\Replay\Data\Readers\ArrayDataReader.cs" />
     <Compile Include="Strategies\Replay\Interfaces\IReplayScenario.cs" />
-    <Compile Include="Strategies\Replay\Reader\DataItem.cs" />
-    <Compile Include="Strategies\Replay\Reader\Interfaces\IReplayDataReader.cs" />
+    <Compile Include="Strategies\Replay\Data\DataItem.cs" />
+    <Compile Include="Strategies\Replay\Data\Interfaces\IReplayDataReader.cs" />
     <Compile Include="Strategies\Replay\ReplayStrategy.cs" />
     <Compile Include="Strategies\Replay\Scenario\Interfaces\IReplayScenarioHandler.cs" />
     <Compile Include="Strategies\Replay\Scenario\ReplayScenarioHandler.cs" />

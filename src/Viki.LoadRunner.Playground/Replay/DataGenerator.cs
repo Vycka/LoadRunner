@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Viki.LoadRunner.Engine.Strategies.Replay.Reader;
+using Viki.LoadRunner.Engine.Strategies.Replay.Data;
 
 namespace Viki.LoadRunner.Playground.Replay
 {

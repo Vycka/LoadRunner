@@ -2,8 +2,8 @@
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Replay.Reader.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Scheduler;
 
