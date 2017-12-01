@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scheduler;
 using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Data;
@@ -17,7 +18,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
         private readonly IThreadPoolCounter _counter;
         private readonly double _speedMultiplier;
 
-        private readonly TimeSpan _oneSecond = TimeSpan.FromSeconds(1);
+        private readonly IWait _waiter;
 
         public ReplayScheduler(ITimer timer, IReplayScenarioHandler scenarioHandler, IReplayDataReader dataReader, IThreadPoolCounter counter, double speedMultiplier)
         {
@@ -37,7 +38,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
             _dataReader = dataReader;
             _counter = counter;
             _speedMultiplier = speedMultiplier;
-
+            
+            _waiter = new SemiWait(timer);
         }
 
         public void WaitNext(ref bool stop)
@@ -51,40 +53,21 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
                 bool execute = _scenarioHandler.SetData(dataItem.Value, adjustedTarget);
 
                 if (execute)
-                    SemiWait(adjustedTarget, ref stop);
+                {
+                    if (adjustedTarget < _timer.Value)
+                    {
+                        _counter.AddIdle(1);
+
+                        _waiter.Wait(adjustedTarget, ref stop);
+
+                        _counter.AddIdle(-1);
+                    }
+                }
             }
             else
             {
                 stop = true;
             }
-        }
-
-        private void SemiWait(TimeSpan target, ref bool stop)
-        {
-            TimeSpan delay = CalculateDelay(target);
-
-            if (delay > TimeSpan.Zero)
-            {
-                _counter.AddIdle(1);
-                while (delay > _oneSecond && stop == false)
-                {
-                    Thread.Sleep(_oneSecond);
-                    delay = CalculateDelay(target);
-                }
-                if (delay > TimeSpan.Zero && stop == false)
-                    Thread.Sleep(delay);
-
-                _counter.AddIdle(-1);
-            }
-        }
-
-        private TimeSpan CalculateDelay(TimeSpan target)
-        {
-            TimeSpan current = _timer.Value;
-
-            TimeSpan delay = target - current;
-
-            return delay;
         }
     }
 }

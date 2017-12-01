@@ -58,6 +58,8 @@
     <Compile Include="Core\Factory\SchedulerFactory.cs" />
     <Compile Include="Core\Factory\ThreadFactory.cs" />
     <Compile Include="Core\Pool\WorkerThreadStats.cs" />
+    <Compile Include="Core\Scheduler\Interfaces\IWait.cs" />
+    <Compile Include="Core\Scheduler\SemiWait.cs" />
     <Compile Include="Strategies\Custom\Adapter\Aggregator\AsyncAggregator.cs" />
     <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\BreakByMetric.cs" />

@@ -40,20 +40,20 @@ namespace Viki.LoadRunner.Engine.Core.Worker
         }
 
         /// <summary>
+        /// Prepares context for next iteration
+        /// </summary>
+        public void PrepareNext()
+        {
+            _context.Reset(_threadIterationId++, _globalIdFactory.Next());
+        }
+
+        /// <summary>
         /// Final cleanup
         /// </summary>
         public void Cleanup()
         {
             _context.Reset(-1, -1);
             _scenario.ScenarioTearDown(_context);
-        }
-
-        /// <summary>
-        /// Prepares context for next iteration
-        /// </summary>
-        public void PrepareNext()
-        {
-            _context.Reset(_threadIterationId++, _globalIdFactory.Next());
         }
 
         /// <summary>

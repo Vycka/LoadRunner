@@ -11,8 +11,8 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
         private readonly ISpeedStrategyHandler _strategy;
         private readonly IThreadPoolCounter _counter;
 
-        private readonly TimeSpan _oneSecond = TimeSpan.FromSeconds(1);
-
+        private readonly IWait _waiter;
+        
         public ITimer Timer { get; }
 
         public Scheduler(ISpeedStrategyHandler strategy, IThreadPoolCounter counter, ITimer timer)
@@ -25,49 +25,31 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
             _strategy = strategy;
             _counter = counter;
             Timer = timer;
+
+            _waiter = new SemiWait(timer);
         }
 
         public ScheduleAction Action { get; set; } = ScheduleAction.Execute;
         public TimeSpan At { get; set; } = TimeSpan.Zero;
 
-
         public void WaitNext(ref bool stop)
         {
             _strategy.Next(this);
 
-            TimeSpan delay = CalculateDelay();
-            if (Action == ScheduleAction.Idle || delay > TimeSpan.Zero)
+            if (Action == ScheduleAction.Idle || At > Timer.Value)
             {
                 _counter.AddIdle(1);
 
                 while (Action == ScheduleAction.Idle && stop == false)
                 {
-                    SemiWait(delay, ref stop);
-
+                    _waiter.Wait(At, ref stop);
                     _strategy.Next(this);
                 }
 
-                SemiWait(delay, ref stop);
+                _waiter.Wait(At, ref stop);
 
                 _counter.AddIdle(-1);
             }
-        }
-
-        private TimeSpan CalculateDelay()
-        {
-            return At - Timer.Value;
-        }
-
-
-        private void SemiWait(TimeSpan delay, ref bool stop)
-        {
-            while (delay > _oneSecond && stop == false)
-            {
-                Thread.Sleep(_oneSecond);
-                delay = CalculateDelay();
-            }
-            if (delay > TimeSpan.Zero && stop == false)
-                Thread.Sleep(delay);
         }
     }
 }
