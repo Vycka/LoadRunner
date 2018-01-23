@@ -61,8 +61,9 @@ namespace LoadRunner.Demo.ReadmeDemo
                 .SetAggregator(aggregator, jsonAggregator)
                 .SetScenario<MinimalScenario>()
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(20)))
-                .SetThreading(new FixedThreadCount(4))
-                .SetSpeed(new FixedSpeed(100000));
+				.SetSpeed(new FixedSpeed(100))
+                .SetThreading(new FixedThreadCount(4));
+                
 
             LoadRunnerEngine engine = strategy.Build();
 
