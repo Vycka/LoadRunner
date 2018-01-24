@@ -9,7 +9,7 @@ using Viki.LoadRunner.Tools.Analytics.Viki.LoadRunner.Engine.Aggregators.Utils;
 
 namespace Viki.LoadRunner.Tools.Analytics
 {
-    class Histogram<T>
+    public class Histogram<T>
     {
         #region Fields
 
