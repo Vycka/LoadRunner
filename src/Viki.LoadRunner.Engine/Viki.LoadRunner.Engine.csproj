@@ -48,6 +48,8 @@
     <Compile Include="Aggregators\HistogramAggregator.cs" />
     <Compile Include="Aggregators\NullAggregator.cs" />
     <Compile Include="Core\Factory\DataCollectorFactory.cs" />
+    <Compile Include="Core\Factory\Interfaces\IFactory.cs" />
+    <Compile Include="Core\Factory\ReflectionFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IDataCollectorFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IScenarioFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IScenarioHandlerFactory.cs" />
@@ -131,14 +133,15 @@
     <Compile Include="Core\Scenario\ScenarioBase.cs" />
     <Compile Include="Core\Scenario\Checkpoint.cs" />
     <Compile Include="Core\Scenario\Interfaces\IIteration.cs" />
-    <Compile Include="Core\Scenario\ScenarioValidator.cs" />
     <Compile Include="Strategies\Custom\CustomStrategy.cs" />
     <Compile Include="Strategies\Interfaces\IStrategy.cs" />
     <Compile Include="Strategies\Custom\Interfaces\ICustomStrategySettings.cs" />
     <Compile Include="Strategies\Custom\Adapter\Limit\LimitsHandler.cs" />
     <Compile Include="Strategies\ReplayStrategyBuilder.cs" />
+    <Compile Include="Strategies\Replay\Factory\Interfaces\IReplayScenarioFactory.cs" />
     <Compile Include="Strategies\Replay\Factory\Interfaces\IReplayScenarioHandlerFactory.cs" />
     <Compile Include="Strategies\Replay\Factory\Interfaces\IReplaySchedulerFactory.cs" />
+    <Compile Include="Strategies\Replay\Factory\ReplayScenarioFactory.cs" />
     <Compile Include="Strategies\Replay\Factory\ReplayScenarioHandlerFactory.cs" />
     <Compile Include="Strategies\Replay\Factory\ReplayScenarioThreadFactory.cs" />
     <Compile Include="Strategies\Replay\Factory\ReplaySchedulerFactory.cs" />
@@ -180,9 +183,10 @@
     <Compile Include="Strategies\Custom\Strategies\Threading\ListOfCounts.cs" />
     <Compile Include="Utils\ArrayExtensions.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
-    <Compile Include="Validators\DefaultValidator.cs" />
+    <Compile Include="Validators\ScenarioValidator.cs" />
     <Compile Include="Validators\IValidator.cs" />
     <Compile Include="Validators\ReplayScenarioValidator.cs" />
+    <Compile Include="Validators\ReplayScenarioValidatorExtensions.cs" />
     <Compile Include="Validators\ScenarioValidatorExtensions.cs" />
   </ItemGroup>
   <ItemGroup />

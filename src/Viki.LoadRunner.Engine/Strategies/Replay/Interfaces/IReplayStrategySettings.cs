@@ -2,12 +2,13 @@
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay.Interfaces
 {
     // TODO: Need to make this generic in the end... :(
     // Rethink Handler/Scheduler/IDataReader to make use of TData from IReplayStrategySettings but it should not spread like it does now.
-    public interface IReplayStrategySettings<TData>
+    public interface IReplayStrategySettings<in TData>
     {
         /// <summary>
         /// Fixed count of threads to use
@@ -32,7 +33,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Interfaces
         /// <summary>
         /// Factory for creating IReplayScenario instances.
         /// </summary>
-        IScenarioFactory ScenarioFactory { get; }
+        IReplayScenarioFactory<TData> ScenarioFactory { get; }
 
         /// <summary>
         /// Initial user data which will be passed to created thread contexts. (context.UserData)

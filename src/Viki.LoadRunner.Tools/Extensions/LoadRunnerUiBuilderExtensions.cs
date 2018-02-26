@@ -49,7 +49,7 @@ namespace Viki.LoadRunner.Tools.Extensions
 
             localSettings.AddAggregator(ui);
 
-            ui.Setup(new CustomStrategy(localSettings), new DefaultValidator(settings.ScenarioFactory));
+            ui.Setup(new CustomStrategy(localSettings), new ScenarioValidator(settings.ScenarioFactory));
 
             return ui;
         }

@@ -4,14 +4,15 @@ using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Worker;
 using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
 
+
 namespace Viki.LoadRunner.Engine.Core.Factory
 {
     public class ScenarioHandlerFactory : IScenarioHandlerFactory
     {
-        private readonly IScenarioFactory _factory;
+        private readonly IFactory<IScenario> _factory;
         private readonly IUniqueIdFactory<int> _globalIdFactory;
 
-        public ScenarioHandlerFactory(IScenarioFactory factory, IUniqueIdFactory<int> globalIdFactory)
+        public ScenarioHandlerFactory(IFactory<IScenario> factory, IUniqueIdFactory<int> globalIdFactory)
         {
             if (factory == null)
                 throw new ArgumentNullException(nameof(factory));
@@ -24,7 +25,7 @@ namespace Viki.LoadRunner.Engine.Core.Factory
 
         public IScenarioHandler Create(IIterationControl iterationContext)
         {
-            IScenario scenarioInstance = (IScenario)_factory.Create();
+            IScenario scenarioInstance = _factory.Create();
             IScenarioHandler scenarioHandler = new ScenarioHandler(_globalIdFactory, scenarioInstance, iterationContext);
 
             return scenarioHandler;

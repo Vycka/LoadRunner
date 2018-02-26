@@ -34,7 +34,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <param name="scenarioType">Scenario class type</param>
         public StrategyBuilder SetScenario(Type scenarioType)
         {
-            return SetScenario(new ScenarioFactory<IScenario>(scenarioType));
+            return SetScenario(new ScenarioFactory(scenarioType));
         }
 
         /// <summary>

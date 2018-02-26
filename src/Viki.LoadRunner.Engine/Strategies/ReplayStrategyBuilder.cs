@@ -8,6 +8,8 @@ using Viki.LoadRunner.Engine.Strategies.Replay;
 using Viki.LoadRunner.Engine.Strategies.Replay.Data;
 using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Data.Readers;
+using Viki.LoadRunner.Engine.Strategies.Replay.Factory;
+using Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies
@@ -36,14 +38,14 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <param name="scenarioType">Scenario class type</param>
         public ReplayStrategyBuilder<TData> SetScenario(Type scenarioType)
         {
-            return SetScenario(new ScenarioFactory<IReplayScenario<TData>>(scenarioType));
+            return SetScenario(new ReplayScenarioFactory<TData>(scenarioType));
         }
 
         /// <summary>
         /// Set own custom IReplayScenario&lt;TData&gt; factory
         /// </summary>
         /// <param name="scenarioFactory">IReplayScenario&lt;TData&gt; factory it self</param>
-        public ReplayStrategyBuilder<TData> SetScenario(IScenarioFactory scenarioFactory)
+        public ReplayStrategyBuilder<TData> SetScenario(IReplayScenarioFactory<TData> scenarioFactory)
         {
             ScenarioFactory = scenarioFactory;
             return this;
@@ -176,7 +178,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <summary>
         /// Class type of Scenario to be executed, type must implement IReplayScenario.
         /// </summary>
-        public IScenarioFactory ScenarioFactory { get; set; }
+        public IReplayScenarioFactory<TData> ScenarioFactory { get; set; }
 
         /// <summary>
         /// Initial user data which will be passed to created thread contexts. (context.UserData)
