@@ -1,11 +1,8 @@
 ﻿using Viki.LoadRunner.Engine.Core.Collector;
-using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Pool;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
-using Viki.LoadRunner.Engine.Strategies.Replay.Data;
-using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Validators
 {

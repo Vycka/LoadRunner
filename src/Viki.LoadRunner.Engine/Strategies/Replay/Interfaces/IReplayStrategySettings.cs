@@ -1,6 +1,5 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
-using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces;
 

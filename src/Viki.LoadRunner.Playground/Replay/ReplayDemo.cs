@@ -6,14 +6,7 @@ using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
-using Viki.LoadRunner.Engine.Core.Factory;
 using Viki.LoadRunner.Engine.Strategies;
-using Viki.LoadRunner.Engine.Strategies.Replay.Data;
-using Viki.LoadRunner.Engine.Strategies.Replay.Data.Readers;
-using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
-using Viki.LoadRunner.Tools.Extensions;
-using Viki.LoadRunner.Tools.Windows;
 
 namespace Viki.LoadRunner.Playground.Replay
 {
