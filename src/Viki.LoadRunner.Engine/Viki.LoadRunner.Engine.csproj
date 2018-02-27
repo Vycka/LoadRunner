@@ -55,6 +55,7 @@
     <Compile Include="Core\Factory\Interfaces\IScenarioHandlerFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\ISchedulerFactory.cs" />
     <Compile Include="Core\Factory\ScenarioFactory.cs" />
+    <Compile Include="Core\StrategyBase.cs" />
     <Compile Include="Core\Pool\Interfaces\IThreadFactory.cs" />
     <Compile Include="Core\Factory\ScenarioHandlerFactory.cs" />
     <Compile Include="Core\Factory\SchedulerFactory.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Core\Pool\WorkerThreadStats.cs" />
     <Compile Include="Core\Scheduler\Interfaces\IWait.cs" />
     <Compile Include="Core\Scheduler\SemiWait.cs" />
+    <Compile Include="Core\Timer\Interfaces\ITimerControl.cs" />
     <Compile Include="Strategies\Custom\Adapter\Aggregator\AsyncAggregator.cs" />
     <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\BreakByMetric.cs" />
@@ -111,7 +113,7 @@
     <Compile Include="Core\Factory\ScenarioThreadFactory.cs" />
     <Compile Include="Core\Counter\Interfaces\ICounter.cs" />
     <Compile Include="Core\Worker\Interfaces\IThread.cs" />
-    <Compile Include="Core\Worker\ScenarioHandler.cs" />
+    <Compile Include="Core\Scenario\ScenarioHandler.cs" />
     <Compile Include="Core\Worker\ScenarioWork.cs" />
     <Compile Include="Core\Factory\IdFactory.cs" />
     <Compile Include="Core\Collector\Interfaces\IDataCollector.cs" />

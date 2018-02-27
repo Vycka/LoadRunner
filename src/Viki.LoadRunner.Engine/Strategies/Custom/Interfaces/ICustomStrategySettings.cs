@@ -13,7 +13,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
         /// <summary>
         /// Limits define when test execution will be scheduled to stop.
         /// Keep in mind that limits can't enforce stopping precisely how defined. E.g. you can't make it stop at exactly at 2000 iterations, but it will be close to it. 
-        /// Limits precision strongly correlate to LoadRunnerEngine.HeartBeatMs
+        /// Limits precision correlates to LoadRunnerEngine.HeartBeatMs
         /// </summary>
         ILimitStrategy[] Limits { get; }
 

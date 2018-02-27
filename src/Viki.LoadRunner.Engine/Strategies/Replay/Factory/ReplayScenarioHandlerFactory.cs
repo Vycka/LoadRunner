@@ -10,8 +10,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Factory
 {
     public class ReplayScenarioHandlerFactory<TData> : IReplayScenarioHandlerFactory
     {
-        private readonly IFactory<IReplayScenario<TData>> _scenarioFactory;
         private readonly IUniqueIdFactory<int> _globalIdFactory;
+        private readonly IFactory<IReplayScenario<TData>> _scenarioFactory;
+
 
         public ReplayScenarioHandlerFactory(IFactory<IReplayScenario<TData>> scenarioFactory, IUniqueIdFactory<int> globalIdFactory)
         {

@@ -22,6 +22,12 @@ using ThreadPool = Viki.LoadRunner.Engine.Core.Pool.ThreadPool;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom
 {
+
+    // TODO: Split into Custom Stragegy : Generic Strategy
+    // - Generic one will have n handlers like Speed / Collector / etc...
+    //   Using dynamic compiling?
+    // - Generic could be extended for ReplayStrategy, CustomStrategy (though not sure how to make them aggregatable)
+    // - Not sure how with limits
     public class CustomStrategy : IStrategy
     {
         public ITimer Timer => _timer;

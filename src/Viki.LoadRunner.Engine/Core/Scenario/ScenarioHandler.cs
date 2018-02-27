@@ -1,10 +1,9 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
-using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
 
-namespace Viki.LoadRunner.Engine.Core.Worker
+namespace Viki.LoadRunner.Engine.Core.Scenario
 {
     public class ScenarioHandler : IScenarioHandler
     {
@@ -17,7 +16,6 @@ namespace Viki.LoadRunner.Engine.Core.Worker
 
         public ScenarioHandler(IUniqueIdFactory<int> globalIdFactory, IScenario scenario, IIterationControl context)
         {
-
             if (globalIdFactory == null)
                 throw new ArgumentNullException(nameof(globalIdFactory));
             if (context == null)

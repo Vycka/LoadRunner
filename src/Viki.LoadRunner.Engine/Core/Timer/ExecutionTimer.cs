@@ -6,7 +6,7 @@ using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Timer
 {
-    public class ExecutionTimer : ITimer
+    public class ExecutionTimer : ITimerControl
     {
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private DateTime _beginTime;
@@ -18,7 +18,6 @@ namespace Viki.LoadRunner.Engine.Core.Timer
             _stopwatch.Reset();
             _stopwatch.Start();
         }
-
 
         public void Stop()
         {
