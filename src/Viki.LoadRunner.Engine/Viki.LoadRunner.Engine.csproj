@@ -55,7 +55,6 @@
     <Compile Include="Core\Factory\Interfaces\IScenarioHandlerFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\ISchedulerFactory.cs" />
     <Compile Include="Core\Factory\ScenarioFactory.cs" />
-    <Compile Include="Core\StrategyBase.cs" />
     <Compile Include="Core\Pool\Interfaces\IThreadFactory.cs" />
     <Compile Include="Core\Factory\ScenarioHandlerFactory.cs" />
     <Compile Include="Core\Factory\SchedulerFactory.cs" />
@@ -99,7 +98,7 @@
     <Compile Include="Core\Counter\ThreadSafeCounter.cs" />
     <Compile Include="Core\Factory\Interfaces\IIterationContextFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IScenarioThreadFactory.cs" />
-    <Compile Include="Core\Worker\Interfaces\IScenarioHandler.cs" />
+    <Compile Include="Core\Scenario\Interfaces\IScenarioHandler.cs" />
     <Compile Include="Core\Worker\Interfaces\IWork.cs" />
     <Compile Include="Core\Worker\ErrorHandler.cs" />
     <Compile Include="Core\Worker\Interfaces\IErrorHandler.cs" />

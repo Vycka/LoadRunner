@@ -14,7 +14,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using ThreadPool = Viki.LoadRunner.Engine.Core.Pool.ThreadPool;
 
-namespace Viki.LoadRunner.Engine.Core
+namespace Viki.LoadRunner.Tools.Strategy
 {
     public interface IWorkFactory
     {
@@ -24,7 +24,7 @@ namespace Viki.LoadRunner.Engine.Core
     public class GenericStrategySettings
     {
         public ITimerControl Timer = new ExecutionTimer();
-
+        // TODO: Split ThreadFactory into generic one.
         public IThreadFactory ThreadFactory;
 
         // End[ing]Strategy FinishStrategy ?

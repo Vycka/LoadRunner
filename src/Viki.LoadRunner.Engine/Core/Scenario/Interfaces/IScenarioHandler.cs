@@ -1,4 +1,4 @@
-namespace Viki.LoadRunner.Engine.Core.Worker.Interfaces
+namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
 {
     public interface IScenarioHandler
     {

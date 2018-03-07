@@ -117,7 +117,7 @@ namespace Viki.LoadRunner.Engine.Core.Worker
 
                 _prewait.Wait(ref _stopQueued);
 
-                while (!_stopQueued)
+                if (!_stopQueued)
                 {
                     _work.Execute(ref _stopQueued);
                 }

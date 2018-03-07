@@ -2,8 +2,6 @@
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
-using Viki.LoadRunner.Engine.Core.Worker;
-using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
 
 
 namespace Viki.LoadRunner.Engine.Core.Factory

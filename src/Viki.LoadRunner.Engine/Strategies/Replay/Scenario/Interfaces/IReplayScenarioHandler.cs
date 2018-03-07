@@ -1,5 +1,5 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay.Scenario.Interfaces
 {

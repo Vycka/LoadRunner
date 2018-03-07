@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
 
@@ -33,15 +34,18 @@ namespace Viki.LoadRunner.Engine.Core.Worker
 
         public void Execute(ref bool stop)
         {
-            _handler.PrepareNext();
-
-            _scheduler.WaitNext(ref stop);
-
-            if (!stop)
+            while (!stop)
             {
-                _handler.Execute();
+                _handler.PrepareNext();
 
-                _collector.Collect();
+                _scheduler.WaitNext(ref stop);
+
+                if (!stop)
+                {
+                    _handler.Execute();
+
+                    _collector.Collect();
+                }
             }
         }
 
@@ -49,6 +53,5 @@ namespace Viki.LoadRunner.Engine.Core.Worker
         {
             _handler.Cleanup();
         }
-
     }
 }
