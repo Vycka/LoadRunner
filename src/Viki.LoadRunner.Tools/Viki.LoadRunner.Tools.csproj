@@ -56,7 +56,7 @@
     <Compile Include="Analytics\IDimension.cs" />
     <Compile Include="Analytics\IMetric.cs" />
     <Compile Include="Analytics\MetricsHandler.cs" />
-    <Compile Include="ConsoleUi\KpiMetric.cs" />
+    <Compile Include="ConsoleUi\KpiOutput.cs" />
     <Compile Include="Extensions\LoadRunnerUiBuilderExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Strategy\GenericWork.cs" />

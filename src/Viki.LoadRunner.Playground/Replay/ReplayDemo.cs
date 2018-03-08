@@ -6,7 +6,9 @@ using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Tools.ConsoleUi;
 
 namespace Viki.LoadRunner.Playground.Replay
 {
@@ -21,9 +23,10 @@ namespace Viki.LoadRunner.Playground.Replay
                 .Add(new FuncMetric<int>("CThreads", 0, (i, r) => r.CreatedThreads))
                 .Add(new FuncMetric<int>("IThreads", 0, (i, r) => r.IdleThreads));
 
+            IAggregator kpi = new KpiOutput(TimeSpan.FromMilliseconds(500), new CountMetric());
 
             ReplayStrategyBuilder<string> settings = new ReplayStrategyBuilder<string>()
-                .SetAggregator(aggregator)
+                .SetAggregator(aggregator, kpi)
                 .SetData(DataGenerator.Create(5, 1, 3, 3).ToArray())
                 .SetScenario<ReplayScenario>()
                 .SetThreadCount(50)
