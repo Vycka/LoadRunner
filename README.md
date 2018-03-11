@@ -1,7 +1,6 @@
 ### Generic performance testing library for executing load-tests written in .NET c# ###
 * NuGet: `Install-Package Viki.LoadRunner`
 
-
 ## *Quick Intro* [for v0.7.*]
 * Take a look at [LoadRunner.Demo](/demo) project and follow commented code :)
   - [DemoTestScenario.cs](/demo/DemoTestScenario.cs) - Setup your Load-test scenario for single thread
@@ -13,6 +12,9 @@
 * [DemoResults.xlsx](/demo/DemoResults.xlsx) - import results to excel and do some charting :)
 ![](https://raw.githubusercontent.com/Vycka/LoadRunner/master/diagrams/Architecture.png)
 * [Future](../../wiki/TODOs)
+
+### v0.8 is kinda in RC stage:
+https://github.com/Vycka/LoadRunner/tree/v0.8
 
 ***Sorry for poor documentation, I don't have much time to work on it ATM, but if having any questions/suggestions/etc, feel free to contact me.***
 
