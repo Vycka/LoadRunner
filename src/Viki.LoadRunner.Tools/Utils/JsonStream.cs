@@ -30,6 +30,7 @@ namespace Viki.LoadRunner.Tools.Utils
             {
                 var serializer = new JsonSerializer();
                 serializer.NullValueHandling = NullValueHandling.Ignore;
+                serializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 
                 writer.WriteStartArray();
                 long index = 0;
