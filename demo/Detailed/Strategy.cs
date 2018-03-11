@@ -4,11 +4,9 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 
-
-
-namespace LoadRunner.Demo
+namespace LoadRunner.Demo.Detailed
 {
-    public static class SettingsSetup
+    public static class Strategy
     {
         public static StrategyBuilder Create()
         {
@@ -16,7 +14,7 @@ namespace LoadRunner.Demo
             StrategyBuilder strategy = new StrategyBuilder()
 
                 // Set test scenario to use - DemoTestScenario
-                .SetScenario<DemoTestScenario>()
+                .SetScenario<Scenario>()
 
                 // Stop execution after 30 secs.
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(30)))
@@ -28,18 +26,19 @@ namespace LoadRunner.Demo
             return strategy;
         }
 
+
         // This demonstrates default parameters of LoadRunnerSettings object for reference.
         // Default presets will cause unlimited execution, so at least one ILimitStrategy must be defined. 
         //
         // All properties can be initialized using either builder methods Set*/Add* or by directly setting parameters.
         private static readonly StrategyBuilder DefaultParametersPreset = new StrategyBuilder
         {
-            // Scenario to execute.
+            // Factory to use when creating IScenario instances for each thread
             //
-            // No scenario is defined by default and will cause undefined behavior, so it must be set.
+            // No factory is defined by default and will cause crash so it must be set.
             // SetScenario()/SetScenario<>()/Create<>()/Create()
             //
-            ScenarioType = null,
+            ScenarioFactory = null,
 
             // Limits define when test execution will be scheduled to stop.
             //

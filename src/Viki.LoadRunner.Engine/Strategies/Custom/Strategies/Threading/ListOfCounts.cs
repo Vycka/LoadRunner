@@ -5,7 +5,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading
 {
-    public class ListOfCounts :  IThreadingStrategy
+    public class ListOfCounts : IThreadingStrategy
     {
         private readonly TimeSpan _period;
         private readonly int[] _threadCountValues;
@@ -35,7 +35,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading
         public void HeartBeat(IThreadPool pool, ITestState state)
         {
             long index = state.Timer.Value.Ticks / _period.Ticks;
-            int result = 0;
+            int result;
 
             if (index < _threadCountValues.Length)
                 result =  _threadCountValues[index];

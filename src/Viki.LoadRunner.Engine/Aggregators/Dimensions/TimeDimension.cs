@@ -15,6 +15,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
         public Func<TimeSpan, string> Formatter = t => ((long) t.TotalSeconds).ToString();
 
         /// <param name="interval">interval timespan</param>
+        /// <param name="dimensionName">Custom name for dimension</param>
         public TimeDimension(TimeSpan interval, string dimensionName = "Time (s)")
         {
             Interval = interval;

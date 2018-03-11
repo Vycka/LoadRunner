@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
+using Viki.LoadRunner.Engine.Aggregators.Utils;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Tools.Aggregators;
 
-namespace LoadRunner.Demo
+namespace LoadRunner.Demo.Features
 {
     public class RawDataAggregationDemo
     {
@@ -18,12 +22,20 @@ namespace LoadRunner.Demo
         //
         // The main idea behind this is:
         // You save raw meassurements to the file, and then do aggregations from it after the tests.
-        // Main big advantage behind this is, that you can slice all data again in any slice you will think after the test.
+        // This approach provides few key advantages like:
+        // * One can aggregate all data again and again in any way one will think after the test.
+        // * Less overhead to cpu, as complex on-the-fly aggregations can be cpu/ra taxing.
+        // * It provides a way to merge results into a single aggregation if one creates scenario which is executed from multiple computers at the same time ***
         //
-        // To enable it: Append this aggregation to QuickIntroLoadTest.Run() [Line 35]
-        // E.g.:  LoadRunnerEngine loadRunner = LoadRunnerEngine.Create<DemoTestScenario>(parameters, histogramAggregator, AggregationSetup.BuildJsonStreamAggregator());
+        // To enable it: Append [RawDataAggregationDemo.BuildJsonStreamAggregator] to DetailedDemo.Run() [Line 23]
+        // E.g.:  strategy.AddAggregator(histogramAggregator, RawDataAggregationDemo.BuildJsonStreamAggregator());
         //
         // And this method will get called after pressing any key after the test finishes.
+        public static IAggregator BuildJsonStreamAggregator()
+        {
+            return new JsonStreamAggregator("masterdata.json");
+        }
+
         public static void Aggregate()
         {
             // Feature disabled?
@@ -40,6 +52,24 @@ namespace LoadRunner.Demo
             JsonStreamAggregator.Replay<object>("masterdata.json", aggregator);
 
             Console.WriteLine("## JsonStreamAggregator demo ##");
+            Console.WriteLine(JsonConvert.SerializeObject(aggregator.BuildResultsObjects(), Formatting.Indented));
+            Console.ReadKey();
+        }
+
+        // ***
+        private static void AggregateFromMultipleSources()
+        {
+            IEnumerable<ReplayResult<object>> pc1 = JsonStreamAggregator.Load<object>("masterdata.json");
+            IEnumerable<ReplayResult<object>> pc2 = JsonStreamAggregator.Load<object>("masterdata.json");
+            IEnumerable<ReplayResult<object>> merged = pc1.Concat(pc2);
+
+            HistogramAggregator aggregator = new HistogramAggregator()
+                .Add(new CountMetric())
+                .Add(new TransactionsPerSecMetric());
+
+            StreamAggregator.Replay(merged);
+
+            Console.WriteLine("## Merged demo ##");
             Console.WriteLine(JsonConvert.SerializeObject(aggregator.BuildResultsObjects(), Formatting.Indented));
             Console.ReadKey();
         }

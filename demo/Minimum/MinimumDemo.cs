@@ -5,17 +5,15 @@ using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
-using Viki.LoadRunner.Tools.Aggregators;
 
-namespace LoadRunner.Demo.ReadmeDemo
+namespace LoadRunner.Demo.Minimum
 {
-    public static class BareMinimum
+    public static class MinimumDemo
     {
         public class MinimalScenario : IScenario
         {
@@ -47,9 +45,6 @@ namespace LoadRunner.Demo.ReadmeDemo
 
         public static void Run()
         {
-            // Output for json masterdata
-            IAggregator jsonAggregator = new JsonStreamAggregator("json.masterdata.txt");
-
             // Custom aggregation
             HistogramAggregator aggregator = new HistogramAggregator()
                 .Add(new TimeDimension(TimeSpan.FromSeconds(5)))
@@ -58,7 +53,7 @@ namespace LoadRunner.Demo.ReadmeDemo
                 .Add(new PercentileMetric(0.95, 0.99));
 
             StrategyBuilder strategy = new StrategyBuilder()
-                .SetAggregator(aggregator, jsonAggregator)
+                .SetAggregator(aggregator)
                 .SetScenario<MinimalScenario>()
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(20)))
 				.SetSpeed(new FixedSpeed(100))

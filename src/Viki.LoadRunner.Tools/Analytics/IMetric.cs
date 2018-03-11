@@ -1,6 +1,6 @@
 ﻿namespace Viki.LoadRunner.Tools.Analytics
 {
-    public interface IMetric<T>
+    public interface IMetric<in T>
     {
         /// <summary>
         /// Create new blank IMetric instance based on current instance settings (e.g. settings passed in the constructor in histogram setup)

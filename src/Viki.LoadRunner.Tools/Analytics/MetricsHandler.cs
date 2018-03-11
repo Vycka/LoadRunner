@@ -11,7 +11,7 @@ namespace Viki.LoadRunner.Tools.Analytics
             private readonly IMetric<T>[] _metrics;
 
             /// <summary>
-            /// MetricMultiplexer acts as signle metric, but it wraps multiple provided metrics and makes them work as one
+            /// MetricsHandler acts as signle metric, but it wraps multiple provided metrics and makes them work as one
             /// </summary>
             /// <param name="metricTemplates"></param>
             public MetricsHandler(IEnumerable<IMetric<T>> metricTemplates)

@@ -2,13 +2,11 @@
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
-using Viki.LoadRunner.Tools.Aggregators;
 
-namespace LoadRunner.Demo
+namespace LoadRunner.Demo.Detailed
 {
-    public static class AggregationSetup
+    public static class Aggregation
     {
         private static readonly string[] IgnoredCheckpoints =
 {
@@ -64,16 +62,6 @@ namespace LoadRunner.Demo
                 .Alias($"Errors: {Checkpoint.Names.TearDown}", "Errors: Teardown");
 
             return histogramAggregator;
-        }
-
-
-        // Advanced optional at first, but useful when going to PROD.
-        // This allows to do post-test aggregations in any slices you will think later.
-        //
-        // Checkout RawDataAggregationDemo.cs if interested.
-        public static IAggregator BuildJsonStreamAggregator()
-        {
-            return new JsonStreamAggregator("masterdata.json");
         }
     }
 }

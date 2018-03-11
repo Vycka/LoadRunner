@@ -1,23 +1,31 @@
-## Usage examples for v0.8 are yet to be written, until then, one can check these examples if feeling lucky
- * https://github.com/Vycka/LoadRunner/blob/v0.8/demo/ReadmeDemo/BareMinimum.cs
- * https://github.com/Vycka/LoadRunner/blob/v0.8/src/Viki.LoadRunner.Playground/DemoSetup.cs
-
-ReplayStrategy RnD (e.g. for replaying logs)
- * https://github.com/Vycka/LoadRunner/blob/v0.8/src/Viki.LoadRunner.Playground/Replay/ReplayDemo.cs
- 
 ### Generic performance testing library for executing load-tests written in .NET c# ###
-* NuGet: `Install-Package Viki.LoadRunner`
-
+* NuGet: `Install-Package Viki.LoadRunner -pre`
 
 ## *Quick Intro*
+* Basically one needs to define 3 things to make fully working test:
+  - [1] Write Scenario implementation, defining code it-self which will get executed multiple times on multiple threads
+  - [2] Configure strategy on how it will get executed (e.g. How much threads, how long it should run. etc...)
+  - [3][Optional] Configure how meassured results from will be aggregated/presented
+  
 * Take a look at [LoadRunner.Demo](/demo) project and follow commented code :)
-  - [DemoTestScenario.cs](/demo/DemoTestScenario.cs) - Setup your Load-test scenario for single thread
-  - [AggregationSetup.cs](/demo/AggregationSetup.cs) - Setup what data will be saved/meassured
-  - [SettingsSetup.cs](/demo/SettingsSetup.cs) - Setup execution settings (threads, duration, speed, etc...)
-  - [QuickIntroLoadTest.cs](/demo/QuickIntroLoadTest.cs) - Put it all together
+  - [[1] Scnario.cs](/demo/Detailed/Scenario.cs) - Setup your Load-test scenario for single thread
+  - [[2] Strategy.cs](/demo/Detailed/Strategy.cs) - Setup execution settings (threads, duration, speed, etc...)
+  - [[3] Aggregation.cs](/demo/Detailed/Aggregation.cs) - Setup what data will be saved/meassured
+  - [DetailedDemo.cs](/demo/Detailed/QuickIntroLoadTest.cs) - Put it all together
   - [Program.cs](/demo/Program.cs) - Run it
-  - [RawDataAggregationDemo.cs](/demo/RawDataAggregationDemo.cs) - Advanced RnD feature to checkout.
-* [DemoResults.xlsx](/demo/DemoResults.xlsx) - import results to excel and do some charting :)
+  - [DemoResults.xlsx](/demo/DemoResults.xlsx) - import results to excel and do some charting :)
+  
+ * Alternative Bare-Minimum example
+  - [MinimumDemo.cs](/demo/Minimum/MinimumDemo.cs)
+  
+   
+ * Other nifty features   
+  - [RawDataAggregation.cs](/demo/Features/RawDataAggregation.cs) - Advanced RnD feature to checkout.
+  - [KpiOutput.cs](/demo/Features/KpiOutput.cs) - TODO 404
+  - [ReplayDemo.cs](/demo/Features/ReplayDemo.cs) - TODO 404 ()
+ReplayStrategy RnD (e.g. for replaying logs)
+ * https://github.com/Vycka/LoadRunner/blob/v0.8/src/Viki.LoadRunner.Playground/Replay/ReplayDemo.cs
+  
 ![](https://raw.githubusercontent.com/Vycka/LoadRunner/master/diagrams/Architecture.png)
 * [Future](../../wiki/TODOs)
 

@@ -1,26 +1,37 @@
-﻿using LoadRunner.Demo.ReadmeDemo;
+﻿using LoadRunner.Demo.Detailed;
+using LoadRunner.Demo.Features;
+using LoadRunner.Demo.Minimum;
 
 namespace LoadRunner.Demo
 {
     class Program
     {
+        // Main() contains two examples
+        // #1 is shorter version to see all moving parts in single place
+        // #2 details more explanation and more advanced features
+    
         static void Main(string[] args)
         {
-            BareMinimum.Run();
-
             // ProTips: 
             // * If planning to use HttpClient, WebRequest or similar tools to make API Load-Tests
-            // Make sure to tweak App.config accordingly to lift up connection limit.
-            // Check example in projects app config (<add address="*" maxconnection="100"/>)
+            //   - Make sure to tweak App.config accordingly to lift up .NET connection limit.
+            //   - Check example in projects app config (<add address="*" maxconnection="100"/>)
             //
-            // * Avoid running tests in PROD with debugger attached, as it can catch exceptions and halt test execution and meassurements wont be accurate for that time period.
+            // * Avoid running real test with debugger attached, as it can catch exceptions halting test execution and meassurements wont be accurate for that time period.
             //
             // * It is also prefered to run in 64bit so aggregations will perform better.
             //
-            // Other then that, just follow QuickIntroLoadTest for simple setup example(or template)
-            QuickIntroLoadTest.Run();
+            // Other then that, just follow BareMinimum/DetailedDemo for setup example
 
-            // Advanced but optional feature worth checking out before going to PROD.
+            // #1
+            // BareMinimum.Run();
+
+
+            // #2
+            DetailedDemo.Run();
+
+
+            // Optional but useful advanced feature worth checking out before running real test.
             RawDataAggregationDemo.Aggregate();
         }
     }

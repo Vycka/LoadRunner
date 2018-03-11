@@ -1,6 +1,6 @@
 ﻿namespace Viki.LoadRunner.Tools.Analytics
 {
-    public interface IDimension<T>
+    public interface IDimension<in T>
     {
         /// <summary>
         /// DisplayName/Key of the column

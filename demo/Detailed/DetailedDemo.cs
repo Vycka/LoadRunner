@@ -4,11 +4,10 @@ using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Strategies;
-using Viki.LoadRunner.Tools.Extensions;
 
-namespace LoadRunner.Demo
+namespace LoadRunner.Demo.Detailed
 {
-    public class QuickIntroLoadTest
+    public class DetailedDemo
     {
         public static void Run()
         {
@@ -17,11 +16,12 @@ namespace LoadRunner.Demo
             // * LoadRunnerParameters
             // * As many aggregators as you like 
 
-            StrategyBuilder strategy = SettingsSetup.Create();
+            StrategyBuilder strategy = Strategy.Create();
 
-            HistogramAggregator histogramAggregator = AggregationSetup.BuildHistogram();
-            strategy.SetAggregator(histogramAggregator);
+            HistogramAggregator histogramAggregator = Aggregation.BuildHistogram();
 
+            strategy.AddAggregator(histogramAggregator);
+            //strategy.AddAggregator(histogramAggregator, RawDataAggregationDemo.BuildJsonStreamAggregator());
 
             LoadRunnerEngine loadRunner = strategy.Build();
 
