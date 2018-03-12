@@ -7,7 +7,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
     /// <summary>
     /// Checkpoint holds information of timestamp and error of of current iteration.
     /// </summary>
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{Name} {Error == null ? 0 : 1}")]
     public class Checkpoint : ICheckpoint
     {
         #region Consts
@@ -26,7 +26,8 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
         #region Properties
 
         /// <summary>
-        /// Name of the checkpoint (Checkpoint has const's of system checkpoints)
+        /// Name of the checkpoint
+        /// System checkpoints use Checkpoint.Names.* values which intentionally can be changed if one desires.
         /// </summary>
         public string Name { get; set; }
 
@@ -38,7 +39,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
         /// <summary>
         /// Error logged during the iteration or null.
         /// </summary>
-        public Exception Error { get; set; }
+        public object Error { get; set; }
 
         #endregion
 

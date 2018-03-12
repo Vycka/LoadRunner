@@ -11,8 +11,13 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Interfaces
     /// this can be seen as fundamental raw data.
     /// Only the list of these IResult's are needed for meassured data aggregation.
     /// </summary>
-    public interface IResult : IIterationResult 
+    public interface IResult : IIterationMetadata<object>
     {
+        /// <summary>
+        /// Checkpoints with measurements in this iteration
+        /// </summary>
+        ICheckpoint[] Checkpoints { get; }
+
         /// <summary>
         /// Count of currently created worker threads at the end of this iteration
         /// This value will be set at the [IterationFinished] moment.
@@ -24,6 +29,16 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Interfaces
         /// This value will be set at the [IterationFinished] moment.
         /// </summary>
         int IdleThreads { get; }
+
+        /// <summary>
+        /// It contains value when this iteration  started (relative to LoadTest start)
+        /// </summary>
+        TimeSpan IterationStarted { get; }
+
+        /// <summary>
+        /// It contains value when this iteration ended (relative to LoadTest start)
+        /// </summary>
+        TimeSpan IterationFinished { get; }
     }
 
     /// <summary>
@@ -44,7 +59,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Interfaces
         /// Retrieves enumerable of errors in logged checkpoints.
         /// </summary>
         /// <param name="result">reference result</param>
-        public static IEnumerable<Exception> GetErrors(this IResult result)
+        public static IEnumerable<object> GetErrors(this IResult result)
         {
             var errors = result.Checkpoints
                 .Where(c => c.Error != null)

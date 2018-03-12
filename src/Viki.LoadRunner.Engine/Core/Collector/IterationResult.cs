@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Pool.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
@@ -11,9 +12,6 @@ namespace Viki.LoadRunner.Engine.Core.Collector
         {
         }
 
-        /// <summary>
-        /// Checkpoints contain meassured durations
-        /// </summary>
         public ICheckpoint[] Checkpoints { get; set; }
 
         public int GlobalIterationId { get; set; }
@@ -41,7 +39,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector
             CreatedThreads = threadPoolContext.CreatedThreadCount;
             IdleThreads = threadPoolContext.IdleThreadCount;
 
-            Checkpoints = iteration.Checkpoints;
+            Checkpoints = iteration.Checkpoints.ToArray();
         }
     }
 }

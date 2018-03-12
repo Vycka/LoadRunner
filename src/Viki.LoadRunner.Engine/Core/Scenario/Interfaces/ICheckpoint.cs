@@ -38,6 +38,6 @@ namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
         /// If executed code below checkpoint creation throws error.
         /// Last previously created checkpoint will have this property set with thrown exception.
         /// </summary>
-        Exception Error { get; }
+        object Error { get; }
     }
 }

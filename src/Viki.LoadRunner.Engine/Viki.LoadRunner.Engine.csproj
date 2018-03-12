@@ -60,6 +60,7 @@
     <Compile Include="Core\Factory\SchedulerFactory.cs" />
     <Compile Include="Core\Factory\ThreadFactory.cs" />
     <Compile Include="Core\Pool\WorkerThreadStats.cs" />
+    <Compile Include="Core\Scenario\Interfaces\IIterationResult.cs" />
     <Compile Include="Core\Scheduler\Interfaces\IWait.cs" />
     <Compile Include="Core\Scheduler\SemiWait.cs" />
     <Compile Include="Core\Timer\Interfaces\ITimerControl.cs" />
@@ -93,7 +94,6 @@
     <Compile Include="Core\Scenario\Interfaces\ICheckpoint.cs" />
     <Compile Include="Core\Collector\Interfaces\IResult.cs" />
     <Compile Include="Core\Scenario\Interfaces\IIterationId.cs" />
-    <Compile Include="Core\Scenario\Interfaces\IIterationResult.cs" />
     <Compile Include="Core\Counter\ThreadPoolCounter.cs" />
     <Compile Include="Core\Counter\ThreadSafeCounter.cs" />
     <Compile Include="Core\Factory\Interfaces\IIterationContextFactory.cs" />

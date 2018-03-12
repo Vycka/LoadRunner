@@ -13,9 +13,9 @@ namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
         void Checkpoint(string checkpointName = null);
 
         /// <summary>
-        /// Gets list of unhandled errors in current iteration
+        /// Gets list of created checkpoints in this iteration so far
         /// </summary>
-        IEnumerable<KeyValuePair<string, Exception>> GetErrors();
+        IReadOnlyCollection<ICheckpoint> Checkpoints { get; }
 
         /// <summary>
         /// Current timer value of the currently going on iteration.

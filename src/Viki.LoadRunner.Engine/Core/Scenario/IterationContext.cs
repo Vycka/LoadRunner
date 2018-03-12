@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
 
@@ -8,11 +7,10 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
 {
     public class IterationContext : IIterationControl
     {
-        private readonly ITimer _timer;
-
         #region Fields
 
-        private readonly List<Checkpoint> _checkpoints = new List<Checkpoint>();
+        // TODO: Create List specific for this job, the one which could perform shallow copy of array to gain performance
+        private readonly List<Checkpoint> _checkpoints;
 
         public IterationContext(int threadId, ITimer timer, object initialUserData = null)
         {
@@ -20,16 +18,17 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
                 throw new ArgumentNullException(nameof(timer));
             
             ThreadId = threadId;
-            _timer = timer;
+            Timer = timer;
             UserData = initialUserData;
+            _checkpoints = new List<Checkpoint>();
+            Checkpoints = _checkpoints.AsReadOnly();
 
             Reset(-1,-1);
         }
 
         #endregion
 
-        // TODO: Create List specific for this job, the one which could perform shallow copy of array to gain performance
-        ICheckpoint[] IIterationResult.Checkpoints =>  _checkpoints.Cast<ICheckpoint>().ToArray();
+
         public TimeSpan IterationStarted { get; private set; }
         public TimeSpan IterationFinished { get; private set; }
 
@@ -37,12 +36,12 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
 
         public void Start()
         {
-            IterationStarted = _timer.Value;
+            IterationStarted = Timer.Value;
         }
 
         public void Stop()
         {
-            IterationFinished = _timer.Value;
+            IterationFinished = Timer.Value;
         }
 
         public void Reset(int threadIterationId, int globalIterationId)
@@ -74,13 +73,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
             _checkpoints.Add(newCheckpoint);  
         }
 
-        public IEnumerable<KeyValuePair<string, Exception>> GetErrors()
-        {
-            return
-                _checkpoints
-                    .Where(c => c.Error != null)
-                    .Select(c => new KeyValuePair<string, Exception>(c.Name, c.Error));
-        }
+        public IReadOnlyCollection<ICheckpoint> Checkpoints { get; }
 
         public TimeSpan IterationElapsedTime
         {
@@ -89,13 +82,13 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
                 if (IterationFinished != TimeSpan.MinValue)
                     return IterationFinished - IterationStarted;
                 if (IterationStarted != TimeSpan.MaxValue)
-                    return _timer.Value - IterationStarted;
+                    return Timer.Value - IterationStarted;
 
                 return TimeSpan.Zero;
             }
         }
 
-        public ITimer Timer => _timer;
+        public ITimer Timer { get; }
 
         public int GlobalIterationId { get; private set; }
         public int ThreadId { get; }

@@ -13,7 +13,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
         public new Checkpoint[] Checkpoints
         {
             get { return (Checkpoint[]) base.Checkpoints; }
-            set { base.Checkpoints = value.Cast<ICheckpoint>().ToArray();  }
+            set { base.Checkpoints = value.Cast<ICheckpoint>().ToArray(); }
         }
 
         public new TUserData UserData

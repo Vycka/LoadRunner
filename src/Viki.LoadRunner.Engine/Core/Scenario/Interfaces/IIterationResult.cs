@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
 {
@@ -7,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
         /// <summary>
         /// All checkpoints containing meassurements from whole iteration
         /// </summary>
-        ICheckpoint[] Checkpoints { get; }
+        IReadOnlyCollection<ICheckpoint> Checkpoints { get; }
 
         /// <summary>
         /// It contains value when this iteration  started (relative to LoadTest start)
