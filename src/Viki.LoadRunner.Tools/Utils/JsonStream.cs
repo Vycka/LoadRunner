@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Viki.LoadRunner.Tools.Utils
 {
@@ -28,9 +29,7 @@ namespace Viki.LoadRunner.Tools.Utils
         {
             using (var writer = new JsonTextWriter(writeStream))
             {
-                var serializer = new JsonSerializer();
-                serializer.NullValueHandling = NullValueHandling.Ignore;
-                serializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                JsonSerializer serializer = CreateSerializer();
 
                 writer.WriteStartArray();
                 long index = 0;
@@ -48,7 +47,8 @@ namespace Viki.LoadRunner.Tools.Utils
         {
             using (var reader = new JsonTextReader(readerStream))
             {
-                var serializer = new JsonSerializer();
+                JsonSerializer serializer = CreateSerializer();
+
                 if (!reader.Read() || reader.TokenType != JsonToken.StartArray)
                     throw new Exception("Expected start of array in the deserialized json string");
 
@@ -59,6 +59,18 @@ namespace Viki.LoadRunner.Tools.Utils
                     yield return item;
                 }
             }
+        }
+
+        private static JsonSerializer CreateSerializer()
+        {
+            JsonSerializer serializer = new JsonSerializer
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+
+            return serializer;
         }
     }
 }
