@@ -70,7 +70,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// <param name="data">Fixed list of data</param>
         public ReplayStrategyBuilder<TData> SetData(DataItem[] data)
         {
-            DataReader = new ArrayDataReader(data);
+            DataReader = new ReplayDataReader(data);
 
             return this;
         }

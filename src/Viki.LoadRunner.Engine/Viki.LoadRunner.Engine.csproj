@@ -139,6 +139,7 @@
     <Compile Include="Strategies\Custom\Interfaces\ICustomStrategySettings.cs" />
     <Compile Include="Strategies\Custom\Adapter\Limit\LimitsHandler.cs" />
     <Compile Include="Strategies\ReplayStrategyBuilder.cs" />
+    <Compile Include="Strategies\Replay\Data\Readers\PartitionedDataReader.cs" />
     <Compile Include="Strategies\Replay\Factory\Interfaces\IReplayScenarioFactory.cs" />
     <Compile Include="Strategies\Replay\Factory\Interfaces\IReplayScenarioHandlerFactory.cs" />
     <Compile Include="Strategies\Replay\Factory\Interfaces\IReplaySchedulerFactory.cs" />
@@ -147,7 +148,7 @@
     <Compile Include="Strategies\Replay\Factory\ReplayScenarioThreadFactory.cs" />
     <Compile Include="Strategies\Replay\Factory\ReplaySchedulerFactory.cs" />
     <Compile Include="Strategies\Replay\Interfaces\IReplayStrategySettings.cs" />
-    <Compile Include="Strategies\Replay\Data\Readers\ArrayDataReader.cs" />
+    <Compile Include="Strategies\Replay\Data\Readers\ReplayDataReader.cs" />
     <Compile Include="Strategies\Replay\Interfaces\IReplayScenario.cs" />
     <Compile Include="Strategies\Replay\Data\DataItem.cs" />
     <Compile Include="Strategies\Replay\Data\Interfaces\IReplayDataReader.cs" />
