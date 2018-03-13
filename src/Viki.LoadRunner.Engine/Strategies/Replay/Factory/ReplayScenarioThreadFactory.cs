@@ -44,7 +44,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Factory
             IIterationControl iterationContext = _iterationContextFactory.Create();
 
             IReplayScenarioHandler handler = _scenarioHandlerFactory.Create(iterationContext);
-            IScheduler scheduler = _schedulerFactory.Create(handler);
+            IScheduler scheduler = _schedulerFactory.Create(handler, iterationContext.ThreadId);
             IDataCollector collector = _dataCollectorFactory.Create(iterationContext);
 
             IThread thread = _threadFactory.Create(scheduler, handler, collector);

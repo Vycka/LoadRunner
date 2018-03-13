@@ -16,10 +16,11 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
         private readonly IReplayDataReader _dataReader;
         private readonly IThreadPoolCounter _counter;
         private readonly double _speedMultiplier;
+        private readonly int _threadId;
 
         private readonly IWait _waiter;
 
-        public ReplayScheduler(ITimer timer, IReplayScenarioHandler scenarioHandler, IReplayDataReader dataReader, IThreadPoolCounter counter, double speedMultiplier)
+        public ReplayScheduler(ITimer timer, IReplayScenarioHandler scenarioHandler, IReplayDataReader dataReader, IThreadPoolCounter counter, double speedMultiplier, int threadId)
         {
             if (timer == null)
                 throw new ArgumentNullException(nameof(timer));
@@ -37,13 +38,14 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
             _dataReader = dataReader;
             _counter = counter;
             _speedMultiplier = speedMultiplier;
-            
+            _threadId = threadId;
+
             _waiter = new SemiWait(timer);
         }
 
         public void WaitNext(ref bool stop)
         {
-            DataItem dataItem = _dataReader.Next();
+            DataItem dataItem = _dataReader.Next(_threadId);
 
             if (dataItem != null)
             {

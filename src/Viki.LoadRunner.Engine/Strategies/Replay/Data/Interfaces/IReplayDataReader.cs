@@ -16,7 +16,7 @@
         /// </summary>
         /// <remarks>Must be thread safe</remarks>
         /// <returns></returns>
-        DataItem Next();
+        DataItem Next(int threadId);
 
         /// <summary>
         /// Gives the signal that test is ending, no more Next() calls after this.

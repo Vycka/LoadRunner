@@ -23,7 +23,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Data.Readers
             _readIndex = -1;
         }
 
-        public DataItem Next()
+        public DataItem Next(int threadId)
         {
             int current = Interlocked.Increment(ref _readIndex);
 

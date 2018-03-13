@@ -32,9 +32,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Factory
             _speedMultiplier = speedMultiplier;
         }
 
-        public IScheduler Create(IReplayScenarioHandler scenarioHandler)
+        public IScheduler Create(IReplayScenarioHandler scenarioHandler, int threadId)
         {
-            IScheduler scheduler = new ReplayScheduler(_timer, scenarioHandler, _dataReader, _counter, _speedMultiplier);
+            IScheduler scheduler = new ReplayScheduler(_timer, scenarioHandler, _dataReader, _counter, _speedMultiplier, threadId);
 
             return scheduler;
         }

@@ -5,6 +5,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces
 {
     public interface IReplaySchedulerFactory
     {
-        IScheduler Create(IReplayScenarioHandler scenarioHandler);
+        IScheduler Create(IReplayScenarioHandler scenarioHandler, int threadId);
     }
 }
