@@ -1,0 +1,1103 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Viki.LoadRunner.Engine</name>
+    </assembly>
+    <members>
+        <member name="T:Viki.LoadRunner.Engine.Aggregators.Dimensions.TimeDimension">
+            <summary>
+            Split results in provided time intervals
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.Dimensions.TimeDimension.#ctor(System.TimeSpan,System.String)">
+            <param name="interval">interval timespan</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.Dimensions.TimeDimension.Calculate(System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Calculates TimeSpan value for dimension key.
+            </summary> 
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Aggregators.Dimensions.FuncDimension">
+            <summary>
+            Split results by provided Func
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.Dimensions.FuncDimension.#ctor(System.String,System.Func{Viki.LoadRunner.Engine.Core.Collector.Interfaces.IResult,System.String})">
+            <param name="dimensionName">Name/Key of custom dimension</param>
+            <param name="dimensionValueSelector">Dimension value selector</param>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Aggregators.Interfaces.IDimension.DimensionName">
+            <summary>
+            DisplayName/Key of the column
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.Interfaces.IDimension.GetKey(Viki.LoadRunner.Engine.Core.Collector.Interfaces.IResult)">
+            <summary>
+            Build dimension key by current provided TestContextResult
+            </summary>
+            <param name="result">current iteration result</param>
+            <returns>String dimension key</returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.Interfaces.IMetric.CreateNew">
+            <summary>
+            Create new blank IMetric instance based on current instance settings (e.g. settings passed in the constructor in histogram setup)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.Interfaces.IMetric.Add(Viki.LoadRunner.Engine.Core.Collector.Interfaces.IResult)">
+            <summary>
+            New iteration result received event
+            </summary>
+            <param name="result">Iteration result</param>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Aggregators.Interfaces.IMetric.ColumnNames">
+            <summary>
+            Names of columns produced by this metric (order must match [Values] order)
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Aggregators.Interfaces.IMetric.Values">
+            <summary>
+            Values produced by this metric (order must match [ColumnNames] order)
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Aggregators.HistogramAggregator">
+            <summary>
+            Modular 2D grid histogram aggregator/builder. Use Add() method to register concrete IDiminension's and IMetric's
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.HistogramAggregator.Add(Viki.LoadRunner.Engine.Aggregators.Interfaces.IDimension)">
+            <summary>
+            Register dimension (aka X value)
+            Each registered dimension will become part of composite key for aggregation.
+            Think of each dimension as part of GROUP BY key.
+            </summary>
+            <param name="dimension">dimension object</param>
+            <returns>Current HistogramAggregator instance</returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.HistogramAggregator.Add(Viki.LoadRunner.Engine.Aggregators.Interfaces.IMetric)">
+            <summary>
+            Register metric (aka Y value)
+            Rows grouped by provided dimensions will be aggregated with registered metrics.
+            </summary>
+            <param name="metric">metric object</param>
+            <returns>Current HistogramAggregator instance</returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.HistogramAggregator.Ignore(System.String)">
+            <summary>
+            Ignore column when building results
+            </summary>
+            <param name="columnName">Column name to ignore</param>
+            <returns>Current HistogramAggregator instance</returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.HistogramAggregator.Alias(System.String,System.String)">
+            <summary>
+            Rename result columns to desired names
+            </summary>
+            <param name="sourceColumnName">source column name</param>
+            <param name="alias">Name to replace it with</param>
+            <returns>Current HistogramAggregator instance</returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.HistogramAggregator.BuildResults">
+            <summary>
+            Builds results into object having collumn names array and 2d array data grid
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.HistogramAggregator.BuildResultsObjects">
+            <summary>
+            Builds dynamic results objects list, where each object has property name equal to column name.
+            Result serialized to JSON it would produce output, which compatible with online JSON -> CSV converters.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Aggregators.Metrics.BreakByMetric">
+            <summary>
+            BreakByMetric allows additional data slicing by provided sub-dimension.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Aggregators.Metrics.ErrorRatioMetric">
+            <summary>
+            Calculates percentage value of failed iterations (those which throw exception) 
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.Metrics.ErrorRatioMetric.#ctor(System.String[])">
+            <summary>
+            Calculates percentage value of failed iterations (those which throw exception) 
+            </summary>
+            <param name="ignoredCheckpoints">Checkpoints to ignore</param>
+        </member>
+        <member name="F:Viki.LoadRunner.Engine.Aggregators.Metrics.PercentileMetric.Formatter">
+            <summary>
+            Custom formatter, allows to post-process the value before outputing it to the grid.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Aggregators.Result.HistogramResults">
+            <summary>
+            HistogramAggregator results class
+            Results represented with ColumnNames[colIndex] object[colIndex][rows] arrays
+            </summary>
+        </member>
+        <member name="F:Viki.LoadRunner.Engine.Aggregators.Result.HistogramResults.ColumnNames">
+            <summary>
+            Column headers
+            </summary>
+        </member>
+        <member name="F:Viki.LoadRunner.Engine.Aggregators.Result.HistogramResults.Values">
+            <summary>
+            2d-array results
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Aggregators.StreamAggregator">
+            <summary>
+            StreamAggregator provides loadtest raw/masterdata (IResult) IEnumerable stream 
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.StreamAggregator.#ctor(System.Action{System.Collections.Generic.IEnumerable{Viki.LoadRunner.Engine.Core.Collector.Interfaces.IResult}})">
+            <summary>
+            StreamAggregator provides loadtest raw/masterdata (IResult) IEnumerable stream 
+            </summary>
+            <param name="streamWriterAction">Action, which will be called, when its required. that given IEnumerable&lt;IResult&gt; won't return, until loadtest is over.</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.StreamAggregator.Replay(System.Collections.Generic.IEnumerable{Viki.LoadRunner.Engine.Core.Collector.Interfaces.IResult},Viki.LoadRunner.Engine.Core.Collector.Interfaces.IAggregator[])">
+            <summary>
+            Replays raw result stream to provided aggregators.
+            You can use this to replay saved masterdata of previously executed loadtest to differently configured aggregators - allowing to see the results from different angles.
+            </summary>
+            <param name="results">LoadTest masterdata result stream</param>
+            <param name="targetAggregators">Result aggregators</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.Utils.MetricMultiplexer.#ctor(System.Collections.Generic.IEnumerable{Viki.LoadRunner.Engine.Aggregators.Interfaces.IMetric})">
+            <summary>
+            MetricMultiplexer acts as signle metric, but it wraps multiple provided metrics and makes them work as one
+            </summary>
+            <param name="metricTemplates"></param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Aggregators.Utils.ReplayResult`1.Offset(System.TimeSpan)">
+            <summary>
+            offsets IterationStarted and IterationFinished values by provided offset
+            </summary>
+            <param name="offset"></param>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Aggregators.Utils.OrderLearner">
+            <summary>
+            Tool for learning sort order of columns
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Core.Timer.Interfaces.ITimer">
+            <summary>
+            Timer interface used to pass read-only  timer to TestContext from LoadRunner engine
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Timer.Interfaces.ITimer.Value">
+            <summary>
+            Time passed since the start of the execution
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Timer.Interfaces.ITimer.IsRunning">
+            <summary>
+            Indicates whether timer is running
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Timer.Interfaces.ITimer.BeginTime">
+            <summary>
+            Real-world utc time of when load test was started
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Core.Collector.Interfaces.IAggregator">
+            <summary>
+            This interface defines handling of raw results received from ongoing test.
+            </summary>
+            <remarks>Aggregators are expected to contain their errors.
+            Thrown exceptions will break test execution.</remarks>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Collector.Interfaces.IAggregator.Begin">
+            <summary>
+            Signals aggregator, that new test execution is about to begin
+            Aggregator can reset stats here if needed.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Collector.Interfaces.IAggregator.TestContextResultReceived(Viki.LoadRunner.Engine.Core.Collector.Interfaces.IResult)">
+            <summary>
+            Results from all running threads will be poured into this one.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Collector.Interfaces.IAggregator.End">
+            <summary>
+            Signals aggregator, that test execion has ended and all meassurements have been delivered.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Core.Collector.Interfaces.IResult">
+            <summary>
+            IResult defines meassurement data structure
+            this can be seen as fundamental raw data.
+            Only the list of these IResult's are needed for meassured data aggregation.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Collector.Interfaces.IResult.CreatedThreads">
+            <summary>
+            Count of currently created worker threads at the end of this iteration
+            This value will be set at the [IterationFinished] moment.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Collector.Interfaces.IResult.IdleThreads">
+            <summary>
+            Count of currently idle threads at the end of this iteration
+            This value will be set at the [IterationFinished] moment.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Core.Collector.Interfaces.ResultExtensions">
+            <summary>
+            Public IResult extensions for easier integrations
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Collector.Interfaces.ResultExtensions.HasErrors(Viki.LoadRunner.Engine.Core.Collector.Interfaces.IResult)">
+            <summary>
+            Checks if any checkpoints have logged errors.
+            </summary>
+            <param name="result">reference result</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Collector.Interfaces.ResultExtensions.GetErrors(Viki.LoadRunner.Engine.Core.Collector.Interfaces.IResult)">
+            <summary>
+            Retrieves enumerable of errors in logged checkpoints.
+            </summary>
+            <param name="result">reference result</param>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Collector.IterationResult.Checkpoints">
+            <summary>
+            Checkpoints contain meassured durations
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIterationMetadata`1">
+            <summary>
+            Only iteration metadata containing values (no meassurements)
+            </summary>
+            <typeparam name="TUserData">type of UserData it will carry</typeparam>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIterationMetadata`1.UserData">
+            <summary>
+            Field mainly used for passing data from test iteration to custom aggregation.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.ICheckpoint">
+            <summary>
+            Checkpoint acts as meassurement point in test iteration
+            In successful iteration - ResultContext will contain 4 system checkpoints:
+            
+            Checkpoint.IterationSetupCheckpointName
+             * Created before calling ScenarioSetup()
+            Checkpoint.IterationStartCheckpointName
+             * Created before starting ExecuteScenario()
+             * Also at this time the timer will get started
+            Checkpoint.IterationEndCheckpointName
+             * Created after successful ExecuteScenario() execution
+             * It will contain total ExecuteScenario() execution time
+             * Failed iterations won't have this checkpoint.
+             * Timer will also stop here
+            Checkpoint.IterationTearDownCheckpointName
+             * Created before calling IterationTearDown()
+            
+            If there is unhandled exception in Setup, Execute or Teardown steps, it will get logged to the last created checkpoint.
+             * E.g. if test fails in the middle of ExecuteScenario() and there are no custom checkpoints defined. Error will get logged to [Checkpoint.IterationStartCheckpointName] checkpoint.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.ICheckpoint.Name">
+            <summary>
+            Name of checkpoint
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.ICheckpoint.TimePoint">
+            <summary>
+            Timepint of iteration when checkpoint was taken
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.ICheckpoint.Error">
+            <summary>
+            If executed code below checkpoint creation throws error.
+            Last previously created checkpoint will have this property set with thrown exception.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIterationId.GlobalIterationId">
+            <summary>
+            Unique Iteration ID withing all worker-threads (Starts from zero)
+            [Tip: If scenario fits - this reference ID can be used as index for test-data datasources]
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIterationId.ThreadIterationId">
+            <summary>
+            Unique Iteration ID withing current instance of ILoadTestScenario (Starts from zero)
+            [Tip: If scenario fits - this reference ID can be used as index for test-data datasources]
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIterationId.ThreadId">
+            <summary>
+            Unique worker-thread ID. It will stay the same throughout all ILoadTestScenario instance lifetime (Starts from zero)
+            [Tip: If scenario fits - this reference ID can be used as index for test-data datasources]
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIterationResult.Checkpoints">
+            <summary>
+            All checkpoints containing meassurements from whole iteration
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIterationResult.IterationStarted">
+            <summary>
+            It contains value when this iteration  started (relative to LoadTest start)
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIterationResult.IterationFinished">
+            <summary>
+            It contains value when this iteration ended (relative to LoadTest start)
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IScenarioHandler.Init">
+            <summary>
+            Initial setup
+            </summary>
+            <remarks>Called 1st (Initialize)</remarks>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IScenarioHandler.PrepareNext">
+             <summary>
+             Prepares context for next iteration
+             </summary>
+            <remarks>Called 2nd (Before each Execute)</remarks>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IScenarioHandler.Execute">
+             <summary>
+             Executes iteration
+             </summary>
+            <remarks>Called 3rd (After each Prepare)</remarks>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IScenarioHandler.Cleanup">
+            <summary>
+            Final cleanup
+            </summary>
+            <remarks>Called last (Cleanup)</remarks>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIteration.Checkpoint(System.String)">
+            <summary>
+            Marks time checkpoint for current scenario itaration
+            </summary>
+            <param name="checkpointName">Checkpoint name</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIteration.GetErrors">
+            <summary>
+            Gets list of unhandled errors in current iteration
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIteration.IterationElapsedTime">
+            <summary>
+            Current timer value of the currently going on iteration.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIteration.Timer">
+            <summary>
+            Root test timer.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IScenario">
+            <summary>
+            IScenario defines exection for a single thread.
+            After created, it will call ScenarioSetup() shortly
+            In successful iteration the calls will go like this:  IterationSetup() -> ExecuteScenario() -> IterationTearDown()
+            When thread is stopping after IterationTearDown(), ScenarioTearDown() will get called for graceful cleanup.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IScenario.ScenarioSetup(Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIteration)">
+            <summary>
+            ScenarioSetup is used to Initialize instance.
+            It is called first after the IScenario instance is created.
+            It must succeed, unhandled errors here will stop the thread abnormally and that will stop test execution.
+            </summary>
+            <param name="context">Fixed context associated with current scenario instance</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IScenario.IterationSetup(Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIteration)">
+            <summary>
+            Iteration setup is called each time before new iteration.
+            Purpose of this is to setup iteration-specific data before the meassurement timer is started.
+            </summary>
+            <param name="context">Fixed context associated with current scenario instance</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IScenario.ExecuteScenario(Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIteration)">
+            <summary>
+            ExecuteScenario is called after each successful IterationSetup() call
+            Execution time is meassured for this ExecuteScenario()
+            If IterationSetup() fails, ExecuteScenario() will be skipped
+            </summary>
+            <param name="context">Fixed context associated with current scenario instance</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IScenario.IterationTearDown(Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIteration)">
+            <summary>
+            IterationTearDown is called after each IterationSetup() -> ExecuteScenario() try.
+            It doesn't matter if they fail or succeed in any way.
+            IterationTearDown() will still get called to allow cleaning up the iteration.
+            </summary>
+            <param name="context">Fixed context associated with current scenario instance</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IScenario.ScenarioTearDown(Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IIteration)">
+            <summary>
+            ScenarioTearDown is called once this thread is marked for stop.
+            It must succeed, unhandled errors here will stop the thread abnormally and that will stop test execution.
+            </summary>
+            <param name="context">Fixed context associated with current scenario instance</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.ScenarioHandler.Init">
+            <summary>
+            Initial setup
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.ScenarioHandler.PrepareNext">
+            <summary>
+            Prepares context for next iteration
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.ScenarioHandler.Cleanup">
+            <summary>
+            Final cleanup
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.ScenarioHandler.Execute">
+            <summary>
+            Executes iteration
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Core.Scenario.Checkpoint">
+            <summary>
+            Checkpoint holds information of timestamp and error of of current iteration.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Checkpoint.Name">
+            <summary>
+            Name of the checkpoint (Checkpoint has const's of system checkpoints)
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Checkpoint.TimePoint">
+            <summary>
+            Timestamp of when this checkpoint was made durring iteration
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Core.Scenario.Checkpoint.Error">
+            <summary>
+            Error logged during the iteration or null.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Core.Scenario.Checkpoint.#ctor(System.String,System.TimeSpan)">
+            <summary>
+            Create checkpoint
+            </summary>
+            <param name="name">name of the checkpoint</param>
+            <param name="timePoint">Timestamp of the checkpoint</param>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Core.Worker.WorkerThread">
+            <summary>
+            Executes work provided with IWork 
+            Worker-Thread once StartThread()'ed, will initialize ASAP.
+            After initialization, it will start execution of iterations ASAP but not until ITimer is started.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator.AsyncAggregator">
+            <summary>
+            Since TestContextResultReceived calls are synchronous from benchmarking threads, this class unloads processing to its own seperate thread
+            It's already used in LoadRunnerEngine, so no need to reuse it again.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Strategies.Custom.Interfaces.ICustomStrategySettings">
+            <summary>
+            LoadRunner engine configuration root
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Custom.Interfaces.ICustomStrategySettings.Limits">
+            <summary>
+            Limits define when test execution will be scheduled to stop.
+            Keep in mind that limits can't enforce stopping precisely how defined. E.g. you can't make it stop at exactly at 2000 iterations, but it will be close to it. 
+            Limits precision correlates to LoadRunnerEngine.HeartBeatMs
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Custom.Interfaces.ICustomStrategySettings.Speeds">
+            <summary>
+            Speed strategies will limit executed iteration per second.
+            See this.SpeedPriority for prioritization.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Custom.Interfaces.ICustomStrategySettings.Threading">
+            <summary>
+            Threading strategy defines created and working parallel thread count throughout the LoadTest.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Custom.Interfaces.ICustomStrategySettings.FinishTimeout">
+            <summary>
+            Time threshold how long engine should give worker-threads to finish gracefully once they are scheduled to stop.
+            If threshold is reached, worker-threads will be killed with Thread.Abort() and collected iteration [IResult] value will be lost.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Custom.Interfaces.ICustomStrategySettings.ScenarioFactory">
+            <summary>
+            Factory for creating IScenario instances.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Custom.Interfaces.ICustomStrategySettings.InitialUserData">
+            <summary>
+            This object-value will be set to testContext.UserData for each created test thread.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Custom.Interfaces.ICustomStrategySettings.Aggregators">
+            <summary>
+            Aggregators to collect the data.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces.ILimitStrategy">
+            <summary>
+            Limit-Strategy controls when test execution should be stopped and how gracefully
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces.ILimitStrategy.StopTest(Viki.LoadRunner.Engine.Core.State.Interfaces.ITestState)">
+            <summary>
+            StopTest() gets called before each iteration gets enqueued.
+            once returned value is [true] engine will initiate graceful shutdown respecting [FinishTimeout] value.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit.IterationLimit">
+            <summary>
+            Stops test execution after executing defined count of iterations.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit.IterationLimit.#ctor(System.Int32)">
+            <summary>
+            Inits test execution stop after executing defined count of iterations.
+            </summary>
+            <param name="iterationsLimit">Count of iterations after which to schedule stop</param>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit.TimeLimit">
+            <summary>
+            Inits test execution stop once execution time reaches defined limit.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit.TimeLimit.#ctor(System.TimeSpan)">
+            <summary>
+            Inits test execution stop once execution time reaches defined limit.
+            </summary>
+            <param name="timeLimit">How long tests should be executed</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed.IncrementalLimitWorkingThreads.#ctor(System.Int32,System.TimeSpan,System.Int32)">
+            <summary>
+            Limits working thread count, and incrementally changes the limit in a way defined by parameters
+            </summary>
+            <param name="initialWorkingThreadCount">Initial amount of concurrent-working-threads</param>
+            <param name="increaseTimePeriod">After what duration concurrent-working-thread limit will be increased by [increaseBatchSize]</param>
+            <param name="increaseBatchSize">How much concurrent-working-thread count will be increased each time the [increaseTimePeriod] hits</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed.IncrementalSpeed.#ctor(System.Double,System.TimeSpan,System.Double)">
+            <summary>
+             Limits executed iterations per second and incrementally changes the limit in a way defined by parameters
+            </summary>
+            <param name="initialRequestsPerSec">initial iterations per second limit</param>
+            <param name="increasePeriod">Time period for increases</param>
+            <param name="increaseStep">delta change</param>
+        </member>
+        <member name="F:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed.LimitWorkingThreads.WorkingThreads">
+            <summary>
+            Count of worker-threads to allow executing iterations
+            </summary>
+        </member>
+        <member name="F:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed.LimitWorkingThreads.DelayInterval">
+            <summary>
+            How much time to wait before thread will try to enqueue for iteration again
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed.ListOfSpeed">
+            <summary>
+            Define manually a table of various speed values which will be used one by one every provided time period
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed.ListOfSpeed.#ctor(System.TimeSpan,System.Double[])">
+            <summary>
+            Define manually a table of various speed values which will be used one by one every provided time period
+            </summary>
+            <param name="period">time period after which value from the next index will be used</param>
+            <param name="iterationPerSecValues">Speed values for each time period.
+            Once all values are consumed, speed will stay at value from last index</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading.IncrementalThreadCount.#ctor(System.Int32,System.TimeSpan,System.Int32)">
+            <summary>
+            Increases Created and working thread count periodically within execution of LoadTest
+            </summary>
+            <param name="initialThreadcount">Initial Created thread count</param>
+            <param name="increaseTimePeriod">Delay before increasing created thread count by [increaseBatchSize]</param>
+            <param name="increaseBatchSize">Amount of threads to create after each [increaseTimePeriod] time is reached</param>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1">
+            <summary>
+            Wizzard class for configuring and building replay test strategy.
+            </summary>
+            <typeparam name="TData">Replay strategy SetData() type</typeparam>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.SetScenario``1">
+            <summary>
+            Set scenario to execute.
+            </summary>
+            <typeparam name="TScenario">Scenario class type</typeparam>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.SetScenario(System.Type)">
+            <summary>
+            Set scenario to execute.
+            </summary>
+            <param name="scenarioType">Scenario class type</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.SetScenario(Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces.IReplayScenarioFactory{`0})">
+            <summary>
+            Set own custom IReplayScenario&lt;TData&gt; factory
+            </summary>
+            <param name="scenarioFactory">IReplayScenario&lt;TData&gt; factory it self</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.SetThreadCount(System.Int32)">
+            <summary>
+            Set thread count to use.
+            Recommended minimum value depends on test case. 
+            But it always should be at least bigger than expected maximum concurrency. 
+            E.g. [Max expected concurrency] * 2.5
+            </summary>
+            <param name="threadCount">Count of threads to create</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.SetData(Viki.LoadRunner.Engine.Strategies.Replay.Data.DataItem[])">
+            <summary>
+            Set fixed list of timestamps and data to execute test.
+            It must be already sorted by timestamp or you will starve the threads.
+            </summary>
+            <param name="data">Fixed list of data</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.SetData(Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces.IReplayDataReader)">
+            <summary>
+            Set custom data source for ReplayScenario
+            </summary>
+            <param name="dataReader"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.SetFinishTimeout(System.TimeSpan)">
+            <summary>
+            Sets timeout time for stopping worker-threads.
+            </summary>
+            <param name="timeout">timeout duration</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.SetSpeed(System.Double)">
+            <summary>
+            Set speed multiplier on how fast to replay test data
+            </summary>
+            <param name="speedMultiplier">Speed multiplier, default is 1x </param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.SetUserData(System.Object)">
+            <summary>
+            Sets initial user data which will be passed to created thread contexts.
+            </summary>
+            <param name="userData">User-data object</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.SetAggregator(Viki.LoadRunner.Engine.Core.Collector.Interfaces.IAggregator[])">
+            <summary>
+            Sets aggregators to use when collecting data
+            </summary>
+            <param name="aggregagors">aggregators</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.AddAggregator(Viki.LoadRunner.Engine.Core.Collector.Interfaces.IAggregator[])">
+            <summary>
+            Adds aggregators to use when collecting data
+            </summary>
+            <param name="aggregagors">aggregators</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.Build">
+            <summary>
+            Initialize IStrategy from this configuration and then LoadRunnerEngine it self using it.
+            </summary>
+            <returns>LoadRunnerEngine instance with configured strategy</returns>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.ThreadCount">
+            <summary>
+            Fixed count of threads to use
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.DataReader">
+            <summary>
+            Datasource which defines timeline of replay execution
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.SpeedMultiplier">
+            <summary>
+            Speed multiplier at which Replay strategy will run
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.Aggregators">
+            <summary>
+            Aggregators to collect the data
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.ScenarioFactory">
+            <summary>
+            Class type of Scenario to be executed, type must implement IReplayScenario.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.InitialUserData">
+            <summary>
+            Initial user data which will be passed to created thread contexts. (context.UserData)
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.ReplayStrategyBuilder`1.FinishTimeout">
+            <summary>
+            Timeout for strategy threads to stop and cleanup.
+            This does not affect result IAggregator and execution will still hold indefinetely until its finished.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategySettingsExtensions.Build``1(Viki.LoadRunner.Engine.Strategies.Replay.Interfaces.IReplayStrategySettings{``0})">
+            <summary>
+            Initialize IStrategy from this configuration and then LoadRunnerEngine it self using it. 
+            </summary>
+            <typeparam name="TData">Replay strategy SetData() type</typeparam>
+            <param name="settings">Strategy settings</param>
+            <returns></returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.ReplayStrategySettingsExtensions.ShallowClone``1(Viki.LoadRunner.Engine.Strategies.Replay.Interfaces.IReplayStrategySettings{``0})">
+            <summary>
+            Duplicates configuration builder having own configuration lists. But registered configuration instances will still be the same.
+            </summary>
+            <typeparam name="TData">Replay strategy SetData() type</typeparam>
+            <param name="settings">Settings instance to clone</param>
+            <returns>New instance of ReplayStrategyBuilder</returns>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Interfaces.IReplayStrategySettings`1.ThreadCount">
+            <summary>
+            Fixed count of threads to use
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Interfaces.IReplayStrategySettings`1.DataReader">
+            <summary>
+            Datasource which defines timeline of replay execution
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Interfaces.IReplayStrategySettings`1.SpeedMultiplier">
+            <summary>
+            Speed multiplier at which Replay strategy will run
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Interfaces.IReplayStrategySettings`1.Aggregators">
+            <summary>
+            Aggregators to collect the data
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Interfaces.IReplayStrategySettings`1.ScenarioFactory">
+            <summary>
+            Factory for creating IReplayScenario instances.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Interfaces.IReplayStrategySettings`1.InitialUserData">
+            <summary>
+            Initial user data which will be passed to created thread contexts. (context.UserData)
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Interfaces.IReplayStrategySettings`1.FinishTimeout">
+            <summary>
+            Timeout for strategy threads to stop and cleanup.
+            This does not affect result IAggregator and execution will still hold indefinetely until its finished.
+            </summary>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Strategies.Replay.Interfaces.IReplayScenario`1">
+            <summary>
+            IReplayScenario is extended version IScenario
+            all logic is the same, except there is extra step before iteration to set the data given by IReplayDataReader
+            </summary>
+            <typeparam name="TData"></typeparam>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Replay.Interfaces.IReplayScenario`1.SetData(Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.Interfaces.IData{`0})">
+            <summary>
+            Set the data which which will be used for next iteration
+            Call chain will be like this SetData() -> IterationSetup() -> ExecuteScenario() -> IterationTearDown().
+            </summary>
+            <remarks>
+            * SetData() will get called as early as thread is free, and then it will wait for data.TargetTime to execute next three steps.
+            * if data.TargetTime is bigger than data.Timer.Value. It means that execution is falling behing timeline.
+            * It must not fail or it will stop the whole test execution.
+            </remarks>
+            <param name="data">Structure containing replay metadata related to next iteration</param>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces.IReplayDataReader">
+            <summary>
+            Data provider for ReplayStrategy.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces.IReplayDataReader.Begin">
+            <summary>
+            Gives the signal that execution is about to begin.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces.IReplayDataReader.Next">
+            <summary>
+            Get next item to be executed in its corresponding order
+            E.g. provided DataItem's must be already sorted by TimeStamp
+            </summary>
+            <remarks>Must be thread safe</remarks>
+            <returns></returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces.IReplayDataReader.End">
+            <summary>
+            Gives the signal that test is ending, no more Next() calls after this.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.DataContext`1.Set(`0,System.TimeSpan)">
+            <summary>
+            Set information about upcomming iteration.
+            Both passed values are only use for passing it to scenario it self
+            </summary>
+            <param name="value">data value</param>
+            <param name="target">target time</param>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.DataContext`1.Timer">
+            <summary>
+            Global test timer
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.DataContext`1.TargetTime">
+            <summary>
+            Adjusted target time based on provided speed multiplier
+            if (TargetTime &lt; Timer.Value) it means that scenario is falling behind the timeline
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.DataContext`1.Value">
+            <summary>
+            Test data asociated with this iteration
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.DataContext`1.Execute">
+            <summary>
+            Setting to false will skip this iteration Setup/Execute/Teardown steps
+            Iteration result will only contain (Checkpoint.Names.Skip [default value "ITERATION_SKIP"]) checkpoint
+            </summary>
+            <remarks>It can be used to handle execution timeline falling behind and skip few requests</remarks>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.Interfaces.IData`1">
+            <summary>
+            Contains information used for seting up upcomming replay scenario iteration.
+            </summary>
+            <typeparam name="TData">scenario data value type</typeparam>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.Interfaces.IData`1.Timer">
+            <summary>
+            Global test timer
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.Interfaces.IData`1.TargetTime">
+            <summary>
+            Adjusted target time based on provided speed multiplier
+            if (TargetTime &lt; Timer.Value) it means that scenario is falling behind the timeline
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.Interfaces.IData`1.Value">
+            <summary>
+            Test data asociated with this iteration
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.Interfaces.IData`1.Execute">
+            <summary>
+            Setting to false will skip this iteration Setup/Execute/Teardown steps
+            Iteration result will only contain (Checkpoint.Names.Skip [default value "ITERATION_SKIP"]) checkpoint
+            </summary>
+            <remarks>It can be used to handle execution timeline falling behind and skip few requests</remarks>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.Strategies.StrategyBuilder">
+            <summary>
+            Wizzard class for configuring and building custom test strategy.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.SetScenario``1">
+            <summary>
+            Set scenario to execute
+            </summary>
+            <typeparam name="TScenario">Scenario class type</typeparam>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.SetScenario(System.Type)">
+            <summary>
+            Set scenario to execute
+            </summary>
+            <param name="scenarioType">Scenario class type</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.SetScenario(Viki.LoadRunner.Engine.Core.Factory.Interfaces.IScenarioFactory)">
+            <summary>
+            Set own custom IScenario factory
+            </summary>
+            <param name="scenarioFactory">IScenario factory it self</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.SetLimit(Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces.ILimitStrategy[])">
+            <summary>
+            Sets rules which decide when test execution should finish.
+            </summary>
+            <param name="limits">list of strategies set</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.AddLimit(Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces.ILimitStrategy[])">
+            <summary>
+            Adds rules which decide when test execution should finish.
+            </summary>
+            <param name="limits">list of strategies add</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.SetSpeed(Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces.ISpeedStrategy[])">
+            <summary>
+            Sets test iterations per time limiting strategies.
+            </summary>
+            <param name="speed">list of strategies set</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.AddSpeed(Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces.ISpeedStrategy[])">
+            <summary>
+            Adds test iterations per time limiting strategies.
+            </summary>
+            <param name="speed">list of strategies add</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.SetThreading(Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces.IThreadingStrategy)">
+            <summary>
+            Sets created worker-thread count controlling strategy.
+            </summary>
+            <param name="threadingStrategy">threading strategy to use</param>
+            <returns></returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.SetFinishTimeout(System.TimeSpan)">
+            <summary>
+            Sets timeout time for stopping worker-threads.
+            </summary>
+            <param name="timeout">timeout duration</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.SetUserData(System.Object)">
+            <summary>
+            Sets initial user data which will be passed to created thread contexts.
+            </summary>
+            <param name="userData">User-data object</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.SetAggregator(Viki.LoadRunner.Engine.Core.Collector.Interfaces.IAggregator[])">
+            <summary>
+            Sets aggregators to use when collecting data
+            </summary>
+            <param name="aggregagors">aggregators</param>
+            <returns></returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.AddAggregator(Viki.LoadRunner.Engine.Core.Collector.Interfaces.IAggregator[])">
+            <summary>
+            Adds aggregators to use when collecting data
+            </summary>
+            <param name="aggregagors">aggregators</param>
+            <returns></returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.Build">
+            <summary>
+            Initialize IStrategy from this configuration and then LoadRunnerEngine it self using it.
+            </summary>
+            <returns>LoadRunnerEngine instance with configured strategy</returns>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.ScenarioFactory">
+            <summary>
+            Scenario to execute, type must implement ILoadTestScenario.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.Limits">
+            <summary>
+            Limits define when test execution will be scheduled to stop.
+            Defaults are unlimited so at least one limit must be defined.
+            Keep in mind that limits can't enforce stopping precisely how defined. E.g. you can't make it stop at exactly at 2000 iterations, but it will be close to it.
+            Limits precision strongly correlate to LoadRunnerEngine.HeartBeatMs
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.Speeds">
+            <summary>
+            SpeedStrategies defines limitations related to executed iteration-per-second capping.
+            (Default: Unlimited, aka MaxSpeed())
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.Threading">
+            <summary>
+            Threading strategy defines Created worker-thread count throughout the test.
+            (Default: 10 Threads)
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.FinishTimeout">
+            <summary>
+            Time threshold how long engine should give worker-threads to finish gracefully once they are scheduled to stop.
+            If threshold is reached, worker-threads will be killed with Thread.Abort() and collected iteration [IResult] value will be lost.
+            Default value: 3 minutes
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.InitialUserData">
+            <summary>
+            This object-value will be set to testContext.UserData for each created test thread.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.Strategies.StrategyBuilder.Aggregators">
+            <summary>
+            Aggregators to collect the data
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Strategies.CustomStrategySettingsExtensions.ShallowClone(Viki.LoadRunner.Engine.Strategies.Custom.Interfaces.ICustomStrategySettings)">
+            <summary>
+            Duplicates configuration builder having own configuration lists. But registered configuration instances will still be the same.
+            </summary>
+            <param name="settings">Settings instance to clone</param>
+        </member>
+        <member name="T:Viki.LoadRunner.Engine.LoadRunnerEngine">
+            <summary>
+            ILoadTestScenario executor
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.LoadRunnerEngine.Running">
+            <summary>
+            Is test running
+            </summary>
+        </member>
+        <member name="F:Viki.LoadRunner.Engine.LoadRunnerEngine.HeartBeatMs">
+            <summary>
+            Controls, how often root thread will ping strategies with HeartBeat()
+            Some strategies depend on this to readjust time sensitive limits, and increasing value too much can result some Thread/Speed precision decrease.
+            E.g. ListOfSpeed strategy will readjust speed only at this heart-beat.
+            </summary>
+        </member>
+        <member name="P:Viki.LoadRunner.Engine.LoadRunnerEngine.Exception">
+            <summary>
+            If execution failed due to unhandled exception, it will be set here.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.LoadRunnerEngine.#ctor(Viki.LoadRunner.Engine.Strategies.Interfaces.IStrategy)">
+            <summary>
+            Initializes new executor instance
+            </summary>
+            <param name="strategy">Test strategy</param>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.LoadRunnerEngine.Run">
+            <summary>
+            Start LoadTest execution on main thread. This blocks until test execution is finished by defined rules if any.
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.LoadRunnerEngine.RunAsync">
+            <summary>
+            Executes test in seperate thread (non-blocking call)
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.LoadRunnerEngine.CancelAsync(System.Boolean)">
+            <summary>
+            Cancels Async test execution.
+            Stops exeucion safely with time-out handling.
+            Aggregated data up to this point won't be lost. 
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.LoadRunnerEngine.Wait(System.TimeSpan,System.Boolean)">
+            <summary>
+            Waits, till execution is finished gracefully with graceful waiting for ExecutionStrategy and FinishTimeout.
+            </summary>
+            <param name="timeOut">timeout time period to wait before returning</param>
+            <param name="abortOnTimeOut">if execution won't finish within desired timeout, should it be terminated prematurely?</param>
+            <returns>true - if test execution is stopped (either before timeout or aborted due to [abortOnTimeOut])</returns>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.LoadRunnerEngine.Wait">
+            <summary>
+            Waits Infinitely until loadtest execution is finished
+            </summary>
+        </member>
+        <member name="M:Viki.LoadRunner.Engine.Validators.ScenarioValidatorExtensions.Validate(Viki.LoadRunner.Engine.Core.Scenario.Interfaces.IScenario,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Validates ILoadTest scenario correctness by executing single test iteration
+            from ScenarioSetup to ScenarioTearDown on the same thread.
+            Exceptions are not handled on purpose to ease problem identification while developing.
+            </summary>
+            <param name="scenario">ILoadTestScenario object</param>
+            <param name="threadId">TheardId to set in TestContext</param>
+            <param name="threadIterationId">ThreadIterationId to set in TestContext</param>
+            <param name="globalIterationId">GlobalIterationId to set in TestContext</param>
+            <returns>Raw result from single iteration</returns>
+        </member>
+    </members>
+</doc>
