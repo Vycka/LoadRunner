@@ -47,7 +47,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             return _iterationFinishedMax - _iterationStartedMin;
         }
 
-        string[] IMetric.ColumnNames { get; } = {"TPS"};
+        string[] IMetric.ColumnNames { get; } = { "TPS" };
 
         object[] IMetric.Values
         {

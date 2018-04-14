@@ -26,12 +26,15 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         void IMetric.Add(IResult result)
         {
-            foreach (ICheckpoint checkpoint in result.Checkpoints)
-            {
-                string key = "Errors: " + checkpoint.Name;
 
+            ICheckpoint[] checkpoints = result.Checkpoints;
+            for (int i = 0, j = checkpoints.Length; i < j; i++)
+            {
+                ICheckpoint checkpoint = checkpoints[i];
                 if (checkpoint.Error != null)
                 {
+                    string key = "Errors: " + checkpoint.Name;
+
                     _row[key]++;
 
                     if (_includeTotals)

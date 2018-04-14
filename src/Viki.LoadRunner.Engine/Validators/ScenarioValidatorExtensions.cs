@@ -67,7 +67,7 @@ namespace Viki.LoadRunner.Engine.Validators
 
         private static void IterationExecute(IScenario scenario, ExecutionTimer timer, IterationContext iteration)
         {
-            iteration.Checkpoint(Checkpoint.Names.IterationStart);
+            iteration.Checkpoint(Checkpoint.Names.Iteration);
 
             timer.Start();
             iteration.Start();
@@ -75,7 +75,7 @@ namespace Viki.LoadRunner.Engine.Validators
             iteration.Stop();
             timer.Stop();
 
-            iteration.Checkpoint(Checkpoint.Names.IterationEnd);
+            
         }
 
         private static void IterationTearDown(IScenario scenario, IterationContext iteration)

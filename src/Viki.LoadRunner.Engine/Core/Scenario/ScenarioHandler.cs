@@ -63,16 +63,12 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
 
             if (setupSuccess)
             {
-                _context.Checkpoint(Checkpoint.Names.IterationStart);
+                _context.Checkpoint(Checkpoint.Names.Iteration);
 
                 _context.Start();
-                bool iterationSuccess = ExecuteWithExceptionHandling(() => _scenario.ExecuteScenario(_context));
+                ExecuteWithExceptionHandling(() => _scenario.ExecuteScenario(_context));
                 _context.Stop();
 
-                if (iterationSuccess)
-                {
-                    _context.Checkpoint(Checkpoint.Names.IterationEnd);
-                }
             }
             else
             {

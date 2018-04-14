@@ -53,16 +53,16 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         {
             _percentileValueCacheValid = false;
 
-            ICheckpoint previousCheckpoint = BlankCheckpoint;
-            foreach (ICheckpoint checkpoint in result.Checkpoints)
+            ICheckpoint[] checkpoints = result.Checkpoints;
+            for (int i = 0, j = checkpoints.Length - 1; i < j; i++)
             {
-                if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
+                ICheckpoint checkpoint = checkpoints[i];
+                if (checkpoint.Error == null && _ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
-                    TimeSpan momentDiff = TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
+                    TimeSpan momentDiff = checkpoint.TimePoint - checkpoints[i + 1].TimePoint;
 
-                    _row[checkpoint.Name].Add(momentDiff.TotalMilliseconds); 
+                    _row[checkpoint.Name].Add(momentDiff.TotalMilliseconds);
                 }
-                previousCheckpoint = checkpoint;
             }
         }
 

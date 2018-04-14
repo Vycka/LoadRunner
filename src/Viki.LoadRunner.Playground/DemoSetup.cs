@@ -24,15 +24,17 @@ namespace Viki.LoadRunner.Playground
             string[] ignoredCheckpoints =
             {
                 Checkpoint.Names.Setup,
-                Checkpoint.Names.IterationStart,
                 Checkpoint.Names.TearDown
             };
 
             HistogramAggregator histogramAggregator = new HistogramAggregator()
                 .Add(new TimeDimension(TimeSpan.FromSeconds(2)))
-                .Add(new FuncMetric<TimeSpan>("TMin", TimeSpan.MaxValue, (span, result) => span > result.IterationStarted ? result.IterationStarted : span))
-                .Add(new FuncMetric<TimeSpan>("TMax", TimeSpan.MinValue, (span, result) => span < result.IterationFinished ? result.IterationFinished : span))
-                .Add(new FuncMetric<int>("Working Threads",0, (i, result) => result.CreatedThreads + result.IdleThreads))
+                .Add(new FuncMetric<TimeSpan>("TMin", TimeSpan.MaxValue,
+                    (span, result) => span > result.IterationStarted ? result.IterationStarted : span))
+                .Add(new FuncMetric<TimeSpan>("TMax", TimeSpan.MinValue,
+                    (span, result) => span < result.IterationFinished ? result.IterationFinished : span))
+                .Add(new FuncMetric<int>("Working Threads", 0,
+                    (i, result) => result.CreatedThreads + result.IdleThreads))
                 //.Add(new MinDurationMetric(ignoredCheckpoints))
                 .Add(new AvgDurationMetric(ignoredCheckpoints))
                 .Add(new MaxDurationMetric(ignoredCheckpoints))
@@ -40,18 +42,15 @@ namespace Viki.LoadRunner.Playground
                 .Add(new CountMetric(ignoredCheckpoints))
                 .Add(new TransactionsPerSecMetric())
                 .Add(new ErrorCountMetric())
-                .Alias($"Min: {Checkpoint.Names.IterationEnd}", "Min (ms)")
-                .Alias($"Avg: {Checkpoint.Names.IterationEnd}", "Avg (ms)")
-                .Alias($"Max: {Checkpoint.Names.IterationEnd}", "Max (ms)")
-                .Alias($"50%: {Checkpoint.Names.IterationEnd}", "50% (ms)")
-                .Alias($"80%: {Checkpoint.Names.IterationEnd}", "80% (ms)")
-                .Alias($"90%: {Checkpoint.Names.IterationEnd}", "90% (ms)")
-                .Alias($"95%: {Checkpoint.Names.IterationEnd}", "95% (ms)")
-                .Alias($"99.99%: {Checkpoint.Names.IterationEnd}", "99.99% (ms)")
-                .Alias($"Count: {Checkpoint.Names.IterationEnd}", "Success: Count")
-                .Alias($"Errors: {Checkpoint.Names.Setup}", "Errors: Setup")
-                .Alias($"Errors: {Checkpoint.Names.IterationStart}", "Errors: Iteration")
-                .Alias($"Errors: {Checkpoint.Names.TearDown}", "Errors: Teardown");
+                .Alias($"Min: {Checkpoint.Names.Iteration}", "Min (ms)")
+                .Alias($"Avg: {Checkpoint.Names.Iteration}", "Avg (ms)")
+                .Alias($"Max: {Checkpoint.Names.Iteration}", "Max (ms)")
+                .Alias($"50%: {Checkpoint.Names.Iteration}", "50% (ms)")
+                .Alias($"80%: {Checkpoint.Names.Iteration}", "80% (ms)")
+                .Alias($"90%: {Checkpoint.Names.Iteration}", "90% (ms)")
+                .Alias($"95%: {Checkpoint.Names.Iteration}", "95% (ms)")
+                .Alias($"99.99%: {Checkpoint.Names.Iteration}", "99.99% (ms)")
+                .Alias($"Count: {Checkpoint.Names.Iteration}", "Success: Count");
 
 
             StrategyBuilder strategy = new StrategyBuilder()

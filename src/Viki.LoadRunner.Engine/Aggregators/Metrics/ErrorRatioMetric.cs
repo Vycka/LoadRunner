@@ -38,12 +38,18 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         void IMetric.Add(IResult result)
         {
-            foreach (ICheckpoint checkpoint in result.Checkpoints)
-            {
-                if (_ignoredCheckpoints.Contains(checkpoint.Name))
-                    continue;
 
-                _counts[checkpoint.Name].Increase(checkpoint.Error != null);
+            ICheckpoint[] checkpoints = result.Checkpoints;
+            for (int i = 0, j = checkpoints.Length; i < j; i++)
+            {
+                ICheckpoint checkpoint = checkpoints[i];
+                if (checkpoint.Error != null && _ignoredCheckpoints.All(name => name != checkpoint.Name))
+                {
+                    if (_ignoredCheckpoints.Contains(checkpoint.Name))
+                        continue;
+
+                    _counts[checkpoint.Name].Increase(checkpoint.Error != null);
+                }
             }
         }
 

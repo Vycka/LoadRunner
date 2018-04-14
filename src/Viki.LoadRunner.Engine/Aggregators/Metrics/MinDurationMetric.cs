@@ -11,15 +11,13 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
     {
         private readonly string[] _ignoredCheckpoints;
 
-        private static readonly Checkpoint BlankCheckpoint = new Checkpoint("", TimeSpan.Zero);
-
         public MinDurationMetric(params string[] ignoredCheckpoints)
             : base(() => long.MaxValue)
         {
             if (ignoredCheckpoints == null)
                 throw new ArgumentNullException(nameof(ignoredCheckpoints));
 
-            _ignoredCheckpoints = ignoredCheckpoints;
+            _ignoredCheckpoints = ignoredCheckpoints.Union(new[] { Checkpoint.Names.Setup, Checkpoint.Names.Skip, Checkpoint.Names.TearDown }).ToArray();
         }
 
         protected override IMetric CreateNewMetric()
@@ -29,21 +27,19 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         protected override void AddResult(IResult result)
         {
-            ICheckpoint previousCheckpoint = BlankCheckpoint;
-            foreach (ICheckpoint checkpoint in result.Checkpoints)
+            ICheckpoint[] checkpoints = result.Checkpoints;
+            for (int i = 0, j = checkpoints.Length - 1; i < j; i++)
             {
-                if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
+                ICheckpoint checkpoint = checkpoints[i];
+                if (checkpoint.Error == null && _ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
                     string key = "Min: " + checkpoint.Name;
-                    TimeSpan momentDiff =
-                        TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
+                    TimeSpan momentDiff = checkpoint.TimePoint - checkpoints[i + 1].TimePoint;
 
                     if (_row[key] > momentDiff.TotalMilliseconds)
                         _row[key] = Convert.ToInt64(momentDiff.TotalMilliseconds);
                 }
-                previousCheckpoint = checkpoint;
             }
-            
         }
     }
 }

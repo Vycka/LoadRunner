@@ -14,11 +14,15 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
 
         public static class Names
         {
-            public static string Setup = "ITERATION_SETUP";
-            public static string Skip = "ITERATION_SKIP";
-            public static string IterationStart = "ITERATION_START";
-            public static string IterationEnd = "ITERATION_END"; 
-            public static string TearDown = "ITERATION_TEARDOWN";
+            //public static string Setup = "Setup";
+            public static string Skip = "Skip";
+            //public static string IterationStart = "ITERATION_START";
+            //public static string IterationEnd = "ITERATION_END"; 
+            //public static string TearDown = "ITERATION_TEARDOWN";
+
+            public static string Setup = "Setup";
+            public static string Iteration = "Iteration";
+            public static string TearDown = "TearDown";
         }
 
         #endregion
