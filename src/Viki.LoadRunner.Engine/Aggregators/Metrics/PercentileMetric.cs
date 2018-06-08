@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
+using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
@@ -38,10 +39,10 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                 throw new ArgumentNullException(nameof(ignoredCheckpoints));
 
             _percentiles = percentiles;
-            _ignoredCheckpoints = ignoredCheckpoints;
+            _ignoredCheckpoints = ignoredCheckpoints.Union(Checkpoint.NotMeassuredCheckpoints).ToArray();
         }
 
-        IMetric IMetric.CreateNew()
+        IMetric<IResult> IMetric<IResult>.CreateNew()
         {
             return new PercentileMetric(_percentiles, _ignoredCheckpoints)
             {
@@ -49,7 +50,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             };
         }
 
-        void IMetric.Add(IResult result)
+        void IMetric<IResult>.Add(IResult result)
         {
             _percentileValueCacheValid = false;
 
@@ -59,7 +60,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                 ICheckpoint checkpoint = checkpoints[i];
                 if (checkpoint.Error == null && _ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
-                    TimeSpan momentDiff = checkpoint.TimePoint - checkpoints[i + 1].TimePoint;
+                    TimeSpan momentDiff = checkpoint.Diff(checkpoints[i + 1]);
 
                     _row[checkpoint.Name].Add(momentDiff.TotalMilliseconds);
                 }

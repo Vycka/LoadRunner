@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
+using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
@@ -20,10 +21,10 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             if (ignoredCheckpoints == null)
                 throw new ArgumentNullException(nameof(ignoredCheckpoints));
 
-            _ignoredCheckpoints = ignoredCheckpoints.Union(new[] { Checkpoint.Names.Setup, Checkpoint.Names.Skip, Checkpoint.Names.TearDown }).ToArray();
+            _ignoredCheckpoints = ignoredCheckpoints.Union(Checkpoint.NotMeassuredCheckpoints).ToArray();
         }
 
-        public IMetric CreateNew()
+        public IMetric<IResult> CreateNew()
         {
             return new MaxDurationMetric(_ignoredCheckpoints);
         }
@@ -37,7 +38,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                 if (checkpoint.Error == null && _ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
                     string key = "Max: " + checkpoint.Name;
-                    TimeSpan momentDiff = checkpoint.TimePoint - checkpoints[i + 1].TimePoint;
+                    TimeSpan momentDiff = checkpoint.Diff(checkpoints[i + 1]);
 
                     if (_row[key] < momentDiff.TotalMilliseconds)
                         _row[key] = Convert.ToInt64(momentDiff.TotalMilliseconds);

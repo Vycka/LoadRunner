@@ -16,7 +16,7 @@
   - [DemoResults.xlsx](/demo/DemoResults.xlsx) - import results to excel and do some charting :)
   
  * Alternative Bare-Minimum example
-   - [MinimumDemo.cs](/demo/Minimum/MinimumDemo.cs)
+   - [MinimalDemo.cs](/demo/Minimum/MinimalDemo.cs)
    
  * Other nifty features   
    - [RawDataAggregation.cs](/demo/Features/RawDataAggregation.cs) - Advanced RnD feature to checkout.

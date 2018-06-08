@@ -74,7 +74,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _writerTask.Start();
         }
 
-        void IAggregator.TestContextResultReceived(IResult result)
+        void IAggregator.Aggregate(IResult result)
         {
             if (_writerTask?.Exception != null)
                 throw _writerTask.Exception;
@@ -105,7 +105,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
             foreach (IResult result in results)
             {
-                targetAggregators.ForEach(aggregator => aggregator.TestContextResultReceived(result));
+                targetAggregators.ForEach(aggregator => aggregator.Aggregate(result));
             }
 
             targetAggregators.ForEach(aggregator => aggregator.End());

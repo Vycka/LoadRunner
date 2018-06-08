@@ -76,9 +76,10 @@ namespace Viki.LoadRunner.Engine
 
         /// <summary>
         /// Cancels Async test execution.
-        /// Stops exeucion safely with time-out handling.
+        /// Stops exeucion gracefully with time-out handling.
         /// Aggregated data up to this point won't be lost. 
         /// </summary>
+        /// <remarks>Use [Running] property to check when it is finished</remarks>
         public void CancelAsync(bool blocking = false)
         {
             Running = false;

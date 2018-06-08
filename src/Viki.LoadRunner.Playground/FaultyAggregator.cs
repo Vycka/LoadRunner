@@ -19,7 +19,7 @@ namespace Viki.LoadRunner.Playground
                 throw new System.NotImplementedException();
         }
 
-        public void TestContextResultReceived(IResult result)
+        public void Aggregate(IResult result)
         {
             if (_receive)
                 throw new System.NotImplementedException();

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
+using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
@@ -19,12 +20,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                 _row.Touch("Errors: Totals");
         }
 
-        IMetric IMetric.CreateNew()
+        IMetric<IResult> IMetric<IResult>.CreateNew()
         {
             return new ErrorCountMetric(_includeTotals);
         }
 
-        void IMetric.Add(IResult result)
+        void IMetric<IResult>.Add(IResult result)
         {
 
             ICheckpoint[] checkpoints = result.Checkpoints;
@@ -43,7 +44,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             }
         }
 
-        string[] IMetric.ColumnNames => _row.Keys.ToArray();
-        object[] IMetric.Values => _row.Values.Select(v => (object)v).ToArray();
+        string[] IMetric<IResult>.ColumnNames => _row.Keys.ToArray();
+        object[] IMetric<IResult>.Values => _row.Values.Select(v => (object)v).ToArray();
     }
 }

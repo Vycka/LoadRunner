@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
 
-namespace Viki.LoadRunner.Tools.Analytics
+namespace Viki.LoadRunner.Engine.Analytics
 {
-    public class DimensionsGroup<T>
+    public class DimensionsHandler<T>
     {
         private readonly IDimension<T>[] _dimensions;
 
-        public DimensionsGroup(IEnumerable<IDimension<T>> dimensions)
+        public DimensionsHandler(IEnumerable<IDimension<T>> dimensions)
         {
             _dimensions = dimensions.ToArray();
         }

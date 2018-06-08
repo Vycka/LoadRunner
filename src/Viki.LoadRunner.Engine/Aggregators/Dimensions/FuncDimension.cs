@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
@@ -26,7 +27,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
 
         public string DimensionName { get; }
 
-        string IDimension.GetKey(IResult result)
+        string IDimension<IResult>.GetKey(IResult result)
         {
             return _dimensionValueSelector(result);
         }

@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Viki.LoadRunner.Tools.Analytics
+namespace Viki.LoadRunner.Engine.Analytics
 {
     public class DimensionKey
 

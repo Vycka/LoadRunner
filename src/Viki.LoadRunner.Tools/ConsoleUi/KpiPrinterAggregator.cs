@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Analytics.Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Tools.ConsoleUi
 {
-    public class KpiOutput : IAggregator
+    public class KpiPrinterAggregator : IAggregator
     {
         private readonly TimeSpan _interval;
        
-        private IMetric _metrics;
+        private IMetric<IResult> _metrics;
 
         public Action<IEnumerable<KeyValuePair<string, object>>> OutputAction = (r) => Console.Out.WriteLine(
                 String.Join(
@@ -23,9 +24,9 @@ namespace Viki.LoadRunner.Tools.ConsoleUi
 
         private Timer _timer;
 
-        public KpiOutput(TimeSpan interval, params IMetric[] metrics)
+        public KpiPrinterAggregator(TimeSpan interval, params IMetric[] metrics)
         {
-            _metrics = new MetricMultiplexer(metrics);
+            _metrics = new MetricsHandler<IResult>(metrics);
             _interval = interval;
         }
 
@@ -41,7 +42,7 @@ namespace Viki.LoadRunner.Tools.ConsoleUi
             _timer.Start();
         }
 
-        public void TestContextResultReceived(IResult result)
+        public void Aggregate(IResult result)
         {
             _metrics.Add(result);
         }
@@ -55,14 +56,14 @@ namespace Viki.LoadRunner.Tools.ConsoleUi
 
         private void Output()
         {
-            IMetric current = _metrics;
+            IMetric<IResult> current = _metrics;
             _metrics = _metrics.CreateNew();
 
             IEnumerable<KeyValuePair<string, object>> kpiResults = BuildKpi(current);
             OutputAction(kpiResults);
         }
 
-        private static IEnumerable<KeyValuePair<string, object>> BuildKpi(IMetric metric)
+        private static IEnumerable<KeyValuePair<string, object>> BuildKpi(IMetric<IResult> metric)
         {
             string[] names = metric.ColumnNames;
             object[] values = metric.Values;

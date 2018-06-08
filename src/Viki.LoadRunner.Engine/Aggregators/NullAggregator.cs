@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
         {
         }
 
-        public void TestContextResultReceived(IResult result)
+        public void Aggregate(IResult result)
         {
         }
 

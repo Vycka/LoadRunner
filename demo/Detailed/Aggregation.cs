@@ -23,13 +23,16 @@ namespace LoadRunner.Demo.Detailed
             // which you might want to adjust for bigger chunks or remove it to get totals [no dimensions == no grouping by].
             //
             // HistogramAggregator is a modular Dimension/Metric style aggregator tool, which can be expanded by implementing IMetric or IDimension
+            //  * Metrics are aggregation functions like COUNT, SUM, etc..
             //
             // Dimensions are like row keys (Adding multiple dimensions would multiply result row count)
+            // * In SQL it would be like GROUP BY function
             // Available IDimension's:
             //   TimeDimension(TimeSpan interval, string dimensionName = "Time (s)")
             //   FuncDimension(string dimensionName, Func<IResult,string> dimensionValueSelector)
             //
             // Metrics are like values, which will be meassured in test execution
+            // In SQL it would be like aggregation function, like SUM, COUNT, etc.
             // Available IMetric's:
             //   AvgDurationMetric(params string[] ignoredCheckpoints)
             //   BreakByMetric(IDimension subDimension, params IMetric[] actualMetrics)

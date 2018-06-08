@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
+using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
@@ -18,15 +19,15 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             if (ignoredCheckpoints == null)
                 throw new ArgumentNullException(nameof(ignoredCheckpoints));
 
-            _ignoredCheckpoints = ignoredCheckpoints.Union(new []{ Checkpoint.Names.Setup, Checkpoint.Names.Skip, Checkpoint.Names.TearDown }).ToArray();
+            _ignoredCheckpoints = ignoredCheckpoints.Union(Checkpoint.NotMeassuredCheckpoints).ToArray();
         }
 
-        IMetric IMetric.CreateNew()
+        IMetric<IResult> IMetric<IResult>.CreateNew()
         {
             return new AvgDurationMetric(_ignoredCheckpoints);
         }
 
-        void IMetric.Add(IResult result)
+        void IMetric<IResult>.Add(IResult result)
         {
             ICheckpoint[] checkpoints = result.Checkpoints;
             for (int i = 0, j = checkpoints.Length - 1; i < j; i++)
@@ -35,15 +36,15 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                 if (checkpoint.Error == null && _ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
                     string key = "Avg: " + checkpoint.Name;
-                    TimeSpan momentDiff = checkpoint.TimePoint - checkpoints[i + 1].TimePoint;
+                    TimeSpan momentDiff = checkpoint.Diff(checkpoints[i + 1]);
 
                     _row[key].AddSample(momentDiff);
                 }
             }
         }
 
-        string[] IMetric.ColumnNames => _row.Keys.ToArray();
-        object[] IMetric.Values => _row.Values.Select(v => (object)Convert.ToInt64(v.GetAverage().TotalMilliseconds)).ToArray();
+        string[] IMetric<IResult>.ColumnNames => _row.Keys.ToArray();
+        object[] IMetric<IResult>.Values => _row.Values.Select(v => (object)Convert.ToInt64(v.GetAverage().TotalMilliseconds)).ToArray();
     }
 
     public class AverageTimeCalculator

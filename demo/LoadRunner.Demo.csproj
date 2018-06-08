@@ -55,7 +55,7 @@
   <ItemGroup>
     <Compile Include="Detailed\Aggregation.cs" />
     <Compile Include="Features\ScenarioFactory.cs" />
-    <Compile Include="Minimum\MinimumDemo.cs" />
+    <Compile Include="Minimum\MinimalDemo.cs" />
     <Compile Include="Detailed\Strategy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

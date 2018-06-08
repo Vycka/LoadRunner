@@ -36,7 +36,7 @@ namespace Viki.LoadRunner.Tools.Aggregators
         {
             string fileName = _outFileNameFunc();
 
-            results.SerializeSequenceToJson(fileName);
+            results.SerializeToJson(fileName);
         }
 
         #endregion

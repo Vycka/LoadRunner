@@ -1,4 +1,4 @@
-﻿namespace Viki.LoadRunner.Tools.Analytics
+﻿namespace Viki.LoadRunner.Engine.Analytics.Interfaces
 {
     public interface IMetric<in T>
     {
@@ -9,10 +9,10 @@
         IMetric<T> CreateNew();
 
         /// <summary>
-        /// New iteration result received event
+        /// Aggregate row of raw data
         /// </summary>
-        /// <param name="result">Iteration result</param>
-        void Add(T result);
+        /// <param name="data">row of raw data</param>
+        void Add(T data);
 
         /// <summary>
         /// Names of columns produced by this metric (order must match [Values] order)

@@ -50,13 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aggregators\JsonStreamAggregator.cs" />
-    <Compile Include="Analytics\DimensionKey.cs" />
-    <Compile Include="Analytics\DimensionsGroup.cs" />
-    <Compile Include="Analytics\Histogram.cs" />
-    <Compile Include="Analytics\IDimension.cs" />
-    <Compile Include="Analytics\IMetric.cs" />
-    <Compile Include="Analytics\MetricsHandler.cs" />
-    <Compile Include="ConsoleUi\KpiOutput.cs" />
+    <Compile Include="ConsoleUi\KpiPrinterAggregator.cs" />
     <Compile Include="Extensions\LoadRunnerUiBuilderExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Strategy\GenericWork.cs" />

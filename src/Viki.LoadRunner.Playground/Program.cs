@@ -3,9 +3,8 @@ using Newtonsoft.Json;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
+using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
-using Viki.LoadRunner.Engine.Validators;
-using Viki.LoadRunner.Playground.Replay;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -14,9 +13,9 @@ namespace Viki.LoadRunner.Playground
 
         static void Main()
         {
-            ReplayDemo.Run();
+            //ReplayDemo.Run();
 
-            new BlankFromBase().Validate();
+            //new BlankFromBase().Validate();
 
             DemoSetup.Run();
 

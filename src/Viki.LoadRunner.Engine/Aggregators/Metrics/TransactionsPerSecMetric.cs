@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
@@ -20,12 +21,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             _iterationFinishedMax = TimeSpan.MinValue;
         }
 
-        IMetric IMetric.CreateNew()
+        IMetric<IResult> IMetric<IResult>.CreateNew()
         {
             return new TransactionsPerSecMetric();
         }
 
-        void IMetric.Add(IResult result)
+        void IMetric<IResult>.Add(IResult result)
         {
             if (result.IterationStarted < _iterationStartedMin)
                 _iterationStartedMin = result.IterationStarted;
@@ -47,9 +48,9 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             return _iterationFinishedMax - _iterationStartedMin;
         }
 
-        string[] IMetric.ColumnNames { get; } = { "TPS" };
+        string[] IMetric<IResult>.ColumnNames { get; } = { "TPS" };
 
-        object[] IMetric.Values
+        object[] IMetric<IResult>.Values
         {
             get
             {

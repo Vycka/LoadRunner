@@ -8,7 +8,7 @@ namespace LoadRunner.Demo
     {
         // Main() contains two examples
         // #1 is shorter version to see all moving parts in single place
-        // #2 details more explanation and more advanced features
+        // #2 contains more detailed information and advanced features
     
         static void Main(string[] args)
         {
@@ -24,11 +24,11 @@ namespace LoadRunner.Demo
             // Other then that, just follow BareMinimum/DetailedDemo for setup example
 
             // #1
-            // BareMinimum.Run();
+            MinimalDemo.Run();
 
 
             // #2
-            DetailedDemo.Run();
+            // DetailedDemo.Run();
 
 
             // Optional but useful advanced feature worth checking out before running real test.

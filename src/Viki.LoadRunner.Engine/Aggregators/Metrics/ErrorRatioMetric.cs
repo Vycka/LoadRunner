@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
+using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
@@ -31,12 +32,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             _counts = new FlexiRow<string, ErrorRatio>(() => new ErrorRatio());
         }
 
-        IMetric IMetric.CreateNew()
+        IMetric<IResult> IMetric<IResult>.CreateNew()
         {
             return new ErrorRatioMetric(_ignoredCheckpoints.ToArray());
         }
 
-        void IMetric.Add(IResult result)
+        void IMetric<IResult>.Add(IResult result)
         {
 
             ICheckpoint[] checkpoints = result.Checkpoints;
@@ -53,12 +54,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             }
         }
 
-        string[] IMetric.ColumnNames => _counts
+        string[] IMetric<IResult>.ColumnNames => _counts
             .Where(kv => kv.Value.HasErrors)
             .Select(kv => String.Concat("ErrRatio: ", kv.Key))
             .ToArray();
 
-        object[] IMetric.Values => _counts
+        object[] IMetric<IResult>.Values => _counts
             .Where(kv => kv.Value.HasErrors)
             .Select(kv => kv.Value.Ratio)
             .Cast<object>()

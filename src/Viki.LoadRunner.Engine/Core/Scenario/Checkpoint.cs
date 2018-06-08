@@ -25,6 +25,11 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
             public static string TearDown = "TearDown";
         }
 
+        /// <summary>
+        /// List of system checkpoints appearing not in ExecuteIteration() section.
+        /// </summary>
+        public static string[] NotMeassuredCheckpoints = { Names.Setup, Names.Skip, Names.TearDown };
+
         #endregion
 
         #region Properties

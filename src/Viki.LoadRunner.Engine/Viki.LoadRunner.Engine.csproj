@@ -47,6 +47,14 @@
     <Compile Include="Aggregators\Interfaces\IDimension.cs" />
     <Compile Include="Aggregators\HistogramAggregator.cs" />
     <Compile Include="Aggregators\NullAggregator.cs" />
+    <Compile Include="Analytics\DimensionKey.cs" />
+    <Compile Include="Analytics\DimensionsHandler.cs" />
+    <Compile Include="Analytics\HistogramBase.cs" />
+    <Compile Include="Analytics\HistogramBuilderExtensions.cs" />
+    <Compile Include="Analytics\Interfaces\IDimension.cs" />
+    <Compile Include="Analytics\Interfaces\IHistogramBuilder.cs" />
+    <Compile Include="Analytics\Interfaces\IMetric.cs" />
+    <Compile Include="Analytics\MetricsHandler.cs" />
     <Compile Include="Core\Factory\DataCollectorFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IFactory.cs" />
     <Compile Include="Core\Factory\ReflectionFactory.cs" />
@@ -60,6 +68,7 @@
     <Compile Include="Core\Factory\SchedulerFactory.cs" />
     <Compile Include="Core\Factory\ThreadFactory.cs" />
     <Compile Include="Core\Pool\WorkerThreadStats.cs" />
+    <Compile Include="Core\Scenario\CheckpointExtensions.cs" />
     <Compile Include="Core\Scenario\Interfaces\IIterationResult.cs" />
     <Compile Include="Core\Scheduler\Interfaces\IWait.cs" />
     <Compile Include="Core\Scheduler\SemiWait.cs" />
@@ -82,10 +91,7 @@
     <Compile Include="Aggregators\Result\HistogramResult.cs" />
     <Compile Include="Aggregators\StreamAggregator.cs" />
     <Compile Include="Core\Collector\Interfaces\IAggregator.cs" />
-    <Compile Include="Aggregators\Utils\DimensionsKeyBuilder.cs" />
-    <Compile Include="Aggregators\Utils\DimensionKey.cs" />
-    <Compile Include="Aggregators\Utils\FlexiRow.cs" />
-    <Compile Include="Aggregators\Utils\MetricMultiplexer.cs" />
+    <Compile Include="Analytics\FlexiRow.cs" />
     <Compile Include="Aggregators\Utils\ReplayResult.cs" />
     <Compile Include="Aggregators\Utils\UnixDateTimeExtensions.cs" />
     <Compile Include="Aggregators\Utils\OrderLearner.cs" />

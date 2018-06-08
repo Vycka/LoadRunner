@@ -16,7 +16,7 @@
         /// <summary>
         /// Results from all running threads will be poured into this one.
         /// </summary>
-        void TestContextResultReceived(IResult result);
+        void Aggregate(IResult result);
 
         /// <summary>
         /// Signals aggregator, that test execion has ended and all meassurements have been delivered.

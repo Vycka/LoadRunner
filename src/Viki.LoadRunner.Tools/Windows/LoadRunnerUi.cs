@@ -9,7 +9,8 @@ using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Analytics.Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Core.Collector;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
@@ -25,8 +26,8 @@ namespace Viki.LoadRunner.Tools.Windows
     {
         public string TextTemplate = "LR-UI {0}";
 
-        private readonly MetricMultiplexer _metricMultiplexerTemplate;
-        private IMetric _metricMultiplexer;
+        private readonly MetricsHandler<IResult> _metricMultiplexerTemplate;
+        private IMetric<IResult> _metricMultiplexer;
 
         private readonly ExecutionTimer _timer;
         private readonly ConcurrentQueue<IResult> _resultsQueue = new ConcurrentQueue<IResult>();
@@ -38,7 +39,7 @@ namespace Viki.LoadRunner.Tools.Windows
         {
             _timer = new ExecutionTimer();
 
-            _metricMultiplexerTemplate = new MetricMultiplexer(new IMetric[]
+            _metricMultiplexerTemplate = new MetricsHandler<IResult>(new IMetric[]
             {
                 new FuncMultiMetric<int>((row, result) => 
                     result.Checkpoints.ForEach(c => row[c.Name] = (int)c.TimePoint.TotalMilliseconds),
@@ -79,11 +80,11 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void ResetStats()
         {
-            _metricMultiplexer = ((IMetric)_metricMultiplexerTemplate).CreateNew();
+            _metricMultiplexer = ((IMetric<IResult>)_metricMultiplexerTemplate).CreateNew();
         }
 
 
-        void IAggregator.TestContextResultReceived(IResult result)
+        void IAggregator.Aggregate(IResult result)
         {
             _resultsQueue.Enqueue(result);
         }

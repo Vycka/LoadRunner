@@ -1,5 +1,5 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
@@ -14,7 +14,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             _metricFunc = metricFunc;
         }
 
-        protected override IMetric CreateNewMetric()
+        protected override IMetric<IResult> CreateNewMetric()
         {
             return new FuncMetric<TValue>(_keyName, _initialValue, _metricFunc);
         }

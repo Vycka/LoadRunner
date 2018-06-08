@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Viki.LoadRunner.Engine.Aggregators.Utils
+namespace Viki.LoadRunner.Engine.Analytics
 {
     public class FlexiRow<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {

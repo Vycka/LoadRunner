@@ -59,7 +59,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator
             }
         }
 
-        void IAggregator.TestContextResultReceived(IResult result)
+        void IAggregator.Aggregate(IResult result)
         {
             _processingQueue.Enqueue(result);
 
@@ -87,7 +87,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator
                     {
                         IResult localResultObject = resultObject;
 
-                        Array.ForEach(_aggregators, a => a.TestContextResultReceived(localResultObject));
+                        Array.ForEach(_aggregators, a => a.Aggregate(localResultObject));
                     }
 
                     Thread.Sleep(100);

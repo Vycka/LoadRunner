@@ -28,7 +28,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector
 
         public void Collect()
         {
-            _aggregator.TestContextResultReceived(new IterationResult(_context, _poolStats));
+            _aggregator.Aggregate(new IterationResult(_context, _poolStats));
         }
     }
 }

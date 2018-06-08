@@ -13,8 +13,10 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 
 namespace LoadRunner.Demo.Minimum
 {
-    public static class MinimumDemo
+    public static class MinimalDemo
     {
+        // Define test scenario for a worker thread.
+        // new IScenario instance will be created for every worker thread.
         public class MinimalScenario : IScenario
         {
             public void ScenarioSetup(IIteration context)
@@ -29,12 +31,13 @@ namespace LoadRunner.Demo.Minimum
 
             public void ExecuteScenario(IIteration context)
             {
-                // Meassured iteration execution if IterationSetup() succeeded
+                // Only gets called if IterationSetup() succeededs.
+                // Timing is meassured here.
             }
 
             public void IterationTearDown(IIteration context)
             {
-                // Iteration cleanup (even if IterationSetup() or ExecuteScenario() fails)
+                // Cleanup after each iteration (even if IterationSetup() or ExecuteScenario() fails)
             }
 
             public void ScenarioTearDown(IIteration context)
@@ -45,21 +48,23 @@ namespace LoadRunner.Demo.Minimum
 
         public static void Run()
         {
-            // Custom aggregation
+            // Define how data gets aggregated.
+            // Dimensions are like GROUP BY keys in SQL
+            // Metrics are aggregation functions like COUNT, SUM, etc..
             HistogramAggregator aggregator = new HistogramAggregator()
                 .Add(new TimeDimension(TimeSpan.FromSeconds(5)))
                 .Add(new CountMetric())
                 .Add(new ErrorCountMetric())
+                .Add(new TransactionsPerSecMetric())
                 .Add(new PercentileMetric(0.95, 0.99));
 
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetAggregator(aggregator)
                 .SetScenario<MinimalScenario>()
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(20)))
-				.SetSpeed(new FixedSpeed(100))
+				.SetSpeed(new FixedSpeed(101010))
                 .SetThreading(new FixedThreadCount(4));
                 
-
             LoadRunnerEngine engine = strategy.Build();
 
             engine.Run();
