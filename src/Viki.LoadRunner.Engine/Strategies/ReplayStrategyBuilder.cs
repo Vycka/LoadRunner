@@ -88,16 +88,6 @@ namespace Viki.LoadRunner.Engine.Strategies
         }
 
         /// <summary>
-        /// Sets timeout time for stopping worker-threads.
-        /// </summary>
-        /// <param name="timeout">timeout duration</param>
-        public ReplayStrategyBuilder<TData> SetFinishTimeout(TimeSpan timeout)
-        {
-            FinishTimeout = timeout;
-            return this;
-        }
-
-        /// <summary>
         /// Set speed multiplier on how fast to replay test data
         /// </summary>
         /// <param name="speedMultiplier">Speed multiplier, default is 1x </param>
@@ -105,48 +95,6 @@ namespace Viki.LoadRunner.Engine.Strategies
         {
             SpeedMultiplier = speedMultiplier;
             return this;
-        }
-
-        /// <summary>
-        /// Sets initial user data which will be passed to created thread contexts.
-        /// </summary>
-        /// <param name="userData">User-data object</param>
-        public ReplayStrategyBuilder<TData> SetUserData(object userData)
-        {
-            InitialUserData = userData;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets aggregators to use when collecting data
-        /// </summary>
-        /// <param name="aggregagors">aggregators</param>
-        public ReplayStrategyBuilder<TData> SetAggregator(params IAggregator[] aggregagors)
-        {
-            Aggregators = aggregagors;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds aggregators to use when collecting data
-        /// </summary>
-        /// <param name="aggregagors">aggregators</param>
-        public ReplayStrategyBuilder<TData> AddAggregator(params IAggregator[] aggregagors)
-        {
-            Aggregators = Aggregators.Concat(aggregagors).ToArray();
-            return this;
-        }
-
-        /// <summary>
-        /// Initialize IStrategy from this configuration and then LoadRunnerEngine it self using it.
-        /// </summary>
-        /// <returns>LoadRunnerEngine instance with configured strategy</returns>
-        public LoadRunnerEngine Build()
-        {
-            IStrategy strategy = new ReplayStrategy<TData>(this);
-            LoadRunnerEngine engine = new LoadRunnerEngine(strategy);
-
-            return engine;
         }
 
         #endregion
@@ -189,46 +137,37 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         public TimeSpan FinishTimeout { get; set; } = TimeSpan.FromMinutes(3);
 
-        #endregion
-    }
-
-    public static class ReplayStrategySettingsExtensions
-    {
 
         /// <summary>
-        /// Initialize IStrategy from this configuration and then LoadRunnerEngine it self using it. 
+        /// Initialize IStrategy from this configuration.
         /// </summary>
-        /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
-        /// <param name="settings">Strategy settings</param>
-        /// <returns></returns>
-        public static LoadRunnerEngine Build<TData>(this IReplayStrategySettings<TData> settings)
+        /// <returns>Configured IStrategy instance</returns>
+        IStrategy IStrategyBuilder.Build()
         {
-            IStrategy strategy = new ReplayStrategy<TData>(settings);
-            LoadRunnerEngine engine = new LoadRunnerEngine(strategy);
-
-            return engine;
+            IStrategy strategy = new ReplayStrategy<TData>(this);
+            return strategy;
         }
 
         /// <summary>
         /// Duplicates configuration builder having own configuration lists. But registered configuration instances will still be the same.
         /// </summary>
-        /// <typeparam name="TData">Replay strategy SetData() type</typeparam>
-        /// <param name="settings">Settings instance to clone</param>
-        /// <returns>New instance of ReplayStrategyBuilder</returns>
-        public static ReplayStrategyBuilder<TData> ShallowClone<TData>(this IReplayStrategySettings<TData> settings)
+        /// <returns>New instance of IStrategyBuilder</returns>
+        IStrategyBuilder IStrategyBuilder.ShallowCopy()
         {
             return new ReplayStrategyBuilder<TData>
             {
-                ThreadCount = settings.ThreadCount,
-                DataReader = settings.DataReader,
-                SpeedMultiplier = settings.SpeedMultiplier,
-                Aggregators = settings.Aggregators.ToArray(),
+                ThreadCount = ThreadCount,
+                DataReader = DataReader,
+                SpeedMultiplier = SpeedMultiplier,
+                Aggregators = Aggregators.ToArray(),
 
-                ScenarioFactory = settings.ScenarioFactory,
+                ScenarioFactory = ScenarioFactory,
 
-                FinishTimeout = settings.FinishTimeout,
-                InitialUserData = settings.InitialUserData,
+                FinishTimeout = FinishTimeout,
+                InitialUserData = InitialUserData,
             };
         }
+
+        #endregion
     }
 }

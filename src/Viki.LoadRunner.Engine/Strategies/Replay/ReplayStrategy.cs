@@ -36,7 +36,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 
-            _settings = settings;
+            _settings = (IReplayStrategySettings<TData>)settings.ShallowCopy();
             _timer = new ExecutionTimer();
             _aggregator = new AsyncAggregator(_settings.Aggregators);
         }

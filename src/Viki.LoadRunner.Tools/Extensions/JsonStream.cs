@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace Viki.LoadRunner.Tools.Utils
+namespace Viki.LoadRunner.Tools.Extensions
 {
     //http://stackoverflow.com/questions/9026508/incremental-json-parsing-in-c-sharp
     public static class JsonStream

@@ -55,7 +55,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 
-            _settings = settings;
+            _settings = (ICustomStrategySettings)settings.ShallowCopy();
 
             _timer = new ExecutionTimer();
         }

@@ -1,13 +1,11 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay.Interfaces
 {
-    // TODO: Need to make this generic in the end... :(
-    // Rethink Handler/Scheduler/IDataReader to make use of TData from IReplayStrategySettings but it should not spread like it does now.
-    public interface IReplayStrategySettings<in TData>
+    public interface IReplayStrategySettings<in TData> : IAggregatorFeature, IUserDataFeature, ITimeoutFeature
     {
         /// <summary>
         /// Fixed count of threads to use
@@ -25,24 +23,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Interfaces
         double SpeedMultiplier { get; }
 
         /// <summary>
-        /// Aggregators to collect the data
-        /// </summary>
-        IAggregator[] Aggregators { get; }
-
-        /// <summary>
         /// Factory for creating IReplayScenario instances.
         /// </summary>
         IReplayScenarioFactory<TData> ScenarioFactory { get; }
-
-        /// <summary>
-        /// Initial user data which will be passed to created thread contexts. (context.UserData)
-        /// </summary>
-        object InitialUserData { get; }
-
-        /// <summary>
-        /// Timeout for strategy threads to stop and cleanup.
-        /// This does not affect result IAggregator and execution will still hold indefinetely until its finished.
-        /// </summary>
-        TimeSpan FinishTimeout { get; }
     }
 }

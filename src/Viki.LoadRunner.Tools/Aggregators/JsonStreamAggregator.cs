@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
-using Viki.LoadRunner.Tools.Utils;
+using Viki.LoadRunner.Tools.Extensions;
 
 namespace Viki.LoadRunner.Tools.Aggregators
 {

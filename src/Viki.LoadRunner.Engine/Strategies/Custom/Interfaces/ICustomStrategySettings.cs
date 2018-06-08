@@ -1,14 +1,14 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
 {
     /// <summary>
     /// LoadRunner engine configuration root
     /// </summary>
-    public interface ICustomStrategySettings
+    public interface ICustomStrategySettings : IAggregatorFeature, IUserDataFeature, ITimeoutFeature
     {
         /// <summary>
         /// Limits define when test execution will be scheduled to stop.
@@ -29,25 +29,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
         IThreadingStrategy Threading { get; }
 
         /// <summary>
-        /// Time threshold how long engine should give worker-threads to finish gracefully once they are scheduled to stop.
-        /// If threshold is reached, worker-threads will be killed with Thread.Abort() and collected iteration [IResult] value will be lost.
-        /// </summary>
-        TimeSpan FinishTimeout { get; }
-
-        /// <summary>
         /// Factory for creating IScenario instances.
         /// </summary>
         IScenarioFactory ScenarioFactory { get; }
-
-        /// <summary>
-        /// This object-value will be set to testContext.UserData for each created test thread.
-        /// </summary>
-        object InitialUserData { get; }
-
-        /// <summary>
-        /// Aggregators to collect the data.
-        /// </summary>
-        IAggregator[] Aggregators { get; }
     }
 }
 

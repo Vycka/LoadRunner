@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine
     /// <summary>
     /// ILoadTestScenario executor
     /// </summary>
-    public class LoadRunnerEngine : IStrategyExecutorAsync
+    public class LoadRunnerEngine : IStrategyExecutorAsync, IStrategyExecutor
     {
         #region Fields
 

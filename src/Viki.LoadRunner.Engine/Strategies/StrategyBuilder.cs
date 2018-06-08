@@ -8,6 +8,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom;
 using Viki.LoadRunner.Engine.Strategies.Custom.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies
 {
@@ -98,59 +99,9 @@ namespace Viki.LoadRunner.Engine.Strategies
             return this;
         }
 
-        /// <summary>
-        /// Sets timeout time for stopping worker-threads.
-        /// </summary>
-        /// <param name="timeout">timeout duration</param>
-        public StrategyBuilder SetFinishTimeout(TimeSpan timeout)
-        {
-            FinishTimeout = timeout;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets initial user data which will be passed to created thread contexts.
-        /// </summary>
-        /// <param name="userData">User-data object</param>
-        public StrategyBuilder SetUserData(object userData)
-        {
-            InitialUserData = userData;
-            return this;
-        }
-        /// <summary>
-        /// Sets aggregators to use when collecting data
-        /// </summary>
-        /// <param name="aggregagors">aggregators</param>
-        /// <returns></returns>
-        public StrategyBuilder SetAggregator(params IAggregator[] aggregagors)
-        {
-            Aggregators = aggregagors;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds aggregators to use when collecting data
-        /// </summary>
-        /// <param name="aggregagors">aggregators</param>
-        /// <returns></returns>
-        public StrategyBuilder AddAggregator(params IAggregator[] aggregagors)
-        {
-            Aggregators = Aggregators.Concat(aggregagors).ToArray();
-            return this;
-        }
-
-        /// <summary>
-        /// Initialize IStrategy from this configuration and then LoadRunnerEngine it self using it.
-        /// </summary>
-        /// <returns>LoadRunnerEngine instance with configured strategy</returns>
-        public LoadRunnerEngine Build()
-        {
-            return new LoadRunnerEngine(new CustomStrategy(this));
-        }
-
         #endregion
 
-        #region ILoadRunnerSettings & Properties
+        #region ICustomStrategySettings
 
         /// <summary>
         /// Scenario to execute, type must implement ILoadTestScenario.
@@ -194,28 +145,29 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         public IAggregator[] Aggregators { get; set; } = { };
 
-        #endregion
-    }
-
-    public static class CustomStrategySettingsExtensions
-    {
-        /// <summary>
-        /// Duplicates configuration builder having own configuration lists. But registered configuration instances will still be the same.
-        /// </summary>
-        /// <param name="settings">Settings instance to clone</param>
-        public static StrategyBuilder ShallowClone(this ICustomStrategySettings settings)
+        IStrategy IStrategyBuilder.Build()
         {
-            return new StrategyBuilder
-            {
-                Limits = settings.Limits.ToArray(),
-                Speeds = settings.Speeds.ToArray(),
-                Threading = settings.Threading,
-                FinishTimeout = settings.FinishTimeout,
-                ScenarioFactory = settings.ScenarioFactory,
-                InitialUserData = settings.InitialUserData,
-                Aggregators = settings.Aggregators.ToArray()
-            };
+            return new CustomStrategy(this);
         }
+
+        IStrategyBuilder IStrategyBuilder.ShallowCopy()
+        {
+            StrategyBuilder copy = new StrategyBuilder
+            {
+                Limits = Limits.ToArray(),
+                Speeds = Speeds.ToArray(),
+                Threading = Threading,
+                FinishTimeout = FinishTimeout,
+                ScenarioFactory = ScenarioFactory,
+                InitialUserData = InitialUserData,
+                Aggregators = Aggregators.ToArray()
+            };
+
+            return copy;
+        }
+
+
+        #endregion
     }
 }
 

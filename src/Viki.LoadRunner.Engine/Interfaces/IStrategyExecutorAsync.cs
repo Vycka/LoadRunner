@@ -2,7 +2,7 @@
 
 namespace Viki.LoadRunner.Engine.Interfaces
 {
-    public interface IStrategyExecutorAsync : IStrategyExecutor
+    public interface IStrategyExecutorAsync 
     {
         /// <summary>
         /// If execution failed due to unhandled exception, it will be set here.

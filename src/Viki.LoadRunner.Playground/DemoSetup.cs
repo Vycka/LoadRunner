@@ -13,6 +13,8 @@ using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
+using Viki.LoadRunner.Engine.Strategies.Extensions;
+using Viki.LoadRunner.Engine.Utils;
 
 namespace Viki.LoadRunner.Playground
 {
