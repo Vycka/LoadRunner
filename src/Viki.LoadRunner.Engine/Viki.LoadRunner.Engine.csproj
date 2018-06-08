@@ -73,6 +73,8 @@
     <Compile Include="Core\Scheduler\Interfaces\IWait.cs" />
     <Compile Include="Core\Scheduler\SemiWait.cs" />
     <Compile Include="Core\Timer\Interfaces\ITimerControl.cs" />
+    <Compile Include="Interfaces\IStrategyExecutor.cs" />
+    <Compile Include="Interfaces\IStrategyExecutorAsync.cs" />
     <Compile Include="Strategies\Custom\Adapter\Aggregator\AsyncAggregator.cs" />
     <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\BreakByMetric.cs" />

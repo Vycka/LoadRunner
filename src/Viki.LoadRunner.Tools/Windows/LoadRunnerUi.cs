@@ -15,6 +15,7 @@ using Viki.LoadRunner.Engine.Core.Collector;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
+using Viki.LoadRunner.Engine.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
 using Viki.LoadRunner.Engine.Validators;
@@ -22,7 +23,7 @@ using Viki.LoadRunner.Engine.Validators;
 
 namespace Viki.LoadRunner.Tools.Windows
 {
-    public partial class LoadRunnerUi : Form, IAggregator
+    public partial class LoadRunnerUi : Form, IAggregator, IStrategyExecutor
     {
         public string TextTemplate = "LR-UI {0}";
 
@@ -61,7 +62,7 @@ namespace Viki.LoadRunner.Tools.Windows
             _validator = validator;
         }
 
-        public void StartWindow()
+        public void Run()
         {
             Application.Run(this);
         }

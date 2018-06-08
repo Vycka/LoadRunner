@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Viki.LoadRunner.Engine.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine
@@ -7,7 +8,7 @@ namespace Viki.LoadRunner.Engine
     /// <summary>
     /// ILoadTestScenario executor
     /// </summary>
-    public class LoadRunnerEngine
+    public class LoadRunnerEngine : IStrategyExecutorAsync
     {
         #region Fields
 
@@ -52,7 +53,7 @@ namespace Viki.LoadRunner.Engine
 
         #endregion
 
-        #region Async/Run()
+        #region IStrategyExecutorAsync
 
         /// <summary>
         /// Start LoadTest execution on main thread. This blocks until test execution is finished by defined rules if any.
