@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
@@ -15,6 +16,7 @@ using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
+using Viki.LoadRunner.Engine.Utils;
 using ThreadPool = Viki.LoadRunner.Engine.Core.Pool.ThreadPool;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay
@@ -23,8 +25,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
     {
         private readonly IReplayStrategySettings<TData> _settings;
         private readonly ExecutionTimer _timer;
-        private readonly IAggregator _aggregator;
 
+        private IAggregator _aggregator;
         private IReplayDataReader _dataReader;
         private IErrorHandler _errorHandler;
         private IUniqueIdFactory<int> _globalIdFactory;
@@ -38,7 +40,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
             _settings = (IReplayStrategySettings<TData>)settings.ShallowCopy();
             _timer = new ExecutionTimer();
-            _aggregator = new AsyncAggregator(_settings.Aggregators);
         }
 
         public virtual void Start()
@@ -53,6 +54,11 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
         private void InitializeState()
         {
+            if (_settings.Aggregators.IsNullOrEmpty())
+                _aggregator = new NullAggregator();
+            else
+                _aggregator = new AsyncAggregator(_settings.Aggregators);
+
             _counter = new ThreadPoolCounter();
             _errorHandler = new ErrorHandler();
             _globalIdFactory = new IdFactory();
@@ -113,7 +119,13 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
         private IDataCollectorFactory CreateDataCollectorFactory()
         {
-            return new DataCollectorFactory(_aggregator, _counter);
+            IDataCollectorFactory result;
+            if (_settings.Aggregators.IsNullOrEmpty())
+                result = new NullDataCollectorFactory();
+            else
+                result = new DataCollectorFactory(_aggregator, _counter);
+
+            return result;
         }
 
 

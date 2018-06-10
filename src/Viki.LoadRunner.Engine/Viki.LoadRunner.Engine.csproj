@@ -55,8 +55,11 @@
     <Compile Include="Analytics\Interfaces\IHistogramBuilder.cs" />
     <Compile Include="Analytics\Interfaces\IMetric.cs" />
     <Compile Include="Analytics\MetricsHandler.cs" />
+    <Compile Include="Core\Collector\NullDataCollector.cs" />
     <Compile Include="Core\Factory\DataCollectorFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IFactory.cs" />
+    <Compile Include="Core\Factory\NullDataCollectorFactory.cs" />
+    <Compile Include="Core\Factory\NullSchedulerFactory.cs" />
     <Compile Include="Core\Factory\ReflectionFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IDataCollectorFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IScenarioFactory.cs" />
@@ -70,6 +73,7 @@
     <Compile Include="Core\Pool\WorkerThreadStats.cs" />
     <Compile Include="Core\Scenario\CheckpointExtensions.cs" />
     <Compile Include="Core\Scenario\Interfaces\IIterationResult.cs" />
+    <Compile Include="Core\Scheduler\NullScheduler.cs" />
     <Compile Include="Core\Scheduler\Interfaces\IWait.cs" />
     <Compile Include="Core\Scheduler\SemiWait.cs" />
     <Compile Include="Core\Timer\Interfaces\ITimerControl.cs" />

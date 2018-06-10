@@ -24,7 +24,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Interfaces
         ISpeedStrategy[] Speeds { get; }
 
         /// <summary>
-        /// Threading strategy defines created and working parallel thread count throughout the LoadTest.
+        /// Threading strategy controls created thread count throughout the LoadTest.
         /// </summary>
         IThreadingStrategy Threading { get; }
 

@@ -9,12 +9,15 @@ using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 using Viki.LoadRunner.Engine.Strategies.Extensions;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
+using Viki.LoadRunner.Tools.Extensions;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -31,7 +34,7 @@ namespace Viki.LoadRunner.Playground
             };
 
             HistogramAggregator histogramAggregator = new HistogramAggregator()
-                .Add(new TimeDimension(TimeSpan.FromSeconds(2)))
+                .Add(new TimeDimension(TimeSpan.FromSeconds(10)))
                 .Add(new FuncMetric<TimeSpan>("TMin", TimeSpan.MaxValue,
                     (span, result) => span > result.IterationStarted ? result.IterationStarted : span))
                 .Add(new FuncMetric<TimeSpan>("TMax", TimeSpan.MinValue,
@@ -41,7 +44,7 @@ namespace Viki.LoadRunner.Playground
                 //.Add(new MinDurationMetric(ignoredCheckpoints))
                 .Add(new AvgDurationMetric(ignoredCheckpoints))
                 .Add(new MaxDurationMetric(ignoredCheckpoints))
-                .Add(new PercentileMetric(new[] {0.99999}, ignoredCheckpoints))
+                //.Add(new PercentileMetric(new[] {0.99999}, ignoredCheckpoints))
                 .Add(new CountMetric(ignoredCheckpoints))
                 .Add(new TransactionsPerSecMetric())
                 .Add(new ErrorCountMetric())
@@ -58,17 +61,14 @@ namespace Viki.LoadRunner.Playground
 
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario<BlankScenario>()
-                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(6)))
-                .SetThreading(new FixedThreadCount(20))
-                .SetSpeed(new FixedSpeed(2000))
+                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(25)))
+                .SetThreading(new FixedThreadCount(8))
+                //.SetSpeed(new FixedSpeed(2000))
                 .SetFinishTimeout(TimeSpan.FromSeconds(60))
                 .SetAggregator(histogramAggregator);
 
 
-            //LoadRunnerUi ui = strategy.BuildUi();
-            //ui.StartWindow();
-
-            LoadRunnerEngine engine = strategy.Build();
+            IStrategyExecutor engine = strategy.Build();
             engine.Run();
 
             object defaultResults = histogramAggregator.BuildResultsObjects();

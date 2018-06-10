@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
@@ -18,6 +19,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Factory;
 using Viki.LoadRunner.Engine.Strategies.Custom.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
+using Viki.LoadRunner.Engine.Utils;
 using ThreadPool = Viki.LoadRunner.Engine.Core.Pool.ThreadPool;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom
@@ -71,6 +73,11 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
         private void InitializeState()
         {
+            if (_settings.Aggregators.IsNullOrEmpty())
+                _aggregator = new NullAggregator();
+            else
+                _aggregator = new AsyncAggregator(_settings.Aggregators);
+
             _counter = new ThreadPoolCounter();
             _errorHandler = new ErrorHandler();
             _globalIdFactory = new IdFactory();
@@ -82,7 +89,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
             _limit = new LimitsHandler(_settings.Limits);
             _threading = _settings.Threading;
-            _aggregator = new AsyncAggregator(_settings.Aggregators);
 
             _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
 
@@ -139,12 +145,25 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
         private IDataCollectorFactory CreateDataCollectorFactory()
         {
-            return new DataCollectorFactory(_aggregator, _counter);
+            IDataCollectorFactory result;
+            if (_settings.Aggregators.IsNullOrEmpty())
+                result = new NullDataCollectorFactory();
+            else
+                result = new DataCollectorFactory(_aggregator, _counter);
+
+            return result;
         }
 
         private ISchedulerFactory CreateSchedulerFactory()
         {
-            return new SchedulerFactory(_timer, _speed, _counter);
+            ISchedulerFactory result;
+
+            if (_settings.Speeds.IsNullOrEmpty())
+                result = new NullSchedulerFactory();
+            else
+                result = new SchedulerFactory(_timer, _speed, _counter);
+
+            return result;
         }
 
         private IScenarioHandlerFactory CreateScenarioHandlerFactory()
