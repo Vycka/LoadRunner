@@ -18,7 +18,7 @@ namespace Viki.LoadRunner.Tools.Extensions
 
             localBuilder.AddAggregator(ui);
 
-            ui.Setup(localBuilder.Build(), validator);
+            ui.Setup(localBuilder.BuildStrategy(), validator);
 
             return ui;
         }

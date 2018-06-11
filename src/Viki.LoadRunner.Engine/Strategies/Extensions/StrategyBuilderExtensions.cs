@@ -10,7 +10,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Extensions
         /// <param name="builder">Strategy builder</param>
         public static LoadRunnerEngine Build(this IStrategyBuilder builder)
         {
-            LoadRunnerEngine engine = new LoadRunnerEngine(builder.Build());
+            LoadRunnerEngine engine = new LoadRunnerEngine(builder.BuildStrategy());
 
             return engine;
         }

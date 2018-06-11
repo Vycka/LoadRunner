@@ -142,7 +142,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// Initialize IStrategy from this configuration.
         /// </summary>
         /// <returns>Configured IStrategy instance</returns>
-        IStrategy IStrategyBuilder.Build()
+        IStrategy IStrategyBuilder.BuildStrategy()
         {
             IStrategy strategy = new ReplayStrategy<TData>(this);
             return strategy;

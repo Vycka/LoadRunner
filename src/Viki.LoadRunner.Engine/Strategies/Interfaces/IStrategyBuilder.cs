@@ -2,7 +2,7 @@
 {
     public interface IStrategyBuilder
     {
-        IStrategy Build();
+        IStrategy BuildStrategy();
 
         /// <summary>
         /// Duplicates configuration builder having own configuration lists. But registered configuration instances will still be the same.

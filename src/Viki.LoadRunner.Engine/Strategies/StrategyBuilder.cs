@@ -145,7 +145,7 @@ namespace Viki.LoadRunner.Engine.Strategies
         /// </summary>
         public IAggregator[] Aggregators { get; set; } = { };
 
-        IStrategy IStrategyBuilder.Build()
+        IStrategy IStrategyBuilder.BuildStrategy()
         {
             return new CustomStrategy(this);
         }
