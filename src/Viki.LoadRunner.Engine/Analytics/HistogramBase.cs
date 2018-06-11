@@ -121,7 +121,7 @@ namespace Viki.LoadRunner.Engine.Analytics
         {
             var results = BuildResults();
 
-            foreach (var row in results.Values)
+            foreach (var row in results.Data)
             {
                 IDictionary<string, object> resultRow = new ExpandoObject();
 
