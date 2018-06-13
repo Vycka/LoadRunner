@@ -51,6 +51,7 @@
     <Compile Include="BlankFromBase.cs" />
     <Compile Include="BlankScenario.cs" />
     <Compile Include="FaultyAggregator.cs" />
+    <Compile Include="LimitConcurrencyAndTpsDemo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DemoSetup.cs" />

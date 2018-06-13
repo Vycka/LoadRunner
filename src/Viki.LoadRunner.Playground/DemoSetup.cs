@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Threading;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
@@ -17,6 +18,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 using Viki.LoadRunner.Engine.Strategies.Extensions;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
+using Viki.LoadRunner.Tools.Aggregators;
 using Viki.LoadRunner.Tools.Extensions;
 
 namespace Viki.LoadRunner.Playground
@@ -61,11 +63,11 @@ namespace Viki.LoadRunner.Playground
 
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario<BlankScenario>()
-                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(25)))
+                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(10)))
                 .SetThreading(new FixedThreadCount(8))
-                //.SetSpeed(new FixedSpeed(2000))
+                .SetSpeed(new FixedSpeed(20))
                 .SetFinishTimeout(TimeSpan.FromSeconds(60))
-                .SetAggregator(histogramAggregator);
+                .SetAggregator(histogramAggregator, new JsonStreamAggregator("wat.txt"));
 
 
             IStrategyExecutor engine = strategy.Build();
@@ -111,6 +113,11 @@ namespace Viki.LoadRunner.Playground
 
             if (Random.Next(100) % 10 == 0)
                 throw new Exception("10% error chance for testing");
+
+            dynamic x = new ExpandoObject();
+            x.AA = "bb";
+
+            context.UserData = x;
         }
 
 
