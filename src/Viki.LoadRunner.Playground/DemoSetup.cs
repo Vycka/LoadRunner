@@ -67,11 +67,13 @@ namespace Viki.LoadRunner.Playground
                 .SetThreading(new FixedThreadCount(8))
                 .SetSpeed(new FixedSpeed(20))
                 .SetFinishTimeout(TimeSpan.FromSeconds(60))
-                .SetAggregator(histogramAggregator, new JsonStreamAggregator("wat.txt"));
+                .SetAggregator(new JsonStreamAggregator("wat.txt"));
 
 
             IStrategyExecutor engine = strategy.Build();
             engine.Run();
+
+            JsonStreamAggregator.Replay("wat.txt", histogramAggregator);
 
             object defaultResults = histogramAggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));

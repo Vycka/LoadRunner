@@ -28,6 +28,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
 
         public void Next(IIterationState state, ISchedule scheduler)
         {
+            // TODO: Bug lets say all threads try to check at the same time and all will see no working threads and all will start.
+
             int includeSelf = scheduler.Action == ScheduleAction.Execute ? 1 : 0; 
             int workingThreads = state.ThreadPool.CreatedThreadCount - state.ThreadPool.IdleThreadCount - includeSelf;
             if (workingThreads < WorkingThreads)

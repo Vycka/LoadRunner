@@ -19,7 +19,7 @@ namespace Viki.LoadRunner.Playground
 
             //new BlankFromBase().Validate();
 
-            //DemoSetup.Run();
+            DemoSetup.Run();
 
             LimitConcurrencyAndTpsDemo.Run();
 
