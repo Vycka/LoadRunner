@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using Viki.LoadRunner.Engine.Core.Collector;
-using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 

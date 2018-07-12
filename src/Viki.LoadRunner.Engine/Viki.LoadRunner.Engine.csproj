@@ -49,6 +49,7 @@
     <Compile Include="Aggregators\NullAggregator.cs" />
     <Compile Include="Analytics\DimensionKey.cs" />
     <Compile Include="Analytics\DimensionsHandler.cs" />
+    <Compile Include="Analytics\Extensions\HistogramExtensions.cs" />
     <Compile Include="Analytics\HistogramBase.cs" />
     <Compile Include="Analytics\HistogramBuilderExtensions.cs" />
     <Compile Include="Analytics\Interfaces\IDimension.cs" />
