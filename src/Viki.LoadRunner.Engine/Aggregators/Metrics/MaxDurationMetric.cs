@@ -14,8 +14,6 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         private readonly FlexiRow<string, long> _row = new FlexiRow<string, long>(() => long.MinValue);
         private readonly string[] _ignoredCheckpoints;
 
-        private static readonly Checkpoint BlankCheckpoint = new Checkpoint("", TimeSpan.Zero);
-
         public MaxDurationMetric(params string[] ignoredCheckpoints)
         {
             if (ignoredCheckpoints == null)

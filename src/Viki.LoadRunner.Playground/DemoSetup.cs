@@ -8,6 +8,7 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Core.Factory;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Interfaces;
@@ -18,6 +19,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 using Viki.LoadRunner.Engine.Strategies.Extensions;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
+using Viki.LoadRunner.Engine.Validators;
 using Viki.LoadRunner.Tools.Aggregators;
 using Viki.LoadRunner.Tools.Extensions;
 
@@ -70,7 +72,7 @@ namespace Viki.LoadRunner.Playground
                 .SetAggregator(new JsonStreamAggregator("wat.txt"));
 
 
-            IStrategyExecutor engine = strategy.Build();
+            IStrategyExecutor engine = strategy.BuildUi(new ScenarioValidator(new ScenarioFactory(typeof(BlankScenario))));
             engine.Run();
 
             JsonStreamAggregator.Replay("wat.txt", histogramAggregator);

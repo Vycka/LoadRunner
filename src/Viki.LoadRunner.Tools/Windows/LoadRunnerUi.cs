@@ -13,6 +13,7 @@ using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Analytics.Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Core.Collector;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
 using Viki.LoadRunner.Engine.Interfaces;
@@ -164,11 +165,28 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private async void _validateButton_Click(object sender, EventArgs e)
         {
+            var metric = new MinDurationMetric();
+
             IterationResult result = await Task.Run(() => _validator.Validate()).ConfigureAwait(false);
 
+            
+
             Invoke(new InvokeDelegate(
-                () => AppendMessage($"Validation OK:\r\n{String.Join("\r\n", result.Checkpoints.Select(c => $"{c.Name}: {c.TimePoint}{(c.Error != null ? $"\r\n{c.Error.ToString()}\r\n" : "")}"))}"))
+                () => AppendMessage($"Validation OK:\r\n{String.Join("\r\n", Process(result).Select(c => $"{c.Item1}->{c.Item2}: {c.Item3}{(c.Item4 != null ? $"\r\n{c.Item4.ToString()}\r\n" : "")}"))}"))
             );
+        }
+
+        private static IEnumerable<Tuple<string, string, TimeSpan, object>> Process(IResult result)
+        {
+            ICheckpoint[] checkpoints = result.Checkpoints;
+            for (int i = 0, j = checkpoints.Length - 1; i < j; i++)
+            {
+                ICheckpoint checkpoint = checkpoints[i];
+                ICheckpoint nextCheckpoint = checkpoints[i + 1];
+                TimeSpan momentDiff = checkpoint.Diff(nextCheckpoint);
+
+                yield return new Tuple<string, string, TimeSpan, object>(checkpoint.Name, nextCheckpoint.Name, momentDiff, checkpoint.Error);
+            }
         }
 
         private void _clearButton_Click(object sender, EventArgs e)
