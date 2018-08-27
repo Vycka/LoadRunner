@@ -148,6 +148,7 @@
     <Compile Include="Core\Scenario\Checkpoint.cs" />
     <Compile Include="Core\Scenario\Interfaces\IIteration.cs" />
     <Compile Include="Strategies\Custom\CustomStrategy.cs" />
+    <Compile Include="Strategies\Custom\Strategies\Speed\BatchingSpeed.cs" />
     <Compile Include="Strategies\Extensions\FeatureExtensions.cs" />
     <Compile Include="Strategies\Extensions\StrategyBuilderExtensions.cs" />
     <Compile Include="Strategies\Interfaces\IAggregatorFeature.cs" />

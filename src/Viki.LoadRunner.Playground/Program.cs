@@ -5,8 +5,6 @@ using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
-using Viki.LoadRunner.Engine.Validators;
-using Viki.LoadRunner.Playground.Replay;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -17,11 +15,13 @@ namespace Viki.LoadRunner.Playground
         {
             //ReplayDemo.Run();
 
+            BatchStrategyDemo.Run();
+
             //new BlankFromBase().Validate();
 
-            DemoSetup.Run();
+            //DemoSetup.Run();
 
-            LimitConcurrencyAndTpsDemo.Run();
+            //LimitConcurrencyAndTpsDemo.Run();
 
             Console.ReadKey();
 
