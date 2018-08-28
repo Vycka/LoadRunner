@@ -27,7 +27,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Factory
 
         public IReplayScenarioHandler Create(IIterationControl iterationContext)
         {
-            IReplayScenario<TData> scenarioInstance = _scenarioFactory.Create();
+            IReplayScenario<TData> scenarioInstance = _scenarioFactory.Create(iterationContext.ThreadId);
             IReplayScenarioHandler scenarioHandler = new ReplayScenarioHandler<TData>(_globalIdFactory, scenarioInstance, iterationContext);
 
             return scenarioHandler;

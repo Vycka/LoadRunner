@@ -167,7 +167,7 @@ namespace Viki.LoadRunner.Tools.Windows
         {
             var metric = new MinDurationMetric();
 
-            IterationResult result = await Task.Run(() => _validator.Validate()).ConfigureAwait(false);
+            IterationResult result = await Task.Run(() => _validator.Validate(0)).ConfigureAwait(false);
 
             
 

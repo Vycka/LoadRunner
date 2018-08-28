@@ -1,7 +1,9 @@
-﻿namespace Viki.LoadRunner.Engine.Core.Factory.Interfaces
+﻿using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+
+namespace Viki.LoadRunner.Engine.Core.Factory.Interfaces
 {
     public interface IFactory<out T>
     {
-        T Create();
+        T Create(int threadId);
     }
 }

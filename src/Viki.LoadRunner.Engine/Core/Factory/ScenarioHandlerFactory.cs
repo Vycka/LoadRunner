@@ -24,7 +24,7 @@ namespace Viki.LoadRunner.Engine.Core.Factory
 
         public IScenarioHandler Create(IIterationControl iterationContext)
         {
-            IScenario scenarioInstance = _factory.Create();
+            IScenario scenarioInstance = _factory.Create(iterationContext.ThreadId);
             IScenarioHandler scenarioHandler = new ScenarioHandler(_globalIdFactory, scenarioInstance, iterationContext);
 
             return scenarioHandler;

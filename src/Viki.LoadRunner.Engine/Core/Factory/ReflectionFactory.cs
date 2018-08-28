@@ -19,7 +19,7 @@ namespace Viki.LoadRunner.Engine.Core.Factory
             _type = createType;
         }
 
-        public T Create()
+        public T Create(int threadId)
         {
             T instance = (T)Activator.CreateInstance(_type);
 

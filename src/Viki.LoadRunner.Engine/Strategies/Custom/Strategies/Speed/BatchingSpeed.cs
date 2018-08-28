@@ -17,8 +17,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
         private readonly TimeSpan _interval;
         private readonly int _batchSize;
 
-        private int _currentBatch;
-        private int _executedIterations;
+        protected int CurrentBatch { get; private set; }
+        private int _executedBatchIterations;
 
         /// <summary>
         /// Executes iterations in desired batch sizes at each interval.
@@ -41,16 +41,16 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
 
         public void Setup(ITestState state)
         {
-            _currentBatch = 0;
-            _executedIterations = 0;
+            CurrentBatch = 0;
+            _executedBatchIterations = 0;
         }
 
         public void Next(IIterationState state, ISchedule scheduler)
         {
 
-            if (_executedIterations < _batchSize)
+            if (_executedBatchIterations < _batchSize)
             {
-                Interlocked.Add(ref _executedIterations, 1);
+                Interlocked.Add(ref _executedBatchIterations, 1);
                 scheduler.Execute();
             }
             else
@@ -63,10 +63,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
         {
             int batch = (int)(state.Timer.Value.Ticks / _interval.Ticks);
 
-            if (batch != _currentBatch)
+            if (batch != CurrentBatch)
             {
-                _currentBatch = batch;
-                Interlocked.Exchange(ref _executedIterations, 0);
+                CurrentBatch = batch;
+                Interlocked.Exchange(ref _executedBatchIterations, 0);
             }
         }
     }

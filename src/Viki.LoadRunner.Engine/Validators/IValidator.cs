@@ -4,6 +4,6 @@ namespace Viki.LoadRunner.Engine.Validators
 {
     public interface IValidator
     {
-        IterationResult Validate();
+        IterationResult Validate(int threadId);
     }
 }
