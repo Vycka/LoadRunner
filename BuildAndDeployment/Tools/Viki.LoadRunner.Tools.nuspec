@@ -19,7 +19,7 @@
     <tags>Load performance Test Tester c# Runner Parallel Thread Client Library Framework Tool Addin .NET utils</tags>
 	<dependencies>
         <dependency id="Newtonsoft.Json" version="8.0.0" />
-		<dependency id="Viki.LoadRunner" version="0.8.24-alpha" />
+		<dependency id="Viki.LoadRunner" version="0.8.29-alpha" />
     </dependencies>
   </metadata>
 </package>

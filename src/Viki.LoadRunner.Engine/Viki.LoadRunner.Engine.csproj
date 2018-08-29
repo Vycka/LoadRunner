@@ -46,6 +46,7 @@
     <Compile Include="Aggregators\Dimensions\FuncDimension.cs" />
     <Compile Include="Aggregators\Interfaces\IDimension.cs" />
     <Compile Include="Aggregators\HistogramAggregator.cs" />
+    <Compile Include="Aggregators\Metrics\KpiDurationMetric.cs" />
     <Compile Include="Aggregators\NullAggregator.cs" />
     <Compile Include="Analytics\DimensionKey.cs" />
     <Compile Include="Analytics\DimensionsHandler.cs" />

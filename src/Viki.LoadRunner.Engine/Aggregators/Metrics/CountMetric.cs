@@ -8,6 +8,9 @@ using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
+    /// <summary>
+    /// Count successful iterations.
+    /// </summary>
     public class CountMetric : IMetric
     {
         private readonly FlexiRow<string, int> _row = new FlexiRow<string, int>((() => default(int)));
