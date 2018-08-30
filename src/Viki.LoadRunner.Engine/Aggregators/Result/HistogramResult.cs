@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Result
 {
@@ -13,12 +14,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Result
         /// <summary>
         /// Column headers
         /// </summary>
-        public readonly string[] ColumnNames;
+        public string[] ColumnNames;
 
         /// <summary>
         /// 2d-array results
         /// </summary>
-        public readonly object[][] Data;
+        public object[][] Data;
 
         public HistogramResults(string[] columnNames, object[][] data)
         {
@@ -29,6 +30,21 @@ namespace Viki.LoadRunner.Engine.Aggregators.Result
 
             ColumnNames = columnNames;
             Data = data;
+        }
+
+        public IEnumerable<object> ToObjects()
+        {
+            foreach (var row in Data)
+            {
+                IDictionary<string, object> resultRow = new ExpandoObject();
+
+                for (int j = 0; j < row.Length; j++)
+                {
+                    resultRow.Add(ColumnNames[j], row[j]);
+                }
+
+                yield return resultRow;
+            }
         }
 
         public HistogramResults Rows<T>(string columnName, T searchValue)

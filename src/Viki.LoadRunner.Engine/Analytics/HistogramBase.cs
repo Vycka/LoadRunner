@@ -119,19 +119,7 @@ namespace Viki.LoadRunner.Engine.Analytics
         /// </summary>
         public IEnumerable<object> BuildResultsObjects()
         {
-            var results = BuildResults();
-
-            foreach (var row in results.Data)
-            {
-                IDictionary<string, object> resultRow = new ExpandoObject();
-
-                for (int j = 0; j < row.Length; j++)
-                {
-                    resultRow.Add(results.ColumnNames[j], row[j]);
-                }
-
-                yield return resultRow;
-            }
+            return BuildResults().ToObjects();
         }
 
         private static void ReplaceNames(string[] data, Dictionary<string, string> replaceTable)
