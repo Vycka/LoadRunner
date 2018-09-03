@@ -30,6 +30,11 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
         /// </summary>
         public static string[] NotMeassuredCheckpoints = { Names.Setup, Names.Skip, Names.TearDown };
 
+        /// <summary>
+        /// List of all system checkpoints which engine can spawn.
+        /// </summary>
+        public static string[] All = { Names.Setup, Names.Iteration, Names.Skip, Names.TearDown };
+
         #endregion
 
         #region Properties
