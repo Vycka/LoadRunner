@@ -57,6 +57,7 @@
     <Compile Include="Analytics\Interfaces\IHistogramBuilder.cs" />
     <Compile Include="Analytics\Interfaces\IMetric.cs" />
     <Compile Include="Analytics\MetricsHandler.cs" />
+    <Compile Include="Analytics\Metrics\ValuesMetric.cs" />
     <Compile Include="Core\Collector\NullDataCollector.cs" />
     <Compile Include="Core\Factory\DataCollectorFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IFactory.cs" />
