@@ -7,9 +7,11 @@ namespace Viki.LoadRunner.Engine.Core.Factory
 {
     public class NullSchedulerFactory : ISchedulerFactory
     {
+        private readonly NullScheduler _scheduler = new NullScheduler();
+
         public IScheduler Create(IIterationId iterationContext)
         {
-            return new NullScheduler();
+            return _scheduler;
         }
     }
 }

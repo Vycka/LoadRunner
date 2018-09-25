@@ -132,14 +132,12 @@
     <Compile Include="Core\Factory\IdFactory.cs" />
     <Compile Include="Core\Collector\Interfaces\IDataCollector.cs" />
     <Compile Include="Core\Scheduler\Interfaces\IScheduler.cs" />
-    <Compile Include="Core\Scheduler\Interfaces\ISpeedStrategyHandler.cs" />
     <Compile Include="Core\Pool\Interfaces\IThreadPool.cs" />
     <Compile Include="Core\Counter\Interfaces\IThreadPoolCounter.cs" />
     <Compile Include="Core\Pool\Interfaces\IThreadPoolStats.cs" />
     <Compile Include="Core\Factory\Interfaces\IUniqueIdFactory.cs" />
     <Compile Include="Core\Scheduler\Scheduler.cs" />
     <Compile Include="Core\Collector\DataCollector.cs" />
-    <Compile Include="Core\Scheduler\SpeedStrategyHandler.cs" />
     <Compile Include="Core\Pool\ThreadPool.cs" />
     <Compile Include="Core\Worker\WorkerThread.cs" />
     <Compile Include="Core\Timer\Interfaces\ITimer.cs" />

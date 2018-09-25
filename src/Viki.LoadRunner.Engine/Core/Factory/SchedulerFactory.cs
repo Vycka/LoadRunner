@@ -34,9 +34,8 @@ namespace Viki.LoadRunner.Engine.Core.Factory
         public IScheduler Create(IIterationId iterationContext)
         {
             IIterationState iterationState = new IterationState(_timer, iterationContext, _counter);
-            SpeedStrategyHandler strategyHandler = new SpeedStrategyHandler(_speedStrategy, iterationState);
 
-            IScheduler scheduler = new Scheduler.Scheduler(strategyHandler, _counter, _timer);
+            IScheduler scheduler = new Scheduler.Scheduler(_speedStrategy, _counter, iterationState);
 
             return scheduler;
         }
