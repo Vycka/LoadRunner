@@ -14,6 +14,7 @@
 * [Future](../../wiki/TODOs)
 
 ### v0.8 is kinda in RC stage:
+ * Apologies for the delay in making v0.8 final, need to solve late-found fundamental issue with scheduler before locking in interfaces. 
 https://github.com/Vycka/LoadRunner/tree/v0.8
 
 ***Sorry for poor documentation, I don't have much time to work on it ATM, but if having any questions/suggestions/etc, feel free to contact me.***
