@@ -5,6 +5,7 @@ using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
+using Viki.LoadRunner.Playground.Replay;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -13,9 +14,9 @@ namespace Viki.LoadRunner.Playground
 
         static void Main()
         {
-            BlankScenario.Run();
+            //BlankScenario.Run();
 
-            //ReplayDemo.Run();
+            ReplayDemo.Run();
 
             //BatchStrategyDemo.Run();
 

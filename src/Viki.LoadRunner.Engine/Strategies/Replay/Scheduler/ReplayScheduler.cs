@@ -55,7 +55,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
 
                 if (execute)
                 {
-                    if (adjustedTarget < _timer.Value)
+                    if (adjustedTarget > _timer.Value)
                     {
                         _counter.AddIdle(1);
 
