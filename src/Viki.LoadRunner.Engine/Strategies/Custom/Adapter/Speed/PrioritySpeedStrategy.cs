@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Core.State.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
@@ -41,7 +42,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Speed
             }
         }
 
-        public void Next(IIterationState state, ISchedule target)
+        public void Next(IIterationId id, ISchedule target)
         {
             ISchedule[] schedules = GetScheduleTable(target);
 
@@ -50,7 +51,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Speed
             for (int i = 0; i < _strategies.Length; i++)
             {
                 if (schedules[i].At < time)
-                    _strategies[i].Next(state, schedules[i]);
+                    _strategies[i].Next(id, schedules[i]);
             }
 
             _strategy.Apply(schedules, target);

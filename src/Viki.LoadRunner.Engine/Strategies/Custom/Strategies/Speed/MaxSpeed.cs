@@ -1,4 +1,5 @@
-﻿using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
+﻿using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Core.State.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 
@@ -10,7 +11,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
         {
         }
 
-        public void Next(IIterationState state, ISchedule scheduler)
+        public void Next(IIterationId id, ISchedule scheduler)
         {
             scheduler.Execute();
         }

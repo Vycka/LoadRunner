@@ -1,4 +1,5 @@
-﻿using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
+﻿using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Core.State.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces
@@ -7,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces
     {
         void Setup(ITestState state);
 
-        void Next(IIterationState state, ISchedule scheduler); // Must be thread safe
+        void Next(IIterationId id, ISchedule scheduler); // Must be thread safe
 
         void HeartBeat(ITestState state);
     }

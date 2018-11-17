@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Core.State.Interfaces;
+using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
@@ -13,6 +15,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
 
         private long _delayTicks;
         private long _next;
+
+        private ITimer _timer;
 
         public FixedSpeed(double maxIterationsPerSec)
         {
@@ -35,12 +39,14 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
 
         public void Setup(ITestState state)
         {
+            _timer = state.Timer;
+
             _next = -_delayTicks;
         }
 
-        public void Next(IIterationState state, ISchedule schedule)
+        public void Next(IIterationId id, ISchedule schedule)
         {
-            long timerTicks = state.Timer.Value.Ticks;
+            long timerTicks = _timer.Value.Ticks;
             long delta = timerTicks + ScheduleAheadTicks - _next;
             if (delta >= 0)
             {

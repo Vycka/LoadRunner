@@ -16,9 +16,9 @@ namespace Viki.LoadRunner.Playground
         {
             BlankScenario.Run();
 
-            //ReplayDemo.Run();
+            ReplayDemo.Run();
 
-            //BatchStrategyDemo.Run();
+            BatchStrategyDemo.Run();
 
             //new BlankFromBase().Validate();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Core.State.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
@@ -11,13 +12,13 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
     {
         private readonly ISpeedStrategy _strategy;
         private readonly IThreadPoolCounter _counter;
-        private readonly IIterationState _state;
+        private readonly IIterationId _id;
 
         private readonly IWait _waiter;
         
         public ITimer Timer { get; }
 
-        public Scheduler(ISpeedStrategy strategy, IThreadPoolCounter counter, IIterationState state)
+        public Scheduler(ISpeedStrategy strategy, IThreadPoolCounter counter, ITimer timer, IIterationId id)
         {
             if (strategy == null)
                 throw new ArgumentNullException(nameof(strategy));
@@ -26,11 +27,11 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
 
             _strategy = strategy;
             _counter = counter;
-            this._state = state ?? throw new ArgumentNullException(nameof(_state));
+            _id = id ?? throw new ArgumentNullException(nameof(id));
 
-            Timer = state.Timer;
+            Timer = timer;
 
-            _waiter = new SemiWait(state.Timer);
+            _waiter = new SemiWait(Timer);
         }
 
         public ScheduleAction Action { get; set; } = ScheduleAction.Execute;
@@ -38,7 +39,7 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
 
         public void WaitNext(ref bool stop)
         {
-            _strategy.Next(_state, this);
+            _strategy.Next(_id, this);
 
             if (Action == ScheduleAction.Idle || At > Timer.Value)
             {
@@ -47,7 +48,7 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
                 while (Action == ScheduleAction.Idle && stop == false)
                 {
                     _waiter.Wait(At, ref stop);
-                    _strategy.Next(_state, this);
+                    _strategy.Next(_id, this);
                 }
 
                 _waiter.Wait(At, ref stop);

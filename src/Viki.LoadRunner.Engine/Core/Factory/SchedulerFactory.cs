@@ -2,7 +2,6 @@
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
-using Viki.LoadRunner.Engine.Core.Scheduler;
 using Viki.LoadRunner.Engine.Core.Scheduler.Interfaces;
 using Viki.LoadRunner.Engine.Core.State;
 using Viki.LoadRunner.Engine.Core.State.Interfaces;
@@ -33,9 +32,7 @@ namespace Viki.LoadRunner.Engine.Core.Factory
 
         public IScheduler Create(IIterationId iterationContext)
         {
-            IIterationState iterationState = new IterationState(_timer, iterationContext, _counter);
-
-            IScheduler scheduler = new Scheduler.Scheduler(_speedStrategy, _counter, iterationState);
+            IScheduler scheduler = new Scheduler.Scheduler(_speedStrategy, _counter, _timer, iterationContext);
 
             return scheduler;
         }

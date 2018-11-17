@@ -124,8 +124,6 @@
     <Compile Include="Core\Worker\Interfaces\IPrewait.cs" />
     <Compile Include="Core\Worker\NullPrewait.cs" />
     <Compile Include="Core\Worker\TimerBasedPrewait.cs" />
-    <Compile Include="Core\State\Interfaces\IIterationState.cs" />
-    <Compile Include="Core\State\IterationState.cs" />
     <Compile Include="Core\State\Interfaces\ITestState.cs" />
     <Compile Include="Core\Factory\IterationContextFactory.cs" />
     <Compile Include="Core\Factory\ScenarioThreadFactory.cs" />
