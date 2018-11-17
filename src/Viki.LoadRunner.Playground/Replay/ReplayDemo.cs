@@ -32,7 +32,7 @@ namespace Viki.LoadRunner.Playground.Replay
                 .SetData(DataGenerator.Create(5, 1, 3, 3).ToArray())
                 .SetScenario<ReplayScenario>()
                 .SetThreadCount(50)
-                .SetSpeed(2);
+                .SetSpeed(1);
 
             // UI
             //LoadRunnerUi engineUi = settings.BuildUi(new DataItem(TimeSpan.Zero, "Validation demo"));
@@ -49,7 +49,7 @@ namespace Viki.LoadRunner.Playground.Replay
             object defaultResults = aggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
 
-            Console.ReadKey();
+            //Console.ReadKey();
         }
     }
 }

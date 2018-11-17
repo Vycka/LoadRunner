@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Collector;
+using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Factory;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Pool;
@@ -17,10 +18,12 @@ namespace Viki.LoadRunner.Engine.Validators
         public static IterationResult Validate<TData>(this IReplayScenario<TData> scenario, DataItem data)
         {
             ExecutionTimer timer = new ExecutionTimer();
+            ThreadSafeCounter errorsCounter = new ThreadSafeCounter();
             IUniqueIdFactory<int> idFactory = new IdFactory();
+            GlobalCounters globalCounters = new GlobalCounters(errorsCounter, idFactory);
             IIterationControl context = new IterationContext(0, timer);
 
-            ReplayScenarioHandler<TData> handler = new ReplayScenarioHandler<TData>(idFactory, scenario, context);
+            ReplayScenarioHandler<TData> handler = new ReplayScenarioHandler<TData>(globalCounters, scenario, context);
 
             timer.Start();
 

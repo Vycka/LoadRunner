@@ -10,25 +10,25 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Factory
 {
     public class ReplayScenarioHandlerFactory<TData> : IReplayScenarioHandlerFactory
     {
-        private readonly IUniqueIdFactory<int> _globalIdFactory;
+        private readonly IGlobalCountersControl _globalCounters;
         private readonly IFactory<IReplayScenario<TData>> _scenarioFactory;
 
 
-        public ReplayScenarioHandlerFactory(IFactory<IReplayScenario<TData>> scenarioFactory, IUniqueIdFactory<int> globalIdFactory)
+        public ReplayScenarioHandlerFactory(IFactory<IReplayScenario<TData>> scenarioFactory, IGlobalCountersControl globalCounters)
         {
             if (scenarioFactory == null)
                 throw new ArgumentNullException(nameof(scenarioFactory));
-            if (globalIdFactory == null)
-                throw new ArgumentNullException(nameof(globalIdFactory));
+            if (globalCounters == null)
+                throw new ArgumentNullException(nameof(globalCounters));
 
             _scenarioFactory = scenarioFactory;
-            _globalIdFactory = globalIdFactory;
+            _globalCounters = globalCounters;
         }
 
         public IReplayScenarioHandler Create(IIterationControl iterationContext)
         {
             IReplayScenario<TData> scenarioInstance = _scenarioFactory.Create(iterationContext.ThreadId);
-            IReplayScenarioHandler scenarioHandler = new ReplayScenarioHandler<TData>(_globalIdFactory, scenarioInstance, iterationContext);
+            IReplayScenarioHandler scenarioHandler = new ReplayScenarioHandler<TData>(_globalCounters, scenarioInstance, iterationContext);
 
             return scenarioHandler;
         }

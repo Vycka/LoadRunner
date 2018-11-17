@@ -43,7 +43,6 @@ namespace Viki.LoadRunner.Tools.Extensions
                 JsonSerializer serializer = CreateSerializer();
 
                 writer.WriteStartArray();
-                long index = 0;
                 foreach (var item in sequence)
                 {
                     serializer.Serialize(writer, item);
@@ -58,7 +57,7 @@ namespace Viki.LoadRunner.Tools.Extensions
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 MissingMemberHandling = MissingMemberHandling.Ignore,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize
             };
 
             return serializer;

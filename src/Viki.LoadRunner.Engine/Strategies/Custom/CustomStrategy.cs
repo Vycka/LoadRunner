@@ -7,6 +7,7 @@ using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Pool.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.State;
 using Viki.LoadRunner.Engine.Core.State.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
@@ -32,18 +33,16 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
     // - Not sure how with limits
     public class CustomStrategy : IStrategy
     {
-        public ITimer Timer => _timer;
         private readonly ExecutionTimer _timer;
 
         private readonly ICustomStrategySettings _settings;
 
-
         private IErrorHandler _errorHandler;
-        private IUniqueIdFactory<int> _globalIdFactory;
-        private IThreadPoolCounter _counter;
-
+        
         private ThreadPool _pool;
-
+        private IThreadPoolCounter _threadPoolCounter;
+        
+        private GlobalCounters _globalCounters;
 
         private ISpeedStrategy _speed;
         private IThreadingStrategy _threading;
@@ -78,11 +77,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             else
                 _aggregator = new AsyncAggregator(_settings.Aggregators);
 
-            _counter = new ThreadPoolCounter();
-            _errorHandler = new ErrorHandler();
-            _globalIdFactory = new IdFactory();
+            _globalCounters = GlobalCounters.CreateDefault();
 
-            _state = new TestState(_timer, _globalIdFactory, _counter);
+            _errorHandler = new ErrorHandler();
 
             _speed = PriorityStrategyFactory.Create(_settings.Speeds, _timer);
             _speed.Setup(_state);
@@ -90,8 +87,11 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             _limit = new LimitsHandler(_settings.Limits);
             _threading = _settings.Threading;
 
-            _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
+            _threadPoolCounter = new ThreadPoolCounter();
+            _pool = new ThreadPool(CreateWorkerThreadFactory(), _threadPoolCounter);
 
+            _state = new TestState(_timer, _globalCounters, _threadPoolCounter);
+            
             InitialThreadingSetup();
         }
 
@@ -149,7 +149,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             if (_settings.Aggregators.IsNullOrEmpty())
                 result = new NullDataCollectorFactory();
             else
-                result = new DataCollectorFactory(_aggregator, _counter);
+                result = new DataCollectorFactory(_aggregator, _threadPoolCounter);
 
             return result;
         }
@@ -161,14 +161,14 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             if (_settings.Speeds.IsNullOrEmpty())
                 result = new NullSchedulerFactory();
             else
-                result = new SchedulerFactory(_timer, _speed, _counter);
+                result = new SchedulerFactory(_timer, _speed, _threadPoolCounter);
 
             return result;
         }
 
         private IScenarioHandlerFactory CreateScenarioHandlerFactory()
         {
-            return new ScenarioHandlerFactory(_settings.ScenarioFactory, _globalIdFactory);
+            return new ScenarioHandlerFactory(_settings.ScenarioFactory, _globalCounters);
         }
 
         private IIterationContextFactory CreateIterationContextFactory()
@@ -180,7 +180,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
         {
             _threading.Setup(_pool);
 
-            while (_counter.CreatedThreadCount != _counter.InitializedThreadCount)
+            while (_threadPoolCounter.CreatedThreadCount != _threadPoolCounter.InitializedThreadCount)
             {
                 Thread.Sleep(100);
                 _errorHandler.Assert();

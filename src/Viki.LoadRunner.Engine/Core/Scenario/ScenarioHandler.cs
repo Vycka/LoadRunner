@@ -8,22 +8,22 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
     {
         private readonly IScenario _scenario;
 
-        protected readonly IUniqueIdFactory<int> _globalIdFactory;
+        protected readonly IGlobalCountersControl _globalCounters;
         protected readonly IIterationControl _context;
 
         protected int _threadIterationId;
 
-        public ScenarioHandler(IUniqueIdFactory<int> globalIdFactory, IScenario scenario, IIterationControl context)
+        public ScenarioHandler(IGlobalCountersControl globalCounters, IScenario scenario, IIterationControl context)
         {
-            if (globalIdFactory == null)
-                throw new ArgumentNullException(nameof(globalIdFactory));
+            if (globalCounters == null)
+                throw new ArgumentNullException(nameof(globalCounters));
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
             _scenario = scenario;
             _context = context;
 
-            _globalIdFactory = globalIdFactory;
+            _globalCounters = globalCounters;
             _threadIterationId = 0;
         }
 
@@ -41,7 +41,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
         /// </summary>
         public void PrepareNext()
         {
-            _context.Reset(_threadIterationId++, _globalIdFactory.Next());
+            _context.Reset(_threadIterationId++, _globalCounters.IterationId.Next());
         }
 
         /// <summary>
@@ -91,6 +91,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
             }
             catch (Exception ex)
             {
+                _globalCounters.Errors.Add(1);
                 _context.SetError(ex);
             }
 

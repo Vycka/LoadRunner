@@ -14,8 +14,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scenario
 
         private readonly DataContext<TData> _dataContext;
 
-        public ReplayScenarioHandler(IUniqueIdFactory<int> globalIdFactory, IReplayScenario<TData> scenario, IIterationControl context) 
-            : base(globalIdFactory, scenario, context)
+        public ReplayScenarioHandler(IGlobalCountersControl globalCounters, IReplayScenario<TData> scenario, IIterationControl context) 
+            : base(globalCounters, scenario, context)
         {
             _scenario = scenario;
 

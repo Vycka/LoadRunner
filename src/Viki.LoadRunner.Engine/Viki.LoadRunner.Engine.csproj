@@ -77,6 +77,9 @@
     <Compile Include="Core\Pool\WorkerThreadStats.cs" />
     <Compile Include="Core\Scenario\CheckpointExtensions.cs" />
     <Compile Include="Core\Scenario\Interfaces\IIterationResult.cs" />
+    <Compile Include="Core\Scenario\Interfaces\IGlobalCounters.cs" />
+    <Compile Include="Core\Scenario\Interfaces\IGlobalCountersControl.cs" />
+    <Compile Include="Core\Scenario\GlobalCounters.cs" />
     <Compile Include="Core\Scheduler\NullScheduler.cs" />
     <Compile Include="Core\Scheduler\Interfaces\IWait.cs" />
     <Compile Include="Core\Scheduler\SemiWait.cs" />
@@ -149,6 +152,7 @@
     <Compile Include="Core\Scenario\Checkpoint.cs" />
     <Compile Include="Core\Scenario\Interfaces\IIteration.cs" />
     <Compile Include="Strategies\Custom\CustomStrategy.cs" />
+    <Compile Include="Strategies\Custom\Strategies\Limit\ErrorLimit.cs" />
     <Compile Include="Strategies\Custom\Strategies\Speed\BatchingSpeed.cs" />
     <Compile Include="Strategies\Extensions\FeatureExtensions.cs" />
     <Compile Include="Strategies\Extensions\StrategyBuilderExtensions.cs" />

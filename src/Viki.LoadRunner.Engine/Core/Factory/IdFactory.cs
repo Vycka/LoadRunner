@@ -16,7 +16,5 @@ namespace Viki.LoadRunner.Engine.Core.Factory
 
         public int Current => _id;
         public int Value => _id;
-
-
     }
 }

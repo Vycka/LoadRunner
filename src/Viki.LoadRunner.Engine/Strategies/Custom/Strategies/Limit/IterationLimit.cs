@@ -21,7 +21,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit
 
         bool ILimitStrategy.StopTest(ITestState state)
         {
-            return _iterationsLimit <= state.GlobalIterationId - state.ThreadPool.IdleThreadCount;
+            return _iterationsLimit <= state.Counters.LastGlobalIterationId - state.ThreadPool.IdleThreadCount;
         }
     }
 }

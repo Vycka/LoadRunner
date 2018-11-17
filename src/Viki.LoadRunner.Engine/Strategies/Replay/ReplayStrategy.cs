@@ -7,6 +7,7 @@ using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Pool.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Timer;
 using Viki.LoadRunner.Engine.Core.Worker;
 using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
@@ -29,7 +30,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
         private IAggregator _aggregator;
         private IReplayDataReader _dataReader;
         private IErrorHandler _errorHandler;
-        private IUniqueIdFactory<int> _globalIdFactory;
         private IThreadPoolCounter _counter;
         private ThreadPool _pool;
 
@@ -59,11 +59,11 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
             else
                 _aggregator = new AsyncAggregator(_settings.Aggregators);
 
-            _counter = new ThreadPoolCounter();
+            
             _errorHandler = new ErrorHandler();
-            _globalIdFactory = new IdFactory();
             _dataReader = _settings.DataReader;
 
+            _counter = new ThreadPoolCounter();
             _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
 
             _pool.StartWorkersAsync(_settings.ThreadCount);
@@ -109,7 +109,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
         private IReplayScenarioHandlerFactory CreateScenarioHandlerFactory()
         {
-            return new ReplayScenarioHandlerFactory<TData>(_settings.ScenarioFactory, _globalIdFactory);
+            return new ReplayScenarioHandlerFactory<TData>(_settings.ScenarioFactory, GlobalCounters.CreateDefault());
         }
 
         private IReplaySchedulerFactory CreateSchedulerFactory()
@@ -132,7 +132,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
         public bool HeartBeat()
         {
             _errorHandler.Assert();
-            // ReplayScheduler stops threads when IDataReader doesn't return any new jobs.
+            // ReplayScheduler stops threads when IDataReader rans out of replay items.
             return _counter.CreatedThreadCount == 0;
         }
 

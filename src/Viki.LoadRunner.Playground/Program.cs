@@ -14,9 +14,9 @@ namespace Viki.LoadRunner.Playground
 
         static void Main()
         {
-            //BlankScenario.Run();
+            BlankScenario.Run();
 
-            ReplayDemo.Run();
+            //ReplayDemo.Run();
 
             //BatchStrategyDemo.Run();
 
