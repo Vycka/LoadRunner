@@ -57,7 +57,7 @@ namespace Viki.LoadRunner.Tools.Aggregators
 
         public static IEnumerable<ReplayResult<TUserData>> Load<TUserData>(string jsonResultsFile)
         {
-            return JsonStream.DeserializeSequenceFromJson<ReplayResult<TUserData>>(jsonResultsFile);
+            return JsonStream.DeserializeFromJson<ReplayResult<TUserData>>(jsonResultsFile);
         }
 
         #endregion
