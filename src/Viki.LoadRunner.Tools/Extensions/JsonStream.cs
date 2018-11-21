@@ -18,7 +18,7 @@ namespace Viki.LoadRunner.Tools.Extensions
                 JsonSerializer serializer = CreateSerializer();
 
                 if (!reader.Read() || reader.TokenType != JsonToken.StartArray)
-                    throw new Exception("Expected start of array in the deserialized json string");
+                    throw new Exception("Expected start of array in the deserialized bson strem");
 
                 while (reader.Read())
                 {
@@ -29,24 +29,24 @@ namespace Viki.LoadRunner.Tools.Extensions
             }
         }
 
-        public static IEnumerable<T> DeserializeFromBson<T>(string fileName)
-        {
-            using (var fileStream = File.Open(fileName, FileMode.Open))
-            using (var reader = new BsonReader(fileStream))
-            {
-                JsonSerializer serializer = CreateSerializer();
+        //public static IEnumerable<T> DeserializeFromBson<T>(string fileName)
+        //{
+        //    using (var fileStream = File.Open(fileName, FileMode.Open))
+        //    using (var reader = new BsonReader(fileStream))
+        //    {
+        //        JsonSerializer serializer = CreateSerializer();
 
-                if (!reader.Read() || reader.TokenType != JsonToken.StartArray)
-                    throw new Exception("Expected start of array in the deserialized json string");
+        //        if (!reader.Read() || reader.TokenType != JsonToken.StartArray)
+        //            throw new Exception("Expected start of array in the deserialized bson strem");
 
-                while (reader.Read())
-                {
-                    if (reader.TokenType == JsonToken.EndArray) break;
-                    var item = serializer.Deserialize<T>(reader);
-                    yield return item;
-                }
-            }
-        }
+        //        while (reader.Read())
+        //        {
+        //            if (reader.TokenType == JsonToken.EndArray) break;
+        //            var item = serializer.Deserialize<T>(reader);
+        //            yield return item;
+        //        }
+        //    }
+        //}
 
         //Utility methods to operate on streams instead of file
         public static void SerializeToJson<T>(this IEnumerable<T> sequence, string fileName)
@@ -58,16 +58,16 @@ namespace Viki.LoadRunner.Tools.Extensions
             }
         }
 
-        public static void SerializeToBson<T>(this IEnumerable<T> sequence, string fileName)
-        {
-            using (var streamWriter = File.Create(fileName))
-            using (var writer = new BsonWriter(streamWriter))
-            {
-                SerializeTo(sequence, writer);
-            }
-        }
+        //public static void SerializeToBson<T>(this IEnumerable<T> sequence, string fileName)
+        //{
+        //    using (var streamWriter = File.Create(fileName))
+        //    using (var writer = new BsonWriter(streamWriter))
+        //    {
+        //        SerializeTo(sequence, writer);
+        //    }
+        //}
 
-        public static void SerializeTo<T>(this IEnumerable<T> sequence, JsonWriter writer)
+        private static void SerializeTo<T>(this IEnumerable<T> sequence, JsonWriter writer)
         {
                 JsonSerializer serializer = CreateSerializer();
 

@@ -7,36 +7,25 @@ using Viki.LoadRunner.Tools.Extensions;
 
 namespace Viki.LoadRunner.Tools.Aggregators
 {
-    public class JsonStreamAggregator : StreamAggregator
+    public class JsonStreamAggregator : FileStreamAggregatorBase
     {
-        #region Fields
-
-        private readonly Func<string> _outFileNameFunc;
-
-        #endregion
-
         #region Constructors
 
-        public JsonStreamAggregator(string jsonOutputfile) : this(() => jsonOutputfile)
+        public JsonStreamAggregator(string jsonOutputfile) : base(jsonOutputfile)
         {
         }
 
-        public JsonStreamAggregator(Func<string> dynamicJsonOutputFile)
+        public JsonStreamAggregator(Func<string> dynamicJsonOutputFile) : base(dynamicJsonOutputFile)
         {
-            _outFileNameFunc = dynamicJsonOutputFile;
-
-            _streamWriterAction = StreamWriterFunction;
         }
 
         #endregion
 
-        #region Write function
+        #region FileStreamAggregatorBase Write()
 
-        private void StreamWriterFunction(IEnumerable<IResult> results)
+        public override void Write(string filePath, IEnumerable<IResult> stream)
         {
-            string fileName = _outFileNameFunc();
-
-            results.SerializeToJson(fileName);
+            stream.SerializeToJson(filePath);
         }
 
         #endregion
@@ -52,7 +41,7 @@ namespace Viki.LoadRunner.Tools.Aggregators
         {
             IEnumerable<IResult> resultsStream = Load<TUserData>(jsonResultsFile);
 
-            Replay(resultsStream, targetAggregators);
+            StreamAggregator.Replay(resultsStream, targetAggregators);
         }
 
         public static IEnumerable<ReplayResult<TUserData>> Load<TUserData>(string jsonResultsFile)

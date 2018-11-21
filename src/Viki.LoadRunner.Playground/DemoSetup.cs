@@ -72,7 +72,7 @@ namespace Viki.LoadRunner.Playground
                 .SetAggregator(new JsonStreamAggregator("wat.txt"));
 
 
-            IStrategyExecutor engine = strategy.BuildUi(new ScenarioValidator(new ScenarioFactory(typeof(BlankScenario))));
+            IStrategyExecutor engine = strategy.BuildUi(new ScenarioValidator(strategy.ScenarioFactory));
             engine.Run();
 
             JsonStreamAggregator.Replay("wat.txt", histogramAggregator);

@@ -121,9 +121,6 @@ namespace Viki.LoadRunner.Engine.Core.Worker
                 {
                     _work.Execute(ref _stopQueued);
                 }
-
-                _work.Cleanup();
-
             }
             catch (Exception ex)
             {
@@ -131,6 +128,15 @@ namespace Viki.LoadRunner.Engine.Core.Worker
             }
             finally
             {
+                try
+                {
+                    _work.Cleanup();
+                }
+                catch (Exception ex)
+                {
+                    OnThreadError(ex);
+                }
+
                 OnThreadFinished();
             }
         }

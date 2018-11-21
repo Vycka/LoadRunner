@@ -16,15 +16,18 @@ namespace Viki.LoadRunner.Playground
         {
             BlankScenario.Run();
 
-            ReplayDemo.Run();
+            //ReplayDemo.Run();
 
-            BatchStrategyDemo.Run();
+            //BatchStrategyDemo.Run();
 
             //new BlankFromBase().Validate();
 
             //DemoSetup.Run();
 
             //LimitConcurrencyAndTpsDemo.Run();
+
+            // Warning! Hdd/sdd intensive usage with this one
+            //BlankStressScenarioJsonStream.Run();
 
             Console.ReadKey();
 

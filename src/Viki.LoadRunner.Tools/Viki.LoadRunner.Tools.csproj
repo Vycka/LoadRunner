@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aggregators\BsonStreamAggregator.cs" />
+    <Compile Include="Aggregators\FileStreamAggregator.cs" />
     <Compile Include="Aggregators\JsonStreamAggregator.cs" />
     <Compile Include="ConsoleUi\KpiPrinterAggregator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

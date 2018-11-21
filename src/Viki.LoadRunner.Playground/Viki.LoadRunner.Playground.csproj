@@ -51,8 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BatchStrategy.cs" />
-    <Compile Include="BlankFromBase.cs" />
     <Compile Include="BlankScenario.cs" />
+    <Compile Include="BlankStressScenarioJsonStream.cs" />
     <Compile Include="FaultyAggregator.cs" />
     <Compile Include="LimitConcurrencyAndTpsDemo.cs" />
     <Compile Include="Program.cs" />

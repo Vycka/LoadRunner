@@ -4,11 +4,13 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 using Viki.LoadRunner.Engine.Strategies.Extensions;
+using Viki.LoadRunner.Tools.ConsoleUi;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -20,6 +22,12 @@ namespace Viki.LoadRunner.Playground
                 .Add(new TimeDimension(TimeSpan.FromSeconds(2)))
                 .Add(new CountMetric())
                 .Add(new TransactionsPerSecMetric());
+
+            //var kpiAggregator = new KpiPrinterAggregator(
+            //    TimeSpan.FromSeconds(1),
+            //    new MaxDurationMetric(),
+            //    new CountMetric(Checkpoint.NotMeassuredCheckpoints),
+            //    new TransactionsPerSecMetric());
 
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario<BlankScenario>()

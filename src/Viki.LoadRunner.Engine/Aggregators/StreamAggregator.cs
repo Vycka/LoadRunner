@@ -11,16 +11,11 @@ namespace Viki.LoadRunner.Engine.Aggregators
     /// <summary>
     /// StreamAggregator provides loadtest raw/masterdata (IResult) IEnumerable stream 
     /// </summary>
-    public class StreamAggregator : IAggregator
+    public class StreamAggregator : StreamAggregatorBase
     {
         #region Fields
 
         protected Action<IEnumerable<IResult>> _streamWriterAction;
-
-        private readonly ConcurrentQueue<IResult> _queue = new ConcurrentQueue<IResult>();
-
-        private Task _writerTask;
-        private bool _stopTask;
 
         #endregion
 
@@ -38,56 +33,15 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _streamWriterAction = streamWriterAction;
         }
 
-        protected StreamAggregator()
+        public StreamAggregator()
         {
         }
 
         #endregion
 
-        #region EnumerableQueue
+        #region Override
 
-        private IEnumerable<IResult> EnumerableQueue
-        {
-            get
-            {
-                while (_stopTask == false || _queue.IsEmpty == false)
-                {
-                    IResult result;
-
-                    while (_queue.TryDequeue(out result))
-                        yield return result;
-
-                    Thread.Sleep(100);
-                }
-            }
-        }
-
-        #endregion
-
-        #region IResultsAggregator
-
-        void IAggregator.Begin()
-        {
-            _stopTask = false;
-
-            _writerTask = new Task(() => _streamWriterAction(EnumerableQueue), TaskCreationOptions.LongRunning);
-            _writerTask.Start();
-        }
-
-        void IAggregator.Aggregate(IResult result)
-        {
-            if (_writerTask?.Exception != null)
-                throw _writerTask.Exception;
-
-            _queue.Enqueue(result);
-        }
-
-        void IAggregator.End()
-        {
-            _stopTask = true;
-
-            _writerTask?.Wait();
-        }
+        protected override void Process(IEnumerable<IResult> stream) => _streamWriterAction(stream);
 
         #endregion
 
@@ -113,34 +67,4 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #endregion
     }
-
-    public class BufferedEnumerable<T>
-    {
-        private readonly ConcurrentQueue<T> _queue = new ConcurrentQueue<T>();
-
-        public bool Lock;
-
-        public IEnumerable<T> Buffer
-        {
-            get
-            {
-                while (Lock == true || _queue.IsEmpty == false)
-                {
-                    T result;
-
-                    while (_queue.TryDequeue(out result))
-                        yield return result;
-
-                    Thread.Sleep(100);
-                }
-            }
-        }
-
-        public void Add(T item)
-        {
-            _queue.Enqueue(item);
-        }
-    }
-
-
 }

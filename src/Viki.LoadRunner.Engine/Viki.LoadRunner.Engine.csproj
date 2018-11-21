@@ -44,11 +44,14 @@
   <ItemGroup>
     <Compile Include="Aggregators\Dimensions\TimeDimension.cs" />
     <Compile Include="Aggregators\Dimensions\FuncDimension.cs" />
+    <Compile Include="Aggregators\FileStreamAggregatorBase.cs" />
     <Compile Include="Aggregators\Interfaces\IDimension.cs" />
     <Compile Include="Aggregators\HistogramAggregator.cs" />
     <Compile Include="Aggregators\Metrics\KpiDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\PeriodMetric.cs" />
     <Compile Include="Aggregators\NullAggregator.cs" />
+    <Compile Include="Aggregators\StreamAggregatorBase.cs" />
+    <Compile Include="Aggregators\Utils\BlockingCollectionSingle.cs" />
     <Compile Include="Analytics\DimensionKey.cs" />
     <Compile Include="Analytics\DimensionsHandler.cs" />
     <Compile Include="Analytics\Extensions\HistogramExtensions.cs" />
@@ -86,6 +89,7 @@
     <Compile Include="Core\Timer\Interfaces\ITimerControl.cs" />
     <Compile Include="Interfaces\IStrategyExecutor.cs" />
     <Compile Include="Interfaces\IStrategyExecutorAsync.cs" />
+    <Compile Include="Strategies\Custom\Adapter\Aggregator\AsyncAggregatorBlockingCollection.cs" />
     <Compile Include="Strategies\Custom\Adapter\Aggregator\AsyncAggregator.cs" />
     <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\BreakByMetric.cs" />
