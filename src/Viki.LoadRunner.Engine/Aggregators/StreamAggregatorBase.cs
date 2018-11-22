@@ -18,7 +18,11 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         #endregion
 
+        #region Abstract
+
         protected abstract void Process(IEnumerable<IResult> stream);
+
+        #endregion
 
         #region IResultsAggregator
 

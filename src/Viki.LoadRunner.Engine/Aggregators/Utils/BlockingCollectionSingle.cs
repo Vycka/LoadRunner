@@ -5,7 +5,7 @@ using System.Threading;
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
     /// <summary>
-    /// Specialized BlockingCollection to increase performence of LoadRunner pipleline.
+    /// Specialized BlockingCollection to increase performance of LoadRunner pipleline.
     ///  * It only works correctly with one producer and one consumer, doing more will break it.
     ///  * its only eventually consistent (things added not always gets read with upcomming read attempts)
     ///  * CompleteAdding doesn't prevent adding more, and as long as you are not fast enough to read it, EnumerableQueue stays active
@@ -31,7 +31,9 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
                     while (_readOnlyQueue.Count != 0)
                         yield return _readOnlyQueue.Dequeue();
 
-                    _writeOnlyQueue = Interlocked.Exchange(ref _readOnlyQueue, _writeOnlyQueue);
+                    if (_addingCompleted && _writeOnlyQueue.Count != 0)
+                        SwitchQueues();
+
                     Thread.Sleep(100);
                 }
             }
@@ -40,6 +42,14 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
         public void Add(T item)
         {
             _writeOnlyQueue.Enqueue(item);
+
+            if (_addingCompleted == false && _readOnlyQueue.Count == 0)
+                SwitchQueues();
+        }
+
+        private void SwitchQueues()
+        {
+            _writeOnlyQueue = Interlocked.Exchange(ref _readOnlyQueue, _writeOnlyQueue);
         }
 
         public void CompleteAdding()
