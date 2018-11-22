@@ -62,6 +62,7 @@
     <Compile Include="Replay\DataGenerator.cs" />
     <Compile Include="Replay\ReplayScenario.cs" />
     <Compile Include="Replay\ReplayDemo.cs" />
+    <Compile Include="TheoreticalSpeedDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

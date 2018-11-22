@@ -16,6 +16,8 @@ namespace Viki.LoadRunner.Playground
         {
             BlankScenario.Run();
 
+            TheoreticalSpeedDemo.Run();
+
             //BlankStressScenarioMemoryStream.Run();
 
             //ReplayDemo.Run();
