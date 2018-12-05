@@ -14,13 +14,13 @@ namespace Viki.LoadRunner.Playground
 
         static void Main()
         {
-            BlankScenario.Run();
+            //BlankScenario.Run();
 
-            TheoreticalSpeedDemo.Run();
+            //TheoreticalSpeedDemo.Run();
 
             //BlankStressScenarioMemoryStream.Run();
 
-            //ReplayDemo.Run();
+            ReplayDemo.Run();
 
             //BatchStrategyDemo.Run();
 

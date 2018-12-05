@@ -51,6 +51,7 @@
     <Compile Include="Aggregators\Metrics\PeriodMetric.cs" />
     <Compile Include="Aggregators\NullAggregator.cs" />
     <Compile Include="Aggregators\StreamAggregatorBase.cs" />
+    <Compile Include="Core\Collector\Pipeline\BatchingQueue.cs" />
     <Compile Include="Aggregators\Utils\BlockingCollectionSingle.cs" />
     <Compile Include="Analytics\DimensionKey.cs" />
     <Compile Include="Analytics\DimensionsHandler.cs" />
@@ -63,6 +64,9 @@
     <Compile Include="Analytics\MetricsHandler.cs" />
     <Compile Include="Analytics\Metrics\ValuesMetric.cs" />
     <Compile Include="Core\Collector\NullDataCollector.cs" />
+    <Compile Include="Core\Collector\Pipeline\EnumerableQueue.cs" />
+    <Compile Include="Core\Collector\Pipeline\Interfaces\IConsumer.cs" />
+    <Compile Include="Core\Collector\Pipeline\Interfaces\IProducer.cs" />
     <Compile Include="Core\Factory\DataCollectorFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IFactory.cs" />
     <Compile Include="Core\Factory\NullDataCollectorFactory.cs" />

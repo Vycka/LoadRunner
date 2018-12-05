@@ -81,17 +81,18 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
             _errorHandler = new ErrorHandler();
 
+            _limit = new LimitsHandler(_settings.Limits);
+            _threading = _settings.Threading;
+            
+            _threadPoolCounter = new ThreadPoolCounter();
+            
+            _state = new TestState(_timer, _globalCounters, _threadPoolCounter);
+
             _speed = PriorityStrategyFactory.Create(_settings.Speeds, _timer);
             _speed.Setup(_state);
 
-            _limit = new LimitsHandler(_settings.Limits);
-            _threading = _settings.Threading;
-
-            _threadPoolCounter = new ThreadPoolCounter();
             _pool = new ThreadPool(CreateWorkerThreadFactory(), _threadPoolCounter);
 
-            _state = new TestState(_timer, _globalCounters, _threadPoolCounter);
-            
             InitialThreadingSetup();
         }
 

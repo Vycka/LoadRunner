@@ -117,11 +117,6 @@ namespace Viki.LoadRunner.Playground
 
             if (Random.Next(100) % 10 == 0)
                 throw new Exception("10% error chance for testing");
-
-            dynamic x = new ExpandoObject();
-            x.AA = "bb";
-
-            context.UserData = x;
         }
 
 
