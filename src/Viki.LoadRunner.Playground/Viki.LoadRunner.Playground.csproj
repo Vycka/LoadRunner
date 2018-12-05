@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssertPipeline.cs" />
     <Compile Include="BatchStrategy.cs" />
     <Compile Include="BlankScenario.cs" />
     <Compile Include="BlankStressScenarioMemoryStream.cs" />
@@ -63,6 +64,8 @@
     <Compile Include="Replay\ReplayScenario.cs" />
     <Compile Include="Replay\ReplayDemo.cs" />
     <Compile Include="TheoreticalSpeedDemo.cs" />
+    <Compile Include="Tools\CountingScenario.cs" />
+    <Compile Include="Tools\CountingScenarioFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -78,6 +81,7 @@
       <Name>Viki.LoadRunner.Tools</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

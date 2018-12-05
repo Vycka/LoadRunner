@@ -4,10 +4,10 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 {
     public interface IConsumer<T>
     {
-        IReadOnlyList<T> TryLockBatch();
+        bool TryLockBatch(out IReadOnlyList<T> batch);
 
         void ReleaseBatch();
 
-        bool Completed { get; }
+        bool Available { get; }
     }
 }

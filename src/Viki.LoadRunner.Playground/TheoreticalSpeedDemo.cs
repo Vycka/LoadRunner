@@ -9,16 +9,15 @@ using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 using Viki.LoadRunner.Engine.Strategies.Extensions;
+using Viki.LoadRunner.Playground.Tools;
 
 namespace Viki.LoadRunner.Playground
 {
-    public class TheoreticalSpeedDemo : IScenarioFactory
+    public class TheoreticalSpeedDemo
     {
-        List<TheoreticalScenario> _instances = new List<TheoreticalScenario>();
-
         public static void Run()
         {
-            TheoreticalSpeedDemo scenarioFactory = new TheoreticalSpeedDemo();
+            CountingScenarioFactory scenarioFactory = new CountingScenarioFactory();
 
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario(scenarioFactory)
@@ -34,18 +33,10 @@ namespace Viki.LoadRunner.Playground
             watch.Start();
             engine.Run();
             watch.Stop();
+
+            scenarioFactory.PrintSum();
+            Console.WriteLine($@"TPS {scenarioFactory.GetSum() / watch.Elapsed.TotalSeconds:N}");
             Console.WriteLine(watch.Elapsed.ToString("g"));
-
-
-            List<TheoreticalScenario> instances = scenarioFactory._instances;
-            string perThread = String.Join(Environment.NewLine, instances.Select(i => $"{i.ThreadId} {i.Count}"));
-            int sum = instances.Sum(i => i.Count);
-            
-            Console.WriteLine(perThread);
-            Console.WriteLine(@"-------");
-            Console.WriteLine(sum);
-            Console.WriteLine($@"TPS {sum / watch.Elapsed.TotalSeconds:N}");
-
 
             /*
                 i5-4670
@@ -60,43 +51,6 @@ namespace Viki.LoadRunner.Playground
              */
         }
 
-        public IScenario Create(int threadId)
-        {
-            TheoreticalScenario scenario = new TheoreticalScenario();
-            _instances.Add(scenario);
 
-            return scenario;
-        }
-    }
-
-    public class TheoreticalScenario : IScenario
-    {
-        public int Count = 0;
-        public int ThreadId;
-
-        public void ScenarioSetup(IIteration context)
-        {
-            ThreadId = context.ThreadId;
-        }
-
-        public void IterationSetup(IIteration context)
-        {
-
-        }
-
-        public void ExecuteScenario(IIteration context)
-        {
-            Count = Count + 1;
-        }
-
-        public void IterationTearDown(IIteration context)
-        {
-
-        }
-
-        public void ScenarioTearDown(IIteration context)
-        {
-
-        }
     }
 }

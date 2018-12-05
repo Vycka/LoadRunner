@@ -51,6 +51,7 @@ namespace Viki.LoadRunner.Engine.Core.Worker
 
         public void Cleanup()
         {
+            _collector.Complete();
             _handler.Cleanup();
         }
     }

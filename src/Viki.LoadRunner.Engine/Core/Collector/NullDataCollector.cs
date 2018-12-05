@@ -7,5 +7,9 @@ namespace Viki.LoadRunner.Engine.Core.Collector
         public void Collect()
         {
         }
+
+        public void Complete()
+        {
+        }
     }
 }

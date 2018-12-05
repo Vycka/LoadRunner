@@ -3,5 +3,7 @@
     public interface IDataCollector
     {
         void Collect();
+
+        void Complete();
     }
 }

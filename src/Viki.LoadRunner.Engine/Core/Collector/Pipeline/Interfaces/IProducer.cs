@@ -4,6 +4,6 @@
     {
         void Produce(T item);
 
-        void FinishProducing();
+        void ProducingCompleted();
     }
 }

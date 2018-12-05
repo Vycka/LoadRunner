@@ -30,5 +30,10 @@ namespace Viki.LoadRunner.Engine.Core.Collector
         {
             _aggregator.Aggregate(new IterationResult(_context, _poolStats));
         }
+
+        public void Complete()
+        {
+            
+        }
     }
 }

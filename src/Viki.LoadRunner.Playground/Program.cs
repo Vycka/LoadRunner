@@ -16,11 +16,13 @@ namespace Viki.LoadRunner.Playground
         {
             //BlankScenario.Run();
 
+            AssertPipeline.Run();
+
             //TheoreticalSpeedDemo.Run();
 
             //BlankStressScenarioMemoryStream.Run();
 
-            ReplayDemo.Run();
+            //ReplayDemo.Run();
 
             //BatchStrategyDemo.Run();
 
