@@ -5,11 +5,13 @@ using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
+using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
+using Viki.LoadRunner.Engine.Strategies.Extensions;
 
 namespace LoadRunner.Demo.Minimum
 {
@@ -71,7 +73,6 @@ namespace LoadRunner.Demo.Minimum
 
             IEnumerable<object> result = aggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            Console.ReadKey();
         }
     }
 }

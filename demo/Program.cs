@@ -1,4 +1,5 @@
-﻿using LoadRunner.Demo.Detailed;
+﻿using System;
+using LoadRunner.Demo.Detailed;
 using LoadRunner.Demo.Features;
 using LoadRunner.Demo.Minimum;
 
@@ -24,15 +25,19 @@ namespace LoadRunner.Demo
             // Other then that, just follow BareMinimum/DetailedDemo for setup example
 
             // #1
+            Console.WriteLine("Demo #1");
             MinimalDemo.Run();
 
 
             // #2
-            // DetailedDemo.Run();
+            Console.WriteLine("Demo #2");
+            DetailedDemo.Run();
 
 
             // Optional but useful advanced feature worth checking out before running real test.
             RawDataAggregationDemo.Aggregate();
+
+            Console.ReadKey();
         }
     }
 }

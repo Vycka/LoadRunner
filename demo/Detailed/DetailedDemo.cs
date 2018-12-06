@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Strategies;
+using Viki.LoadRunner.Engine.Strategies.Extensions;
 
 namespace LoadRunner.Demo.Detailed
 {
@@ -33,7 +34,6 @@ namespace LoadRunner.Demo.Detailed
             IEnumerable<object> defaultResults = histogramAggregator.BuildResultsObjects();
 
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
-            Console.ReadKey();
 
             //Alternative export way is 
             // HistogramResults results = histogramAggregator.BuildResults();
