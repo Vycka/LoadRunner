@@ -66,8 +66,8 @@ namespace Viki.LoadRunner.Playground
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario<TestScenario>()
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(10)))
-                .SetThreading(new FixedThreadCount(8))
-                .SetSpeed(new FixedSpeed(20))
+                .SetThreading(new FixedThreadCount(40))
+                .SetSpeed(new FixedSpeed(7.42)) // Tps is lower in results due to failed iterations not being counted
                 .SetFinishTimeout(TimeSpan.FromSeconds(60))
                 .SetAggregator(new JsonStreamAggregator("wat.txt"));
 

@@ -30,6 +30,7 @@ namespace Viki.LoadRunner.Playground
 
             DemoSetup.Run();
 
+            // Broken
             //LimitConcurrencyAndTpsDemo.Run();
 
             // Warning! Hdd/sdd intensive usage with this one

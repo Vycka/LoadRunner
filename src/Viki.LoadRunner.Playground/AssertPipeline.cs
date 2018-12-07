@@ -16,7 +16,7 @@ namespace Viki.LoadRunner.Playground
 {
     public class AssertPipeline
     {
-        private static IResult[] _rawResults;
+        //private static IResult[] _rawResults;
 
         public static void Run()
         {
