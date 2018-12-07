@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Aggregators.Result;
 using Viki.LoadRunner.Engine.Aggregators.Utils;

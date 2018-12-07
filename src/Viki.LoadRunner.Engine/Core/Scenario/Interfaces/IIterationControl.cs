@@ -1,5 +1,4 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
 {

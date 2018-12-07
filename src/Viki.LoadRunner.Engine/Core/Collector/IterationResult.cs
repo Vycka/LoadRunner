@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Pool.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;

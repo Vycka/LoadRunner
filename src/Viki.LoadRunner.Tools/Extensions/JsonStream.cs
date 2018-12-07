@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Bson;
 
 namespace Viki.LoadRunner.Tools.Extensions
 {

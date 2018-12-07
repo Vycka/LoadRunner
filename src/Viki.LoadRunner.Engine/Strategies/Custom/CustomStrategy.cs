@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading;
-using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Core.Collector;
-using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory;
@@ -12,10 +10,8 @@ using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.State;
 using Viki.LoadRunner.Engine.Core.State.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
-using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
 using Viki.LoadRunner.Engine.Core.Worker;
 using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator;
 using Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Factory;
 using Viki.LoadRunner.Engine.Strategies.Custom.Interfaces;
@@ -26,7 +22,6 @@ using ThreadPool = Viki.LoadRunner.Engine.Core.Pool.ThreadPool;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom
 {
-
     // TODO: Split into Custom Stragegy : Generic Strategy
     // - Generic one will have n handlers like Speed / Collector / etc...
     //   Using dynamic compiling?
@@ -39,10 +34,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
         private readonly ICustomStrategySettings _settings;
 
         private IErrorHandler _errorHandler;
-        
+
         private ThreadPool _pool;
         private IThreadPoolCounter _threadPoolCounter;
-        
+
         private GlobalCounters _globalCounters;
 
         private ISpeedStrategy _speed;
@@ -56,7 +51,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 
-            _settings = (ICustomStrategySettings)settings.ShallowCopy();
+            _settings = (ICustomStrategySettings) settings.ShallowCopy();
 
             _timer = new ExecutionTimer();
         }
@@ -78,7 +73,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
             _limit = new LimitsHandler(_settings.Limits);
             _threading = _settings.Threading;
-            
+
             _threadPoolCounter = new ThreadPoolCounter();
 
             _aggregator = new PipelineDataAggregator(_settings.Aggregators, _threadPoolCounter);
@@ -108,7 +103,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
         public void Stop()
         {
-            _pool?.StopAndDispose((int)_settings.FinishTimeout.TotalMilliseconds);
+            _pool?.StopAndDispose((int) _settings.FinishTimeout.TotalMilliseconds);
             _pool = null;
 
             _timer.Stop();

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading;
-using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Core.Collector;
-using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory;
@@ -12,7 +10,6 @@ using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Timer;
 using Viki.LoadRunner.Engine.Core.Worker;
 using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
-using Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory;
@@ -128,6 +125,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
         public bool HeartBeat()
         {
+            if (_aggregator.Error != null)
+                throw _aggregator.Error;
+
             _errorHandler.Assert();
             // ReplayScheduler stops threads when IDataReader rans out of replay items.
             return _counter.CreatedThreadCount == 0;

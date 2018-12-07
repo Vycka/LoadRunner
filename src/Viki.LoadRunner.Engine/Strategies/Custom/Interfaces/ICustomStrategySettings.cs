@@ -1,5 +1,4 @@
-﻿using System;
-using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+﻿using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 

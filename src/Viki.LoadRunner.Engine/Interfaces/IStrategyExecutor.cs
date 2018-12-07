@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Viki.LoadRunner.Engine.Interfaces
+﻿namespace Viki.LoadRunner.Engine.Interfaces
 {
     public interface IStrategyExecutor 
     {

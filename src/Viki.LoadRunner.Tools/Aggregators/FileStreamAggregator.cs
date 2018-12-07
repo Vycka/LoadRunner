@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Viki.LoadRunner.Engine.Aggregators;
-using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
-using Viki.LoadRunner.Tools.Extensions;
-
-namespace Viki.LoadRunner.Tools.Aggregators
+﻿namespace Viki.LoadRunner.Tools.Aggregators
 {
     //public abstract class FileStreamAggregator : StreamAggregator
     //{
