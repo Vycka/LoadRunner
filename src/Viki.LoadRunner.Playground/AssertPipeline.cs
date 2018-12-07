@@ -30,12 +30,13 @@ namespace Viki.LoadRunner.Playground
                 .SetScenario(factory)
                 .SetThreading(new FixedThreadCount(4))
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(10)))
-                .SetAggregator(new StreamAggregator(results => _rawResults = results.ToArray()));
+                //.SetAggregator(new StreamAggregator(results => _rawResults = results.ToArray()));
+                .SetAggregator(aggregator);
 
            
             strategy.Build().Run();
 
-            StreamAggregator.Replay(_rawResults, aggregator);
+            //StreamAggregator.Replay(_rawResults, aggregator);
 
             Console.WriteLine(JsonConvert.SerializeObject(aggregator.BuildResultsObjects(), Formatting.Indented));
             factory.PrintSum();

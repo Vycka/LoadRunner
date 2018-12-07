@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators;
+using Viki.LoadRunner.Engine.Core.Collector;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
@@ -48,8 +49,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
         private IThreadingStrategy _threading;
         private ILimitStrategy _limit;
         private ITestState _state;
-        private IAggregator _aggregator;
-
+        private PipelineDataAggregator _aggregator;
 
         public CustomStrategy(ICustomStrategySettings settings)
         {
@@ -65,18 +65,13 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
         {
             InitializeState();
 
-            _aggregator.Begin();
+            _aggregator.Start();
 
             _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
         }
 
         private void InitializeState()
         {
-            if (_settings.Aggregators.IsNullOrEmpty())
-                _aggregator = new NullAggregator();
-            else
-                _aggregator = new AsyncAggregator(_settings.Aggregators);
-
             _globalCounters = GlobalCounters.CreateDefault();
 
             _errorHandler = new ErrorHandler();
@@ -85,7 +80,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             _threading = _settings.Threading;
             
             _threadPoolCounter = new ThreadPoolCounter();
-            
+
+            _aggregator = new PipelineDataAggregator(_settings.Aggregators, _threadPoolCounter);
+
             _state = new TestState(_timer, _globalCounters, _threadPoolCounter);
 
             _speed = PriorityStrategyFactory.Create(_settings.Speeds, _timer);
@@ -98,6 +95,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
         public bool HeartBeat()
         {
+            if (_aggregator.Error != null)
+                throw _aggregator.Error;
+
             _errorHandler.Assert();
 
             _threading.HeartBeat(_pool, _state);
@@ -150,7 +150,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             if (_settings.Aggregators.IsNullOrEmpty())
                 result = new NullDataCollectorFactory();
             else
-                result = new DataCollectorFactory(_aggregator, _threadPoolCounter);
+                result = _aggregator.Factory;
 
             return result;
         }

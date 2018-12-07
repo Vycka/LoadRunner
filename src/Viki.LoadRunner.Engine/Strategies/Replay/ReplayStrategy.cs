@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Aggregators;
+using Viki.LoadRunner.Engine.Core.Collector;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
@@ -27,7 +28,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
         private readonly IReplayStrategySettings<TData> _settings;
         private readonly ExecutionTimer _timer;
 
-        private IAggregator _aggregator;
+        private PipelineDataAggregator _aggregator;
         private IReplayDataReader _dataReader;
         private IErrorHandler _errorHandler;
         private IThreadPoolCounter _counter;
@@ -47,25 +48,21 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
             InitializeState();
 
             _dataReader.Begin();
-            _aggregator.Begin();
+            _aggregator.Start();
 
             _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
         }
 
         private void InitializeState()
         {
-            if (_settings.Aggregators.IsNullOrEmpty())
-                _aggregator = new NullAggregator();
-            else
-                _aggregator = new AsyncAggregator(_settings.Aggregators);
-
-            
             _errorHandler = new ErrorHandler();
             _dataReader = _settings.DataReader;
 
             _counter = new ThreadPoolCounter();
-            _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
 
+            _aggregator = new PipelineDataAggregator(_settings.Aggregators, _counter);
+
+            _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
             _pool.StartWorkersAsync(_settings.ThreadCount);
 
             while (_counter.CreatedThreadCount != _counter.InitializedThreadCount)
@@ -123,7 +120,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
             if (_settings.Aggregators.IsNullOrEmpty())
                 result = new NullDataCollectorFactory();
             else
-                result = new DataCollectorFactory(_aggregator, _counter);
+                result =_aggregator.Factory;
 
             return result;
         }

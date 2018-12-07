@@ -64,7 +64,7 @@ namespace Viki.LoadRunner.Playground
 
 
             StrategyBuilder strategy = new StrategyBuilder()
-                .SetScenario<BlankScenario>()
+                .SetScenario<TestScenario>()
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(10)))
                 .SetThreading(new FixedThreadCount(8))
                 .SetSpeed(new FixedSpeed(20))

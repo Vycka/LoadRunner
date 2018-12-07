@@ -14,7 +14,7 @@ namespace Viki.LoadRunner.Playground
 
         static void Main()
         {
-            //BlankScenario.Run();
+            BlankScenario.Run();
 
             AssertPipeline.Run();
 
@@ -22,13 +22,13 @@ namespace Viki.LoadRunner.Playground
 
             //BlankStressScenarioMemoryStream.Run();
 
-            //ReplayDemo.Run();
+            ReplayDemo.Run();
 
             //BatchStrategyDemo.Run();
 
             //new BlankFromBase().Validate();
 
-            //DemoSetup.Run();
+            DemoSetup.Run();
 
             //LimitConcurrencyAndTpsDemo.Run();
 
