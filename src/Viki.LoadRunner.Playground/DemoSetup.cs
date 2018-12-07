@@ -74,8 +74,6 @@ namespace Viki.LoadRunner.Playground
 
             object defaultResults = histogramAggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));
-
-            Console.ReadKey();
         }
     }
 

@@ -30,10 +30,6 @@ namespace Viki.LoadRunner.Engine.Aggregators
             _streamWriterAction = streamWriterAction;
         }
 
-        public StreamAggregator()
-        {
-        }
-
         #endregion
 
         #region Override

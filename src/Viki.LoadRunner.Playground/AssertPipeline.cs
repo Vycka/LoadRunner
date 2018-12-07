@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
@@ -13,13 +14,14 @@ namespace Viki.LoadRunner.Playground
 {
     public class AssertPipeline
     {
-        //private static IResult[] _rawResults;
-
         public static void Run()
         {
             HistogramAggregator aggregator = new HistogramAggregator()
                 .Add(new CountMetric())
                 .Add(new FuncMetric<TimeSpan>("max", TimeSpan.Zero, (s, result) => s < result.IterationStarted ? result.IterationStarted : s));
+
+            int streamCount = 0;
+            StreamAggregator streamAggregator = new StreamAggregator(results => streamCount = results.Count());
 
             CountingScenarioFactory factory = new CountingScenarioFactory();
 
@@ -27,13 +29,10 @@ namespace Viki.LoadRunner.Playground
                 .SetScenario(factory)
                 .SetThreading(new FixedThreadCount(4))
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(10)))
-                //.SetAggregator(new StreamAggregator(results => _rawResults = results.ToArray()));
-                .SetAggregator(aggregator);
+                .SetAggregator(aggregator, streamAggregator);
 
            
             strategy.Build().Run();
-
-            //StreamAggregator.Replay(_rawResults, aggregator);
 
             Console.WriteLine(JsonConvert.SerializeObject(aggregator.BuildResultsObjects(), Formatting.Indented));
             factory.PrintSum();
@@ -43,7 +42,7 @@ namespace Viki.LoadRunner.Playground
             Console.WriteLine($@"TPS {expected / span.TotalSeconds:N}");
             Console.WriteLine(span.ToString("g"));
             Console.WriteLine();
-            Console.WriteLine($@"{expected}/{actual} ? {expected==actual}");
+            Console.WriteLine($@"{expected}/{actual} & {streamCount} ? {expected==actual} && {expected==streamCount}");
         }
     }
 }

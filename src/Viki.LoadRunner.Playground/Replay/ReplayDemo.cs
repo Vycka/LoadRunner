@@ -25,13 +25,11 @@ namespace Viki.LoadRunner.Playground.Replay
                 .Add(new FuncMetric<int>("CThreads", 0, (i, r) => r.CreatedThreads))
                 .Add(new FuncMetric<int>("IThreads", 0, (i, r) => r.IdleThreads));
 
-            IAggregator kpi = new KpiPrinterAggregator(TimeSpan.FromMilliseconds(500), new CountMetric());
-
             ReplayStrategyBuilder<string> settings = new ReplayStrategyBuilder<string>()
-                .SetAggregator(aggregator, kpi)
+                .SetAggregator(aggregator)
                 .SetData(DataGenerator.Create(5, 1, 3, 3).ToArray())
                 .SetScenario<ReplayScenario>()
-                .SetThreadCount(50)
+                .SetThreadCount(30)
                 .SetSpeed(1);
 
             // UI

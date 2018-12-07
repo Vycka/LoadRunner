@@ -54,7 +54,12 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             _writeOnlyList.Add(item);
 
             if (_completed == false && _readOnlyList.Count == 0)
-                _writeOnlyList = Interlocked.Exchange(ref _readOnlyList, _writeOnlyList);
+            {
+                //_writeOnlyList = Interlocked.Exchange(ref _readOnlyList, _writeOnlyList);
+                var tmp = _readOnlyList;
+                _readOnlyList = _writeOnlyList;
+                _writeOnlyList = tmp;
+            }
         }
 
         public void ProducingCompleted()
