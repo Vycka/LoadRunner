@@ -36,21 +36,6 @@ namespace Viki.LoadRunner.Playground
             //BlankStressScenarioJsonStream.Run();
 
             Console.ReadKey();
-
-            return;
-
-            HistogramAggregator histo = new HistogramAggregator();
-            histo
-                .Add(new TimeDimension(TimeSpan.FromSeconds(10)) { TimeSelector = i => i.IterationStarted })
-                .Add(new IncrementalThreadCount(15, TimeSpan.FromSeconds(10), 15))
-                .Add(new CountMetric())
-                .Add(new AvgDurationMetric())
-                .Add(new PercentileMetric(0.95) { Formatter =  l => l });
-
-
-            //JsonStreamAggregator.Replay("17_13_22__1859.json", histo);
-
-            Console.WriteLine(JsonConvert.SerializeObject(histo.BuildResultsObjects(), Formatting.Indented));
         }
     }
 }

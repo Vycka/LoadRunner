@@ -6,6 +6,7 @@ using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
+using Viki.LoadRunner.Engine.Strategies.Extensions;
 
 namespace LoadRunner.Demo.Features
 {
@@ -17,7 +18,7 @@ namespace LoadRunner.Demo.Features
         {
             private readonly Random _rnd = new Random(42);
 
-            public IScenario Create()
+            public IScenario Create(int threadId)
             {
                 return new ScenarioWithConstructor(_rnd.Next());
             }
@@ -62,7 +63,6 @@ namespace LoadRunner.Demo.Features
 
 
             LoadRunnerEngine engine = strategy.Build();
-
             engine.Run();
 
             Console.ReadKey();

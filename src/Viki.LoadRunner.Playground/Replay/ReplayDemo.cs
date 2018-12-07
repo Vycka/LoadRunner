@@ -40,11 +40,11 @@ namespace Viki.LoadRunner.Playground.Replay
 
             // Non UI blocking
             LoadRunnerEngine engine = settings.Build();
-            engine.Run();
+            //engine.Run();
 
             // Non UI Async
-            //engine.RunAsync();
-            //engine.Wait();
+            engine.RunAsync();
+            engine.Wait();
 
             object defaultResults = aggregator.BuildResultsObjects();
             Console.WriteLine(JsonConvert.SerializeObject(defaultResults, Formatting.Indented));

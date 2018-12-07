@@ -2,19 +2,13 @@
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Dimensions;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
+using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Core.Scenario;
 
 namespace LoadRunner.Demo.Detailed
 {
     public static class Aggregation
     {
-        private static readonly string[] IgnoredCheckpoints =
-{
-                Checkpoint.Names.Setup,
-                Checkpoint.Names.IterationStart,
-                Checkpoint.Names.TearDown
-        };
-
         public static HistogramAggregator BuildHistogram()
         {
             // This demo shows this new HistogramAggregator which isn't currently documented anywhere else. (TODO)
@@ -47,21 +41,21 @@ namespace LoadRunner.Demo.Detailed
             //   TransactionsPerSecMetric()
             HistogramAggregator histogramAggregator = new HistogramAggregator()
                 .Add(new TimeDimension(TimeSpan.FromSeconds(10)))
-                .Add(new MinDurationMetric(IgnoredCheckpoints))
-                .Add(new AvgDurationMetric(IgnoredCheckpoints))
-                .Add(new MaxDurationMetric(IgnoredCheckpoints))
-                .Add(new PercentileMetric(new[] { 0.95, 0.99 }, IgnoredCheckpoints))
-                .Add(new CountMetric(IgnoredCheckpoints))
+                .Add(new MinDurationMetric())
+                .Add(new AvgDurationMetric())
+                .Add(new MaxDurationMetric())
+                .Add(new PercentileMetric(new[] { 0.95, 0.99 }))
+                .Add(new CountMetric(Checkpoint.NotMeassuredCheckpoints))
                 .Add(new ErrorCountMetric())
                 .Add(new FuncMetric<int>("Created Threads", 0, (i, result) => result.CreatedThreads))
-                .Alias($"Min: {Checkpoint.Names.IterationEnd}", "Min (ms)")
-                .Alias($"Avg: {Checkpoint.Names.IterationEnd}", "Avg (ms)")
-                .Alias($"Max: {Checkpoint.Names.IterationEnd}", "Max (ms)")
-                .Alias($"95%: {Checkpoint.Names.IterationEnd}", "95% (ms)")
-                .Alias($"99%: {Checkpoint.Names.IterationEnd}", "99% (ms)")
-                .Alias($"Count: {Checkpoint.Names.IterationEnd}", "Success: Count")
+                .Alias($"Min: {Checkpoint.Names.Iteration}", "Min (ms)")
+                .Alias($"Avg: {Checkpoint.Names.Iteration}", "Avg (ms)")
+                .Alias($"Max: {Checkpoint.Names.Iteration}", "Max (ms)")
+                .Alias($"95%: {Checkpoint.Names.Iteration}", "95% (ms)")
+                .Alias($"99%: {Checkpoint.Names.Iteration}", "99% (ms)")
+                .Alias($"Count: {Checkpoint.Names.Iteration}", "Success: Count")
                 .Alias($"Errors: {Checkpoint.Names.Setup}", "Errors: Setup")
-                .Alias($"Errors: {Checkpoint.Names.IterationStart}", "Errors: Iteration")
+                .Alias($"Errors: {Checkpoint.Names.Iteration}", "Errors: Iteration")
                 .Alias($"Errors: {Checkpoint.Names.TearDown}", "Errors: Teardown");
 
             return histogramAggregator;
