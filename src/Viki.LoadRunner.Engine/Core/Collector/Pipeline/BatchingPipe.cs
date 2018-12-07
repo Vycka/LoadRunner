@@ -30,6 +30,10 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             else if (_completed && _writeOnlyList.Count != 0)
             {
                 batch = _writeOnlyList;
+                _writeOnlyList = _readOnlyList;
+
+                _readOnlyList = (List<T>)batch;
+
                 result = true;
             }
             else
@@ -38,46 +42,6 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             }
 
             return result;
-
-            //bool completedAtStart = _completed;
-
-            //bool result = false;
-
-            //if (_readOnlyList.Count != 0)
-            //{
-            //    batch = _readOnlyList;
-            //    result = true;
-            //}
-            //else if (completedAtStart)
-            //{
-            //    if (_readOnlyList.Count != 0)
-            //    {
-            //        batch = _readOnlyList;
-            //    }
-            //    else if (_writeOnlyList.Count != 0)
-            //    {
-            //        batch = _writeOnlyList;
-            //    }
-            //    else
-            //    {
-            //        batch = null;
-            //    }
-
-            //    result = _readOnlyList.Count != 0 || _writeOnlyList.Count != 0;
-            //}
-            //// ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            //// Other thread can change Completed state
-            //// and if thats the case, we need to do a single recursion
-            //else if (completedAtStart != _completed)
-            //{
-            //    result = TryLockBatch(out batch);
-            //}
-            //else
-            //{
-            //    batch = null;
-            //}
-
-            //return result;
         }
 
         public void ReleaseBatch()

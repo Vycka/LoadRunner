@@ -18,7 +18,7 @@ namespace Viki.LoadRunner.Playground
 
             AssertPipeline.Run();
 
-            //TheoreticalSpeedDemo.Run();
+            TheoreticalSpeedDemo.Run();
 
             //BlankStressScenarioMemoryStream.Run();
 

@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
         /// <summary>
         /// All checkpoints containing meassurements from whole iteration
         /// </summary>
-        IReadOnlyCollection<ICheckpoint> Checkpoints { get; }
+        ICheckpoint[] CopyCheckpoints();
 
         /// <summary>
         /// It contains value when this iteration  started (relative to LoadTest start)

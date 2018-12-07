@@ -10,7 +10,9 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
         #region Fields
 
         // TODO: Create List specific for this job, the one which could perform shallow copy of array to gain performance
-        private readonly List<Checkpoint> _checkpoints;
+        private readonly List<ICheckpoint> _checkpoints;
+
+        private Checkpoint _activeCheckpoint = null;
 
         public IterationContext(int threadId, ITimer timer, object initialUserData = null)
         {
@@ -20,8 +22,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
             ThreadId = threadId;
             Timer = timer;
             UserData = initialUserData;
-            _checkpoints = new List<Checkpoint>();
-            Checkpoints = _checkpoints.AsReadOnly();
+            _checkpoints = new List<ICheckpoint>();
 
             Reset(-1,-1);
         }
@@ -57,7 +58,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
 
         public void SetError(Exception error)
         {
-            _checkpoints[_checkpoints.Count - 1].Error = error;
+            _activeCheckpoint.Error = error;
         }
 
         #endregion
@@ -69,11 +70,19 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
             if (checkpointName == null)
                 checkpointName = $"Checkpoint #{_checkpoints.Count + 1}";
 
-            Checkpoint newCheckpoint = new Checkpoint(checkpointName, IterationElapsedTime);
-            _checkpoints.Add(newCheckpoint);  
+            _activeCheckpoint = new Checkpoint(checkpointName, IterationElapsedTime);
+            _checkpoints.Add(_activeCheckpoint);
         }
 
-        public IReadOnlyCollection<ICheckpoint> Checkpoints { get; }
+        IReadOnlyList<ICheckpoint> IIteration.Checkpoints => _checkpoints.AsReadOnly();
+
+        public ICheckpoint[] CopyCheckpoints()
+        {
+            ICheckpoint[] copy = new ICheckpoint[_checkpoints.Count];
+            _checkpoints.CopyTo(copy);
+
+            return copy;
+        }
 
         public TimeSpan IterationElapsedTime
         {

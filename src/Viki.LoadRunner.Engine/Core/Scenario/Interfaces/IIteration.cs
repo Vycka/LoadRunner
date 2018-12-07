@@ -15,7 +15,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
         /// <summary>
         /// Gets list of created checkpoints in this iteration so far
         /// </summary>
-        IReadOnlyCollection<ICheckpoint> Checkpoints { get; }
+        IReadOnlyList<ICheckpoint> Checkpoints { get; }
 
         /// <summary>
         /// Current timer value of the currently going on iteration.

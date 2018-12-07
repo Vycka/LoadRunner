@@ -39,7 +39,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector
             CreatedThreads = threadPoolContext.CreatedThreadCount;
             IdleThreads = threadPoolContext.IdleThreadCount;
 
-            Checkpoints = iteration.Checkpoints.ToArray();
+            Checkpoints = iteration.CopyCheckpoints();
         }
     }
 }
