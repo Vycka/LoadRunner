@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline

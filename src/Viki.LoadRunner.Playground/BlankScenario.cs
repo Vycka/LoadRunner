@@ -9,6 +9,7 @@ using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 using Viki.LoadRunner.Engine.Strategies.Extensions;
+using Viki.LoadRunner.Playground.Tools;
 
 namespace Viki.LoadRunner.Playground
 {
@@ -17,7 +18,7 @@ namespace Viki.LoadRunner.Playground
         public static void Run()
         {
             HistogramAggregator aggregator = new HistogramAggregator()
-                .Add(new TimeDimension(TimeSpan.FromSeconds(2)))
+                .Add(new TimeDimension(TimeSpan.FromSeconds(4)))
                 .Add(new CountMetric())
                 .Add(new TransactionsPerSecMetric());
 
@@ -28,9 +29,9 @@ namespace Viki.LoadRunner.Playground
             //    new TransactionsPerSecMetric());
 
             StrategyBuilder strategy = new StrategyBuilder()
-                .SetScenario<BlankScenario>()
+                .SetScenario(new CountingScenarioFactory())
                 .SetThreading(new FixedThreadCount(4))
-                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(10)))
+                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(13)))
                 .SetAggregator(aggregator);
 
             strategy.Build().Run();
@@ -140,4 +141,61 @@ namespace Viki.LoadRunner.Playground
     "TPS": 728025.75480901427
   }
 ]
+
+    [
+  {
+    "Time (s)": "0",
+    "Count: Setup": 4323723,
+    "Count: Iteration": 4323723,
+    "Count: TearDown": 4323723,
+    "TPS": 1084685.606162854
+  },
+  {
+    "Time (s)": "4",
+    "Count: Setup": 3511072,
+    "Count: Iteration": 3511072,
+    "Count: TearDown": 3511072,
+    "TPS": 875530.82175597851
+  },
+  {
+    "Time (s)": "8",
+    "Count: Setup": 4459555,
+    "Count: Iteration": 4459555,
+    "Count: TearDown": 4459555,
+    "TPS": 1115180.1744590907
+  },
+  {
+    "Time (s)": "12",
+    "Count: Setup": 1034945,
+    "Count: Iteration": 1034945,
+    "Count: TearDown": 1034945,
+    "TPS": 979081.26645547047
+  }
+]
+[
+  {
+    "Count: Setup": 11223753,
+    "Count: Iteration": 11223753,
+    "Count: TearDown": 11223753,
+    "max": "00:00:10.0318670"
+  }
+]
+0 2850859
+1 2865489
+2 2760878
+3 2746527
+-------
+11223753
+TPS 1 118 809,99
+0:00:10,031867
+
+11223753/11223753 & 11223753 ? True && True
+0 26331423
+1 23584265
+2 23133042
+3 21751251
+-------
+94799981
+TPS 9 331 730,16
+0:00:10,1588858
  */
