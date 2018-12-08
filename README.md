@@ -10,6 +10,8 @@
 * Bare-Minimum example
    - [MinimalDemo.cs](/demo/Minimum/MinimalDemo.cs)  
    
+* Proper demo is now being rewritten, stuff below might be outdated
+   
  * Other nifty features   
    - [RawDataAggregation.cs](/demo/Features/RawDataAggregation.cs) - Advanced RnD feature to checkout.
    - [KpiOutput.cs](/demo/Features/KpiOutput.cs) - TODO 404
