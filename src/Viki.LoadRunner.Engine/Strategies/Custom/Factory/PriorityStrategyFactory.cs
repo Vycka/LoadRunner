@@ -16,8 +16,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Factory
             if (strategies.Length == 1)
                 return strategies[0];
 
-
-            return new PrioritySpeedStrategy(new SlowestPriority(), timer, strategies);
+            return SlowestSpeedStrategy.Create(timer, strategies);
         } 
     }
 }

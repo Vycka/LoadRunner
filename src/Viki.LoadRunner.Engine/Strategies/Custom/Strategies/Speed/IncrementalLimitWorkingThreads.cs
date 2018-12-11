@@ -41,7 +41,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
             {
                 _currentAllowedCount = count;
 
-                WorkingThreads = _currentAllowedCount;
+                ThreadLimit = _currentAllowedCount;
             }
         }
 

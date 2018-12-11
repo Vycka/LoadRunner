@@ -12,6 +12,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
     {
         private Checkpoint[] _realCheckpoints;
 
+        // This helps deserializers know what implementation of Checkpoints to use.
         public new Checkpoint[] Checkpoints
         {
             get { return _realCheckpoints; }

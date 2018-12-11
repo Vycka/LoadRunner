@@ -2,6 +2,7 @@
 using LoadRunner.Demo.Detailed;
 using LoadRunner.Demo.Features;
 using LoadRunner.Demo.Minimum;
+using LoadRunner.Demo.Theoretical;
 
 namespace LoadRunner.Demo
 {
@@ -28,7 +29,7 @@ namespace LoadRunner.Demo
             // #0 Quick-Start
             // - One-file setup/execution to get acquainted with framework.
             Console.WriteLine("Demo #1");
-            MinimalDemo.Run();
+            //MinimalDemo.Run();
 
             // #1 StrategyBuilder
             // - Controlling thread count
@@ -64,19 +65,23 @@ namespace LoadRunner.Demo
             // - Blank scenario
             //   - Without IAggregator
             //   - With IAggregator
+            Console.WriteLine("Theoretical throughput");
+            TheoreticalSpeedDemo.Run();
 
+            Console.WriteLine("Theoretical with aggregation hooked");
+            AggregationImpactDemo.Run();
 
             // Probably drop these below.
 
 
             // #2 Contains more detailed information and advanced features
-            Console.WriteLine("Demo #2");
-            DetailedDemo.Run();
+            //Console.WriteLine("Demo #2");
+            //DetailedDemo.Run();
 
 
             // Optional but useful advanced feature worth checking out before running real test.
-            RawDataAggregationDemo.Aggregate();
-
+            //RawDataAggregationDemo.Aggregate();
+            
             Console.ReadKey();
         }
     }

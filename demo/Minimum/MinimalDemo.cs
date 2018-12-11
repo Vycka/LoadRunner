@@ -64,16 +64,14 @@ namespace LoadRunner.Demo.Minimum
                 .Add(new TransactionsPerSecMetric())
                 .Add(new PercentileMetric(0.95, 0.99));
 
-            // Optional secondary aggregation just to monitor key metrics (avoid cpu intensive metrics here if test is cpu intensive)
+            // Secondary aggregation just to monitor key metrics.
             KpiPrinterAggregator kpiPrinter = new KpiPrinterAggregator(
                 TimeSpan.FromSeconds(5),
-                new PercentileMetric(0.95, 1), // Avoid using this metric if not sure about cpu capabilities.
                 new MaxDurationMetric(),
                 new CountMetric(Checkpoint.NotMeassuredCheckpoints),
                 new ErrorCountMetric(false),
                 new TransactionsPerSecMetric()
             );
-
 
             // [3] Execution settings
             // Using StrategyBuilder put defined aggregation, scenario, and execution settings into one object

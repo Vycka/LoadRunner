@@ -8,24 +8,24 @@ namespace Viki.LoadRunner.Playground
 
         static void Main()
         {
-            BlankScenario.Run();
+            //BlankScenario.Run();
 
-            AssertPipeline.Run();
+            //AssertPipeline.Run();
 
-            TheoreticalSpeedDemo.Run();
+            //TheoreticalSpeedDemo.Run();
 
             //BlankStressScenarioMemoryStream.Run();
 
-            ReplayDemo.Run();
+            //ReplayDemo.Run();
 
             //BatchStrategyDemo.Run();
 
             //new BlankFromBase().Validate();
 
-            DemoSetup.Run();
+            //DemoSetup.Run();
 
             // Broken
-            //LimitConcurrencyAndTpsDemo.Run();
+            LimitConcurrencyAndTpsDemo.Run();
 
             // Warning! Hdd/sdd intensive usage with this one
             //BlankStressScenarioJsonStream.Run();

@@ -161,6 +161,7 @@
     <Compile Include="Core\Scenario\ScenarioBase.cs" />
     <Compile Include="Core\Scenario\Checkpoint.cs" />
     <Compile Include="Core\Scenario\Interfaces\IIteration.cs" />
+    <Compile Include="Strategies\Custom\Adapter\Speed\ScheduleTable.cs" />
     <Compile Include="Strategies\Custom\CustomStrategy.cs" />
     <Compile Include="Strategies\Custom\Strategies\Limit\ErrorLimit.cs" />
     <Compile Include="Strategies\Custom\Strategies\Speed\BatchingSpeed.cs" />
@@ -211,9 +212,7 @@
     <Compile Include="Strategies\Custom\Strategies\Speed\LimitWorkingThreads.cs" />
     <Compile Include="Strategies\Custom\Strategies\Speed\ListOfSpeed.cs" />
     <Compile Include="Strategies\Custom\Strategies\Speed\MaxSpeed.cs" />
-    <Compile Include="Strategies\Custom\Adapter\Speed\FastestPriority.cs" />
-    <Compile Include="Strategies\Custom\Adapter\Speed\PrioritySpeedStrategy.cs" />
-    <Compile Include="Strategies\Custom\Adapter\Speed\SlowestPriority.cs" />
+    <Compile Include="Strategies\Custom\Adapter\Speed\SlowestSpeedStrategy.cs" />
     <Compile Include="Strategies\Custom\Factory\PriorityStrategyFactory.cs" />
     <Compile Include="Strategies\Custom\Strategies\Threading\FixedThreadCount.cs" />
     <Compile Include="Strategies\Custom\Strategies\Threading\IncrementalThreadCount.cs" />

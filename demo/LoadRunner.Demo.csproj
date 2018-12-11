@@ -62,6 +62,10 @@
     <Compile Include="Detailed\DetailedDemo.cs" />
     <Compile Include="Detailed\Scenario.cs" />
     <Compile Include="Features\RawDataAggregation.cs" />
+    <Compile Include="Theoretical\AggregationImpactDemo.cs" />
+    <Compile Include="Theoretical\CountingScenario.cs" />
+    <Compile Include="Theoretical\CountingScenarioFactory.cs" />
+    <Compile Include="Theoretical\TheoreticalSpeedDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
