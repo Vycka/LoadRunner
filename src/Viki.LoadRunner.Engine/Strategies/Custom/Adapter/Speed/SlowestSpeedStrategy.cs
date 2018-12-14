@@ -101,5 +101,14 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Speed
 
             return result;
         }
+
+        public void ThreadFinished(IIterationId id, ISchedule scheduler)
+        {
+            ScheduleTable table = GetScheduleTable(scheduler);
+            for (int i = 0; i < _strategies.Length; i++)
+            {
+                _strategies[i].ThreadFinished(id, table.Schedules[i]);
+            }
+        }
     }
 }

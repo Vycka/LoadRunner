@@ -100,7 +100,7 @@ namespace Viki.LoadRunner.Engine.Core.Pool
 
         public void StopWorkersAsync(int threadCount)
         {
-            for (int i = 0; i < threadCount; i++)
+            for (int i = 0; i < threadCount && _allThreads.Count != 0; i++)
             {
                 IThread thread = _allThreads.Keys.First();
 

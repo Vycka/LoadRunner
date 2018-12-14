@@ -11,5 +11,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces
         void Next(IIterationId id, ISchedule scheduler); // Must be thread safe
 
         void HeartBeat(ITestState state);
+
+        void ThreadFinished(IIterationId id, ISchedule scheduler);
     }
 }

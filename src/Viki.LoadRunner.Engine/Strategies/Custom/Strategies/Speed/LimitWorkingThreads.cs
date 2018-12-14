@@ -22,7 +22,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
 
         private IThreadPoolStats _pool;
         private int _localIdlerCount = 0;
-        private int _lastKnownCreatedThreadCount = 0;
 
         public LimitWorkingThreads(int threadLimit)
         {
@@ -45,8 +44,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
             }
             else
             {
-                int localIdlerCount = Interlocked.Decrement(ref _localIdlerCount);
-                int estimatedworkingThreads = _pool.InitializedThreadCount - Math.Min(_pool.IdleThreadCount, localIdlerCount);
+                int tryLockIdlerCount = Interlocked.Decrement(ref _localIdlerCount);
+                int estimatedworkingThreads = _pool.InitializedThreadCount - tryLockIdlerCount;
 
                 if (estimatedworkingThreads <= ThreadLimit)
                 {
@@ -62,13 +61,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
 
         public void HeartBeat(ITestState state)
         {
-            // This part to be tested
-            int currentCreatedThreadCount = _pool.CreatedThreadCount;
-            if (currentCreatedThreadCount < _lastKnownCreatedThreadCount)
-            {
-                _localIdlerCount = 0;
-                _lastKnownCreatedThreadCount = currentCreatedThreadCount;
-            }
+        }
+
+        public void ThreadFinished(IIterationId id, ISchedule scheduler)
+        {
+            if (scheduler.Action == ScheduleAction.Idle)
+                Interlocked.Decrement(ref _localIdlerCount);
         }
     }
 }

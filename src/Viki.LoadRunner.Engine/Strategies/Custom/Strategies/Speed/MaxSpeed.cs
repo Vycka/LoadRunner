@@ -13,11 +13,14 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
 
         public void Next(IIterationId id, ISchedule scheduler)
         {
-            scheduler.Execute();
         }
 
         public void HeartBeat(ITestState state)
         {
+        }
+
+        public void ThreadFinished(IIterationId id, ISchedule scheduler)
+        {    
         }
     }
 }

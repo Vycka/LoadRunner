@@ -55,5 +55,10 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
                 _counter.AddIdle(-1);
             }
         }
+
+        public void ThreadFinished()
+        {
+            _strategy.ThreadFinished(_id, this);
+        }
     }
 }

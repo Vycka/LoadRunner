@@ -165,6 +165,7 @@
     <Compile Include="Strategies\Custom\CustomStrategy.cs" />
     <Compile Include="Strategies\Custom\Strategies\Limit\ErrorLimit.cs" />
     <Compile Include="Strategies\Custom\Strategies\Speed\BatchingSpeed.cs" />
+    <Compile Include="Strategies\Custom\Strategies\Speed\MaxSpeed.cs" />
     <Compile Include="Strategies\Extensions\FeatureExtensions.cs" />
     <Compile Include="Strategies\Extensions\StrategyBuilderExtensions.cs" />
     <Compile Include="Strategies\Interfaces\IAggregatorFeature.cs" />
@@ -211,7 +212,6 @@
     <Compile Include="Strategies\Custom\Strategies\Speed\IncrementalSpeed.cs" />
     <Compile Include="Strategies\Custom\Strategies\Speed\LimitWorkingThreads.cs" />
     <Compile Include="Strategies\Custom\Strategies\Speed\ListOfSpeed.cs" />
-    <Compile Include="Strategies\Custom\Strategies\Speed\MaxSpeed.cs" />
     <Compile Include="Strategies\Custom\Adapter\Speed\SlowestSpeedStrategy.cs" />
     <Compile Include="Strategies\Custom\Factory\PriorityStrategyFactory.cs" />
     <Compile Include="Strategies\Custom\Strategies\Threading\FixedThreadCount.cs" />

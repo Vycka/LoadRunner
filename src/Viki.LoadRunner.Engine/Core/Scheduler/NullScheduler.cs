@@ -7,5 +7,9 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
         public void WaitNext(ref bool stop)
         {
         }
+
+        public void ThreadFinished()
+        {
+        }
     }
 }

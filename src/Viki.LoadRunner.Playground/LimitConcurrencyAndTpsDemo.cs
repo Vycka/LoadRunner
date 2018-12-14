@@ -29,6 +29,7 @@ namespace Viki.LoadRunner.Playground
             KpiPrinterAggregator kpi = new KpiPrinterAggregator(
                 TimeSpan.FromSeconds(2),
                 new FuncMetric<string>("T+", "???", (s, result) => result.IterationFinished.ToString("g")),
+                new FuncMetric<int>("Created Threads", 0, (i, r) => Math.Max(r.CreatedThreads, i)),
                 new FuncMetric<int>("Working Threads", 0, (i, r) => Math.Max(r.CreatedThreads - r.IdleThreads, i)),
                 new CountMetric(Checkpoint.NotMeassuredCheckpoints),
                 new CountMetric(i => i / 2.0, Checkpoint.NotMeassuredCheckpoints) { Prefix = "TPS " }
@@ -38,8 +39,8 @@ namespace Viki.LoadRunner.Playground
                 .SetScenario<LimitConcurrencyAndTpsDemo>()
                 .AddSpeed(new LimitWorkingThreads(11))
                 .AddSpeed(new IncrementalSpeed(15, TimeSpan.FromSeconds(20), 15))
-                .SetThreading(new FixedThreadCount(100))
-                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(61)))
+                .SetThreading(new IncrementalThreadCount(250, TimeSpan.FromSeconds(10), -50))
+                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(52)))
                 .SetAggregator(aggregator, kpi);
 
             strategy.Build().Run();
@@ -58,7 +59,7 @@ namespace Viki.LoadRunner.Playground
         public void ExecuteScenario(IIteration context)
         {
             //Console.WriteLine(context.Timer.Value.ToString("g"));
-            Thread.Sleep(400);
+            Thread.Sleep(300);
         }
 
         public void IterationTearDown(IIteration context)

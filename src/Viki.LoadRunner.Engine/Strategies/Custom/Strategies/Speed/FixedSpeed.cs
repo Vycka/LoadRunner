@@ -8,6 +8,9 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
 {
+    /// <summary>
+    /// Fixed speed will try to spread iterations every fixed time period to match targeted iterations per second
+    /// </summary>
     public class FixedSpeed : ISpeedStrategy
     {
         protected long ScheduleAheadTicks = TimeSpan.TicksPerSecond;
@@ -71,6 +74,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
             {
                 Interlocked.Add(ref _next, deltaLag - _delayTicks);
             }
+        }
+
+        public void ThreadFinished(IIterationId id, ISchedule scheduler)
+        {
         }
     }
 }

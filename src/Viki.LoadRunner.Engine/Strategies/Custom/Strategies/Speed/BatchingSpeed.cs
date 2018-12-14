@@ -70,5 +70,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
                 Interlocked.Exchange(ref _executedBatchIterations, 0);
             }
         }
+
+        public void ThreadFinished(IIterationId id, ISchedule scheduler)
+        {
+        }
     }
 }
