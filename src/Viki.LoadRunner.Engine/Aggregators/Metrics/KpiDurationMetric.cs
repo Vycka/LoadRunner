@@ -12,7 +12,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
     /// Should not be used in aggregations where multiple items fall under same dimensions
     /// Otherwise information from last received results row will be applied
     /// </summary>
-    public class KpiDurationMetric : MultiMetricBase<long>
+    public class KpiDurationMetric : MultiMetricBase<long> // Rename to CheckpointDurations or smth more meaningful
     {
         private readonly string[] _ignoredCheckpoints;
 

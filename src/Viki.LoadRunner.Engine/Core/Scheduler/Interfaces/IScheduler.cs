@@ -70,5 +70,10 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler.Interfaces
 
             schedule.Action = ScheduleAction.Idle;
         }
+
+        public static void Idle(this ISchedule schedule)
+        {
+            schedule.Action = ScheduleAction.Idle;
+        }
     }
 }

@@ -86,15 +86,12 @@ namespace Viki.LoadRunner.Engine.Core.Pool
 
             _counter.AddCreated(-1);
 
-            TryRemoveThread(sender);
+            RemoveThread(sender);
         }
 
-        private void TryRemoveThread(IThread thread)
+        private void RemoveThread(IThread thread)
         {
-            IThread removedThread;
-
-            if (_allThreads.TryRemove(thread, out removedThread))
-                removedThread.QueueStopThreadAsync();
+            _allThreads.TryRemove(thread, out _);   
         }
 
         #endregion
@@ -105,7 +102,10 @@ namespace Viki.LoadRunner.Engine.Core.Pool
         {
             for (int i = 0; i < threadCount; i++)
             {
-                TryRemoveThread(_allThreads.Keys.First());
+                IThread thread = _allThreads.Keys.First();
+
+                thread.QueueStopThreadAsync();
+                RemoveThread(thread);
             }
         }
 

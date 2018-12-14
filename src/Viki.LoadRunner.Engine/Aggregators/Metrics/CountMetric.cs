@@ -15,18 +15,24 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
     {
         private readonly FlexiRow<string, int> _row = new FlexiRow<string, int>((() => default(int)));
         private readonly string[] _ignoredCheckpoints;
+        public string Prefix = "Count: ";
+
+        private readonly Func<int, object> _formatter = t => t;
+
+        public CountMetric(Func<int, object> formatter, params string[] ignoredCheckpoints)
+        {
+            _formatter = formatter ?? throw new ArgumentNullException(nameof(formatter));
+            _ignoredCheckpoints = ignoredCheckpoints ?? throw new ArgumentNullException(nameof(ignoredCheckpoints));
+        }
 
         public CountMetric(params string[] ignoredCheckpoints)
         {
-            if (ignoredCheckpoints == null)
-                throw new ArgumentNullException(nameof(ignoredCheckpoints));
-
-            _ignoredCheckpoints = ignoredCheckpoints;
+            _ignoredCheckpoints = ignoredCheckpoints ?? throw new ArgumentNullException(nameof(ignoredCheckpoints));
         }
 
         IMetric<IResult> IMetric<IResult>.CreateNew()
         {
-            return new CountMetric(_ignoredCheckpoints);
+            return new CountMetric(_formatter, _ignoredCheckpoints) { Prefix = Prefix };
         }
 
         void IMetric<IResult>.Add(IResult result)
@@ -37,13 +43,13 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                 ICheckpoint checkpoint = checkpoints[i];
                 if (checkpoint.Error == null && _ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
-                    string key = "Count: " + checkpoint.Name;
+                    string key = Prefix + checkpoint.Name;
                     _row[key]++;
                 }
             }
         }
 
         string[] IMetric<IResult>.ColumnNames => _row.Keys.ToArray();
-        object[] IMetric<IResult>.Values => _row.Values.Select(v => (object)v).ToArray();
+        object[] IMetric<IResult>.Values => _row.Values.Select(_formatter).ToArray();
     }
 }

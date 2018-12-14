@@ -35,7 +35,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector
             IterationStarted = iteration.IterationStarted;
             IterationFinished = iteration.IterationFinished;
 
-            CreatedThreads = threadPoolContext.CreatedThreadCount;
+            CreatedThreads = threadPoolContext.InitializedThreadCount;
             IdleThreads = threadPoolContext.IdleThreadCount;
 
             Checkpoints = iteration.CopyCheckpoints();
