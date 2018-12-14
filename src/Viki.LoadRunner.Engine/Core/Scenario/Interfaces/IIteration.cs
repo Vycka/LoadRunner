@@ -13,9 +13,11 @@ namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
         void Checkpoint(string checkpointName = null);
 
         /// <summary>
-        /// Gets list of created checkpoints in this iteration so far
+        /// Set error onto current checkpoint.
+        /// Engine will also uses this to set exception if one is thrown and will overwrite existing data.
         /// </summary>
-        IReadOnlyList<ICheckpoint> Checkpoints { get; }
+        /// <param name="error">error object to set (setting to null clears it)</param>
+        void SetError(object error);
 
         /// <summary>
         /// Current timer value of the currently going on iteration.

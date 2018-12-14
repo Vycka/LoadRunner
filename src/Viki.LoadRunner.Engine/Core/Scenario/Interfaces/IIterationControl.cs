@@ -7,6 +7,5 @@ namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
         void Start();
         void Stop();
         void Reset(int threadIterationId, int globalIterationId);
-        void SetError(Exception error);
     }
 }

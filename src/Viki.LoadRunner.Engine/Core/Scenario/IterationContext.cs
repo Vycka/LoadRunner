@@ -29,7 +29,6 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
 
         #endregion
 
-
         public TimeSpan IterationStarted { get; private set; }
         public TimeSpan IterationFinished { get; private set; }
 
@@ -56,11 +55,6 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
             IterationFinished = TimeSpan.MinValue;
         }
 
-        public void SetError(Exception error)
-        {
-            _activeCheckpoint.Error = error;
-        }
-
         #endregion
 
         #region IIteration
@@ -74,7 +68,10 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
             _checkpoints.Add(_activeCheckpoint);
         }
 
-        IReadOnlyList<ICheckpoint> IIteration.Checkpoints => _checkpoints.AsReadOnly();
+        public void SetError(object error)
+        {
+            _activeCheckpoint.Error = error;
+        }
 
         public ICheckpoint[] CopyCheckpoints()
         {
