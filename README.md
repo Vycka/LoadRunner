@@ -11,15 +11,7 @@
    - [MinimalDemo.cs](/demo/Minimum/MinimalDemo.cs)  
    
 * Proper demo is now being rewritten, stuff below might be outdated
-   
- * Other nifty features   
-   - [RawDataAggregation.cs](/demo/Features/RawDataAggregation.cs) - Advanced RnD feature to checkout.
-   - [KpiOutput.cs](/demo/Features/KpiOutput.cs) - TODO 404
-   - [ReplayDemo.cs](/demo/Features/ReplayDemo.cs) - TODO 404 ()
-     - ReplayStrategy RnD (e.g. for replaying logs)
-     - https://github.com/Vycka/LoadRunner/blob/v0.8/src/Viki.LoadRunner.Playground/Replay/ReplayDemo.cs
   
-![](https://raw.githubusercontent.com/Vycka/LoadRunner/master/diagrams/Architecture.png)
 * [Future](../../wiki/TODOs)
 
 ***Sorry for poor documentation, I don't have much time to work on it ATM, but if having any questions/suggestions/etc, feel free to contact me.***
