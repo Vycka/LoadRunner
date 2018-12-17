@@ -45,17 +45,17 @@ namespace Viki.LoadRunner.Engine.Aggregators
         /// You can use this to replay saved masterdata of previously executed loadtest to differently configured aggregators - allowing to see the results from different angles.
         /// </summary>
         /// <param name="results">LoadTest masterdata result stream</param>
-        /// <param name="targetAggregators">Result aggregators</param>
-        public static void Replay(IEnumerable<IResult> results, params IAggregator[] targetAggregators)
+        /// <param name="aggregators">Result aggregators</param>
+        public static void Replay(IEnumerable<IResult> results, params IAggregator[] aggregators)
         {
-            targetAggregators.ForEach(aggregator => aggregator.Begin());
+            aggregators.ForEach(aggregator => aggregator.Begin());
 
             foreach (IResult result in results)
             {
-                targetAggregators.ForEach(aggregator => aggregator.Aggregate(result));
+                aggregators.ForEach(aggregator => aggregator.Aggregate(result));
             }
 
-            targetAggregators.ForEach(aggregator => aggregator.End());
+            aggregators.ForEach(aggregator => aggregator.End());
         }
 
         #endregion

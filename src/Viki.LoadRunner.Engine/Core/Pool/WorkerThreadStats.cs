@@ -4,9 +4,9 @@ namespace Viki.LoadRunner.Engine.Core.Pool
 {
     public struct WorkerThreadStats : IThreadPoolStats
     {
-        private readonly short _createdThreadCount;
-        private readonly short _initializedTheadCount;
-        private readonly short _idleThreadCount;
+        private readonly int _createdThreadCount;
+        private readonly int _initializedTheadCount;
+        private readonly int _idleThreadCount;
 
         public int CreatedThreadCount => _createdThreadCount;
         public int InitializedThreadCount => _initializedTheadCount;
@@ -14,9 +14,9 @@ namespace Viki.LoadRunner.Engine.Core.Pool
 
         public WorkerThreadStats(IThreadPoolStats reference)
         {
-            _createdThreadCount = (short)reference.CreatedThreadCount;
-            _initializedTheadCount = (short)reference.InitializedThreadCount;
-            _idleThreadCount = (short) reference.IdleThreadCount;
+            _createdThreadCount = reference.CreatedThreadCount;
+            _initializedTheadCount = reference.InitializedThreadCount;
+            _idleThreadCount = reference.IdleThreadCount;
         }
     }
 }

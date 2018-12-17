@@ -8,15 +8,15 @@ using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
     /// <summary>
-    /// Simple Checkpoint with its duration KPI.
+    /// List checkpoints and their durations.
     /// Should not be used in aggregations where multiple items fall under same dimensions
     /// Otherwise information from last received results row will be applied
     /// </summary>
-    public class KpiDurationMetric : MultiMetricBase<long> // Rename to CheckpointDurations or smth more meaningful
+    public class CheckpointValuesMetric : MultiMetricBase<long> // Rename to CheckpointDurations or smth more meaningful
     {
         private readonly string[] _ignoredCheckpoints;
 
-        public KpiDurationMetric(params string[] ignoredCheckpoints)
+        public CheckpointValuesMetric(params string[] ignoredCheckpoints)
             : base(() => 0)
         {
             if (ignoredCheckpoints == null)
@@ -27,7 +27,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         protected override IMetric<IResult> CreateNewMetric()
         {
-            return new KpiDurationMetric(_ignoredCheckpoints);
+            return new CheckpointValuesMetric(_ignoredCheckpoints);
         }
 
         protected override void AddResult(IResult result)

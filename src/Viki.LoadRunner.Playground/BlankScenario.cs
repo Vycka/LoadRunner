@@ -142,7 +142,9 @@ namespace Viki.LoadRunner.Playground
   }
 ]
 
-    [
+
+// New data pipeline
+[
   {
     "Time (s)": "0",
     "Count: Setup": 4323723,

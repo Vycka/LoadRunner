@@ -29,7 +29,7 @@ namespace LoadRunner.Demo
             // #0 Quick-Start
             // - One-file setup/execution to get acquainted with framework.
             Console.WriteLine("Demo #1");
-            //MinimalDemo.Run();
+            MinimalDemo.Run();
 
             // #1 StrategyBuilder
             // - Controlling thread count
@@ -37,6 +37,7 @@ namespace LoadRunner.Demo
             // - IScenarioFactory for spawning own IScenario instances.
             // - Providing aggregators
             // - Misc (UserData, Timeout)
+            // - IValidator asserting scenario on the main thread.
 
             // #2 Data Aggregation (IAggregator)
 
