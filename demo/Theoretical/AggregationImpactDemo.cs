@@ -19,13 +19,14 @@ namespace LoadRunner.Demo.Theoretical
 
         // While this test can achieve 1+million/sec speed (w/o debugger and release build):
         // current HistogramAggregator implementation won't be able to process this massive amount of incomming data in real time.
-        // as result of it, data gets queued up in memory and this test will easily eat ~5+ GB's of ram in first test run, so be sure that there is enough of RAM available before running this one.
+        // as result of it, data gets queued up in memory and this test will easily eat ~5+ GB's of ram in first test run,
+        // so be sure that there is enough of RAM available before running this one.
         //
         // This also shows how Run() won't exit past 13seconds. While test is no longer running, engine waits until all data gets processed.
         // 
         // This example runs test twice:
         //  * One with simple histogram setup 
-        //  * And other without aggregation but receiving a direct stream of raw meassurements and just counting them.
+        //  * And other without histogram but receiving a direct stream of raw meassurements and just counting them.
         //    - This should be able to count results in the real time
         public static void Run()
         {
