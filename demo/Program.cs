@@ -28,8 +28,7 @@ namespace LoadRunner.Demo
 
             // #0 Quick-Start
             // - One-file setup/execution to get acquainted with framework.
-            Console.WriteLine("Demo #1");
-            MinimalDemo.Run();
+            Run("#0 QuickStart setup", QuickStartDemo.Run);
 
             // #1 StrategyBuilder
             // - Controlling thread count
@@ -71,6 +70,8 @@ namespace LoadRunner.Demo
 
             Console.WriteLine("Theoretical with aggregation hooked");
             AggregationImpactDemo.Run();
+        
+
 
             // Probably drop these below.
 
@@ -84,6 +85,14 @@ namespace LoadRunner.Demo
             //RawDataAggregationDemo.Aggregate();
             
             Console.ReadKey();
+        }
+
+        private static void Run(string title, Action action)
+        {
+            Console.WriteLine(title);
+            action.Invoke();
+            Console.Write("\r\n Press enter to continue...");
+            Console.ReadLine();
         }
     }
 }

@@ -5,15 +5,17 @@
 * Basically one needs to define 3 things to make fully working test:
   - [1] Write Scenario implementation, defining code it-self which will get executed multiple times on multiple threads
   - [2][Optional] Configure how results get aggregated/presented
-  - [3] Configure strategy on how it will get executed (e.g. How much threads, how long it should run. etc...)
+  - [3] Configure strategy on how test  gets executed (e.g. How much threads, how long it should run. etc...)
 
-* Bare-Minimum example
-   - [MinimalDemo.cs](/demo/Minimum/MinimalDemo.cs)  
-   
-* Proper demo is now being rewritten, stuff below might be outdated
+* Start with this small setup to get a feel on how it's configured.
+  - [QuickStartDemo.cs](/demo/QuickStart/QuickStartDemo.cs)
+* Later continue on documented topics either through [Program.cs](/demo/Program.cs) or links below:
+  - [At the moment only the QuickStart is available]
+* Until demo project is completed, one can also checkout my messy setups i use for debugging:
+  - [src/Playground/Program.cs](/src/Viki.LoadRunner.Playground/Program.cs)
   
 * [Future](../../wiki/TODOs)
 
-***Sorry for poor documentation, I don't have much time to work on it ATM, but if having any questions/suggestions/etc, feel free to contact me.***
+***Have any questions/suggestions/etc, feel free to contact me.***
 
 [![Analytics](https://ga-beacon.appspot.com/UA-71045586-1/LoadRunner/readme?pixel)](https://github.com/Vycka/LoadRunner)

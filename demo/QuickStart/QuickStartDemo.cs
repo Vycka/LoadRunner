@@ -20,6 +20,9 @@ namespace LoadRunner.Demo.Minimum
     // [1] Scenario:
     // Define test scenario for a worker thread.
     // new IScenario instance will be created for every worker thread.
+    //
+    // no async/await code allowed, as that will break execution due to how it behaves with void functions
+    //   task.Result is only workaround
     public class BlankScenario : IScenario
     {
         public void ScenarioSetup(IIteration context)
@@ -49,7 +52,7 @@ namespace LoadRunner.Demo.Minimum
         }
     }
 
-    public static class MinimalDemo
+    public static class QuickStartDemo
     {
         public static void Run()
         {
@@ -78,8 +81,8 @@ namespace LoadRunner.Demo.Minimum
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetAggregator(aggregator, kpiPrinter) // Optional
                 .SetScenario<BlankScenario>() // Required
-                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(20))) // Optional, but if not provided, execution will never stop. one has to trigger it in engine.
-				.SetSpeed(new FixedSpeed(100000)) // Optional
+                .SetLimit(new TimeLimit(TimeSpan.FromSeconds(20))) // Optional, but if not provided, execution will never stop - unless running test with RunAsync() and stopping later with CancelAsync(true)
+                .SetSpeed(new FixedSpeed(100000)) // Optional (Skip for maximum throughput)
                 .SetThreading(new FixedThreadCount(4)); // Required
 
 
