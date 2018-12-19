@@ -45,8 +45,13 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
             if (checkpoints.Length == 1)
             {
-                string key = _prefix + checkpoints[0].Name;
-                _row[key] = 0;
+                ICheckpoint checkpoint = checkpoints[0];
+
+                if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
+                {
+                    string key = _prefix + checkpoint.Name;
+                    _row[key] = 0;
+                }
             }
             else
             {

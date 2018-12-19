@@ -71,8 +71,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
             }
             else
             {
-                _context.Start();
-                _context.Stop();
+                _context.Skip();
             }
 
             _context.Checkpoint(Checkpoint.Names.TearDown);
