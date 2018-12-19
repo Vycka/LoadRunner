@@ -56,14 +56,13 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Interfaces
         }
 
         /// <summary>
-        /// Retrieves enumerable of errors in logged checkpoints.
+        /// Retrieves enumerable of checkpoints with errors
         /// </summary>
         /// <param name="result">reference result</param>
-        public static IEnumerable<object> GetErrors(this IResult result)
+        public static IEnumerable<ICheckpoint> GetErrors(this IResult result)
         {
             var errors = result.Checkpoints
-                .Where(c => c.Error != null)
-                .Select(c => c.Error);
+                .Where(c => c.Error != null);
 
             return errors;
         }

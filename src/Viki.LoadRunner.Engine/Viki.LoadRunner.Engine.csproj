@@ -51,6 +51,7 @@
     <Compile Include="Aggregators\Metrics\PeriodMetric.cs" />
     <Compile Include="Aggregators\StreamAggregatorBase.cs" />
     <Compile Include="Aggregators\Utils\ResultExtensions.cs" />
+    <Compile Include="Core\Collector\AggregatorException.cs" />
     <Compile Include="Core\Collector\PipelineDataAggregator.cs" />
     <Compile Include="Core\Collector\Pipeline\BatchingPipe.cs" />
     <Compile Include="Aggregators\Utils\BlockingCollectionSingle.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="Core\Scheduler\Interfaces\IWait.cs" />
     <Compile Include="Core\Scheduler\SemiWait.cs" />
     <Compile Include="Core\Timer\Interfaces\ITimerControl.cs" />
+    <Compile Include="Core\Worker\WorkerException.cs" />
     <Compile Include="Interfaces\IStrategyExecutor.cs" />
     <Compile Include="Interfaces\IStrategyExecutorAsync.cs" />
     <Compile Include="Strategies\Custom\Adapter\Aggregator\AsyncAggregatorBlockingCollection.cs" />

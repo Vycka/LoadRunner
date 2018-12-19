@@ -21,7 +21,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scenario
             _dataContext = new DataContext<TData>
             {
                 Timer = context.Timer,
-                Execute = true
+                Execute = true,
+                Context = context
             };
         }
 
@@ -42,6 +43,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scenario
             }
             else
             {
+                _context.Skip();
                 _context.Checkpoint(Checkpoint.Names.Skip);
             }
         }

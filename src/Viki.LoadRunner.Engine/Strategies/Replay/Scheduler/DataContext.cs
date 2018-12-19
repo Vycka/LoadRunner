@@ -1,4 +1,5 @@
 ﻿using System;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Scheduler.Interfaces;
 
@@ -41,5 +42,11 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
         /// </summary>
         /// <remarks>It can be used to handle execution timeline falling behind and skip few requests</remarks>
         public bool Execute { get; set; }
+
+
+        /// <summary>
+        /// Iteration context
+        /// </summary>
+        public IIteration Context { get; set; }
     }
 }

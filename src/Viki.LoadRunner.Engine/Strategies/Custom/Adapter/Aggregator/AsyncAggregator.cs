@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using Viki.LoadRunner.Engine.Core.Collector;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator
@@ -78,6 +79,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator
         private void ProcessorThreadFunction()
         {
 
+            int index = 0;
             try
             {
                 while (!_stopping || _processingQueue.IsEmpty == false)
@@ -87,15 +89,18 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Aggregator
                     {
                         IResult localResultObject = resultObject;
 
-                        Array.ForEach(_aggregators, a => a.Aggregate(localResultObject));
+                        for (index = 0; index < _aggregators.Length; index++)
+                        {
+                            _aggregators[index].Aggregate(localResultObject);
+                        }
                     }
 
                     Thread.Sleep(100);
                 }
             }
-            catch (AggregateException ex)
+            catch (Exception ex)
             {
-                _thrownException = ex;
+                _thrownException = new AggregatorException("One of registered aggregators has failed", _aggregators[index], ex);
 
                 //throw ex.InnerException;
 

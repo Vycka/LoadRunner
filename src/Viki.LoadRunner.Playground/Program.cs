@@ -9,9 +9,9 @@ namespace Viki.LoadRunner.Playground
         static void Main()
         {
             BlankScenario.Run();
-
+            
             AssertPipeline.Run();
-
+            
             TheoreticalSpeedDemo.Run();
 
             BlankStressScenarioMemoryStream.Run();

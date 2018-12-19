@@ -7,7 +7,7 @@ namespace Viki.LoadRunner.Engine.Core.Worker
 {
     public class ErrorHandler : IErrorHandler
     {
-        private readonly ConcurrentBag<Exception> _errors = new ConcurrentBag<Exception>();
+        private readonly ConcurrentBag<WorkerException> _errors = new ConcurrentBag<WorkerException>();
 
         public void Register(IThread worker)
         {
@@ -18,7 +18,7 @@ namespace Viki.LoadRunner.Engine.Core.Worker
         {
             if (ex.GetType() != typeof(ThreadAbortException))
             {
-                _errors.Add(ex);
+                _errors.Add(new WorkerException(ex.Message, sender, ex));
             }
         }
 
@@ -26,7 +26,7 @@ namespace Viki.LoadRunner.Engine.Core.Worker
         {
             if (_errors.Count != 0)
             {
-                Exception resultError;
+                WorkerException resultError;
                 _errors.TryTake(out resultError);
 
                 if (resultError != null)

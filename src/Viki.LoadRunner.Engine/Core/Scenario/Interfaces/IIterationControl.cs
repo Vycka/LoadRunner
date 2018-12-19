@@ -6,6 +6,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
     {
         void Start();
         void Stop();
+        void Skip();
         void Reset(int threadIterationId, int globalIterationId);
     }
 }

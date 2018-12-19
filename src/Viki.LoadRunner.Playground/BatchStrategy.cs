@@ -20,6 +20,7 @@ namespace Viki.LoadRunner.Playground
             HistogramAggregator aggregator = new HistogramAggregator()
                 .Add(new TimeDimension(TimeSpan.FromSeconds(5)))
                 .Add(new CountMetric())
+                .Add(new PeriodMetric())
                 .Add(new TransactionsPerSecMetric());
 
             StrategyBuilder strategy = new StrategyBuilder()

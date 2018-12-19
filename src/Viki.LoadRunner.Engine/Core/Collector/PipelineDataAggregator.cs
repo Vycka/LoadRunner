@@ -64,6 +64,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector
         // TODO: Think of better way to catch error (not using _thrownException)
         private void ProcessorThreadFunction()
         {
+            int index = 0;
             try
             {
                 while (!_stopping || _muxer.Available)
@@ -76,9 +77,9 @@ namespace Viki.LoadRunner.Engine.Core.Collector
                             IReadOnlyList<IResult> batch = enumerator.Current;
                             for (int i = 0; i < batch.Count; i++)
                             {
-                                for (int j = 0; j < _aggregators.Length; j++)
+                                for (index = 0; index < _aggregators.Length; index++)
                                 {
-                                    _aggregators[j].Aggregate(batch[i]);
+                                    _aggregators[index].Aggregate(batch[i]);
                                 }
                             }
 
@@ -94,8 +95,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector
             }
             catch (Exception ex)
             {
-                Error = ex;
-
+                Error = new AggregatorException("One of registered aggregators has failed", _aggregators[index], ex);
                 // Error gets triggered through heartbeat which is much better compared to AsyncAggregator
             }
         }

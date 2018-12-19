@@ -22,15 +22,19 @@ namespace Viki.LoadRunner.Playground.Replay
             _data = data.Value;
             _target = data.TargetTime;
 
+            // Lets skip requests between 4-8 seconds
+            if (data.TargetTime > TimeSpan.FromSeconds(4) && data.TargetTime < TimeSpan.FromSeconds(8))
+            {
+                Console.Out.WriteLine($"[{data.Timer.Value.TotalSeconds:F2}][A:{_target.TotalSeconds:F2}] SetData: [{_data}] SKIP");
+                data.Execute = false;
+                data.Context.UserData = $"[{data.Context.Timer.Value.TotalSeconds:F2}][A:{_target.TotalSeconds:F2}] SKIP";
+            }
             TimeSpan fallenBehind = data.Timer.Value - data.TargetTime;
 
-            //if (fallenBehind > TimeSpan.FromSeconds(1))
-            //    data.Execute = true;
-
             if (fallenBehind > TimeSpan.Zero)
-                Console.WriteLine($@"[{data.Timer.Value.TotalSeconds:F2}] SetData: [{_data}] FALL BEHIND {fallenBehind}");
+                Console.WriteLine($@"[{data.Timer.Value.TotalSeconds:F2}][A:{_target.TotalSeconds:F2}] SetData: [{_data}] FALL BEHIND {fallenBehind}");
 
-            Console.Out.WriteLine($"[{data.Timer.Value.TotalSeconds:F2}] SetData: [{_data}]");
+            Console.Out.WriteLine($"[{data.Timer.Value.TotalSeconds:F2}][A:{_target.TotalSeconds:F2}] SetData: [{_data}]");
         }
 
 

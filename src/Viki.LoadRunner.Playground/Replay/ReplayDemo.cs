@@ -21,7 +21,7 @@ namespace Viki.LoadRunner.Playground.Replay
             HistogramAggregator aggregator = new HistogramAggregator()
                 .Add(new FuncDimension("Iteration", result => result.GlobalIterationId.ToString()))
                 .Add(new FuncDimension("Time", result => result.IterationStarted.TotalSeconds.ToString(CultureInfo.InvariantCulture)))
-                .Add(new FuncDimension("Data", result => result.UserData.ToString()))
+                .Add(new FuncDimension("Data", result => result.UserData?.ToString()))
                 .Add(new FuncMetric<int>("CThreads", 0, (i, r) => r.CreatedThreads))
                 .Add(new FuncMetric<int>("IThreads", 0, (i, r) => r.IdleThreads));
 

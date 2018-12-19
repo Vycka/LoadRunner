@@ -14,15 +14,24 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
     /// </summary>
     public class CheckpointValuesMetric : MultiMetricBase<long> // Rename to CheckpointDurations or smth more meaningful
     {
+        private readonly string _prefix;
         private readonly string[] _ignoredCheckpoints;
 
+
         public CheckpointValuesMetric(params string[] ignoredCheckpoints)
+            : this("Kpi: ", ignoredCheckpoints)
+        {
+        }
+
+
+        public CheckpointValuesMetric(string prefix, params string[] ignoredCheckpoints)
             : base(() => 0)
         {
             if (ignoredCheckpoints == null)
                 throw new ArgumentNullException(nameof(ignoredCheckpoints));
+            _prefix = prefix ?? throw new ArgumentNullException(nameof(prefix));
 
-            _ignoredCheckpoints = ignoredCheckpoints.Union(Checkpoint.NotMeassuredCheckpoints).ToArray();
+            _ignoredCheckpoints = ignoredCheckpoints.ToArray();
         }
 
         protected override IMetric<IResult> CreateNewMetric()
@@ -33,15 +42,24 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         protected override void AddResult(IResult result)
         {
             ICheckpoint[] checkpoints = result.Checkpoints;
-            for (int i = 0, j = checkpoints.Length - 1; i < j; i++)
-            {
-                ICheckpoint checkpoint = checkpoints[i];
-                if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
-                {
-                    string key = "Kpi: " + checkpoint.Name;
-                    TimeSpan momentDiff = checkpoint.Diff(checkpoints[i + 1]);
 
-                    _row[key] = Convert.ToInt64(momentDiff.TotalMilliseconds);
+            if (checkpoints.Length == 1)
+            {
+                string key = _prefix + checkpoints[0].Name;
+                _row[key] = 0;
+            }
+            else
+            {
+                for (int i = 0, j = checkpoints.Length - 1; i < j; i++)
+                {
+                    ICheckpoint checkpoint = checkpoints[i];
+                    if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
+                    {
+                        string key = _prefix + checkpoint.Name;
+                        TimeSpan momentDiff = checkpoint.Diff(checkpoints[i + 1]);
+
+                        _row[key] = Convert.ToInt64(momentDiff.TotalMilliseconds);
+                    }
                 }
             }
         }

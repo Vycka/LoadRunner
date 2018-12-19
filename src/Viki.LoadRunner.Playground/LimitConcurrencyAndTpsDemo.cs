@@ -27,7 +27,7 @@ namespace Viki.LoadRunner.Playground
                 .Add(new TransactionsPerSecMetric());
 
             KpiPrinterAggregator kpi = new KpiPrinterAggregator(
-                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(4),
                 new FuncMetric<string>("T+", "???", (s, result) => result.IterationFinished.ToString("g")),
                 new FuncMetric<int>("Created Threads", 0, (i, r) => Math.Max(r.CreatedThreads, i)),
                 new FuncMetric<int>("Working Threads", 0, (i, r) => Math.Max(r.CreatedThreads - r.IdleThreads, i)),

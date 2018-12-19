@@ -44,6 +44,13 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
             IterationFinished = Timer.Value;
         }
 
+        public void Skip()
+        {
+            TimeSpan timestamp = Timer.Value;
+            IterationStarted = timestamp;
+            IterationFinished = timestamp;
+        }
+
         public void Reset(int threadIterationId, int globalIterationId)
         {
             GlobalIterationId = globalIterationId;
