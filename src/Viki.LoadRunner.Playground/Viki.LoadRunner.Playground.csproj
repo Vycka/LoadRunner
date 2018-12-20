@@ -64,6 +64,7 @@
     <Compile Include="Replay\ReplayScenario.cs" />
     <Compile Include="Replay\ReplayDemo.cs" />
     <Compile Include="TheoreticalSpeedDemo.cs" />
+    <Compile Include="Tools\AssertIterationIdsAggregator.cs" />
     <Compile Include="Tools\CountingScenario.cs" />
     <Compile Include="Tools\CountingScenarioFactory.cs" />
   </ItemGroup>
