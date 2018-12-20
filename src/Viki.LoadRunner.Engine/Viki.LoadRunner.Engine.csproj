@@ -73,7 +73,6 @@
     <Compile Include="Core\Collector\PipeDataCollector.cs" />
     <Compile Include="Core\Collector\Pipeline\PipeMuxer.cs" />
     <Compile Include="Core\Factory\PipeDataCollectorFactory.cs" />
-    <Compile Include="Core\Factory\DataCollectorFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IFactory.cs" />
     <Compile Include="Core\Factory\NullDataCollectorFactory.cs" />
     <Compile Include="Core\Factory\NullSchedulerFactory.cs" />
@@ -100,8 +99,6 @@
     <Compile Include="Core\Worker\WorkerException.cs" />
     <Compile Include="Interfaces\IStrategyExecutor.cs" />
     <Compile Include="Interfaces\IStrategyExecutorAsync.cs" />
-    <Compile Include="Strategies\Custom\Adapter\Aggregator\AsyncAggregatorBlockingCollection.cs" />
-    <Compile Include="Strategies\Custom\Adapter\Aggregator\AsyncAggregator.cs" />
     <Compile Include="Aggregators\Metrics\AvgDurationMetric.cs" />
     <Compile Include="Aggregators\Metrics\BreakByMetric.cs" />
     <Compile Include="Aggregators\Metrics\CountMetric.cs" />
@@ -154,7 +151,6 @@
     <Compile Include="Core\Pool\Interfaces\IThreadPoolStats.cs" />
     <Compile Include="Core\Factory\Interfaces\IUniqueIdFactory.cs" />
     <Compile Include="Core\Scheduler\Scheduler.cs" />
-    <Compile Include="Core\Collector\DataCollector.cs" />
     <Compile Include="Core\Pool\ThreadPool.cs" />
     <Compile Include="Core\Worker\WorkerThread.cs" />
     <Compile Include="Core\Timer\Interfaces\ITimer.cs" />
