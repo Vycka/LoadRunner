@@ -15,7 +15,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 using Viki.LoadRunner.Engine.Strategies.Extensions;
 using Viki.LoadRunner.Tools.ConsoleUi;
 
-namespace LoadRunner.Demo.Minimum
+namespace LoadRunner.Demo.Guides.QuickStart
 {
     // [1] Scenario:
     // Define test scenario for a worker thread.
@@ -37,8 +37,8 @@ namespace LoadRunner.Demo.Minimum
 
         public void ExecuteScenario(IIteration context)
         {
-            // Only gets called if IterationSetup() succeededs.
-            // Timing is meassured here.
+            // Only gets called if IterationSetup() succeeds.
+            // Timing is measured only here.
         }
 
         public void IterationTearDown(IIteration context)
@@ -56,7 +56,7 @@ namespace LoadRunner.Demo.Minimum
     {
         public static void Run()
         {
-            // [2] Results aggregation (Or raw meassurement collection, see RawResults)
+            // [2] Results aggregation (Or raw measurement collection, see RawDataMeasurementsDemo.cs)
             // Define how data gets aggregated.
             // Dimensions are like GROUP BY keys in SQL
             // Metrics are aggregation functions like COUNT, SUM, etc..
@@ -70,7 +70,6 @@ namespace LoadRunner.Demo.Minimum
             // Secondary aggregation just to monitor key metrics.
             KpiPrinterAggregator kpiPrinter = new KpiPrinterAggregator(
                 TimeSpan.FromSeconds(5),
-                new MaxDurationMetric(),
                 new CountMetric(Checkpoint.NotMeassuredCheckpoints),
                 new ErrorCountMetric(false),
                 new TransactionsPerSecMetric()
@@ -88,7 +87,7 @@ namespace LoadRunner.Demo.Minimum
 
 
             // [4] Execution
-            // All thats left is Build(), run and wait for completion and print out meassured results.
+            // All that's left is Build(), run and wait for completion and print out measured results.
             LoadRunnerEngine engine = strategy.Build();
             engine.Run();
 

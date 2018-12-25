@@ -6,6 +6,9 @@ using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
+    /// <summary>
+    /// Counts successful transactions per second
+    /// </summary>
     public class TransactionsPerSecMetric : IMetric
     {
         private TimeSpan _iterationStartedMin;

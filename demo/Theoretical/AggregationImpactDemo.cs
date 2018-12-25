@@ -17,8 +17,12 @@ namespace LoadRunner.Demo.Theoretical
     public class AggregationImpactDemo
     {
 
+        // Registering at least one aggregation forces worker threads to copy/produce measurements after each iteration.
+        // Registering many aggregations shouldn't impact test performance more compared to just a single aggregation.
+        //
+        //
         // While this test can achieve 1+million/sec speed (w/o debugger and release build):
-        // current HistogramAggregator implementation won't be able to process this massive amount of incomming data in real time.
+        // current HistogramAggregator implementation won't be able to process this massive amount of incoming data in real time.
         // as result of it, data gets queued up in memory and this test will easily eat ~5+ GB's of ram in first test run,
         // so be sure that there is enough of RAM available before running this one.
         //
@@ -26,7 +30,7 @@ namespace LoadRunner.Demo.Theoretical
         // 
         // This example runs test twice:
         //  * One with simple histogram setup 
-        //  * And other without histogram but receiving a direct stream of raw meassurements and just counting them.
+        //  * And other without histogram but receiving a direct stream of raw measurements and just counting them.
         //    - This should be able to count results in the real time
         public static void Run()
         {

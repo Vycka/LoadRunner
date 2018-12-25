@@ -6,7 +6,7 @@ using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Strategies;
 using Viki.LoadRunner.Engine.Strategies.Extensions;
 
-namespace LoadRunner.Demo.Detailed
+namespace LoadRunner.Demo.Legacy.Detailed
 {
     public class DetailedDemo
     {

@@ -11,7 +11,7 @@ using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Tools.Aggregators;
 
-namespace LoadRunner.Demo.Features
+namespace LoadRunner.Demo.Legacy.Features
 {
     public class RawDataAggregationDemo
     {

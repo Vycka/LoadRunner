@@ -5,19 +5,19 @@ using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
-    public class PeriodMetric : IMetric
+    public class GlobalTimerPeriodMetric : IMetric
     {
         TimeSpan _min = TimeSpan.MaxValue;
         TimeSpan _max = TimeSpan.MinValue;
 
-        public PeriodMetric(string name = "TotalDuration")
+        public GlobalTimerPeriodMetric(string name = "TotalDuration")
         {
             ColumnNames = new[] {name};
         }
 
         public IMetric<IResult> CreateNew()
         {
-            return new PeriodMetric(ColumnNames[0]);
+            return new GlobalTimerPeriodMetric(ColumnNames[0]);
         }
 
         public void Add(IResult data)

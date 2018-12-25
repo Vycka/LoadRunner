@@ -13,6 +13,7 @@ namespace Viki.LoadRunner.Engine.Analytics
     {
 
     }
+
     // TODO: Add's should have formatters, e.g. .Add(metric, formatter);
     // Parallelism can be achieved by making a processing chain
     // -> Enrich with Dim keys -> duplicate queues for each metric and feed them
@@ -67,11 +68,12 @@ namespace Viki.LoadRunner.Engine.Analytics
         #region Results builder
 
         /// <summary>
-        /// Builds results into object having collumn names array and 2d array data grid
+        /// Builds results into object having column names array and 2d array data grid
         /// </summary>
         public HistogramResults BuildResults()
         {
-
+            if (_row == null)
+                throw new InvalidOperationException("Aggregation was never performed.");
             OrderLearner orderLearner = new OrderLearner();
             _row.ForEach(i => orderLearner.Learn(i.Value.ColumnNames));
 

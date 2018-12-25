@@ -4,7 +4,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 
-namespace LoadRunner.Demo.Detailed
+namespace LoadRunner.Demo.Legacy.Detailed
 {
     public static class Strategy
     {

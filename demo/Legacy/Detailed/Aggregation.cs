@@ -5,7 +5,7 @@ using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Core.Scenario;
 
-namespace LoadRunner.Demo.Detailed
+namespace LoadRunner.Demo.Legacy.Detailed
 {
     public static class Aggregation
     {

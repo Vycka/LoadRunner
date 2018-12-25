@@ -1,31 +1,14 @@
 ﻿using System;
-using LoadRunner.Demo.Detailed;
-using LoadRunner.Demo.Features;
-using LoadRunner.Demo.Minimum;
+using LoadRunner.Demo.Guides.Aggregation;
+using LoadRunner.Demo.Guides.QuickStart;
 using LoadRunner.Demo.Theoretical;
 
 namespace LoadRunner.Demo
 {
     class Program
     {
-        // Main() contains two examples
-        // #1 is shorter version to see all moving parts in single place
-        // #2 contains more detailed information and advanced features
-    
         static void Main(string[] args)
         {
-            // ProTips: 
-            // * If planning to use HttpClient, WebRequest or similar tools to make API Load-Tests
-            //   - Make sure to tweak App.config accordingly to lift up .NET connection limit.
-            //   - Check example in projects app config (<add address="*" maxconnection="100"/>)
-            //
-            // * Avoid running real test with debugger attached, as it can catch exceptions halting test execution and meassurements wont be accurate for that time period.
-            //
-            // * It is also prefered to run in 64bit.
-            //
-            // Other then that, just follow BareMinimum/DetailedDemo for setup example
-
-
             // #0 Quick-Start
             // - One-file setup/execution to get acquainted with framework.
             Run("#0 QuickStart setup", QuickStartDemo.Run);
@@ -34,9 +17,10 @@ namespace LoadRunner.Demo
             // - Controlling thread count
             // - Limiting speed
             // - IScenarioFactory for spawning own IScenario instances.
-            // - Providing aggregators
+            // - Providing IAggregator's to collect/aggregate results
             // - Misc (UserData, Timeout)
             // - IValidator asserting scenario on the main thread.
+            Run("#1.3 Custom IScenarioFactory to create IScenario instances for workers", RawDataMeasurementsDemo.Run);
 
             // #2 Data Aggregation (IAggregator)
 
@@ -45,11 +29,11 @@ namespace LoadRunner.Demo
             // - Creating own IDimension or IMetric
 
             // #2.2 RawData stream  
-            // Offload take raw meassurements from execution without aggregation
+            // Take raw measurements from execution without aggregation
             // - Allows writting own simple aggregations
             // - Doing aggregations post-test.
-            //   - Persisting raw meassurements so new aggregations could be run later.
-
+            //   - Persisting raw measurements so new aggregations could be run later.
+            Run("#2.2 Raw-Data (StreamAggregator, JsonStreamAggregator)", RawDataMeasurementsDemo.Run);
 
             // #5 Replay Strategy
             // - IReplayDataReader
@@ -61,17 +45,29 @@ namespace LoadRunner.Demo
             // - IThreadingStrategy
             // - ILimitStrategy
 
+
+            WriteLinePause(
+                "Next tests show theoretical speeds but they can also easily eat 5+GB's of memory.",
+                "Press enter if only have enough resources to continue, otherwise pagefile will start crying..."
+            );
+
             // #7 Theoretical throughput
             // - Blank scenario
             //   - Without IAggregator
             //   - With IAggregator
-            Console.WriteLine("Theoretical throughput");
-            TheoreticalSpeedDemo.Run();
+            Run("#7.1 Theoretical speed (Blank scenario without aggregation)", TheoreticalSpeedDemo.Run);
 
-            Console.WriteLine("Theoretical with aggregation hooked");
-            AggregationImpactDemo.Run();
-        
+            Run("#7.2 Theoretical speed (Blank scenario with aggregation hooked)", AggregationImpactDemo.Run);
 
+            // Additional tips: 
+            // * If planning to use HttpClient, WebRequest or network related tools to make Load-Tests
+            //   - Make sure to tweak App.config accordingly to lift up .NET connection limit.
+            //   - Check example in projects app config (<add address="*" maxconnection="4000"/>)
+            //   - Also .NET built-in HTTP clients lack blazing performance, specialized client might be required for doing 2k+/s speeds.
+            //
+            // * Avoid running real test with debugger attached, as it can catch exceptions halting test execution and measurements wont be accurate for that time period.
+            //
+            // * It is also preferred to run in 64bit.
 
             // Probably drop these below.
 
@@ -83,7 +79,7 @@ namespace LoadRunner.Demo
 
             // Optional but useful advanced feature worth checking out before running real test.
             //RawDataAggregationDemo.Aggregate();
-            
+
             Console.ReadKey();
         }
 
@@ -91,7 +87,17 @@ namespace LoadRunner.Demo
         {
             Console.WriteLine(title);
             action.Invoke();
-            Console.Write("\r\n Press enter to continue...");
+            Console.Write("\r\nPress enter to execute next test...");
+            Console.ReadLine();
+        }
+
+        private static void WriteLinePause(params string[] text)
+        {
+            foreach (var line in text)
+            {
+                Console.WriteLine(text);
+            }
+            
             Console.ReadLine();
         }
     }

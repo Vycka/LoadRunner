@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
@@ -8,27 +9,25 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed;
 using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Threading;
 using Viki.LoadRunner.Engine.Strategies.Extensions;
 
-namespace LoadRunner.Demo.Features
+namespace LoadRunner.Demo.Guides.StrategyBuilderFeatures
 {
-    public class ScenarioFactory
+    public class ScenarioFactoryDemo
     {
         // In StrategyBuilder one can provide custom scenario factory instead of scenario type it self.
-        // This can be useful if one needs a constructor in scenario if you want to use more than one type of IScenario within one test.
+        // This can be useful if one needs a constructor in scenario or one want to use more than one type of IScenario within one test.
         public class Factory : IScenarioFactory
         {
-            private readonly Random _rnd = new Random(42);
-
             public IScenario Create(int threadId)
             {
-                return new ScenarioWithConstructor(_rnd.Next());
+                return new ScenarioWithConstructor(threadId);
             }
         }
 
         public class ScenarioWithConstructor : IScenario
         {
-            public ScenarioWithConstructor(int something)
+            public ScenarioWithConstructor(int id)
             {
-                Console.WriteLine($"Created with {something}");
+                Console.WriteLine($"Created worker with with id {id}");
             }
 
             public void ScenarioSetup(IIteration context)
@@ -41,6 +40,7 @@ namespace LoadRunner.Demo.Features
 
             public void ExecuteScenario(IIteration context)
             {
+                Thread.Sleep(10);
             }
 
             public void IterationTearDown(IIteration context)
@@ -58,7 +58,6 @@ namespace LoadRunner.Demo.Features
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario(new Factory()) // Use own custom scenario factory
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(5)))
-                .SetSpeed(new FixedSpeed(100))
                 .SetThreading(new FixedThreadCount(4));
 
 

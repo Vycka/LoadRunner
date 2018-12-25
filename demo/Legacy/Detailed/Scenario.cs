@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
-namespace LoadRunner.Demo.Detailed
+namespace LoadRunner.Demo.Legacy.Detailed
 {
     // Extended information
     // https://github.com/Vycka/LoadRunner/wiki/ILoadTestScenario

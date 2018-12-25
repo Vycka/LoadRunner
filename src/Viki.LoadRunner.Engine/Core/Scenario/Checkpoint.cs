@@ -46,7 +46,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
         public string Name { get; set; }
 
         /// <summary>
-        /// Timestamp of when this checkpoint was made durring iteration
+        /// Timestamp of when this checkpoint was made during iteration
         /// </summary>
         public TimeSpan TimePoint { get; set; }
 

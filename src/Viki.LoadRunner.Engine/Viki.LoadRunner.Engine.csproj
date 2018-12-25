@@ -48,7 +48,9 @@
     <Compile Include="Aggregators\Interfaces\IDimension.cs" />
     <Compile Include="Aggregators\HistogramAggregator.cs" />
     <Compile Include="Aggregators\Metrics\CheckpointValuesMetric.cs" />
-    <Compile Include="Aggregators\Metrics\PeriodMetric.cs" />
+    <Compile Include="Aggregators\Metrics\GlobalTimerMaxValueMetric.cs" />
+    <Compile Include="Aggregators\Metrics\GlobalTimerMinValueMetric.cs" />
+    <Compile Include="Aggregators\Metrics\GlobalTimerPeriodMetric.cs" />
     <Compile Include="Aggregators\StreamAggregatorBase.cs" />
     <Compile Include="Aggregators\Utils\ResultExtensions.cs" />
     <Compile Include="Core\Collector\AggregatorException.cs" />
