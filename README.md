@@ -11,6 +11,7 @@ Documentation is now being rewritten, but few examples still exist:
 
 * Start with this small setup to get a feel on how it's configured.
   - [QuickStartDemo.cs](/demo/Guides/QuickStart/QuickStartDemo.cs)
+* Feature specific demos (WiP)
   - [RawDataMeasurementsDemo.cs](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs)
   - [ScenarioFactoryDemo.cs](/demo/Guides/StrategyBuilderFeatures/ScenarioFactoryDemo.cs)
 
