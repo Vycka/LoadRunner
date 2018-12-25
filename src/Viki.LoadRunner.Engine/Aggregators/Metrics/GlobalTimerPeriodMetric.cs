@@ -10,7 +10,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         TimeSpan _min = TimeSpan.MaxValue;
         TimeSpan _max = TimeSpan.MinValue;
 
-        public GlobalTimerPeriodMetric(string name = "TotalDuration")
+        public GlobalTimerPeriodMetric(string name = "Timer period (ms)")
         {
             ColumnNames = new[] {name};
         }

@@ -19,7 +19,7 @@ namespace LoadRunner.Demo.Guides.Aggregation
         // All IAggregator implementations receive un-aggregated raw measurements (later raw-data) from workers.
         //  - (TODO: More info in IAggregator customization, But IAggregator ir pretty self explanatory anyway :))
         // Main idea behind Raw-Data is that one gets un-aggregated measurements in IResult form
-        // and one can do with it anything with them preferably post-load-test.
+        // and one can do anything with it, preferably post-load-test.
         //
         //
         // Having this unlocks few advantages:
@@ -58,7 +58,6 @@ namespace LoadRunner.Demo.Guides.Aggregation
 
             HistogramAggregator histogramTimeline = new HistogramAggregator()
                 .Add(new TimeDimension(TimeSpan.FromSeconds(1)))
-                .Add(new MaxDurationMetric())
                 .Add(new CountMetric())
                 .Add(new GlobalTimerMinValueMetric())
                 .Add(new GlobalTimerMaxValueMetric())

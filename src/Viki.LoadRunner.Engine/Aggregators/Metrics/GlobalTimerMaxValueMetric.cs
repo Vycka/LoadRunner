@@ -19,7 +19,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         public IMetric<IResult> CreateNew()
         {
-            return new GlobalTimerMinValueMetric(ColumnNames[0]);
+            return new GlobalTimerMaxValueMetric(ColumnNames[0]);
         }
 
         public void Add(IResult data)
