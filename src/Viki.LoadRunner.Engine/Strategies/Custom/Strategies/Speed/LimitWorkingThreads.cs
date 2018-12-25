@@ -62,6 +62,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
         public void HeartBeat(ITestState state)
         {
         }
+        public void ThreadStarted(IIterationId id, ISchedule scheduler)
+        {
+        }
 
         public void ThreadFinished(IIterationId id, ISchedule scheduler)
         {

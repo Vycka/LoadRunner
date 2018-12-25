@@ -71,6 +71,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
             }
         }
 
+        public void ThreadStarted()
+        {
+        }
         public void ThreadFinished()
         {
         }

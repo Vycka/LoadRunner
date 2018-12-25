@@ -30,6 +30,7 @@ namespace Viki.LoadRunner.Engine.Core.Worker
         public void Init()
         {
             _handler.Init();
+            _scheduler.ThreadStarted();
         }
 
         public void Execute(ref bool stop)

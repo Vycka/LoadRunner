@@ -56,6 +56,11 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
             }
         }
 
+        public void ThreadStarted()
+        {
+            _strategy.ThreadStarted(_id, this);
+        }
+
         public void ThreadFinished()
         {
             _strategy.ThreadFinished(_id, this);

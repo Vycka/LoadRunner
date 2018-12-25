@@ -8,6 +8,10 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
         {
         }
 
+        public void ThreadStarted()
+        {
+        }
+
         public void ThreadFinished()
         {
         }

@@ -90,16 +90,13 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Speed
             }
         }
 
-        private ScheduleTable GetScheduleTable(ISchedule key)
+        public void ThreadStarted(IIterationId id, ISchedule scheduler)
         {
-            ScheduleTable result;
-            if (_schedules.TryGetValue(key, out result) == false)
+            ScheduleTable table = CreateScheduleTable(scheduler);
+            for (int i = 0; i < _strategies.Length; i++)
             {
-                result = new ScheduleTable(_timer, _strategies.Length);
-                _schedules.Add(key, result);
+                _strategies[i].ThreadStarted(id, table.Schedules[i]);
             }
-
-            return result;
         }
 
         public void ThreadFinished(IIterationId id, ISchedule scheduler)
@@ -109,6 +106,24 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Speed
             {
                 _strategies[i].ThreadFinished(id, table.Schedules[i]);
             }
+        }
+
+        private ScheduleTable GetScheduleTable(ISchedule key)
+        {
+            ScheduleTable result;
+            if (!_schedules.TryGetValue(key, out result))
+                throw new InvalidOperationException("Schedule table doesn't exist, this error also souldn't exist. so smth bad happened");
+
+            return result;
+        }
+
+        private ScheduleTable CreateScheduleTable(ISchedule key)
+        {
+            ScheduleTable result = new ScheduleTable(_timer, _strategies.Length);
+            result = new ScheduleTable(_timer, _strategies.Length);
+            _schedules.Add(key, result);
+
+            return result;
         }
     }
 }
