@@ -6,7 +6,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 {
     public class EnumerableQueue<T> : IEnumerable<T>
     {
-        private BatchingPipe<T> _pipe = new BatchingPipe<T>();
+        private readonly BatchingPipe<T> _pipe = new BatchingPipe<T>();
 
         public void Add(T item)
         {

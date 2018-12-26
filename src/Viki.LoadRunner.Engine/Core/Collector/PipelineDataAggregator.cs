@@ -6,6 +6,9 @@ using Viki.LoadRunner.Engine.Core.Collector.Pipeline;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory;
 
+
+// TODO: Performance can be increased here by creating seperate thread for each aggregator using EnumerableQueue
+// and fill in each EnumerableQueue instance of each aggregator instead of waiting for each aggregator to process iteration on the same thread.
 namespace Viki.LoadRunner.Engine.Core.Collector
 {
     public class PipelineDataAggregator
