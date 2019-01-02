@@ -31,7 +31,7 @@ namespace LoadRunner.Demo.Theoretical
         // This example runs test twice:
         //  * One with simple histogram setup 
         //  * And other without histogram but receiving a direct stream of raw measurements and just counting them.
-        //    - This should be able to count results in the real time
+        //    - This one should be able to count results in the real time
         public static void Run()
         {
             TimeSpan duration = TimeSpan.FromSeconds(13); // 2x tests

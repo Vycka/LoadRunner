@@ -60,6 +60,7 @@ namespace LoadRunner.Demo.Guides.QuickStart
             // Define how data gets aggregated.
             // Dimensions are like GROUP BY keys in SQL
             // Metrics are aggregation functions like COUNT, SUM, etc..
+            // Extensive HistogramAggregator demo now WiP
             HistogramAggregator aggregator = new HistogramAggregator()
                 .Add(new TimeDimension(TimeSpan.FromSeconds(5)))
                 .Add(new CountMetric())

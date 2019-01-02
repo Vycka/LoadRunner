@@ -95,7 +95,7 @@ namespace LoadRunner.Demo
         {
             foreach (var line in text)
             {
-                Console.WriteLine(text);
+                Console.WriteLine(line);
             }
             
             Console.ReadLine();
