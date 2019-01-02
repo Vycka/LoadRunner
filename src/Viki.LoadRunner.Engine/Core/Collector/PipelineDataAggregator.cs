@@ -64,7 +64,6 @@ namespace Viki.LoadRunner.Engine.Core.Collector
 
         #region ProcessorThreadFunction()
 
-        // TODO: Think of better way to catch error (not using _thrownException)
         private void ProcessorThreadFunction()
         {
             int index = 0;

@@ -42,7 +42,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
         private ISpeedStrategy _speed;
         private IThreadingStrategy _threading;
-        private ILimitStrategy _limit;
+        private LimitsHandler _limit;
         private ITestState _state;
         private PipelineDataAggregator _aggregator;
 

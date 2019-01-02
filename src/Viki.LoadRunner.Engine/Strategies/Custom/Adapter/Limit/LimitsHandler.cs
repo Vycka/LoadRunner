@@ -4,7 +4,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Custom.Adapter.Limit
 {
-    public class LimitsHandler : ILimitStrategy
+    public class LimitsHandler
     {
         private readonly ILimitStrategy[] _limits;
 
