@@ -16,7 +16,7 @@ Documentation is now being rewritten, but few examples still exist:
   - [ScenarioFactoryDemo.cs](/demo/Guides/StrategyBuilderFeatures/ScenarioFactoryDemo.cs)
 * Engine throughut (WiP)
   - [TheoreticalSpeedDemo.cs](demo/Theoretical/TheoreticalSpeedDemo.cs) - Theoretical throughput without doing any measurements.
-  - [AggregationImpactDemo.cs.cs](demo/Theoretical/AggregationImpactDemo.cs.cs) - Theoretical throughput with aggregation pipeline attached.
+  - [AggregationImpactDemo.cs](demo/Theoretical/AggregationImpactDemo.cs.cs) - Theoretical throughput with aggregation pipeline attached.
   
 * Until demo project is completed, one can also checkout my messy setups i use for debugging:
   - [src/Playground/Program.cs](/src/Viki.LoadRunner.Playground/Program.cs)
