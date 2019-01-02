@@ -46,18 +46,20 @@ namespace LoadRunner.Demo
             // - ILimitStrategy
 
 
-            WriteLinePause(
+            WriteLinePause("WARNING: READ BEFORE CONTINUING:",
                 "Next tests show theoretical speeds but they can also easily eat 5+GB's of memory.",
-                "Press enter if only have enough resources to continue, otherwise pagefile will start crying..."
+                "Press enter if only have enough resources to continue, otherwise pagefile will start crying and system may freeze...",
+                "", "For maximum throughput a Release build without debugger attached must be executed...",
+                "Press ENTER to continue..."
             );
 
             // #7 Theoretical throughput
             // - Blank scenario
             //   - Without IAggregator
             //   - With IAggregator
-            Run("#7.1 Theoretical speed (Blank scenario without aggregation)", TheoreticalSpeedDemo.Run);
+            Run("#7.1 Theoretical speed (Blank scenario without aggregation)  (~10secs)", TheoreticalSpeedDemo.Run);
 
-            Run("#7.2 Theoretical speed (Blank scenario with aggregation hooked)", AggregationImpactDemo.Run);
+            Run("#7.2 Theoretical speed (Blank scenario with aggregation hooked) (~30secs)", AggregationImpactDemo.Run);
 
             // Additional tips: 
             // * If planning to use HttpClient, WebRequest or network related tools to make Load-Tests
@@ -80,7 +82,8 @@ namespace LoadRunner.Demo
             // Optional but useful advanced feature worth checking out before running real test.
             //RawDataAggregationDemo.Aggregate();
 
-            Console.ReadKey();
+            WriteLinePause("End of examples", "Press ENTER to exit...");
+
         }
 
         private static void Run(string title, Action action)

@@ -39,7 +39,8 @@ namespace LoadRunner.Demo.Theoretical
             HistogramAggregator aggregator = new HistogramAggregator()
                 .Add(new TimeDimension(TimeSpan.FromSeconds(4)))
                 .Add(new CountMetric())
-                .Add(new TransactionsPerSecMetric());
+                .Add(new TransactionsPerSecMetric())
+                .Add(new GlobalTimerPeriodMetric());
 
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario<BlankScenario>()
