@@ -2,7 +2,7 @@
 * NuGet: `Install-Package Viki.LoadRunner -pre`
 
 ## *Quick Intro*
-Documentation is now being rewritten, but few examples still exist:
+Documentation is now being rewritten, but few examples exist:
 
 * Basically one needs to define 3 things to make fully working test:
   - [1] Write Scenario implementation, defining code it-self which will get executed multiple times on multiple threads
@@ -11,6 +11,7 @@ Documentation is now being rewritten, but few examples still exist:
 
 * Start with this small setup to get a feel on how it's configured.
   - [QuickStartDemo.cs](/demo/Guides/QuickStart/QuickStartDemo.cs)
+  - HistoGramAggregatorDemo.cs - ATM WiP.
 * Feature specific demos (WiP)
   - [RawDataMeasurementsDemo.cs](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs)
   - [ScenarioFactoryDemo.cs](/demo/Guides/StrategyBuilderFeatures/ScenarioFactoryDemo.cs)
