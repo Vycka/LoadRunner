@@ -1,28 +1,33 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Aggregators;
-using Viki.LoadRunner.Engine.Aggregators.Dimensions;
-using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Tools.Aggregators;
+using Viki.LoadRunner.Playground.Replay;
 
 namespace Viki.LoadRunner.Playground
 {
     class Program
     {
+
         static void Main()
         {
-            ReadmeDemo.Run();
+            BlankScenario.Run();
+            
+            AssertPipeline.Run();
+            
+            TheoreticalSpeedDemo.Run();
 
-            return;
+            BlankStressScenarioMemoryStream.Run();
 
-            HistogramAggregator histo = new HistogramAggregator();
-            histo
-                .Add(new TimeDimension(TimeSpan.FromSeconds(1)))
-                .Add(new CountMetric())
-                .Add(new AvgDurationMetric())
-                .Add(new PercentileMetric(0.95) { Formatter =  l => l });
+            ReplayDemo.Run();
 
+            BatchStrategyDemo.Run();
 
-            JsonStreamAggregator.Replay("d:\\test.stream.json", histo);
+            DemoSetup.Run();
+
+            LimitConcurrencyAndTpsDemo.Run();
+
+            // Warning! Hdd/sdd intensive usage with this one
+            //BlankStressScenarioJsonStream.Run();
+
+            Console.ReadKey();
         }
     }
 }

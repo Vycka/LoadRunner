@@ -1,6 +1,7 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -19,7 +20,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             _cellBuilderFunc = cellBuilderFunc;
         }
 
-        protected override IMetric CreateNewMetric()
+        protected override IMetric<IResult> CreateNewMetric()
         {
             return new FuncMultiMetric<TValue>(_metricProcedure, _cellBuilderFunc);
         }

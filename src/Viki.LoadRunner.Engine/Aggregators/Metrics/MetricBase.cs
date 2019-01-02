@@ -1,9 +1,11 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
-    abstract public class MetricBase<TValue> : IMetric
+    public abstract class MetricBase<TValue> : IMetric
     {
         protected readonly string _keyName;
         protected readonly TValue _initialValue;
@@ -19,21 +21,21 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             _initialValue = initialValue;
         }
 
-        protected abstract IMetric CreateNewMetric();
+        protected abstract IMetric<IResult> CreateNewMetric();
 
-        IMetric IMetric.CreateNew()
+        IMetric<IResult> IMetric<IResult>.CreateNew()
         {
             return CreateNewMetric();
         }
 
         protected abstract void AddResult(IResult result);
 
-        void IMetric.Add(IResult result)
+        void IMetric<IResult>.Add(IResult result)
         {
             AddResult(result);
         }
 
-        string[] IMetric.ColumnNames => new[] { _keyName };
-        object[] IMetric.Values => new[] { (object)_value };
+        string[] IMetric<IResult>.ColumnNames => new[] { _keyName };
+        object[] IMetric<IResult>.Values => new[] { (object)_value };
     }
 }

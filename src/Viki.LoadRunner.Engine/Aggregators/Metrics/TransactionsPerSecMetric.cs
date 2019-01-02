@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Linq;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
+    /// <summary>
+    /// Counts successful transactions per second
+    /// </summary>
     public class TransactionsPerSecMetric : IMetric
     {
         private TimeSpan _iterationStartedMin;
@@ -19,12 +24,12 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             _iterationFinishedMax = TimeSpan.MinValue;
         }
 
-        IMetric IMetric.CreateNew()
+        IMetric<IResult> IMetric<IResult>.CreateNew()
         {
             return new TransactionsPerSecMetric();
         }
 
-        void IMetric.Add(IResult result)
+        void IMetric<IResult>.Add(IResult result)
         {
             if (result.IterationStarted < _iterationStartedMin)
                 _iterationStartedMin = result.IterationStarted;
@@ -38,26 +43,26 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             }
         }
 
-        private int GetSecondsPassed()
+        private TimeSpan GetDurationDelta()
         {
             if (_count == 0)
-                return 0;
+                return TimeSpan.Zero;
 
-            return (int)(_iterationFinishedMax - _iterationStartedMin).TotalSeconds;
+            return _iterationFinishedMax - _iterationStartedMin;
         }
 
-        string[] IMetric.ColumnNames { get; } = {"TPS"};
+        string[] IMetric<IResult>.ColumnNames { get; } = { "TPS" };
 
-        object[] IMetric.Values
+        object[] IMetric<IResult>.Values
         {
             get
             {
-                int passedSeconds = GetSecondsPassed();
+                TimeSpan delta = GetDurationDelta();
 
-                if (passedSeconds == 0)
+                if (delta == TimeSpan.Zero)
                     return new object[] {0.0};
                 else
-                    return new object[] {((double)_count)/GetSecondsPassed()};
+                    return new object[] {(double)_count / delta.TotalSeconds };
             }
         }
     }

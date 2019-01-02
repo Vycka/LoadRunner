@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -36,10 +39,10 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
                 throw new ArgumentNullException(nameof(ignoredCheckpoints));
 
             _percentiles = percentiles;
-            _ignoredCheckpoints = ignoredCheckpoints;
+            _ignoredCheckpoints = ignoredCheckpoints.Union(Checkpoint.NotMeassuredCheckpoints).ToArray();
         }
 
-        IMetric IMetric.CreateNew()
+        IMetric<IResult> IMetric<IResult>.CreateNew()
         {
             return new PercentileMetric(_percentiles, _ignoredCheckpoints)
             {
@@ -47,20 +50,20 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             };
         }
 
-        void IMetric.Add(IResult result)
+        void IMetric<IResult>.Add(IResult result)
         {
             _percentileValueCacheValid = false;
 
-            ICheckpoint previousCheckpoint = BlankCheckpoint;
-            foreach (ICheckpoint checkpoint in result.Checkpoints)
+            ICheckpoint[] checkpoints = result.Checkpoints;
+            for (int i = 0, j = checkpoints.Length - 1; i < j; i++)
             {
-                if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
+                ICheckpoint checkpoint = checkpoints[i];
+                if (checkpoint.Error == null && _ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
-                    TimeSpan momentDiff = TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
+                    TimeSpan momentDiff = checkpoint.Diff(checkpoints[i + 1]);
 
-                    _row[checkpoint.Name].Add(momentDiff.TotalMilliseconds); 
+                    _row[checkpoint.Name].Add(momentDiff.TotalMilliseconds);
                 }
-                previousCheckpoint = checkpoint;
             }
         }
 
@@ -78,7 +81,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
                     foreach (double targetPercentile in _percentiles)
                     {
-                        string key = string.Concat(Math.Round(targetPercentile*100, 1), "%: ", pair.Key);
+                        string key = string.Concat(targetPercentile*100, "%: ", pair.Key);
 
                         _percentileCache[key] = Convert.ToInt64(CalculatePercentile(sortedData, targetPercentile));
                     }

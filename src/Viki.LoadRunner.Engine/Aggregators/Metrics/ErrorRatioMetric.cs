@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -30,28 +32,34 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             _counts = new FlexiRow<string, ErrorRatio>(() => new ErrorRatio());
         }
 
-        IMetric IMetric.CreateNew()
+        IMetric<IResult> IMetric<IResult>.CreateNew()
         {
             return new ErrorRatioMetric(_ignoredCheckpoints.ToArray());
         }
 
-        void IMetric.Add(IResult result)
+        void IMetric<IResult>.Add(IResult result)
         {
-            foreach (ICheckpoint checkpoint in result.Checkpoints)
-            {
-                if (_ignoredCheckpoints.Contains(checkpoint.Name))
-                    continue;
 
-                _counts[checkpoint.Name].Increase(checkpoint.Error != null);
+            ICheckpoint[] checkpoints = result.Checkpoints;
+            for (int i = 0, j = checkpoints.Length; i < j; i++)
+            {
+                ICheckpoint checkpoint = checkpoints[i];
+                if (checkpoint.Error != null && _ignoredCheckpoints.All(name => name != checkpoint.Name))
+                {
+                    if (_ignoredCheckpoints.Contains(checkpoint.Name))
+                        continue;
+
+                    _counts[checkpoint.Name].Increase(checkpoint.Error != null);
+                }
             }
         }
 
-        string[] IMetric.ColumnNames => _counts
+        string[] IMetric<IResult>.ColumnNames => _counts
             .Where(kv => kv.Value.HasErrors)
             .Select(kv => String.Concat("ErrRatio: ", kv.Key))
             .ToArray();
 
-        object[] IMetric.Values => _counts
+        object[] IMetric<IResult>.Values => _counts
             .Where(kv => kv.Value.HasErrors)
             .Select(kv => kv.Value.Ratio)
             .Cast<object>()

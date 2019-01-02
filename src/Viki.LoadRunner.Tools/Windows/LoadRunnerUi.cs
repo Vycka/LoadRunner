@@ -7,55 +7,41 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
-using Viki.LoadRunner.Engine.Aggregators;
+using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Result;
-using Viki.LoadRunner.Engine.Parameters;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Analytics.Viki.LoadRunner.Engine.Aggregators.Utils;
+using Viki.LoadRunner.Engine.Core.Collector;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Core.Timer;
+using Viki.LoadRunner.Engine.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
+using Viki.LoadRunner.Engine.Validators;
+
 
 namespace Viki.LoadRunner.Tools.Windows
 {
-    public partial class LoadRunnerUi : Form, IResultsAggregator
+    public partial class LoadRunnerUi : Form, IAggregator, IStrategyExecutor
     {
         public string TextTemplate = "LR-UI {0}";
 
-        private readonly Type _iTestScenarioType;
-        private readonly MetricMultiplexer _metricMultiplexerTemplate;
-        private IMetric _metricMultiplexer;
+        private readonly MetricsHandler<IResult> _metricMultiplexerTemplate;
+        private IMetric<IResult> _metricMultiplexer;
 
-        /// <summary>
-        /// Exposed LoadRunnerEngine instance to give access to its status properties.
-        /// 
-        /// But It shouldn't be controlled from here, use UI buttons instead.
-        /// </summary>
-        public readonly LoadRunnerEngine Instance;
+        private readonly ExecutionTimer _timer;
+        private readonly ConcurrentQueue<IResult> _resultsQueue = new ConcurrentQueue<IResult>();
 
-        private readonly ConcurrentQueue<IResult> _resultsQueue = new ConcurrentQueue<IResult>(); 
+        private IValidator _validator;
+        private LoadRunnerEngine _engine;
 
-        /// <summary>
-        /// Initializes new executor instance
-        /// </summary>
-        /// <typeparam name="TTestScenario">ILoadTestScenario to be executed object type</typeparam>
-        /// <param name="parameters">LoadTest parameters</param>
-        /// <param name="resultsAggregators">Aggregators to use when aggregating results from all iterations</param>
-        /// <returns></returns>
-        public static LoadRunnerUi Create<TTestScenario>(LoadRunnerParameters parameters, params IResultsAggregator[] resultsAggregators)
-            where TTestScenario : ILoadTestScenario
+        public LoadRunnerUi()
         {
-            LoadRunnerUi ui = new LoadRunnerUi(parameters, typeof(TTestScenario), resultsAggregators);
+            _timer = new ExecutionTimer();
 
-            return ui;
-        }
-
-        private LoadRunnerUi(LoadRunnerParameters parameters, Type iTestScenarioType, IResultsAggregator[] resultsAggregators)
-        {
-            if (iTestScenarioType == null)
-                throw new ArgumentNullException(nameof(iTestScenarioType));
-            _iTestScenarioType = iTestScenarioType;
-
-            _metricMultiplexerTemplate = new MetricMultiplexer(new IMetric[]
+            _metricMultiplexerTemplate = new MetricsHandler<IResult>(new IMetric[]
             {
                 new FuncMultiMetric<int>((row, result) => 
                     result.Checkpoints.ForEach(c => row[c.Name] = (int)c.TimePoint.TotalMilliseconds),
@@ -66,18 +52,26 @@ namespace Viki.LoadRunner.Tools.Windows
                 new TransactionsPerSecMetric()
             });
 
-            Instance = new LoadRunnerEngine(parameters, iTestScenarioType, resultsAggregators.Concat(new [] { this }).ToArray());
-
             InitializeComponent();
         }
 
-        private void ResetStats()
+        public void Setup(IStrategy strategy, IValidator validator)
         {
-            _metricMultiplexer = ((IMetric)_metricMultiplexerTemplate).CreateNew();
+            _engine = new LoadRunnerEngine(strategy);
+
+            _validateButton.Enabled = validator != null;
+            _validator = validator;
         }
 
-        void IResultsAggregator.Begin()
+        public void Run()
         {
+            Application.Run(this);
+        }
+
+        void IAggregator.Begin()
+        {
+            _timer.Start();
+
             ResetStats();
             TestStartedDisableButtons();
 
@@ -86,20 +80,25 @@ namespace Viki.LoadRunner.Tools.Windows
             Invoke(new InvokeDelegate(() => _backgroundWorker1.RunWorkerAsync()));
         }
 
+        private void ResetStats()
+        {
+            _metricMultiplexer = ((IMetric<IResult>)_metricMultiplexerTemplate).CreateNew();
+        }
 
-        void IResultsAggregator.TestContextResultReceived(IResult result)
+
+        void IAggregator.Aggregate(IResult result)
         {
             _resultsQueue.Enqueue(result);
         }
 
-        void IResultsAggregator.End()
+        void IAggregator.End()
         {
+            _timer.Stop();
+
             _backgroundWorker1.CancelAsync();
 
             TestEndedEnableButtons();
         }
-
-
 
         private void _startButton_Click(object sender, EventArgs e)
         {
@@ -107,7 +106,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
             if (dialogResult == DialogResult.Yes)
             {
-                Instance.RunAsync();
+                _engine.RunAsync();
 
                 TestStartedDisableButtons();
             }
@@ -132,7 +131,7 @@ namespace Viki.LoadRunner.Tools.Windows
             DialogResult dialogResult = MessageBox.Show("Stop?", "Stop?", MessageBoxButtons.YesNo);
 
             if (dialogResult == DialogResult.Yes)
-                Task.Run(() => Instance.Wait(TimeSpan.Zero, true));
+                Task.Run(() => _engine.CancelAsync());
         }
 
         private void _backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -164,12 +163,30 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private delegate void InvokeDelegate();
 
-        private void _validateButton_Click(object sender, EventArgs e)
+        private async void _validateButton_Click(object sender, EventArgs e)
         {
-            IterationResult result = LoadTestScenarioValidator.Validate((ILoadTestScenario) Activator.CreateInstance(_iTestScenarioType));
-            ICheckpoint checkpoint = result.Checkpoints.First(c => c.Name == Checkpoint.IterationEndCheckpointName);
+            var metric = new MinDurationMetric();
 
-            AppendMessage($"Validation OK: {checkpoint.TimePoint.TotalMilliseconds}ms.");
+            IterationResult result = await Task.Run(() => _validator.Validate(0)).ConfigureAwait(false);
+
+            
+
+            Invoke(new InvokeDelegate(
+                () => AppendMessage($"Validation OK:\r\n{String.Join("\r\n", Process(result).Select(c => $"{c.Item1}->{c.Item2}: {c.Item3}{(c.Item4 != null ? $"\r\n{c.Item4.ToString()}\r\n" : "")}"))}"))
+            );
+        }
+
+        private static IEnumerable<Tuple<string, string, TimeSpan, object>> Process(IResult result)
+        {
+            ICheckpoint[] checkpoints = result.Checkpoints;
+            for (int i = 0, j = checkpoints.Length - 1; i < j; i++)
+            {
+                ICheckpoint checkpoint = checkpoints[i];
+                ICheckpoint nextCheckpoint = checkpoints[i + 1];
+                TimeSpan momentDiff = checkpoint.Diff(nextCheckpoint);
+
+                yield return new Tuple<string, string, TimeSpan, object>(checkpoint.Name, nextCheckpoint.Name, momentDiff, checkpoint.Error);
+            }
         }
 
         private void _clearButton_Click(object sender, EventArgs e)
@@ -216,7 +233,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void LoadRunnerUi_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (Instance.IsRunning)
+            if (_engine.Running)
             {
                 e.Cancel = true;
 
@@ -231,7 +248,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void RefreshWindowTitle()
         {
-            Text = string.Format(TextTemplate, Instance.TestDuration.ToString("g"));
+            Text = string.Format(TextTemplate, _timer.Value.ToString("g"));
         }
     }
 }

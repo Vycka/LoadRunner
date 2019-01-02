@@ -1,13 +1,18 @@
 @ECHO OFF
 cd %~dp0
 
-SET minorVersion="0.8-alpha"
+SET minorVersion="8.37-alpha"
 SET majorVersion="0"
 
 SET projectID=Viki.LoadRunner.Tools
 SET project1="..\\..\\src\\%projectID%\\%projectID%.csproj"
 
-"C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" "%project1%" /verbosity:m /target:Rebuild /tv:14.0 /p:GenerateBuildInfoConfigFile=false /p:VisualStudioVersion=14.0 /p:platform=AnyCPU /p:TargetFrameworkVersion="v4.5" /p:Configuration=Release /p:OutputPath="%cd%\pack\lib\net45" /p:DebugSymbols=false /p:DebugType=none /P:SignAssembly=False /p:DocumentationFile=%projectID%.xml
+SET StudioType=Community
+IF NOT "%1"=="" (
+SET StudioType=%1
+)
+
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\%StudioType%\MSBuild\15.0\Bin\MSBuild.exe" "%project1%" /verbosity:m /target:Rebuild /tv:15.0 /p:GenerateBuildInfoConfigFile=false /p:VisualStudioVersion=15.0 /p:platform=AnyCPU /p:TargetFrameworkVersion="v4.5" /p:Configuration=Release /p:OutputPath="%cd%\pack\lib\net45" /p:DebugSymbols=false /p:DebugType=none /P:SignAssembly=False /p:DocumentationFile=%projectID%.xml
 
 %windir%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe EditNuspec.msbuild /p:File="%projectID%.nuspec" /p:projectID="%projectID%" /p:majorVersion=%majorVersion% /p:minorVersion=%minorVersion%
 

@@ -1,9 +1,8 @@
-﻿using Viki.LoadRunner.Engine.Aggregators;
-using Viki.LoadRunner.Engine.Executor.Result;
+﻿using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Playground
 {
-    public class FaultyAggregator : IResultsAggregator
+    public class FaultyAggregator : IAggregator
     {
         private readonly bool _begin, _receive, _end;
 
@@ -20,7 +19,7 @@ namespace Viki.LoadRunner.Playground
                 throw new System.NotImplementedException();
         }
 
-        public void TestContextResultReceived(IResult result)
+        public void Aggregate(IResult result)
         {
             if (_receive)
                 throw new System.NotImplementedException();

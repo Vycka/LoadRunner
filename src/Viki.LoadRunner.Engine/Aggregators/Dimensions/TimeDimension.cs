@@ -1,5 +1,7 @@
 ﻿using System;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
 {
@@ -14,6 +16,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
         public Func<TimeSpan, string> Formatter = t => ((long) t.TotalSeconds).ToString();
 
         /// <param name="interval">interval timespan</param>
+        /// <param name="dimensionName">Custom name for dimension</param>
         public TimeDimension(TimeSpan interval, string dimensionName = "Time (s)")
         {
             Interval = interval;
@@ -22,7 +25,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Dimensions
 
         public string DimensionName { get; }
    
-        string IDimension.GetKey(IResult result)
+        string IDimension<IResult>.GetKey(IResult result)
         {
             TimeSpan resultTimeSlot = Calculate(Interval, TimeSelector(result));
 

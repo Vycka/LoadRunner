@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Core.Collector;
+using Viki.LoadRunner.Engine.Core.Scenario;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Utils
 {
     [DebuggerDisplay("T:{ThreadIterationId} G:{GlobalIterationId} L:{ThreadIterationId} TS:{(int)(IterationStarted.TotalMilliseconds)}")]
     public class ReplayResult<TUserData> : IterationResult
     {
+        private Checkpoint[] _realCheckpoints;
+
+        // This helps deserializers know what implementation of Checkpoints to use.
         public new Checkpoint[] Checkpoints
         {
-            get { return (Checkpoint[]) base.Checkpoints; }
-            set { base.Checkpoints = value.Cast<ICheckpoint>().ToArray();  }
+            get { return _realCheckpoints; }
+            set
+            {
+                base.Checkpoints = value.Cast<ICheckpoint>().ToArray();
+                _realCheckpoints = value;
+            }
         }
 
         public new TUserData UserData

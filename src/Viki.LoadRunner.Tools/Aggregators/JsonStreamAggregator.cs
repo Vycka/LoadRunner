@@ -2,65 +2,51 @@
 using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Aggregators;
 using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Result;
-using Viki.LoadRunner.Tools.Utils;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Tools.Extensions;
 
 namespace Viki.LoadRunner.Tools.Aggregators
 {
-    public class JsonStreamAggregator : StreamAggregator
+    public class JsonStreamAggregator : FileStreamAggregatorBase
     {
-        #region Fields
-
-        private readonly Func<string> _outFileNameFunc;
-
-        #endregion
-
         #region Constructors
 
-        public JsonStreamAggregator(string jsonOutputfile)
+        public JsonStreamAggregator(string jsonOutputfile) : base(jsonOutputfile)
         {
-            _outFileNameFunc = () => jsonOutputfile;
-
-            _streamWriterAction = StreamWriterFunction;
         }
 
-        public JsonStreamAggregator(Func<string> dynamicJsonOutputFile)
+        public JsonStreamAggregator(Func<string> dynamicJsonOutputFile) : base(dynamicJsonOutputFile)
         {
-            _outFileNameFunc = dynamicJsonOutputFile;
-
-            _streamWriterAction = StreamWriterFunction;
         }
 
         #endregion
 
-        #region Write function
+        #region FileStreamAggregatorBase Write()
 
-        private void StreamWriterFunction(IEnumerable<IResult> results)
+        public override void Write(string filePath, IEnumerable<IResult> stream)
         {
-            string fileName = _outFileNameFunc();
-
-            results.SerializeSequenceToJson(fileName);
+            stream.SerializeToJson(filePath);
         }
 
         #endregion
 
         #region Replay functions
 
-        public static void Replay(string jsonResultsFile, params IResultsAggregator[] targetAggregators)
+        public static void Replay(string jsonResultsFile, params IAggregator[] targetAggregators)
         {
             Replay<object>(jsonResultsFile, targetAggregators);
         }
 
-        public static void Replay<TUserData>(string jsonResultsFile, params IResultsAggregator[] targetAggregators)
+        public static void Replay<TUserData>(string jsonResultsFile, params IAggregator[] targetAggregators)
         {
             IEnumerable<IResult> resultsStream = Load<TUserData>(jsonResultsFile);
 
-            Replay(resultsStream, targetAggregators);
+            StreamAggregator.Replay(resultsStream, targetAggregators);
         }
 
         public static IEnumerable<ReplayResult<TUserData>> Load<TUserData>(string jsonResultsFile)
         {
-            return JsonStream.DeserializeSequenceFromJson<ReplayResult<TUserData>>(jsonResultsFile);
+            return JsonStream.DeserializeFromJson<ReplayResult<TUserData>>(jsonResultsFile);
         }
 
         #endregion

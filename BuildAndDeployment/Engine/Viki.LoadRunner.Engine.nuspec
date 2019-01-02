@@ -6,18 +6,17 @@
     <version></version>
     <authors>Vytautas Klumbys</authors>
     <owners></owners>
-    <description>LoadTest library for c# written loadtest scenarios.
+    <description>Generic performance testing library for executing load-tests written in .NET c#
 
-Visit project website for documentation.
+Visit project website for examples.
 
-WIP Library: Namespace and project name might still change, once proper name is decided.
-Sorry for name clash with H P LoadRunner, but this library has no relations to it.</description>
+WIP Library: Namespace and project name might still change, once proper name is decided.</description>
 	<summary></summary>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes></releaseNotes>
 	<licenseUrl>https://github.com/Vycka/LoadRunner/blob/master/LICENSE</licenseUrl>
 	<projectUrl>https://github.com/Vycka/LoadRunner</projectUrl>
-    <copyright>2015</copyright>
-    <tags>Load Stress Test Tester c# Runner Parallel Thread Client Library Framework Tool Addin .NET</tags>
+    <copyright>2017</copyright>
+    <tags>Load Stress Performance Test Testing c# Runner Parallel Thread Library Framework Tool Addin .NET</tags>
   </metadata>
 </package>

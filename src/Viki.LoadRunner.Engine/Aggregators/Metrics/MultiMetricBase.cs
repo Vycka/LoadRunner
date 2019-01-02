@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -14,21 +16,21 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             _row = new FlexiRow<string, TValue>(cellBuilderFunc);
         }
 
-        protected abstract IMetric CreateNewMetric();
+        protected abstract IMetric<IResult> CreateNewMetric();
 
-        IMetric IMetric.CreateNew()
+        IMetric<IResult> IMetric<IResult>.CreateNew()
         {
             return CreateNewMetric();
         }
 
         protected abstract void AddResult(IResult result);
 
-        void IMetric.Add(IResult result)
+        void IMetric<IResult>.Add(IResult result)
         {
             AddResult(result);
         }
 
-        string[] IMetric.ColumnNames => _row.Keys.ToArray();
-        object[] IMetric.Values => _row.Values.Select(v => (object) v).ToArray();
+        string[] IMetric<IResult>.ColumnNames => _row.Keys.ToArray();
+        object[] IMetric<IResult>.Values => _row.Values.Select(v => (object) v).ToArray();
     }
 }

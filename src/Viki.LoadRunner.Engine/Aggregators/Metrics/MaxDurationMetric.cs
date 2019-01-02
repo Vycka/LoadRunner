@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Linq;
-using Viki.LoadRunner.Engine.Aggregators.Utils;
-using Viki.LoadRunner.Engine.Executor.Context;
-using Viki.LoadRunner.Engine.Executor.Result;
+using Viki.LoadRunner.Engine.Aggregators.Interfaces;
+using Viki.LoadRunner.Engine.Analytics;
+using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Scenario;
+using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 {
@@ -11,35 +14,33 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         private readonly FlexiRow<string, long> _row = new FlexiRow<string, long>(() => long.MinValue);
         private readonly string[] _ignoredCheckpoints;
 
-        private static readonly Checkpoint BlankCheckpoint = new Checkpoint("", TimeSpan.Zero);
-
         public MaxDurationMetric(params string[] ignoredCheckpoints)
         {
             if (ignoredCheckpoints == null)
                 throw new ArgumentNullException(nameof(ignoredCheckpoints));
 
-            _ignoredCheckpoints = ignoredCheckpoints;
+            _ignoredCheckpoints = ignoredCheckpoints.Union(Checkpoint.NotMeassuredCheckpoints).ToArray();
         }
 
-        public IMetric CreateNew()
+        public IMetric<IResult> CreateNew()
         {
             return new MaxDurationMetric(_ignoredCheckpoints);
         }
 
         public void Add(IResult result)
         {
-            ICheckpoint previousCheckpoint = BlankCheckpoint;
-            foreach (ICheckpoint checkpoint in result.Checkpoints)
+            ICheckpoint[] checkpoints = result.Checkpoints;
+            for (int i = 0, j = checkpoints.Length - 1; i < j; i++)
             {
-                if (_ignoredCheckpoints.All(name => name != checkpoint.Name))
+                ICheckpoint checkpoint = checkpoints[i];
+                if (checkpoint.Error == null && _ignoredCheckpoints.All(name => name != checkpoint.Name))
                 {
                     string key = "Max: " + checkpoint.Name;
-                    TimeSpan momentDiff = TimeSpan.FromTicks(checkpoint.TimePoint.Ticks - previousCheckpoint.TimePoint.Ticks);
+                    TimeSpan momentDiff = checkpoint.Diff(checkpoints[i + 1]);
 
                     if (_row[key] < momentDiff.TotalMilliseconds)
                         _row[key] = Convert.ToInt64(momentDiff.TotalMilliseconds);
 
-                    previousCheckpoint = checkpoint;
                 }
             }
         }
