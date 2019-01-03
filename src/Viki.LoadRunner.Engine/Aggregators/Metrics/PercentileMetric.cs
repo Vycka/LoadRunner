@@ -16,8 +16,6 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         private readonly double[] _percentiles;
         private readonly string[] _ignoredCheckpoints;
 
-        private static readonly Checkpoint BlankCheckpoint = new Checkpoint("", TimeSpan.Zero);
-
         private readonly FlexiRow<string, long> _percentileCache = new FlexiRow<string, long>((() => default(long))); 
         private bool _percentileValueCacheValid;
 

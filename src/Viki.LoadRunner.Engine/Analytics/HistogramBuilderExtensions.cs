@@ -9,6 +9,7 @@ namespace Viki.LoadRunner.Engine.Analytics
         /// Each registered dimension will become part of composite key for aggregation.
         /// Think of each dimension as part of GROUP BY key.
         /// </summary>
+        /// <param name="builder">Current histogram builder</param>
         /// <param name="dimension">dimension object</param>
         /// <returns>Current Histogram instance</returns>
         public static TBuilder Add<TData, TBuilder>(this IHistogramBuilder<TData, TBuilder> builder, IDimension<TData> dimension)
@@ -23,6 +24,7 @@ namespace Viki.LoadRunner.Engine.Analytics
         /// Register metric (aka Y value)
         /// Rows grouped by provided dimensions will be aggregated with registered metrics.
         /// </summary>
+        /// <param name="builder">Current histogram builder</param>
         /// <param name="metric">metric object</param>
         /// <returns>Current Histogram instance</returns>
         public static TBuilder Add<TData, TBuilder>(this IHistogramBuilder<TData, TBuilder> builder, IMetric<TData> metric)
@@ -36,6 +38,7 @@ namespace Viki.LoadRunner.Engine.Analytics
         /// <summary>
         /// Ignore column when building results
         /// </summary>
+        /// <param name="builder">Current histogram builder</param>
         /// <param name="columnName">Column name to ignore</param>
         /// <returns>Current Histogram instance</returns>
         public static TBuilder Ignore<TData, TBuilder>(this IHistogramBuilder<TData, TBuilder> builder, string columnName)
@@ -49,6 +52,7 @@ namespace Viki.LoadRunner.Engine.Analytics
         /// <summary>
         /// Rename result columns to desired names
         /// </summary>
+        /// <param name="builder">Current histogram builder</param>
         /// <param name="sourceColumnName">source column name</param>
         /// <param name="alias">Name to replace it with</param>
         /// <returns>Current Histogram instance</returns>

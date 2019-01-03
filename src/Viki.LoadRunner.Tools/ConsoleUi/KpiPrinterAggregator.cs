@@ -24,7 +24,7 @@ namespace Viki.LoadRunner.Tools.ConsoleUi
 
         private Timer _timer;
 
-        public KpiPrinterAggregator(TimeSpan interval, params IMetric[] metrics)
+        public KpiPrinterAggregator(TimeSpan interval, params IMetric<IResult>[] metrics)
         {
             _metrics = new MetricsHandler<IResult>(metrics);
             _interval = interval;
