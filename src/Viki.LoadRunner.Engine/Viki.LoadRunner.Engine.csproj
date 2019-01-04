@@ -53,6 +53,7 @@
     <Compile Include="Aggregators\Metrics\GlobalTimerPeriodMetric.cs" />
     <Compile Include="Aggregators\StreamAggregatorBase.cs" />
     <Compile Include="Aggregators\Utils\ResultExtensions.cs" />
+    <Compile Include="Analytics\Metrics\CountMetric.cs" />
     <Compile Include="Analytics\Metrics\PercentileMetric.cs" />
     <Compile Include="Core\Collector\AggregatorException.cs" />
     <Compile Include="Core\Collector\PipelineDataAggregator.cs" />
