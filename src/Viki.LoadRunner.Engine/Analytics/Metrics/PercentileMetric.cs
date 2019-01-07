@@ -25,7 +25,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
             _targetPercentiles = percentiles ?? throw new ArgumentNullException(nameof(percentiles));
 
             _inputDurations = new List<double>();
-            ColumnNames = percentiles.Select(p => $"p{p * 100.0}%").ToArray();
+            ColumnNames = percentiles.Select(headerSelector).ToArray();
         }
 
         public IMetric<T> CreateNew()
