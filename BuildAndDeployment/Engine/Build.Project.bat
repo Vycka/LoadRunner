@@ -1,6 +1,6 @@
 cd %~dp0
 
-SET minorVersion="8.44-beta"
+SET minorVersion="8.45-beta"
 SET majorVersion="0"
 
 SET projectID=Viki.LoadRunner.Engine

@@ -12,7 +12,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 
         public FuncMetric(string keyName, TValue initialValue, Func<T, TValue, TValue> metricFunc)
         {
-            ColumnNames = new[] {keyName};  
+            ColumnNames = new[] { keyName };  
             _value = initialValue;
             _initialValue = initialValue;
             _metricFunc = metricFunc;

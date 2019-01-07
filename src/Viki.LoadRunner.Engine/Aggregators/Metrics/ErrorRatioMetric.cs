@@ -44,13 +44,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
             for (int i = 0, j = checkpoints.Length; i < j; i++)
             {
                 ICheckpoint checkpoint = checkpoints[i];
-                if (checkpoint.Error != null && _ignoredCheckpoints.All(name => name != checkpoint.Name))
-                {
-                    if (_ignoredCheckpoints.Contains(checkpoint.Name))
-                        continue;
 
-                    _counts[checkpoint.Name].Increase(checkpoint.Error != null);
-                }
+                if (_ignoredCheckpoints.Contains(checkpoint.Name))
+                    continue;
+
+                _counts[checkpoint.Name].Increase(checkpoint.Error != null);
             }
         }
 
