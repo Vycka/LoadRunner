@@ -57,6 +57,7 @@
     <Compile Include="Analytics\Metrics\CountMetric.cs" />
     <Compile Include="Analytics\Metrics\FuncMetric.cs" />
     <Compile Include="Analytics\Metrics\PercentileMetric.cs" />
+    <Compile Include="Analytics\Metrics\SubDimension.cs" />
     <Compile Include="Core\Collector\AggregatorException.cs" />
     <Compile Include="Core\Collector\PipelineDataAggregator.cs" />
     <Compile Include="Core\Collector\Pipeline\BatchingPipe.cs" />
