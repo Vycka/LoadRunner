@@ -8,8 +8,8 @@
 Documentation is now being rewritten, but few examples exist:
 
 * Basically one needs to define 3 things to make fully working test:
-  - [1] Write Scenario implementation, defining code it-self which will get executed multiple times on multiple threads
-  - [2][Optional] Configure how results get aggregated/presented
+  - [1] Write Scenario implementation, defining code it-self which will get executed concurrently multiple times.
+  - [2][Optional] Configure how results get aggregated/presented.
   - [3] Configure strategy on how test  gets executed (e.g. How much threads, how long it should run. etc...)
 
 * Start with this small setup to get a feel on how it's configured.
