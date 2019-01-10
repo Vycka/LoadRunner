@@ -7,7 +7,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 {
     public class ValueMetric<T> : ValuesMetric<T>
     {
-        public ValueMetric(string name, Func<T, object> selector)
+        public ValueMetric(string name, ValuesSelectorDelegate<T> selector)
             : base(data => new[] { new Val(name, selector(data)) })
         {
         }
@@ -15,10 +15,10 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 
     public class ValuesMetric<T> : IMetric<T>
     {
-        private readonly Func<T, IEnumerable<Val>> _selector;
+        private readonly ValuesSelectorDelegate<T> _selector;
         private bool _done;
 
-        public ValuesMetric(Func<T, IEnumerable<Val>> selector)
+        public ValuesMetric(ValuesSelectorDelegate<T> selector)
         {
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
 
@@ -47,6 +47,8 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 
         public string[] ColumnNames { get; private set; }
         public object[] Values { get; private set; }
+
+        public delegate IEnumerable<Val> ValuesSelectorDelegate<in TData>(TData data);
     }
 
     public class Val

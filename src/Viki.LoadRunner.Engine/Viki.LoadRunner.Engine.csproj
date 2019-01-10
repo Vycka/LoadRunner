@@ -54,6 +54,7 @@
     <Compile Include="Aggregators\StreamAggregatorBase.cs" />
     <Compile Include="Aggregators\Utils\ResultExtensions.cs" />
     <Compile Include="Analytics\Dimensions\FuncDimension.cs" />
+    <Compile Include="Analytics\Dimensions\TimeDimension.cs" />
     <Compile Include="Analytics\Metrics\CountMetric.cs" />
     <Compile Include="Analytics\Metrics\FuncMetric.cs" />
     <Compile Include="Analytics\Metrics\PercentileMetric.cs" />

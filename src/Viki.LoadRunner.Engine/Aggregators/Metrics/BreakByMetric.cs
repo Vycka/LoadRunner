@@ -67,7 +67,5 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         string[] IMetric<IResult>.ColumnNames => BuildColumnNames().ToArray();
         object[] IMetric<IResult>.Values => BuildValues().ToArray();
-
-
     }
 }
