@@ -21,14 +21,16 @@ HistogramAggregator is a powerful tool of its own which can aggregate any generi
   - [QuickStartDemo.cs#L64](/demo/Guides/QuickStart/QuickStartDemo.cs#L64)
   - [RawDataMeasurementsDemo.cs#L59](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs#L59)
   - [AggregationImpactDemo.cs#L39](/demo/Theoretical/AggregationImpactDemo.cs#L39)
-  
-Feature specific demos (WiP)
- * [RawDataMeasurementsDemo.cs](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs)
- * [ScenarioFactoryDemo.cs](/demo/Guides/StrategyBuilderFeatures/ScenarioFactoryDemo.cs)
- 
-Engine throughut (WiP)
- * [TheoreticalSpeedDemo.cs](demo/Theoretical/TheoreticalSpeedDemo.cs) - Theoretical throughput without doing any measurements.
- * [AggregationImpactDemo.cs](demo/Theoretical/AggregationImpactDemo.cs) - Theoretical throughput with aggregation pipeline attached.
+
+Rest of the demo project:
+ * Index
+  - [Program.cs](/demo/Program.cs)
+ * Feature specific demos (WiP)
+  - [RawDataMeasurementsDemo.cs](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs)
+  - [ScenarioFactoryDemo.cs](/demo/Guides/StrategyBuilderFeatures/ScenarioFactoryDemo.cs)
+ * Engine throughut (WiP)
+  - [TheoreticalSpeedDemo.cs](demo/Theoretical/TheoreticalSpeedDemo.cs) - Theoretical throughput without doing any measurements.
+  - [AggregationImpactDemo.cs](demo/Theoretical/AggregationImpactDemo.cs) - Theoretical throughput with aggregation pipeline attached.
   
 Until demo project is completed, one can also checkout my messy setups i use for debugging:
  * [src/Playground/Program.cs](/src/Viki.LoadRunner.Playground/Program.cs)
