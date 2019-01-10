@@ -24,18 +24,18 @@ HistogramAggregator is a powerful tool of its own which can aggregate any generi
 
 Rest of the demo project:
  * Index
-  - [Program.cs](/demo/Program.cs)
+   - [Program.cs](/demo/Program.cs)
  * Feature specific demos (WiP)
-  - [RawDataMeasurementsDemo.cs](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs)
-  - [ScenarioFactoryDemo.cs](/demo/Guides/StrategyBuilderFeatures/ScenarioFactoryDemo.cs)
+   - [RawDataMeasurementsDemo.cs](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs)
+   - [ScenarioFactoryDemo.cs](/demo/Guides/StrategyBuilderFeatures/ScenarioFactoryDemo.cs)
  * Engine throughut (WiP)
-  - [TheoreticalSpeedDemo.cs](demo/Theoretical/TheoreticalSpeedDemo.cs) - Theoretical throughput without doing any measurements.
-  - [AggregationImpactDemo.cs](demo/Theoretical/AggregationImpactDemo.cs) - Theoretical throughput with aggregation pipeline attached.
+   - [TheoreticalSpeedDemo.cs](demo/Theoretical/TheoreticalSpeedDemo.cs) - Theoretical throughput without doing any measurements.
+   - [AggregationImpactDemo.cs](demo/Theoretical/AggregationImpactDemo.cs) - Theoretical throughput with aggregation pipeline attached.
   
 Until demo project is completed, one can also checkout my messy setups i use for debugging:
  * [src/Playground/Program.cs](/src/Viki.LoadRunner.Playground/Program.cs)
   
-[Future](../../wiki/TODOs)
+[Future TODOs](../../wiki/TODOs)
 
 ***Have any questions/suggestions/etc, feel free to contact me.***
 
