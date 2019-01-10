@@ -5,27 +5,32 @@
 
 
 ## *Quick Intro*
-Documentation is now being rewritten, but few examples exist:
+Current documentation is only in form of examples. (It's far from completed, butIMO its should be good enough to see whether this tool can be useful)
 
-* Basically one needs to define 3 things to make fully working test:
+Start with this small setup to get a feel on how it's configured.
+* One needs to define 3 things to make fully working test (See [QuickStartDemo.cs](/demo/Guides/QuickStart/QuickStartDemo.cs)):
   - [1] Write Scenario implementation, defining code it-self which will get executed concurrently multiple times.
   - [2][Optional] Configure how results get aggregated/presented.
-  - [3] Configure strategy on how test  gets executed (e.g. How much threads, how long it should run. etc...)
+  - [3] Configure strategy on how test gets executed (e.g. How much threads, how long it should run. etc...)
 
-* Start with this small setup to get a feel on how it's configured.
-  - [QuickStartDemo.cs](/demo/Guides/QuickStart/QuickStartDemo.cs)
-  - HistogramAggregatorDemo.cs - ATM WiP.
-* Feature specific demos (WiP)
-  - [RawDataMeasurementsDemo.cs](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs)
-  - [ScenarioFactoryDemo.cs](/demo/Guides/StrategyBuilderFeatures/ScenarioFactoryDemo.cs)
-* Engine throughut (WiP)
-  - [TheoreticalSpeedDemo.cs](demo/Theoretical/TheoreticalSpeedDemo.cs) - Theoretical throughput without doing any measurements.
-  - [AggregationImpactDemo.cs](demo/Theoretical/AggregationImpactDemo.cs) - Theoretical throughput with aggregation pipeline attached.
+HistogramAggregator is a powerful tool of its own which can aggregate any generic data.
+ * Given its flexibility documentation will take time till its done.
+ * Until then - it should be easy enough to figure out its workings through various examples already available:
+  - [HistogramAggregatorDemo.cs#L30](/demo/Guides/Aggregation/HistogramAggregatorDemo.cs#L30) - WiP
+  - [QuickStartDemo.cs#L64](/demo/Guides/QuickStart/QuickStartDemo.cs#L64)
+  - [RawDataMeasurementsDemo.cs#L59](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs#L59)
+  - [AggregationImpactDemo.cs#L39](/demo/Theoretical/AggregationImpactDemo.cs#L39)
+Feature specific demos (WiP)
+ * [RawDataMeasurementsDemo.cs](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs)
+ * [ScenarioFactoryDemo.cs](/demo/Guides/StrategyBuilderFeatures/ScenarioFactoryDemo.cs)
+Engine throughut (WiP)
+ * [TheoreticalSpeedDemo.cs](demo/Theoretical/TheoreticalSpeedDemo.cs) - Theoretical throughput without doing any measurements.
+ * [AggregationImpactDemo.cs](demo/Theoretical/AggregationImpactDemo.cs) - Theoretical throughput with aggregation pipeline attached.
   
-* Until demo project is completed, one can also checkout my messy setups i use for debugging:
-  - [src/Playground/Program.cs](/src/Viki.LoadRunner.Playground/Program.cs)
+Until demo project is completed, one can also checkout my messy setups i use for debugging:
+ * [src/Playground/Program.cs](/src/Viki.LoadRunner.Playground/Program.cs)
   
-* [Future](../../wiki/TODOs)
+[Future](../../wiki/TODOs)
 
 ***Have any questions/suggestions/etc, feel free to contact me.***
 
