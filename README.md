@@ -5,7 +5,8 @@
 
 
 ## *Quick Intro*
-Current documentation is only in form of examples. (It's far from completed, butIMO its should be good enough to see whether this tool can be useful)
+Current documentation is only in form of code examples. 
+* It's far from completed, butIMO its should be good enough to see whether this tool can be useful
 
 Start with this small setup to get a feel on how it's configured.
 * One needs to define 3 things to make fully working test (See [QuickStartDemo.cs](/demo/Guides/QuickStart/QuickStartDemo.cs)):
