@@ -6,7 +6,7 @@
 
 ## *Quick Intro*
 Current documentation is only in form of code examples. 
-* It's far from completed, but IMO its should be good enough to see whether this tool can be useful
+* It's far from completed, but IMO its should be good enough to see whether this tool can be useful.
 
 Start with this small setup to get a feel on how it's configured.
 * One needs to define 3 things to make fully working test (See [QuickStartDemo.cs](/demo/Guides/QuickStart/QuickStartDemo.cs)):
@@ -21,9 +21,11 @@ HistogramAggregator is a powerful tool of its own which can aggregate any generi
   - [QuickStartDemo.cs#L64](/demo/Guides/QuickStart/QuickStartDemo.cs#L64)
   - [RawDataMeasurementsDemo.cs#L59](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs#L59)
   - [AggregationImpactDemo.cs#L39](/demo/Theoretical/AggregationImpactDemo.cs#L39)
+  
 Feature specific demos (WiP)
  * [RawDataMeasurementsDemo.cs](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs)
  * [ScenarioFactoryDemo.cs](/demo/Guides/StrategyBuilderFeatures/ScenarioFactoryDemo.cs)
+ 
 Engine throughut (WiP)
  * [TheoreticalSpeedDemo.cs](demo/Theoretical/TheoreticalSpeedDemo.cs) - Theoretical throughput without doing any measurements.
  * [AggregationImpactDemo.cs](demo/Theoretical/AggregationImpactDemo.cs) - Theoretical throughput with aggregation pipeline attached.
