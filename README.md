@@ -16,7 +16,7 @@ Start with this small setup to get a feel on how it's configured.
 
 HistogramAggregator is a powerful tool of its own which can aggregate any generic data.
  * Given its flexibility documentation will take time till its done.
- * Until then - it should be easy enough to figure out its workings through various examples already available:
+ * Until then - it should be easy enough to figure it out through various uses in examples already available:
   - [HistogramAggregatorDemo.cs#L30](/demo/Guides/Aggregation/HistogramAggregatorDemo.cs#L30) - WiP
   - [QuickStartDemo.cs#L64](/demo/Guides/QuickStart/QuickStartDemo.cs#L64)
   - [RawDataMeasurementsDemo.cs#L59](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs#L59)
