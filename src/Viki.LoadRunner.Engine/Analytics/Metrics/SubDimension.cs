@@ -36,7 +36,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 
         IMetric<T> IMetric<T>.CreateNew()
         {
-            return new SubDimension<T>(_subDimension, _metricsHandler);
+            return new SubDimension<T>(_subDimension, _columnNameSelector, _metricsHandler);
         }
 
         void IMetric<T>.Add(T result)
