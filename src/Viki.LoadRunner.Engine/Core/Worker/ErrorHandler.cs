@@ -12,6 +12,13 @@ namespace Viki.LoadRunner.Engine.Core.Worker
         public void Register(IThread worker)
         {
             worker.ThreadError += OnThreadError;
+            worker.ThreadStopped += OnThreadStopped;
+        }
+
+        private void OnThreadStopped(WorkerThread sender)
+        {
+            sender.ThreadError -= OnThreadError;
+            sender.ThreadStopped -= OnThreadStopped;
         }
 
         private void OnThreadError(IThread sender, Exception ex)

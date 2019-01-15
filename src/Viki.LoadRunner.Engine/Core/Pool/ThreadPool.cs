@@ -86,6 +86,9 @@ namespace Viki.LoadRunner.Engine.Core.Pool
 
             _counter.AddCreated(-1);
 
+            sender.ThreadInitialized -= OnThreadInitialized;
+            sender.ThreadStopped -= OnThreadStopped;
+
             RemoveThread(sender);
         }
 
