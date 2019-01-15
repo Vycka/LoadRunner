@@ -17,10 +17,10 @@ namespace Viki.LoadRunner.Engine.Core.Worker.Interfaces
 
     public static class WorkerThreadDelegates
     {
-        public delegate void ThreadInitializedEvent(WorkerThread sender);
+        public delegate void ThreadInitializedEvent(IThread sender);
 
-        public delegate void ThreadErrorEvent(WorkerThread sender, Exception ex);
+        public delegate void ThreadErrorEvent(IThread sender, Exception ex);
 
-        public delegate void ThreadStoppedEvent(WorkerThread sender);
+        public delegate void ThreadStoppedEvent(IThread sender);
     }
 }

@@ -15,7 +15,7 @@ namespace Viki.LoadRunner.Engine.Core.Worker
             worker.ThreadStopped += OnThreadStopped;
         }
 
-        private void OnThreadStopped(WorkerThread sender)
+        private void OnThreadStopped(IThread sender)
         {
             sender.ThreadError -= OnThreadError;
             sender.ThreadStopped -= OnThreadStopped;
