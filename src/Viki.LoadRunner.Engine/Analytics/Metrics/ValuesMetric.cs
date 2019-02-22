@@ -7,10 +7,12 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 {
     public class ValueMetric<T> : ValuesMetric<T>
     {
-        public ValueMetric(string name, ValuesSelectorDelegate<T> selector)
+        public ValueMetric(string name, ValueSelectorDelegate<T> selector)
             : base(data => new[] { new Val(name, selector(data)) })
         {
         }
+
+        public delegate object ValueSelectorDelegate<in TData>(TData data);
     }
 
     public class ValuesMetric<T> : IMetric<T>

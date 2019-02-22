@@ -62,7 +62,6 @@
     <Compile Include="Core\Collector\AggregatorException.cs" />
     <Compile Include="Core\Collector\PipelineDataAggregator.cs" />
     <Compile Include="Core\Collector\Pipeline\BatchingPipe.cs" />
-    <Compile Include="Aggregators\Utils\BlockingCollectionSingle.cs" />
     <Compile Include="Analytics\DimensionKey.cs" />
     <Compile Include="Analytics\DimensionsHandler.cs" />
     <Compile Include="Analytics\Extensions\HistogramExtensions.cs" />
