@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces

@@ -1,10 +1,7 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Collector;
 using Viki.LoadRunner.Engine.Core.Counter;
-using Viki.LoadRunner.Engine.Core.Factory;
-using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Generator;
-using Viki.LoadRunner.Engine.Core.Generator.Interfaces;
 using Viki.LoadRunner.Engine.Core.Pool;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;

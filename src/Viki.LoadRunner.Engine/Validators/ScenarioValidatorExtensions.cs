@@ -5,7 +5,6 @@ using Viki.LoadRunner.Engine.Core.Pool;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
-using Viki.LoadRunner.Engine.Strategies.Replay.Scenario;
 
 namespace Viki.LoadRunner.Engine.Validators
 {
