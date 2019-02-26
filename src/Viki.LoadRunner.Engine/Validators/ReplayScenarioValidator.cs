@@ -21,9 +21,9 @@ namespace Viki.LoadRunner.Engine.Validators
             _data = data;
         }
         
-        public IterationResult Validate(int threadId)
+        public IterationResult Validate(int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
         {
-            return _factory.Create(threadId).Validate(_data);
+            return _factory.Create(threadId).Validate(_data, threadId, threadIterationId, globalIterationId);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Viki.LoadRunner.Engine.Core.Generator.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
@@ -13,8 +14,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scenario
 
         private readonly DataContext<TData> _dataContext;
 
-        public ReplayScenarioHandler(IGlobalCountersControl globalCounters, IReplayScenario<TData> scenario, IIterationControl context) 
-            : base(globalCounters, scenario, context)
+        public ReplayScenarioHandler(IGlobalCountersControl globalCounters, IUniqueIdGenerator<int> threadIterationIdGenerator, IReplayScenario<TData> scenario, IIterationControl context) 
+            : base(globalCounters, threadIterationIdGenerator, scenario, context)
         {
             _scenario = scenario;
 

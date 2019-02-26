@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Core.Generator;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
@@ -25,7 +26,7 @@ namespace Viki.LoadRunner.Engine.Core.Factory
         public IScenarioHandler Create(IIterationControl iterationContext)
         {
             IScenario scenarioInstance = _factory.Create(iterationContext.ThreadId);
-            IScenarioHandler scenarioHandler = new ScenarioHandler(_globalCounters, scenarioInstance, iterationContext);
+            IScenarioHandler scenarioHandler = new ScenarioHandler(_globalCounters, new NotThreadSafeIdGenerator(), scenarioInstance, iterationContext);
 
             return scenarioHandler;
         }

@@ -1,5 +1,7 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Core.Generator;
+using Viki.LoadRunner.Engine.Core.Generator.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer.Interfaces;
@@ -11,7 +13,7 @@ namespace Viki.LoadRunner.Engine.Core.Factory
         private readonly ITimer _timer;
         private readonly object _initialUserData;
 
-        private readonly IUniqueIdFactory<int> _threadIdFactory;
+        private readonly IUniqueIdGenerator<int> _threadIdGenerator;
 
         public IterationContextFactory(ITimer timer, object initialUserData)
         {
@@ -21,12 +23,12 @@ namespace Viki.LoadRunner.Engine.Core.Factory
             _timer = timer;
             _initialUserData = initialUserData;
 
-            _threadIdFactory = new IdFactory();
+            _threadIdGenerator = new ThreadSafeIdGenerator();
         }
 
         public IIterationControl Create()
         {
-            int newThreadId = _threadIdFactory.Next();
+            int newThreadId = _threadIdGenerator.Next();
 
             return new IterationContext(newThreadId, _timer, _initialUserData);
         }

@@ -1,9 +1,9 @@
 ﻿using System.Threading;
-using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Core.Generator.Interfaces;
 
-namespace Viki.LoadRunner.Engine.Core.Factory
+namespace Viki.LoadRunner.Engine.Core.Generator
 {
-    public class IdFactory : IUniqueIdFactory<int>
+    public class ThreadSafeIdGenerator : IUniqueIdGenerator<int>
     {
         private int _id = -1;
 
@@ -15,6 +15,5 @@ namespace Viki.LoadRunner.Engine.Core.Factory
         }
 
         public int Current => _id;
-        public int Value => _id;
     }
 }

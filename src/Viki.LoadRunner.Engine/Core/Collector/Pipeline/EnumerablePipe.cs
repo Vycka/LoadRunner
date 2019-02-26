@@ -1,19 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 {
-    public class EnumerableQueue<T> : IEnumerable<T>
+    public class EnumerablePipe<T> : IEnumerable<T>, IProducer<T>
     {
         private readonly BatchingPipe<T> _pipe = new BatchingPipe<T>();
 
-        public void Add(T item)
+        public void Produce(T item)
         {
             _pipe.Produce(item);
         }
 
-        public void CompleteAdding()
+        public void ProducingCompleted()
         {
             _pipe.ProducingCompleted();
         }

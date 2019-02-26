@@ -1,5 +1,6 @@
 ﻿using System;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Core.Generator;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Interfaces;
@@ -28,7 +29,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Factory
         public IReplayScenarioHandler Create(IIterationControl iterationContext)
         {
             IReplayScenario<TData> scenarioInstance = _scenarioFactory.Create(iterationContext.ThreadId);
-            IReplayScenarioHandler scenarioHandler = new ReplayScenarioHandler<TData>(_globalCounters, scenarioInstance, iterationContext);
+            IReplayScenarioHandler scenarioHandler = new ReplayScenarioHandler<TData>(_globalCounters, new NotThreadSafeIdGenerator(), scenarioInstance, iterationContext);
 
             return scenarioHandler;
         }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
+namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces
 {
     public interface IConsumer<T>
     {

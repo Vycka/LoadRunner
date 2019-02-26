@@ -3,13 +3,15 @@ using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Core.Generator;
+using Viki.LoadRunner.Engine.Core.Generator.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Scenario
 {
     public class GlobalCounters : IGlobalCountersControl, IGlobalCounters
     {
-        public IUniqueIdFactory<int> IterationId { get; }
+        public IUniqueIdGenerator<int> IterationId { get; }
         public ICounter Errors { get; }
 
         public int ErrorCount => Errors.Value;
@@ -17,10 +19,10 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
 
         public static GlobalCounters CreateDefault()
         {
-            return new GlobalCounters(new ThreadSafeCounter(), new IdFactory());
+            return new GlobalCounters(new ThreadSafeCounter(), new ThreadSafeIdGenerator());
         }
 
-        public GlobalCounters(ICounter errorsCounter, IUniqueIdFactory<int> iterationIdCounter)
+        public GlobalCounters(ICounter errorsCounter, IUniqueIdGenerator<int> iterationIdCounter)
         {
             Errors = errorsCounter ?? throw new ArgumentNullException(nameof(errorsCounter));
             IterationId = iterationIdCounter ?? throw new ArgumentNullException(nameof(iterationIdCounter));

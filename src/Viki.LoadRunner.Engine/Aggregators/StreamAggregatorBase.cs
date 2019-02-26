@@ -13,7 +13,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     {
         #region Fields
 
-        private EnumerableQueue<IResult> _queue;
+        private EnumerablePipe<IResult> _queue;
         private Task _writerTask;
 
         #endregion
@@ -28,7 +28,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         public void Begin()
          {
-            _queue = new EnumerableQueue<IResult>();
+            _queue = new EnumerablePipe<IResult>();
 
             _writerTask = new Task(() => Process(_queue), TaskCreationOptions.LongRunning);
             _writerTask.Start();
@@ -38,14 +38,14 @@ namespace Viki.LoadRunner.Engine.Aggregators
         {
             AssertTask();
 
-            _queue.Add(result);
+            _queue.Produce(result);
         }
 
         public void End()
         {
             if (_queue != null)
             { 
-                _queue.CompleteAdding();
+                _queue.ProducingCompleted();
                 _queue = null;
                 
                 _writerTask.Wait();

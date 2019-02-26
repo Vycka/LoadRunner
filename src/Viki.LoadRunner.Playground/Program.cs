@@ -24,6 +24,9 @@ namespace Viki.LoadRunner.Playground
 
             LimitConcurrencyAndTpsDemo.Run();
 
+            // TODO: Validate ThreadId, ThreadIterartionId, GlobalIterationId counters
+            // TODO: Validate validators
+            
             // Warning! Hdd/sdd intensive usage with this one
             //BlankStressScenarioJsonStream.Run();
 

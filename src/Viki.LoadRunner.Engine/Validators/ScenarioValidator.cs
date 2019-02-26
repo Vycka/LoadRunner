@@ -15,10 +15,10 @@ namespace Viki.LoadRunner.Engine.Validators
             _factory = factory;
         }
 
-        public IterationResult Validate(int threadId)
+        public IterationResult Validate(int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
         {
             // TODO: Move all logic to here
-            return _factory.Create(threadId).Validate();
+            return _factory.Create(threadId).Validate(threadId, threadIterationId, globalIterationId);
         }
     }
 }

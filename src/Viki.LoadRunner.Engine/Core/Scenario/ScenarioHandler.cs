@@ -1,4 +1,5 @@
 ﻿using System;
+using Viki.LoadRunner.Engine.Core.Generator.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Scenario
@@ -7,23 +8,17 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
     {
         private readonly IScenario _scenario;
 
-        protected readonly IGlobalCountersControl _globalCounters;
+        private readonly IGlobalCountersControl _globalCounters;
+        private readonly IUniqueIdGenerator<int> _threadIterationIdGenerator;
         protected readonly IIterationControl _context;
 
-        protected int _threadIterationId;
 
-        public ScenarioHandler(IGlobalCountersControl globalCounters, IScenario scenario, IIterationControl context)
+        public ScenarioHandler(IGlobalCountersControl globalCounters, IUniqueIdGenerator<int> threadIterationIdGenerator, IScenario scenario, IIterationControl context)
         {
-            if (globalCounters == null)
-                throw new ArgumentNullException(nameof(globalCounters));
-            if (context == null)
-                throw new ArgumentNullException(nameof(context));
-
-            _scenario = scenario;
-            _context = context;
-
-            _globalCounters = globalCounters;
-            _threadIterationId = 0;
+            _scenario = scenario ?? throw new ArgumentNullException(nameof(scenario));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _globalCounters = globalCounters ?? throw new ArgumentNullException(nameof(globalCounters));
+            _threadIterationIdGenerator = threadIterationIdGenerator ?? throw new ArgumentNullException(nameof(threadIterationIdGenerator));
         }
 
         /// <summary>
@@ -40,7 +35,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
         /// </summary>
         public void PrepareNext()
         {
-            _context.Reset(_threadIterationId++, _globalCounters.IterationId.Next());
+            _context.Reset(_threadIterationIdGenerator.Next(), _globalCounters.IterationId.Next());
         }
 
         /// <summary>

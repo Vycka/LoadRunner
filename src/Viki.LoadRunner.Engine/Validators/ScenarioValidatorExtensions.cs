@@ -1,8 +1,11 @@
 ﻿using Viki.LoadRunner.Engine.Core.Collector;
+using Viki.LoadRunner.Engine.Core.Counter;
+using Viki.LoadRunner.Engine.Core.Generator;
 using Viki.LoadRunner.Engine.Core.Pool;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
+using Viki.LoadRunner.Engine.Strategies.Replay.Scenario;
 
 namespace Viki.LoadRunner.Engine.Validators
 {
@@ -23,75 +26,27 @@ namespace Viki.LoadRunner.Engine.Validators
         /// <returns>Raw result from single iteration</returns>
         public static IterationResult Validate(this IScenario scenario, int threadId = 0, int threadIterationId = 0, int globalIterationId = 0)
         {
-            ExecutionTimer timer = CreateTimer();
-            IterationContext iteration = CreateIterationContext(threadId, timer);
 
-            ScenarioSetup(scenario, iteration);
+            ExecutionTimer timer = new ExecutionTimer();
+            ThreadSafeCounter errorsCounter = new ThreadSafeCounter();
+            GlobalCounters globalCounters = new GlobalCounters(errorsCounter, new MockedIdGenerator(globalIterationId));
+            IIterationControl context = new IterationContext(threadId, timer);
 
-            IterationSetup(scenario, threadIterationId, globalIterationId, iteration);
-
-            IterationExecute(scenario, timer, iteration);
-
-            IterationTearDown(scenario, iteration);
-
-            IterationResult result = CollectResults(iteration);
-
-            ScenarioTearDown(scenario, iteration);
-
-            return result;
-        }
-
-        private static IterationContext CreateIterationContext(int threadId, ExecutionTimer timer)
-        {
-            return new IterationContext(threadId, timer);
-        }
-
-        private static ExecutionTimer CreateTimer()
-        {
-            return new ExecutionTimer();
-        }
-
-        private static void ScenarioSetup(IScenario scenario, IterationContext iteration)
-        {
-            iteration.Reset(-1, -1);
-            scenario.ScenarioSetup(iteration);
-        }
-
-        private static void IterationSetup(IScenario scenario, int threadIterationId, int globalIterationId, IterationContext iteration)
-        {
-            iteration.Reset(threadIterationId, globalIterationId);
-            iteration.Checkpoint(Checkpoint.Names.Setup);
-
-            scenario.IterationSetup(iteration);
-        }
-
-        private static void IterationExecute(IScenario scenario, ExecutionTimer timer, IterationContext iteration)
-        {
-            iteration.Checkpoint(Checkpoint.Names.Iteration);
+            ScenarioHandler handler = new ScenarioHandler(globalCounters, new MockedIdGenerator(threadIterationId), scenario, context);
 
             timer.Start();
-            iteration.Start();
-            scenario.ExecuteScenario(iteration);
-            iteration.Stop();
+
+            handler.Init();
+            handler.PrepareNext();
+            handler.Execute();
+
+            IterationResult result = new IterationResult(context, new WorkerThreadStats());
+
+            handler.Cleanup();
+
             timer.Stop();
 
-            
-        }
-
-        private static void IterationTearDown(IScenario scenario, IterationContext iteration)
-        {
-            iteration.Checkpoint(Checkpoint.Names.TearDown);
-            scenario.IterationTearDown(iteration);
-        }
-        private static IterationResult CollectResults(IterationContext iteration)
-        {
-            return new IterationResult(iteration, new WorkerThreadStats());
-        }
-
-        private static void ScenarioTearDown(IScenario scenario, IterationContext iteration)
-        {
-            iteration.Reset(-1, -1);
-            scenario.ScenarioTearDown(iteration);
+            return result;
         }
     }
 }
