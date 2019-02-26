@@ -13,6 +13,10 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             if (consumerCount <= 0) throw new ArgumentOutOfRangeException(nameof(consumerCount));
 
             _pipes = new EnumerablePipe<T>[consumerCount];
+            for (int i = 0; i < consumerCount; i++)
+            {
+                _pipes[i] = new EnumerablePipe<T>();
+            }
         }
 
         public void Produce(T item)
