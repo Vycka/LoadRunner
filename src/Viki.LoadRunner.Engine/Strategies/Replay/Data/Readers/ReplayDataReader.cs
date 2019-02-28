@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Viki.LoadRunner.Engine.Core.State.Interfaces;
+using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Replay.Data.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Strategies.Replay.Data.Readers
 {
-    public class ReplayDataReader : IReplayDataReader
+    public class ReplayDataReader : IReplayDataReader, ILimitStrategy
     {
         private readonly DataItem[] _data;
         private int _readIndex;
@@ -37,6 +39,11 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Data.Readers
 
         public void End()
         {
+        }
+
+        public bool StopTest(ITestState state)
+        {
+            return _readIndex + 1 >= _data.Length;
         }
     }
 }
