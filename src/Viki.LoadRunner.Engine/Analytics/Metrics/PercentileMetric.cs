@@ -13,6 +13,8 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 
         private readonly List<double> _inputDurations;
 
+        public Func<double, object> Formatter = (i) => i;
+
         public PercentileMetric(Func<T, double?> durationSelector, params double[] targetPercentiles)
           : this(targetPercentile => $"p{targetPercentile * 100.0}%", durationSelector, targetPercentiles)
         {
@@ -30,7 +32,10 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 
         public IMetric<T> CreateNew()
         {
-            return new PercentileMetric<T>(_headerSelector, _durationSelector, _targetPercentiles);
+            return new PercentileMetric<T>(_headerSelector, _durationSelector, _targetPercentiles)
+            {
+                Formatter = Formatter
+            };
         }
 
         public void Add(T data)
@@ -49,8 +54,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
             _inputDurations.Sort();
 
             object[] result = _targetPercentiles
-                .Select(p => CalculatePercentile(_inputDurations, p))
-                .Cast<object>()
+                .Select(p => Formatter(CalculatePercentile(_inputDurations, p)))
                 .ToArray();
 
             return result;

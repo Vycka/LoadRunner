@@ -11,7 +11,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         TimeSpan _min = TimeSpan.MaxValue;
         TimeSpan _max = TimeSpan.MinValue;
 
-        public Func<TimeSpan, string> Formatter = (t) => t.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
+        public Func<TimeSpan, object> Formatter = (t) => t.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
 
         public GlobalTimerPeriodMetric(string name = "Timer period (ms)")
         {
@@ -36,6 +36,6 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         }
 
         public string[] ColumnNames { get; }
-        public object[] Values => new object[] { Formatter(_max - _min) };
+        public object[] Values => new [] { Formatter(_max - _min) };
     }
 }
