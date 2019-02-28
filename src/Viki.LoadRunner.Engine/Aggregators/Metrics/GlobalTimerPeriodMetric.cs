@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
@@ -10,14 +11,19 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         TimeSpan _min = TimeSpan.MaxValue;
         TimeSpan _max = TimeSpan.MinValue;
 
+        public Func<TimeSpan, string> Formatter = (t) => t.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
+
         public GlobalTimerPeriodMetric(string name = "Timer period (ms)")
         {
-            ColumnNames = new[] {name};
+            ColumnNames = new[] { name };
         }
 
         public IMetric<IResult> CreateNew()
         {
-            return new GlobalTimerPeriodMetric(ColumnNames[0]);
+            return new GlobalTimerPeriodMetric(ColumnNames[0])
+            {
+                Formatter = Formatter
+            };
         }
 
         public void Add(IResult data)
@@ -30,6 +36,6 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
         }
 
         public string[] ColumnNames { get; }
-        public object[] Values => new object[] { (long)((_max - _min).TotalMilliseconds) };
+        public object[] Values => new object[] { Formatter(_max - _min) };
     }
 }
