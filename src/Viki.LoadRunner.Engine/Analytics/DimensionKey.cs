@@ -6,7 +6,6 @@ using System.Collections.Generic;
 namespace Viki.LoadRunner.Engine.Analytics
 {
     public class DimensionKey
-
     {
         private readonly string[] _dimensionValues;
         private readonly string _cachedKey;

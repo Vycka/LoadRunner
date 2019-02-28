@@ -59,8 +59,8 @@ namespace Viki.LoadRunner.Engine.Analytics
 
         public void Aggregate(TData item)
         {
-                DimensionKey key = _dimensionsKeyBuilder.GetValue(item);
-                _row[key].Add(item);
+            DimensionKey key = _dimensionsKeyBuilder.GetValue(item);
+            _row[key].Add(item);
         }
 
         #endregion

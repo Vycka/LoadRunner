@@ -8,17 +8,17 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
     public class PercentileMetric<T> : IMetric<T>
     {
         private readonly Func<double, string> _headerSelector;
-        private readonly Func<T, double> _durationSelector;
+        private readonly Func<T, double?> _durationSelector;
         private readonly double[] _targetPercentiles;
 
         private readonly List<double> _inputDurations;
 
-        public PercentileMetric(Func<T, double> durationSelector, params double[] targetPercentiles)
+        public PercentileMetric(Func<T, double?> durationSelector, params double[] targetPercentiles)
           : this(targetPercentile => $"p{targetPercentile * 100.0}%", durationSelector, targetPercentiles)
         {
         }
 
-        public PercentileMetric(Func<double, string> headerSelector, Func<T, double> durationSelector, params double[] percentiles)
+        public PercentileMetric(Func<double, string> headerSelector, Func<T, double?> durationSelector, params double[] percentiles)
         {
             _headerSelector = headerSelector ?? throw new ArgumentNullException(nameof(headerSelector));
             _durationSelector = durationSelector ?? throw new ArgumentNullException(nameof(durationSelector));
@@ -35,9 +35,10 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 
         public void Add(T data)
         {
-            double duration = _durationSelector(data);
-
-            _inputDurations.Add(duration);
+            double? duration = _durationSelector(data);
+            
+            if (duration != null)
+                _inputDurations.Add(duration.Value);
         }
 
         public string[] ColumnNames { get; }
