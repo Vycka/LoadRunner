@@ -12,6 +12,12 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
         {
         }
 
+        public ValueMetric(ValSelectorDelegate<T> valueSelector)
+            : base(data => new[] { valueSelector(data) })
+        {
+        }
+
+        public delegate Val ValSelectorDelegate<in TData>(TData data);
         public delegate object ValueSelectorDelegate<in TData>(TData data);
     }
 
