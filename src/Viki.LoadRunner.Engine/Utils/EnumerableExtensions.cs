@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Viki.LoadRunner.Engine.Utils
 {
@@ -21,6 +22,16 @@ namespace Viki.LoadRunner.Engine.Utils
             {
                 action(item);
             }
+        }
+
+        public static Task ConsumeAsync<T>(this IEnumerable<T> enumerable, Action<IEnumerable<T>> consumeAction, bool start = true)
+        {
+            Task task = new Task(() => consumeAction(enumerable), TaskCreationOptions.LongRunning);
+
+            if (start)
+                task.Start();
+
+            return task;
         }
     }
 }

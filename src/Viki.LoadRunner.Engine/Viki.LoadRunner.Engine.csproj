@@ -76,13 +76,13 @@
     <Compile Include="Analytics\MetricsHandler.cs" />
     <Compile Include="Analytics\Metrics\ValuesMetric.cs" />
     <Compile Include="Core\Collector\NullDataCollector.cs" />
-    <Compile Include="Core\Collector\Pipeline\EnumerablePipe.cs" />
+    <Compile Include="Core\Collector\Pipeline\Extensions\ConsumerExtensions.cs" />
     <Compile Include="Core\Collector\Pipeline\Extensions\ProducerExtensions.cs" />
     <Compile Include="Core\Collector\Pipeline\Interfaces\IConsumer.cs" />
     <Compile Include="Core\Collector\Pipeline\Interfaces\IPipeFactory.cs" />
     <Compile Include="Core\Collector\Pipeline\Interfaces\IProducer.cs" />
     <Compile Include="Core\Collector\PipeDataCollector.cs" />
-    <Compile Include="Core\Collector\Pipeline\EnumerablePipeMultiplexer.cs" />
+    <Compile Include="Core\Collector\Pipeline\PipeMultiplier.cs" />
     <Compile Include="Core\Collector\Pipeline\PipeMuxer.cs" />
     <Compile Include="Core\Factory\PipeDataCollectorFactory.cs" />
     <Compile Include="Core\Factory\Interfaces\IFactory.cs" />

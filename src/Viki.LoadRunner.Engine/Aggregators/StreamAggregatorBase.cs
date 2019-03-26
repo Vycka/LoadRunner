@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline;
+using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Extensions;
 
 namespace Viki.LoadRunner.Engine.Aggregators
 {
@@ -13,7 +14,7 @@ namespace Viki.LoadRunner.Engine.Aggregators
     {
         #region Fields
 
-        private EnumerablePipe<IResult> _queue;
+        private BatchingPipe<IResult> _queue;
         private Task _writerTask;
 
         #endregion
@@ -28,10 +29,9 @@ namespace Viki.LoadRunner.Engine.Aggregators
 
         public void Begin()
          {
-            _queue = new EnumerablePipe<IResult>();
+            _queue = new BatchingPipe<IResult>();
 
-            _writerTask = new Task(() => Process(_queue), TaskCreationOptions.LongRunning);
-            _writerTask.Start();
+             _writerTask = _queue.ToEnumerableAsync(Process);
         }
 
         public void Aggregate(IResult result)

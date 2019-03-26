@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 {
-    public class EnumerablePipeMultiplexer<T> : IProducer<T>
+    public class PipeMultiplier<T> : IProducer<T>
     {
-        private readonly EnumerablePipe<T>[] _pipes;
+        private readonly BatchingPipe<T>[] _pipes;
 
-        public EnumerablePipeMultiplexer(int consumerCount)
+        public PipeMultiplier(int consumerCount)
         {
             if (consumerCount <= 0) throw new ArgumentOutOfRangeException(nameof(consumerCount));
 
-            _pipes = new EnumerablePipe<T>[consumerCount];
+            _pipes = new BatchingPipe<T>[consumerCount];
             for (int i = 0; i < consumerCount; i++)
             {
-                _pipes[i] = new EnumerablePipe<T>();
+                _pipes[i] = new BatchingPipe<T>();
             }
         }
 
@@ -35,6 +34,6 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             }
         }
 
-        public IEnumerable<T> this[int index] => _pipes[index];
+        public IConsumer<T> this[int index] => _pipes[index];
     }
 }
