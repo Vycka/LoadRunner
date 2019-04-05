@@ -25,7 +25,7 @@ namespace Viki.LoadRunner.Playground
 
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario<BatchStrategyDemo>()
-                .AddSpeed(new BatchingSpeed(TimeSpan.FromSeconds(5), 10))
+                .AddSpeed(new BatchByTimeIntervalSpeed(TimeSpan.FromSeconds(5), 10))
                 .SetThreading(new FixedThreadCount(15))
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(20)))
                 .SetAggregator(aggregator);

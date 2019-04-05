@@ -177,7 +177,8 @@
     <Compile Include="Strategies\Custom\Adapter\Speed\ScheduleTable.cs" />
     <Compile Include="Strategies\Custom\CustomStrategy.cs" />
     <Compile Include="Strategies\Custom\Strategies\Limit\ErrorLimit.cs" />
-    <Compile Include="Strategies\Custom\Strategies\Speed\BatchingSpeed.cs" />
+    <Compile Include="Strategies\Custom\Strategies\Speed\BatchBySlowestSpeed.cs" />
+    <Compile Include="Strategies\Custom\Strategies\Speed\BatchByTimeIntervalSpeed.cs" />
     <Compile Include="Strategies\Custom\Strategies\Speed\MaxSpeed.cs" />
     <Compile Include="Strategies\Extensions\FeatureExtensions.cs" />
     <Compile Include="Strategies\Extensions\StrategyBuilderExtensions.cs" />

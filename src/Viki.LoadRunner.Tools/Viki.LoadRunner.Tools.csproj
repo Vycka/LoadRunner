@@ -53,6 +53,8 @@
     <Compile Include="Aggregators\FileStreamAggregator.cs" />
     <Compile Include="Aggregators\JsonStreamAggregator.cs" />
     <Compile Include="ConsoleUi\KpiPrinterAggregator.cs" />
+    <Compile Include="Extensions\CsvStream.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Strategy\GenericWork.cs" />
     <Compile Include="Strategy\StrategyBase.cs" />

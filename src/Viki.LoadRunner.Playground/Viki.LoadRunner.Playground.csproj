@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertPipeline.cs" />
+    <Compile Include="BatchAndWaitDemo.cs" />
     <Compile Include="BatchStrategy.cs" />
     <Compile Include="BlankScenario.cs" />
     <Compile Include="BlankStressScenarioMemoryStream.cs" />

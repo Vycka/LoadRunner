@@ -8,10 +8,10 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
 {
     /// <summary>
-    /// Executes iterations in desired batch sizes at each passed time interval.
+    /// Executes iterations in desired batch sizes at start of each time interval.
     /// Thread count should be at least big as batch size for strategy to work as expected
     /// </summary>
-    public class BatchingSpeed : ISpeedStrategy
+    public class BatchByTimeIntervalSpeed : ISpeedStrategy
     {
         private readonly TimeSpan _pollInterval = TimeSpan.FromMilliseconds(100);
 
@@ -22,19 +22,18 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
         private int _executedBatchIterations;
 
         /// <summary>
-        /// Executes iterations in desired batch sizes at each interval.
-        /// 
+        /// Executes iterations in desired batch sizes at start of each time interval.
         /// Thread count should be at least as big as batch size for strategy to work as expected.
         /// 
-        /// Threads should be able to execute their iteration within the interval,
-        /// otherwise they wont be executed at the same time as the rest of the batch.
+        /// Threads should be able to complete their iteration within the time interval,
+        /// otherwise at next batch, threads which didn't managed to complete in time, will only start once they finish the previous batch.
         /// 
         /// If no threads are available to execute the whole batch within interval,
         /// the remaining iterations won't be executed when next time interval comes.
         /// </summary>
         /// <param name="interval">Time interval at start of each [batchSize] of iterations will be executed</param>
         /// <param name="batchSize">Amount of iterations to execute within one batch defined in [interval]</param>
-        public BatchingSpeed(TimeSpan interval, int batchSize)
+        public BatchByTimeIntervalSpeed(TimeSpan interval, int batchSize)
         {
             _interval = interval;
             _batchSize = batchSize;

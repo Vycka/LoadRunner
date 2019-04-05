@@ -5,9 +5,10 @@ namespace Viki.LoadRunner.Playground
 {
     class Program
     {
-
         static void Main()
         {
+            BatchAndWaitDemo.Run();
+            
             BlankScenario.Run();
             
             AssertPipeline.Run();
