@@ -13,7 +13,7 @@ using Viki.LoadRunner.Engine.Strategies.Interfaces;
 namespace Viki.LoadRunner.Engine.Strategies
 {
     /// <summary>
-    /// Wizzard class for configuring and building custom test strategy.
+    /// Guided class for configuring and building custom test strategy.
     /// </summary>
     public class StrategyBuilder : ICustomStrategySettings
     {
