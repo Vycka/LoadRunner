@@ -1,6 +1,7 @@
 ### Generic performance testing library for executing load-tests written in .NET c# ###
 * Originally aimed for developers (and up to corner case scenarios) for maximum flexibility.
-* But easy enough to use as writing integration tests - just for more threads. :)
+* But easy enough to use it as writing integration tests - just for more threads. :)
+* Can be used as a framework to build around it a load testing solution (like project to store written scenarios/aggregations in configurable/reusable way).
 * NuGet: `Install-Package Viki.LoadRunner -pre`
 
 
@@ -14,7 +15,7 @@ Start with this small setup to get a feel on how it's configured.
   - [2][Optional] Configure how results get aggregated/presented.
   - [3] Configure strategy on how test gets executed (e.g. How much threads, how long it should run. etc...)
 
-HistogramAggregator is a powerful tool of its own which can aggregate any generic data.
+HistogramAggregator is a powerful tool of its own which can aggregate any generic data (new Histogram<T>()).
  * Given its flexibility documentation will take time till its done.
  * Until then - it should be easy enough to figure it out through various uses in examples already available:
    - [HistogramAggregatorDemo.cs#L30](/demo/Guides/Aggregation/HistogramAggregatorDemo.cs#L30) - WiP
