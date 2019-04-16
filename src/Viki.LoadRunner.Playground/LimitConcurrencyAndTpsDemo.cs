@@ -38,7 +38,7 @@ namespace Viki.LoadRunner.Playground
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario<LimitConcurrencyAndTpsDemo>()
                 .AddSpeed(new LimitWorkingThreads(11))
-                .AddSpeed(new IncrementalSpeed(30, TimeSpan.FromSeconds(20), 15))
+                .AddSpeed(new IncrementalSpeed(1, TimeSpan.FromSeconds(20), 10))
                 .SetThreading(new IncrementalThreadCount(250, TimeSpan.FromSeconds(10), -50))
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(52)))
                 .SetAggregator(aggregator, kpi);

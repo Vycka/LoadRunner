@@ -1,22 +1,21 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <title>LoadRunner load test library</title>
-    <id>Viki.LoadRunner</id>
+    <title>LoadRunner Tools Legacy </title>
+    <id>Viki.LoadRunner.Tools.Legacy</id>
     <version></version>
     <authors>Vytautas Klumbys</authors>
     <owners></owners>
-    <description>Generic performance testing library for executing load-tests written in .NET c#
-
-Visit project website for examples.
-
-WIP Library: Namespace and project name might still change, once proper name is decided.</description>
-	<summary></summary>
+    <description>This library only contains Winforms BuildUi() as it is unsupported in .NET Standard</description>
+	<summary>Legacy features cut from Tools nuget, as they not work under .NET Standard</summary>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes></releaseNotes>
 	<licenseUrl>https://github.com/Vycka/LoadRunner/blob/master/LICENSE</licenseUrl>
 	<projectUrl>https://github.com/Vycka/LoadRunner</projectUrl>
     <copyright>2017</copyright>
     <tags>Load Stress Performance Test Testing c# Runner Parallel Thread Library Framework Tool Addin .NET</tags>
+	<dependencies>
+        <dependency id="Viki.LoadRunner" version="0.8.60-beta" />
+    </dependencies>
   </metadata>
 </package>

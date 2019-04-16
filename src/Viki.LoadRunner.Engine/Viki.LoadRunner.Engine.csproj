@@ -4,6 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>0.8.60-beta</Version>
+    <PackageId>Viki.LoadRunner</PackageId>
+    <Authors>Vytautas Klumbys</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -11,7 +13,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>src\Viki.LoadRunner.Engine\Viki.LoadRunner.Engine.xml</DocumentationFile>
+    <DocumentationFile>bin\Viki.LoadRunner.Engine\Viki.LoadRunner.Engine.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
