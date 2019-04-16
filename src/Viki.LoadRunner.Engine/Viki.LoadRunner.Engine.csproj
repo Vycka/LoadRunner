@@ -3,9 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.8.60-beta</Version>
+    <Version>0.8.61-beta</Version>
     <PackageId>Viki.LoadRunner</PackageId>
     <Authors>Vytautas Klumbys</Authors>
+    <Description>Generic performance testing library for executing load-tests written in .NET c#
+
+Visit project website for examples.</Description>
+    <PackageProjectUrl>https://github.com/Vycka/LoadRunner</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Vycka/LoadRunner</RepositoryUrl>
+    <PackageTags>Load Stress Performance Test Testing c# Runner Parallel Thread Library Framework Tool Addin .NET</PackageTags>
+    <Copyright>2019</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
