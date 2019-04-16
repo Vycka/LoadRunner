@@ -24,16 +24,15 @@ namespace Viki.LoadRunner.Playground.Tools
             {
                 _missedOrderIds.Add(result.GlobalIterationId);
             }
+        }
 
+        public void End()
+        {
             while (_missedOrderIds.Contains(_nextId))
             {
                 _missedOrderIds.Remove(_nextId);
                 _nextId++;
             }
-        }
-
-        public void End()
-        {
         }
 
         public void PrintResults()

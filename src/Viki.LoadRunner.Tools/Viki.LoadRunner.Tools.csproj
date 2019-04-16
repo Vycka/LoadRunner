@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>src\Viki.LoadRunner.Tools\Viki.LoadRunner.Tools.xml</DocumentationFile>
+    <DocumentationFile>bin\Viki.LoadRunner.Tools.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
