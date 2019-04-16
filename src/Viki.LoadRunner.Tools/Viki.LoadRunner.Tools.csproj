@@ -2,7 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.8.42-alpha</Version>
+    <Version>0.8.43-alpha</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Vytautas Klumbys</Authors>
+    <PackageTags>Load performance Test Tester c# Runner Parallel Thread Client Library Framework Tool Addin .NET utils</PackageTags>
+    <Description>Additional utils for Viki.LoadRunner (WIP)</Description>
+    <PackageReleaseNotes>Since .NET Standard switch, BuildUi() feature was cut from this nuget and placed into Viki.LoadRunner.Tools.Legacy</PackageReleaseNotes>
+    <Copyright>2019</Copyright>
+    <PackageProjectUrl>https://github.com/Vycka/LoadRunner</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Vycka/LoadRunner</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
