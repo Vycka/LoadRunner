@@ -1,7 +1,6 @@
 ### Generic performance testing library for executing load-tests written in .NET c# ###
 * Originally aimed for developers (and up to corner case scenarios) for maximum flexibility.
 * But easy enough to use it as writing integration tests - just for more threads. :)
-* Can be used as a framework to build around it a load testing solution (like project to store written scenarios/aggregations in configurable/reusable way).
 * NuGet: `Install-Package Viki.LoadRunner -pre`
 
 
