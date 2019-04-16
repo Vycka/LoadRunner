@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{54AB3500-D553-448C-BC79-ED7886D395BE}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Viki.LoadRunner.Playground</RootNamespace>
-    <AssemblyName>Viki.LoadRunner.Playground</AssemblyName>
+    <ProjectGuid>{D4D5978E-A6EF-4947-8AD3-D465D3295EB5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Viki.LoadRunner.Tools.Legacy</RootNamespace>
+    <AssemblyName>Viki.LoadRunner.Tools.Legacy</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,15 +21,16 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Viki.LoadRunner.Tools.Legacy.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Viki.LoadRunner.Tools.Legacy.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -38,6 +38,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,42 +48,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssertPipeline.cs" />
-    <Compile Include="BatchAndWaitDemo.cs" />
-    <Compile Include="BatchStrategy.cs" />
-    <Compile Include="BlankScenario.cs" />
-    <Compile Include="BlankStressScenarioJsonStream.cs" />
-    <Compile Include="BlankStressScenarioMemoryStream.cs" />
-    <Compile Include="DemoSetup.cs" />
-    <Compile Include="FaultyAggregator.cs" />
-    <Compile Include="LimitConcurrencyAndTpsDemo.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Extensions\ControlExtensions.cs" />
+    <Compile Include="Extensions\StrategyBuilderExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Replay\DataGenerator.cs" />
-    <Compile Include="Replay\ReplayDemo.cs" />
-    <Compile Include="Replay\ReplayScenario.cs" />
-    <Compile Include="TheoreticalSpeedDemo.cs" />
-    <Compile Include="Tools\AssertIterationIdsAggregator.cs" />
-    <Compile Include="Tools\CountingScenario.cs" />
-    <Compile Include="Tools\CountingScenarioFactory.cs" />
+    <Compile Include="Windows\LoadRunnerUi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\LoadRunnerUi.Designer.cs">
+      <DependentUpon>LoadRunnerUi.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <EmbeddedResource Include="Windows\LoadRunnerUi.resx">
+      <DependentUpon>LoadRunnerUi.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Viki.LoadRunner.Engine\Viki.LoadRunner.Engine.csproj">
       <Project>{e27a1413-c64b-44bd-8e1d-3aa240332f06}</Project>
       <Name>Viki.LoadRunner.Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Viki.LoadRunner.Tools.Legacy\Viki.LoadRunner.Tools.Legacy.csproj">
-      <Project>{d4d5978e-a6ef-4947-8ad3-d465d3295eb5}</Project>
-      <Name>Viki.LoadRunner.Tools.Legacy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Viki.LoadRunner.Tools\Viki.LoadRunner.Tools.csproj">
-      <Project>{8cb52961-7920-4703-bb6c-4b8a156fbf30}</Project>
-      <Name>Viki.LoadRunner.Tools</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
