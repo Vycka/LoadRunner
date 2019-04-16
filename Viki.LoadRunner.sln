@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viki.LoadRunner.Playground", "src\Viki.LoadRunner.Playground\Viki.LoadRunner.Playground.csproj", "{54AB3500-D553-448C-BC79-ED7886D395BE}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Viki.LoadRunner.Engine", "src\Viki.LoadRunner.Engine\Viki.LoadRunner.Engine.csproj", "{E27A1413-C64B-44BD-8E1D-3AA240332F06}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viki.LoadRunner.Tools", "src\Viki.LoadRunner.Tools\Viki.LoadRunner.Tools.csproj", "{8CB52961-7920-4703-BB6C-4B8A156FBF30}"
@@ -12,8 +14,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B22D7106-633E-42DC-8C1A-0C9C804AB215}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6800714D-B19D-486D-8F43-1E8D571EF18A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viki.LoadRunner.Playground", "src\Viki.LoadRunner.Playground\Viki.LoadRunner.Playground.csproj", "{54AB3500-D553-448C-BC79-ED7886D395BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

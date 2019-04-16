@@ -48,7 +48,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Result
 
         public HistogramResults Rows<T>(string columnName, T searchValue)
         {
-            int keyIndex = FindColumn(columnName);
+            int keyIndex = ColumnIndex(columnName);
             if (keyIndex == -1)
                 throw new ArgumentException("Bad columnName");
 
@@ -66,7 +66,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Result
 
         public IEnumerable<T> Values<T>(string columnName)
         {
-            int keyIndex = FindColumn(columnName);
+            int keyIndex = ColumnIndex(columnName);
             if (keyIndex == -1)
                 throw new ArgumentException("Bad columnName");
 
@@ -76,11 +76,11 @@ namespace Viki.LoadRunner.Engine.Aggregators.Result
             }
         }
 
-        private int FindColumn(string key)
+        public int ColumnIndex(string columnName)
         {
             for (int i = 0; i < ColumnNames.Length; i++)
             {
-                if (ColumnNames[i].Equals(key, StringComparison.InvariantCulture))
+                if (ColumnNames[i].Equals(columnName, StringComparison.InvariantCulture))
                     return i;
             }
 
