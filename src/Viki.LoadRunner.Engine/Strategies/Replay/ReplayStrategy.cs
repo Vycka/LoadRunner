@@ -42,22 +42,14 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
         public virtual void Start()
         {
-            InitializeState();
-
-            _dataReader.Begin();
+            _counter = new ThreadPoolCounter();
+            _aggregator = new PipelineDataAggregator(_settings.Aggregators, _counter);
             _aggregator.Start();
 
-            _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
-        }
-
-        private void InitializeState()
-        {
             _errorHandler = new ErrorHandler();
             _dataReader = _settings.DataReader;
+            _dataReader.Begin();
 
-            _counter = new ThreadPoolCounter();
-
-            _aggregator = new PipelineDataAggregator(_settings.Aggregators, _counter);
 
             _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
             _pool.StartWorkersAsync(_settings.ThreadCount);
@@ -67,6 +59,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
                 Thread.Sleep(100);
                 _errorHandler.Assert();
             }
+
+            _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
         }
 
         private IThreadFactory CreateWorkerThreadFactory()

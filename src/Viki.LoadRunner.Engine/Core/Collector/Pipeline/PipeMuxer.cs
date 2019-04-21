@@ -1,12 +1,15 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 {
     public class PipeMuxer<T> : IPipeFactory<T>
     {
+        private bool _completed = false;
+
         private readonly ConcurrentQueue<IConsumer<T>> _addQueue = new ConcurrentQueue<IConsumer<T>>();
 
         private readonly List<IConsumer<T>> _consumers = new List<IConsumer<T>>();
@@ -52,6 +55,24 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             _lockedConsumers.Clear();
         }
 
-        public bool Available => _consumers.Count != 0 || _addQueue.IsEmpty == false || _consumers.Any(c => c.Available);
+        public void Complete()
+        {
+            _completed = true;
+        }
+
+        public void Reset()
+        {
+            while (!_addQueue.IsEmpty && _addQueue.TryDequeue(out _))
+            {
+            }
+
+            _consumers.Clear();
+            _lockedConsumers.Clear();
+
+            _completed = false;
+
+        }
+
+        public bool Available => !_completed || _consumers.Count != 0 || _addQueue.IsEmpty == false || _consumers.Any(c => c.Available);
     }
 }

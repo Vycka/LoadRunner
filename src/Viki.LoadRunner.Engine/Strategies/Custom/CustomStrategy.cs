@@ -58,25 +58,16 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
 
         public void Start()
         {
-            InitializeState();
-
+            _threadPoolCounter = new ThreadPoolCounter();
+            _aggregator = new PipelineDataAggregator(_settings.Aggregators, _threadPoolCounter);
             _aggregator.Start();
 
-            _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
-        }
-
-        private void InitializeState()
-        {
             _globalCounters = GlobalCounters.CreateDefault();
 
             _errorHandler = new ErrorHandler();
 
             _limit = new LimitsHandler(_settings.Limits);
             _threading = _settings.Threading;
-
-            _threadPoolCounter = new ThreadPoolCounter();
-
-            _aggregator = new PipelineDataAggregator(_settings.Aggregators, _threadPoolCounter);
 
             _state = new TestState(_timer, _globalCounters, _threadPoolCounter);
 
@@ -86,6 +77,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             _pool = new ThreadPool(CreateWorkerThreadFactory(), _threadPoolCounter);
 
             InitialThreadingSetup();
+
+            _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
         }
 
         public bool HeartBeat()

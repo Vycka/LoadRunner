@@ -9,7 +9,8 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 
         public PipeMultiplier(int consumerCount)
         {
-            if (consumerCount <= 0) throw new ArgumentOutOfRangeException(nameof(consumerCount));
+            if (consumerCount <= 0)
+                throw new ArgumentOutOfRangeException(nameof(consumerCount));
 
             _pipes = new BatchingPipe<T>[consumerCount];
             for (int i = 0; i < consumerCount; i++)
