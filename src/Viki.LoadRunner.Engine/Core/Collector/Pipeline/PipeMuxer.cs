@@ -19,9 +19,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 
         public bool TryLockBatch(out IReadOnlyList<IReadOnlyList<T>> batch)
         {
-            
-
-            bool result = LockPipes();
+            bool result = TryLockPipes();
             if (result)
             {
                 batch = _lockedBatches;
@@ -36,7 +34,15 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 
         public void ReleaseBatch()
         {
-            ReleaseConsumers();
+            ReleasePipes();
+        }
+
+        public void Add(IEnumerable<IConsumer<T>> pipes)
+        {
+            foreach (IConsumer<T> pipe in pipes)
+            {
+                Add(pipe);
+            }
         }
 
         public void Add(IConsumer<T> pipe)
@@ -61,10 +67,9 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             _lockedBatches.Clear();
 
             _completed = false;
-
         }
 
-        private bool LockPipes()
+        private bool TryLockPipes()
         {
             while (!_addQueue.IsEmpty && _addQueue.TryDequeue(out var consumer))
                 _consumers.Add(consumer);
@@ -88,7 +93,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             return _lockedConsumers.Count != 0;
         }
 
-        private void ReleaseConsumers()
+        private void ReleasePipes()
         {
             for (int i = 0; i < _lockedConsumers.Count; i++)
             {

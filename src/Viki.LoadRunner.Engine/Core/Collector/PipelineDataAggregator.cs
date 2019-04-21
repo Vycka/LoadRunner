@@ -73,13 +73,14 @@ namespace Viki.LoadRunner.Engine.Core.Collector
         private void ProcessorThreadFunction()
         {
             int index = 0;
+            IResult row = null;
             try
             {
                 foreach (IReadOnlyList<IResult> batch in _muxer.ToEnumerable())
                 {
                     for (int i = 0; i < batch.Count; i++)
                     {
-                        IResult row = batch[i];
+                        row = batch[i];
 
                         for (index = 0; index < _aggregators.Length; index++)
                         {
@@ -91,7 +92,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector
             }
             catch (Exception ex)
             {
-                Error = new AggregatorException("One of registered aggregators has failed", _aggregators[index], ex);
+                Error = new AggregatorException("One of registered aggregators has failed", _aggregators[index], row, ex);
                 // Error gets triggered through heartbeat which is much better compared to AsyncAggregator
             }
         }
