@@ -54,7 +54,6 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 
             if (_completed == false && _readOnlyList.Count == 0)
             {
-                //_writeOnlyList = Interlocked.Exchange(ref _readOnlyList, _writeOnlyList);
                 var tmp = _readOnlyList;
                 _readOnlyList = _writeOnlyList;
                 _writeOnlyList = tmp;
@@ -64,13 +63,6 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
         public void ProducingCompleted()
         {
             _completed = true;
-        }
-
-        public void Reset()
-        {
-            _writeOnlyList.Clear();
-            _readOnlyList.Clear();
-            _completed = false;
         }
     }
 }

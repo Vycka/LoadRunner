@@ -1,12 +1,11 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 {
-    public class PipeMuxer<T> : IPipeFactory<T>
+    public class PipeMuxer<T> : IConsumer<IReadOnlyList<T>>
     {
         private bool _completed = false;
 
@@ -14,45 +13,35 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 
         private readonly List<IConsumer<T>> _consumers = new List<IConsumer<T>>();
         private readonly List<IConsumer<T>> _lockedConsumers = new List<IConsumer<T>>();
+        private readonly List<IReadOnlyList<T>> _lockedBatches = new List<IReadOnlyList<T>>();
 
-        public BatchingPipe<T> Create()
+        public bool Available => !_completed || _consumers.Count != 0 || _addQueue.IsEmpty == false || _consumers.Any(c => c.Available);
+
+        public bool TryLockBatch(out IReadOnlyList<IReadOnlyList<T>> batch)
         {
-            BatchingPipe<T> pipe = new BatchingPipe<T>();
+            
+
+            bool result = LockPipes();
+            if (result)
+            {
+                batch = _lockedBatches;
+            }
+            else
+            {
+                batch = null;
+            }
+
+            return result;
+        }
+
+        public void ReleaseBatch()
+        {
+            ReleaseConsumers();
+        }
+
+        public void Add(IConsumer<T> pipe)
+        {
             _addQueue.Enqueue(pipe);
-
-            return pipe;
-        }
-
-        public IEnumerable<IReadOnlyList<T>> LockBatches()
-        {
-            while (!_addQueue.IsEmpty && _addQueue.TryDequeue(out var consumer))
-                _consumers.Add(consumer);
-
-            for (int i = 0; i < _consumers.Count; i++)
-            {
-                if (_consumers[i].Available)
-                {
-                    if (_consumers[i].TryLockBatch(out var batch))
-                    {
-                        _lockedConsumers.Add(_consumers[i]);
-                        yield return batch;
-                    }
-                }
-                else
-                {
-                    _consumers.RemoveAt(i--);
-                }
-            }
-        }
-
-        public void ReleaseBatches()
-        {
-            for (int i = 0; i < _lockedConsumers.Count; i++)
-            {
-                _lockedConsumers[i].ReleaseBatch();
-            }
-
-            _lockedConsumers.Clear();
         }
 
         public void Complete()
@@ -67,12 +56,47 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             }
 
             _consumers.Clear();
+            
             _lockedConsumers.Clear();
+            _lockedBatches.Clear();
 
             _completed = false;
 
         }
 
-        public bool Available => !_completed || _consumers.Count != 0 || _addQueue.IsEmpty == false || _consumers.Any(c => c.Available);
+        private bool LockPipes()
+        {
+            while (!_addQueue.IsEmpty && _addQueue.TryDequeue(out var consumer))
+                _consumers.Add(consumer);
+
+            for (int i = 0; i < _consumers.Count; i++)
+            {
+                if (_consumers[i].Available)
+                {
+                    if (_consumers[i].TryLockBatch(out var batch))
+                    {
+                        _lockedConsumers.Add(_consumers[i]);
+                        _lockedBatches.Add(batch);
+                    }
+                }
+                else
+                {
+                    _consumers.RemoveAt(i--);
+                }
+            }
+
+            return _lockedConsumers.Count != 0;
+        }
+
+        private void ReleaseConsumers()
+        {
+            for (int i = 0; i < _lockedConsumers.Count; i++)
+            {
+                _lockedConsumers[i].ReleaseBatch();
+            }
+
+            _lockedConsumers.Clear();
+            _lockedBatches.Clear();
+        }
     }
 }

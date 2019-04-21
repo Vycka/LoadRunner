@@ -4,6 +4,7 @@ using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
+using Viki.LoadRunner.Engine.Core.Pool.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Factory
@@ -11,9 +12,9 @@ namespace Viki.LoadRunner.Engine.Core.Factory
     public class PipeDataCollectorFactory : IDataCollectorFactory
     {
         private readonly IPipeFactory<IResult> _pipeFactory;
-        private readonly IThreadPoolCounter _counter;
+        private readonly IThreadPoolStats _counter;
 
-        public PipeDataCollectorFactory(IPipeFactory<IResult> pipeFactory, IThreadPoolCounter counter)
+        public PipeDataCollectorFactory(IPipeFactory<IResult> pipeFactory, IThreadPoolStats counter)
         {
             _pipeFactory = pipeFactory ?? throw new ArgumentNullException(nameof(pipeFactory));
             _counter = counter ?? throw new ArgumentNullException(nameof(counter));

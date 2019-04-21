@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Extensions;
+using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory;
 
@@ -15,19 +17,23 @@ namespace Viki.LoadRunner.Engine.Core.Collector
     {
         private readonly IAggregator[] _aggregators;
         private readonly PipeMuxer<IResult> _muxer;
-        public PipeDataCollectorFactory Factory { get; }
 
         private volatile bool _stopping = true;
         private Thread _processorThread;
         public Exception Error { get; private set; }
 
-        public PipelineDataAggregator(IAggregator[] aggregators, IThreadPoolCounter counter)
+        public PipelineDataAggregator(IAggregator[] aggregators, IPipeProvider<IResult> pipeProvider)
         {
             _aggregators = aggregators ?? throw new ArgumentNullException(nameof(aggregators));
 
             _muxer = new PipeMuxer<IResult>();
-            Factory = new PipeDataCollectorFactory(_muxer, counter);
+            pipeProvider.PipeCreatedEvent += OnPipeCreatedEvent; 
             
+        }
+
+        private void OnPipeCreatedEvent(IPipeFactory<IResult> sender, BatchingPipe<IResult> pipe)
+        {
+            _muxer.Add(pipe);
         }
 
         public void Start()
@@ -69,12 +75,18 @@ namespace Viki.LoadRunner.Engine.Core.Collector
             int index = 0;
             try
             {
-                foreach (IResult result in _muxer.ToEnumerable())
+                foreach (IReadOnlyList<IResult> batch in _muxer.ToEnumerable())
                 {
-                    for (index = 0; index < _aggregators.Length; index++)
+                    for (int i = 0; i < batch.Count; i++)
                     {
-                        _aggregators[index].Aggregate(result);
+                        IResult row = batch[i];
+
+                        for (index = 0; index < _aggregators.Length; index++)
+                        {
+                            _aggregators[index].Aggregate(row);
+                        }
                     }
+
                 }
             }
             catch (Exception ex)

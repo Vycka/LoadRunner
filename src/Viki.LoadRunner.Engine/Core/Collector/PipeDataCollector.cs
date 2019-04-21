@@ -2,6 +2,7 @@
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
+using Viki.LoadRunner.Engine.Core.Pool.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Collector
@@ -11,9 +12,9 @@ namespace Viki.LoadRunner.Engine.Core.Collector
         private readonly IProducer<IResult> _producer;
 
         private readonly IIterationResult _context;
-        private readonly IThreadPoolCounter _poolStats;
+        private readonly IThreadPoolStats _poolStats;
 
-        public PipeDataCollector(IProducer<IResult> producer, IIterationResult context, IThreadPoolCounter poolStats)
+        public PipeDataCollector(IProducer<IResult> producer, IIterationResult context, IThreadPoolStats poolStats)
         {
             _producer = producer ?? throw new ArgumentNullException(nameof(producer));
             _context = context ?? throw new ArgumentNullException(nameof(context));

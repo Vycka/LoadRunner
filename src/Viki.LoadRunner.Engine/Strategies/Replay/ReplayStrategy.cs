@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading;
 using Viki.LoadRunner.Engine.Core.Collector;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Pipeline;
+using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory;
@@ -43,32 +46,18 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
         public virtual void Start()
         {
             _counter = new ThreadPoolCounter();
-            _aggregator = new PipelineDataAggregator(_settings.Aggregators, _counter);
+            PipeFactory<IResult> pipeFactory = new PipeFactory<IResult>();
+            _aggregator = new PipelineDataAggregator(_settings.Aggregators, pipeFactory);
             _aggregator.Start();
 
             _errorHandler = new ErrorHandler();
             _dataReader = _settings.DataReader;
             _dataReader.Begin();
 
-
-            _pool = new ThreadPool(CreateWorkerThreadFactory(), _counter);
-            _pool.StartWorkersAsync(_settings.ThreadCount);
-
-            while (_counter.CreatedThreadCount != _counter.InitializedThreadCount)
-            {
-                Thread.Sleep(100);
-                _errorHandler.Assert();
-            }
-
-            _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
-        }
-
-        private IThreadFactory CreateWorkerThreadFactory()
-        {
             IIterationContextFactory iterationContextFactory = CreateIterationContextFactory();
             IReplayScenarioHandlerFactory scenarioHandlerFactory = CreateScenarioHandlerFactory();
             IReplaySchedulerFactory schedulerFactory = CreateSchedulerFactory();
-            IDataCollectorFactory dataCollectorFactory = CreateDataCollectorFactory();
+            IDataCollectorFactory dataCollectorFactory = CreateDataCollectorFactory(pipeFactory, _counter);
             IScenarioThreadFactory scenarioThreadFactory = CreateScenarioThreadFactory();
 
             IThreadFactory threadFactory = new ReplayScenarioThreadFactory(
@@ -79,7 +68,16 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
                 scenarioThreadFactory
             );
 
-            return threadFactory;
+            _pool = new ThreadPool(threadFactory, _counter);
+            _pool.StartWorkersAsync(_settings.ThreadCount);
+
+            while (_counter.CreatedThreadCount != _counter.InitializedThreadCount)
+            {
+                Thread.Sleep(100);
+                _errorHandler.Assert();
+            }
+
+            _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
         }
 
         private IScenarioThreadFactory CreateScenarioThreadFactory()
@@ -105,13 +103,13 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
             return new ReplaySchedulerFactory(_timer,  _dataReader, _counter, _settings.SpeedMultiplier);
         }
 
-        private IDataCollectorFactory CreateDataCollectorFactory()
+        private IDataCollectorFactory CreateDataCollectorFactory(IPipeFactory<IResult> pipeFactory, IThreadPoolStats poolStats)
         {
             IDataCollectorFactory result;
             if (_settings.Aggregators.IsNullOrEmpty())
                 result = new NullDataCollectorFactory();
             else
-                result =_aggregator.Factory;
+                result = new PipeDataCollectorFactory(pipeFactory, poolStats);
 
             return result;
         }

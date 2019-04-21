@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using Viki.LoadRunner.Engine.Core.Collector;
+using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
+using Viki.LoadRunner.Engine.Core.Collector.Pipeline;
+using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 using Viki.LoadRunner.Engine.Core.Counter;
 using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
 using Viki.LoadRunner.Engine.Core.Factory;
@@ -59,7 +63,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
         public void Start()
         {
             _threadPoolCounter = new ThreadPoolCounter();
-            _aggregator = new PipelineDataAggregator(_settings.Aggregators, _threadPoolCounter);
+
+            PipeFactory<IResult> pipeFactory = new PipeFactory<IResult>();
+            _aggregator = new PipelineDataAggregator(_settings.Aggregators, pipeFactory);
             _aggregator.Start();
 
             _globalCounters = GlobalCounters.CreateDefault();
@@ -74,7 +80,21 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             _speed = PriorityStrategyFactory.Create(_settings.Speeds, _timer);
             _speed.Setup(_state);
 
-            _pool = new ThreadPool(CreateWorkerThreadFactory(), _threadPoolCounter);
+            IIterationContextFactory iterationContextFactory = CreateIterationContextFactory();
+            IScenarioHandlerFactory scenarioHandlerFactory = CreateScenarioHandlerFactory();
+            ISchedulerFactory schedulerFactory = CreateSchedulerFactory();
+            IDataCollectorFactory dataCollectorFactory = CreateDataCollectorFactory(pipeFactory, _threadPoolCounter);
+            IScenarioThreadFactory scenarioThreadFactory = CreateScenarioThreadFactory();
+
+            IThreadFactory threadFactory = new ScenarioThreadFactory(
+                iterationContextFactory,
+                scenarioHandlerFactory,
+                schedulerFactory,
+                dataCollectorFactory,
+                scenarioThreadFactory
+            );
+
+            _pool = new ThreadPool(threadFactory, _threadPoolCounter);
 
             InitialThreadingSetup();
 
@@ -105,25 +125,6 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             _errorHandler.Assert();
         }
 
-        private IThreadFactory CreateWorkerThreadFactory()
-        {
-            IIterationContextFactory iterationContextFactory = CreateIterationContextFactory();
-            IScenarioHandlerFactory scenarioHandlerFactory = CreateScenarioHandlerFactory();
-            ISchedulerFactory schedulerFactory = CreateSchedulerFactory();
-            IDataCollectorFactory dataCollectorFactory = CreateDataCollectorFactory();
-            IScenarioThreadFactory scenarioThreadFactory = CreateScenarioThreadFactory();
-
-            IThreadFactory threadFactory = new ScenarioThreadFactory(
-                iterationContextFactory,
-                scenarioHandlerFactory,
-                schedulerFactory,
-                dataCollectorFactory,
-                scenarioThreadFactory
-            );
-
-            return threadFactory;
-        }
-
         private IScenarioThreadFactory CreateScenarioThreadFactory()
         {
             IPrewait prewait = new TimerBasedPrewait(_timer);
@@ -132,13 +133,13 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             return factory;
         }
 
-        private IDataCollectorFactory CreateDataCollectorFactory()
+        private IDataCollectorFactory CreateDataCollectorFactory(IPipeFactory<IResult> pipeFactory, IThreadPoolStats poolStats)
         {
             IDataCollectorFactory result;
             if (_settings.Aggregators.IsNullOrEmpty())
                 result = new NullDataCollectorFactory();
             else
-                result = _aggregator.Factory;
+                result = new PipeDataCollectorFactory(pipeFactory, poolStats);
 
             return result;
         }
