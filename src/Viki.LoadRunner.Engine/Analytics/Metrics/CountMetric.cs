@@ -9,7 +9,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
         private int _count = 0;
 
         public CountMetric(string name = "Count")
-            : this((i) => true)
+            : this((i) => true, name)
         {
         }
 
