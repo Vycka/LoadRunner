@@ -30,7 +30,10 @@ namespace Viki.LoadRunner.Engine.Analytics
 
             void IMetric<T>.Add(T result)
             {
-                Array.ForEach(_metrics, m => m.Add(result));
+                for (int i = 0; i < _metrics.Length; i++)
+                {
+                    _metrics[i].Add(result);
+                }
             }
 
             string[] IMetric<T>.ColumnNames => _metrics.SelectMany(m => m.ColumnNames).ToArray();

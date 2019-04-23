@@ -31,6 +31,10 @@ namespace Viki.LoadRunner.Playground
                 .Add(new DistinctListMetric<IResult, string>("Sleeps",r => $"{r.ThreadId}:{((int) r.UserData)}"))
                 .Add(new DistinctListMetric<IResult, string>("TStarts", r => $"{r.ThreadId}:{(int)r.IterationStarted.TotalMilliseconds}"))
                 .Add(new DistinctListMetric<IResult, string>("TEnds", r => $"{r.ThreadId}:{(int)r.IterationFinished.TotalMilliseconds}"))
+                .Add(new FilterMetric<IResult>(r => r.ThreadId == 0, new ValueMetric<IResult>("Tr#0", r => (int)r.IterationFinished.TotalMilliseconds)))
+                .Add(new FilterMetric<IResult>(r => r.ThreadId == 1, new ValueMetric<IResult>("Tr#1", r => (int)r.IterationFinished.TotalMilliseconds)))
+                .Add(new FilterMetric<IResult>(r => r.ThreadId == 2, new ValueMetric<IResult>("Tr#2", r => (int)r.IterationFinished.TotalMilliseconds)))
+                .Add(new FilterMetric<IResult>(r => r.ThreadId == 3, new ValueMetric<IResult>("Tr#3", r => (int)r.IterationFinished.TotalMilliseconds)))
                 .Add(new FuncMetric<int>("Min TStart", Int32.MaxValue,(i, r) => Math.Min((int) r.IterationStarted.TotalMilliseconds, i)))
                 .Add(new FuncMetric<int>("Max Sleep", -1, (i, r) => Math.Max(((int) r.UserData), i)))
                 .Add(new FuncMetric<int>("Max TEnd", Int32.MinValue, (i, r) => Math.Max((int) r.IterationFinished.TotalMilliseconds, i)));
