@@ -2,18 +2,18 @@
 {
     public class AverageCalculator
     {
-        private int _sampleCount = 0;
-        private double _sum = 0;
+        public int SampleCount { get; private set; } = 0;
+        public double Sum { get; private set; } = 0;
 
         public void Add(double duration)
         {
-            _sampleCount++;
-            _sum += duration;
+            SampleCount++;
+            Sum += duration;
         }
 
         public double GetAverage()
         {
-            return _sum / _sampleCount;
+            return Sum / SampleCount;
         }
     }
 }

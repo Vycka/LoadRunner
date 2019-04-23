@@ -11,6 +11,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
         private readonly Func<T, double?> _durationSelector;
         private readonly double[] _targetPercentiles;
 
+        private readonly string[] _columnNames;
         private readonly List<double> _inputDurations;
 
         public Func<double, object> Formatter = (i) => i;
@@ -27,7 +28,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
             _targetPercentiles = percentiles ?? throw new ArgumentNullException(nameof(percentiles));
 
             _inputDurations = new List<double>();
-            ColumnNames = percentiles.Select(headerSelector).ToArray();
+            _columnNames = percentiles.Select(headerSelector).ToArray();
         }
 
         public IMetric<T> CreateNew()
@@ -46,8 +47,8 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
                 _inputDurations.Add(duration.Value);
         }
 
-        public string[] ColumnNames { get; }
-        public object[] Values => CalculatePercentiles();
+        public string[] ColumnNames => _inputDurations.Count > 0 ? _columnNames : Array.Empty<string>();
+        public object[] Values => _inputDurations.Count > 0 ? CalculatePercentiles() : Array.Empty<object>();
 
         private object[] CalculatePercentiles()
         {

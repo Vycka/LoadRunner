@@ -4,15 +4,15 @@
     {
         public void Add(bool increaseRatio)
         {
-            _totalCount++;
+            TotalCount++;
 
             if (increaseRatio)
-                _ratioCount++;
+                RatioCount++;
         }
 
-        private int _totalCount = 0;
-        private int _ratioCount = 0;
+        public int TotalCount { get; private set; } = 0;
+        public int RatioCount { get; private set; } = 0;
 
-        public double Ratio => (double)_ratioCount / _totalCount;
+        public double Ratio => (double)RatioCount / TotalCount;
     }
 }

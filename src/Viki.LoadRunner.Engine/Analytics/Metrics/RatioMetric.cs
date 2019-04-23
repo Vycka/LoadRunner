@@ -37,8 +37,10 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
             _calculator.Add(_selector(data));
         }
 
-        string[] IMetric<T>.ColumnNames => new[] { _name };
+        string[] IMetric<T>.ColumnNames => _calculator.TotalCount > 0 ? new[] { _name } : Array.Empty<string>();
 
-        object[] IMetric<T>.Values => new object[] { _calculator.Ratio * _multiplier };
+        object[] IMetric<T>.Values => _calculator.TotalCount > 0
+            ? new object[] {_calculator.Ratio * _multiplier}
+            : Array.Empty<object>();
     }
 }

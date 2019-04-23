@@ -32,7 +32,10 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
             _calculator.Add(_selector(result));
         }
 
-        string[] IMetric<T>.ColumnNames => new[] { _name };
-        object[] IMetric<T>.Values => new object[] { _calculator.GetAverage() };
+        string[] IMetric<T>.ColumnNames => _calculator.SampleCount > 0 ? new[] { _name } : Array.Empty<string>();
+
+        object[] IMetric<T>.Values => _calculator.SampleCount > 0
+            ? new object[] { _calculator.GetAverage() }
+            : Array.Empty<object>();
     }
 }
