@@ -37,6 +37,15 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             ReleasePipes();
         }
 
+        public IProducer<T> Create()
+        {
+            BatchingPipe<T> pipe = new BatchingPipe<T>();
+
+            Add(pipe);
+
+            return pipe;
+        }
+
         public void Add(IEnumerable<IConsumer<T>> pipes)
         {
             foreach (IConsumer<T> pipe in pipes)
@@ -61,11 +70,9 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             {
             }
 
-            _consumers.Clear();
-            
-            _lockedConsumers.Clear();
-            _lockedBatches.Clear();
+            ReleasePipes();
 
+            _consumers.Clear();
             _completed = false;
         }
 

@@ -5,17 +5,16 @@ using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Extensions;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
-using Viki.LoadRunner.Engine.Core.Counter.Interfaces;
-using Viki.LoadRunner.Engine.Core.Factory;
 
 
 // TODO: Performance can be increased here by creating seperate thread for each aggregator using EnumerableQueue
 // and fill in each EnumerableQueue instance of each aggregator instead of waiting for each aggregator to process iteration on the same thread.
 namespace Viki.LoadRunner.Engine.Core.Collector
 {
-    public class PipelineDataAggregator
+    public class PipelineDataAggregator : IDisposable
     {
         private readonly IAggregator[] _aggregators;
+        private readonly IPipeProvider<IResult> _pipeProvider;
         private readonly PipeMuxer<IResult> _muxer;
 
         private volatile bool _stopping = true;
@@ -25,6 +24,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector
         public PipelineDataAggregator(IAggregator[] aggregators, IPipeProvider<IResult> pipeProvider)
         {
             _aggregators = aggregators ?? throw new ArgumentNullException(nameof(aggregators));
+            _pipeProvider = pipeProvider ?? throw new ArgumentNullException(nameof(pipeProvider));
 
             _muxer = new PipeMuxer<IResult>();
             pipeProvider.PipeCreatedEvent += OnPipeCreatedEvent; 
@@ -110,6 +110,8 @@ namespace Viki.LoadRunner.Engine.Core.Collector
         {
             if (_processorThread?.IsAlive == true)
                 _processorThread.Abort();
+
+            _pipeProvider.PipeCreatedEvent -= OnPipeCreatedEvent;
         }
 
         #endregion

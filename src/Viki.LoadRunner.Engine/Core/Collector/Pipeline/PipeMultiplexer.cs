@@ -3,7 +3,7 @@ using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 {
-    public class PipeMultiplexer<T>
+    public class PipeMultiplexer<T> : IProducer<T>
     {
         private readonly Func<T, int> _partitionSelector;
         private readonly BatchingPipe<T>[] _pipes;

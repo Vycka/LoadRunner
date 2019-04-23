@@ -17,7 +17,8 @@ namespace Viki.LoadRunner.Engine.Analytics
     // TODO: Add's should have formatters, e.g. .Add(metric, formatter);
     // Parallelism can be achieved by making a processing chain
     // -> Enrich with Dim keys -> duplicate queues for each metric and feed them
-    // because Parallel.Foreach(metrics,...) on each received cause really bad TPL overhead.
+    //
+    // Parallel.Foreach(metrics,...) on each received row cause really bad TPL overhead.
     public abstract class HistogramBase<TData, THistogram> : IHistogramBuilder<TData, THistogram>
     {
         #region Fields
