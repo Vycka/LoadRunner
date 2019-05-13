@@ -9,7 +9,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline.Extensions
     {
         public static Task ProduceCompleteAsync<T>(this IProducer<T> producer, IEnumerable<T> items, bool start = true)
         {
-            return ProduceCompleteAsync(producer, items, CancellationToken.None);
+            return ProduceCompleteAsync(producer, items, CancellationToken.None, start);
         }
 
         public static Task ProduceCompleteAsync<T>(this IProducer<T> producer, IEnumerable<T> items, CancellationToken token, bool start = true)

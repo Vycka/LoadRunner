@@ -17,7 +17,7 @@ namespace Viki.LoadRunner.Tools.Extensions
                 JsonSerializer serializer = CreateSerializer();
 
                 if (!reader.Read() || reader.TokenType != JsonToken.StartArray)
-                    throw new Exception("Expected start of array in the deserialized bson strem");
+                    throw new Exception("Expected start of array in the deserialized json stream");
 
                 while (reader.Read())
                 {

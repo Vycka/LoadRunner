@@ -36,5 +36,33 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline.Extensions
 
             return task;
         }
+
+
+        // This one day might evolve into fun multithreaded processing pipeline.
+        //public static IEnumerable<TOut> SelectManyInParallel<TIn, TOut>(this IEnumerable<IConsumer<TIn>> consumers, Func<TIn, TOut> selector)
+        //{
+        //    PipeMuxer<TOut> muxer = new PipeMuxer<TOut>();
+
+        //    foreach (IConsumer<TIn> consumer in consumers)
+        //    {
+        //        IProducer<TOut> pipe = muxer.Create();
+        //        pipe.ProduceCompleteAsync(consumer.ToEnumerable().Select(selector));
+        //    }
+
+        //    return muxer.ToEnumerable().SelectMany(batch => batch);
+        //}
+
+        //public static IEnumerable<TOut> SelectManyInParallel<TIn, TOut>(this IEnumerable<IConsumer<TIn>> consumers, Func<IEnumerable<TIn>, IEnumerable<TOut>> selector)
+        //{
+        //    PipeMuxer<TOut> muxer = new PipeMuxer<TOut>();
+
+        //    foreach (IConsumer<TIn> consumer in consumers)
+        //    {
+        //        IProducer<TOut> pipe = muxer.Create();
+        //        pipe.ProduceCompleteAsync(selector(consumer.ToEnumerable()));
+        //    }
+
+        //    return muxer.ToEnumerable().SelectMany(batch => batch);
+        //}
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 
@@ -14,6 +15,14 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
         private readonly List<IConsumer<T>> _consumers = new List<IConsumer<T>>();
         private readonly List<IConsumer<T>> _lockedConsumers = new List<IConsumer<T>>();
         private readonly List<IReadOnlyList<T>> _lockedBatches = new List<IReadOnlyList<T>>();
+
+        public PipeMuxer()
+        {
+        }
+        public PipeMuxer(IEnumerable<IConsumer<T>> consumers)
+        {
+            Add(consumers);
+        }
 
         public bool Available => !_completed || _consumers.Count != 0 || _addQueue.IsEmpty == false || _consumers.Any(c => c.Available);
 
@@ -46,17 +55,18 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             return pipe;
         }
 
-        public void Add(IEnumerable<IConsumer<T>> pipes)
+        public void Add(IEnumerable<IConsumer<T>> consumers)
         {
-            foreach (IConsumer<T> pipe in pipes)
+            foreach (IConsumer<T> consumer in consumers)
             {
-                Add(pipe);
+                Add(consumer
+);
             }
         }
 
-        public void Add(IConsumer<T> pipe)
+        public void Add(IConsumer<T> consumers)
         {
-            _addQueue.Enqueue(pipe);
+            _addQueue.Enqueue(consumers);
         }
 
         public void Complete()
