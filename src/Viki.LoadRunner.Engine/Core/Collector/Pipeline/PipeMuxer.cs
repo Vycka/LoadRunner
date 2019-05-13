@@ -26,7 +26,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             Add(consumers);
         }
 
-        public bool Available => !_completed || _consumers.Count != 0 || _addQueue.IsEmpty == false || _consumers.Any(c => c.Available);
+        public bool Available => !_completed || _consumers.Count != 0 || _buffer.Count != 0 || _addQueue.IsEmpty == false;
 
         public bool TryLockBatch(out IReadOnlyList<T> batch)
         {
@@ -63,8 +63,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
         {
             foreach (IConsumer<T> consumer in consumers)
             {
-                Add(consumer
-);
+                Add(consumer);
             }
         }
 
