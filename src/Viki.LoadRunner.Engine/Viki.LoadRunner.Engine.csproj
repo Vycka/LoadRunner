@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.8.65-beta</Version>
+    <Version>0.8.66-beta</Version>
     <PackageId>Viki.LoadRunner</PackageId>
     <Authors>Vytautas Klumbys</Authors>
     <Description>Generic performance testing library for executing load-tests written in .NET c#

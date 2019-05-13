@@ -7,8 +7,6 @@ using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Extensions;
 using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 
 
-// TODO: Performance can be increased here by creating seperate thread for each aggregator using EnumerableQueue
-// and fill in each EnumerableQueue instance of each aggregator instead of waiting for each aggregator to process iteration on the same thread.
 namespace Viki.LoadRunner.Engine.Core.Collector
 {
     public class PipelineDataAggregator : IDisposable
@@ -76,18 +74,16 @@ namespace Viki.LoadRunner.Engine.Core.Collector
             IResult row = null;
             try
             {
-                foreach (IReadOnlyList<IResult> batch in _muxer.ToEnumerable())
+                using (IEnumerator<IResult> enumerator = _muxer.ToEnumerable().GetEnumerator())
                 {
-                    for (int i = 0; i < batch.Count; i++)
+                    while (enumerator.MoveNext())
                     {
-                        row = batch[i];
-
+                        row = enumerator.Current;
                         for (index = 0; index < _aggregators.Length; index++)
                         {
                             _aggregators[index].Aggregate(row);
                         }
                     }
-
                 }
             }
             catch (Exception ex)

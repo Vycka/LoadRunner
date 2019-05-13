@@ -11,21 +11,24 @@ namespace Viki.LoadRunner.Tools.Extensions
         //Deserialize specified file in to IEnumerable assuming it has array of JSON objects
         public static IEnumerable<T> DeserializeFromJson<T>(string fileName)
         {
-            using (var fileStream = File.OpenText(fileName))
-            using (var reader = new JsonTextReader(fileStream))
+            StreamReader fileStream = File.OpenText(fileName);
+            JsonTextReader reader = new JsonTextReader(fileStream);
+            
+            JsonSerializer serializer = CreateSerializer();
+
+            if (!reader.Read() || reader.TokenType != JsonToken.StartArray)
+                throw new Exception("Expected start of array in the deserialized json stream");
+
+            while (reader.Read())
             {
-                JsonSerializer serializer = CreateSerializer();
-
-                if (!reader.Read() || reader.TokenType != JsonToken.StartArray)
-                    throw new Exception("Expected start of array in the deserialized json stream");
-
-                while (reader.Read())
-                {
-                    if (reader.TokenType == JsonToken.EndArray) break;
-                    var item = serializer.Deserialize<T>(reader);
-                    yield return item;
-                }
+                if (reader.TokenType == JsonToken.EndArray) break;
+                var item = serializer.Deserialize<T>(reader);
+                yield return item;
             }
+            
+            reader.Close();
+            fileStream.Close();
+            fileStream.Dispose();
         }
 
         //public static IEnumerable<T> DeserializeFromBson<T>(string fileName)
@@ -36,7 +39,7 @@ namespace Viki.LoadRunner.Tools.Extensions
         //        JsonSerializer serializer = CreateSerializer();
 
         //        if (!reader.Read() || reader.TokenType != JsonToken.StartArray)
-        //            throw new Exception("Expected start of array in the deserialized bson strem");
+        //            throw new Exception("Expected start of array in the deserialized bson stream");
 
         //        while (reader.Read())
         //        {

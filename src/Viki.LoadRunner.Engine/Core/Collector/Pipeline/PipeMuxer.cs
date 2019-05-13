@@ -6,7 +6,7 @@ using Viki.LoadRunner.Engine.Core.Collector.Pipeline.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 {
-    public class PipeMuxer<T> : IConsumer<IReadOnlyList<T>>
+    public class PipeMuxer<T> : IConsumer<T>
     {
         private bool _completed = false;
 
@@ -15,6 +15,8 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
         private readonly List<IConsumer<T>> _consumers = new List<IConsumer<T>>();
         private readonly List<IConsumer<T>> _lockedConsumers = new List<IConsumer<T>>();
         private readonly List<IReadOnlyList<T>> _lockedBatches = new List<IReadOnlyList<T>>();
+
+        private readonly List<T> _buffer = new List<T>();
 
         public PipeMuxer()
         {
@@ -26,12 +28,13 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 
         public bool Available => !_completed || _consumers.Count != 0 || _addQueue.IsEmpty == false || _consumers.Any(c => c.Available);
 
-        public bool TryLockBatch(out IReadOnlyList<IReadOnlyList<T>> batch)
+        public bool TryLockBatch(out IReadOnlyList<T> batch)
         {
             bool result = TryLockPipes();
             if (result)
             {
-                batch = _lockedBatches;
+                _buffer.AddRange(_lockedBatches.SelectMany(b => b));
+                batch = _buffer;
             }
             else
             {
@@ -43,6 +46,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 
         public void ReleaseBatch()
         {
+            _buffer.Clear();
             ReleasePipes();
         }
 

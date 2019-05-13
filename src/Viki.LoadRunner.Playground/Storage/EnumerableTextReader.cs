@@ -1,9 +1,9 @@
-﻿using System.IO;
+﻿//using System.IO;
 
-namespace Viki.LoadRunner.Playground.Storage
-{
-    public class EnumerableTextReader : TextReader
-    {
+//namespace Viki.LoadRunner.Playground.Storage
+//{
+//    public class EnumerableTextReader : TextReader
+//    {
       
-    }
-}
+//    }
+//}
