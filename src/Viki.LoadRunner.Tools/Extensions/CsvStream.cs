@@ -155,6 +155,9 @@ namespace Viki.LoadRunner.Tools.Extensions
 
         private static string CsvValue(object value)
         {
+            if (value is Array arrayValue)
+                value = String.Join(", ", arrayValue);
+
             value = value ?? String.Empty;
             string valueString = value.ToString();
 
