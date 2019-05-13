@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Viki.LoadRunner.Tools.Extensions
 {
@@ -10,17 +12,14 @@ namespace Viki.LoadRunner.Tools.Extensions
     {
         private static readonly char[] CsvSpecialSymbols = { ',', '\"', '\r', '\n' };
         private static string[] DefaultHeaderOrder(string[] input) => input;
-
         public static void SerializeToCsv<T>(this IEnumerable<T> input, string outFile, string[] headerOrder, bool includeHeaders = true)
         {
             SerializeToCsv(input, outFile, (i) => headerOrder, includeHeaders);
         }
-
         public static void SerializeToCsv<T>(this IEnumerable<T> input, string outFile, bool includeHeaders = true)
         {
             SerializeToCsv(input, outFile, DefaultHeaderOrder, includeHeaders);
         }
-
         public static void SerializeToCsv<T>(this IEnumerable<T> input, string outFile, Func<string[], string[]> headerOrder, bool includeHeaders = true)
         {
             using (StreamWriter writer = File.CreateText(outFile))
@@ -31,61 +30,77 @@ namespace Viki.LoadRunner.Tools.Extensions
                 }
             }
         }
-
         public static IEnumerable<string> SerializeToCsv<T>(this IEnumerable<T> input, bool includeHeaders = true)
         {
             return SerializeToCsv(input, DefaultHeaderOrder, includeHeaders);
         }
-
         public static IEnumerable<string> SerializeToCsv<T>(this IEnumerable<T> input, string[] headerOrder, bool includeHeaders = true)
         {
-            return SerializeToCsv(input, (i) => headerOrder,  includeHeaders);
+            return SerializeToCsv(input, (i) => headerOrder, includeHeaders);
         }
-
         public static IEnumerable<string> SerializeToCsv<T>(this IEnumerable<T> input, Func<string[], string[]> headerOrder, bool includeHeaders = true)
         {
             IEnumerable<string> result = Enumerable.Empty<string>();
-
-            using (IEnumerator<T> enumerator = input.GetEnumerator())
+            IEnumerator<T> enumerator = input.GetEnumerator();
+            if (enumerator.MoveNext() && FirstNotNull(enumerator))
             {
-                if (enumerator.MoveNext() && FirstNotNull(enumerator))
+                object current = enumerator.Current;
+                string[] headers = headerOrder(ExtractHeaders(current).ToArray());
+                if (headers.Length == 0)
                 {
-                    string[] headers = headerOrder(ExtractHeaders(enumerator.Current).ToArray());
-
-                    if (includeHeaders)
-                    {
-                        result = result.Concat(new [] { String.Join(",", headers.Select(CsvValue)) });
-                    }
-
-                    object current = enumerator.Current;
-
-                    if (current is IDictionary<string, object>) // Expando/Dynamic
-                    {
-                        result = result.Concat(SerializeDynamicType(enumerator, headers));
-                    }
-                    else if (IsAnonymous(current)) // Anonymous
-                    {
-                        result = result.Concat(SerializeAnonymousType(enumerator, headers));
-                    }
-                    else // Hopefully only strong typed
-                    {
-                        result = result.Concat(SerializeStrongType(enumerator, headers));
-                    }
+                    enumerator.Dispose();
+                    return result;
                 }
 
-                return result;
-            }
-        }
+                if (includeHeaders)
+                {
+                    result = result.Concat(new[] { String.Join(",", headers.Select(CsvValue)) });
+                }
 
-        private static IEnumerable<string> SerializeDynamicType<T>(IEnumerator<T> iterator, string[] headers)
+                if (current is ICustomTypeDescriptor) // NewtonSoft json
+                {
+                    result = result.Concat(SerializeCustomTypeDescriptor(enumerator, headers));
+                }
+                else if (current is IDictionary<string, object>) // Expando
+                {
+                    result = result.Concat(SerializeDictionary<T, IDictionary<string, object>>(enumerator, headers));
+                }
+                else if (IsAnonymous(current)) // Anonymous
+                {
+                    result = result.Concat(SerializeAnonymousType(enumerator, headers));
+                }
+                else // StrongType 
+                {
+                    result = result.Concat(SerializeStrongType(enumerator, headers));
+                }
+            }
+            return result;
+            
+        }
+        private static IEnumerable<string> SerializeCustomTypeDescriptor<T>(IEnumerator<T> iterator, string[] headers)
         {
             do
             {
-                IDictionary<string, object> row = (IDictionary<string, object>)iterator.Current;
+                ICustomTypeDescriptor row = (ICustomTypeDescriptor)iterator.Current;
+                if (row != null)
+                {
+                    PropertyDescriptorCollection properties = row.GetProperties();
+                    yield return String.Join(",", headers.Select(h => CsvValue(properties[h]?.GetValue(row))));
+                }
+            } while (iterator.MoveNext());
 
+            iterator.Dispose();
+        }
+        private static IEnumerable<string> SerializeDictionary<T, TValue>(IEnumerator<T> iterator, string[] headers)
+        {
+            do
+            {
+                IDictionary<string, TValue> row = (IDictionary<string, TValue>)iterator.Current;
                 if (row != null)
                     yield return String.Join(",", headers.Select(h => CsvValue(row.GetOrNull(h))));
             } while (iterator.MoveNext());
+
+            iterator.Dispose();
         }
 
         private static IEnumerable<string> SerializeAnonymousType<T>(IEnumerator<T> iterator, string[] headers)
@@ -93,81 +108,107 @@ namespace Viki.LoadRunner.Tools.Extensions
             do
             {
                 T current = iterator.Current;
-
                 if (current != null)
                 {
                     Type type = current.GetType();
                     yield return String.Join(",", headers.Select(h => CsvValue(type.GetProperty(h)?.GetValue(current))));
                 }
             } while (iterator.MoveNext());
+
+            iterator.Dispose();
         }
 
         private static IEnumerable<string> SerializeStrongType<T>(IEnumerator<T> iterator, string[] headers)
         {
-            FieldInfo[] allFields = iterator.Current.GetType().GetFields().Where(f => f.IsPublic).ToArray();
-            FieldInfo[] fields = headers.Select(header => allFields.First(f => f.Name == header)).ToArray();
-
+            Func<object, object>[] valueSelectors = BuildValueSelectors(headers, iterator.Current).ToArray();
+            
             do
             {
                 T current = iterator.Current;
-
                 if (current != null)
-                    yield return String.Join(",", fields.Select(f => CsvValue(f.GetValue(current))));
-
+                {
+                    yield return String.Join(",", valueSelectors.Select(selector => CsvValue(selector(current))));
+                }
+                    
             } while (iterator.MoveNext());
+
+            iterator.Dispose();
+        }
+
+        private static IEnumerable<Func<object, object>> BuildValueSelectors<T>(string[] headers, T current)
+        {
+            PropertyInfo[] properties = current.GetType().GetProperties().Where(p => p.CanRead).ToArray();
+            FieldInfo[] fields = current.GetType().GetFields().Where(f => f.IsPublic).ToArray();
+
+            foreach (string header in headers)
+            {
+
+                PropertyInfo property = properties.FirstOrDefault(p => p.Name == header);
+                if (property != null)
+                {
+                    yield return (obj) => property.GetValue(obj);
+                }
+                else
+                {
+                    FieldInfo field = fields.FirstOrDefault(f => f.Name == header);
+                    if (field != null)
+                    {
+                        yield return (obj) => field.GetValue(obj);
+                    }
+                }
+            }
         }
 
         private static IEnumerable<string> ExtractHeaders<T>(T current)
         {
-            if (current is IDictionary<string, object> expando)
+            if (current is ICustomTypeDescriptor typeDescriptor)
+            {
+                return SelectCustomTypeDescriptorHeaders(typeDescriptor);
+            }
+            else if (current is IDictionary<string, object> expando)
             {
                 return expando.Keys;
             }
             else
             {
-                if (IsAnonymous(current))
-                {
-                    PropertyInfo[] properties = current.GetType().GetProperties();
-                    return properties.Where(p => p.CanRead).Select(p => p.Name);
-                }
-                else
-                {
-                    FieldInfo[] fields = current.GetType().GetFields().Where(f => f.IsPublic).ToArray();
-                    return fields.Select(p => p.Name);
-                }
+                IEnumerable<PropertyInfo> properties = current.GetType().GetProperties().Where(p => p.CanRead);
+                IEnumerable<FieldInfo> fields = current.GetType().GetFields().Where(f => f.IsPublic);
+
+                return properties.Select(p => p.Name)
+                    .Concat(fields.Select(p => p.Name));
             }
         }
-
+        private static IEnumerable<string> SelectCustomTypeDescriptorHeaders(ICustomTypeDescriptor typeDescriptor)
+        {
+            PropertyDescriptorCollection properties = typeDescriptor.GetProperties();
+            for (int i = 0; i < properties.Count; i++)
+            {
+                yield return properties[i].Name;
+            }
+        }
         private static bool IsAnonymous(object current)
         {
             Type type = current.GetType();
             return type.Name.StartsWith("<>") && type.Name.Contains("AnonymousType") && type.Namespace == null;
         }
-
         private static bool FirstNotNull<T>(IEnumerator<T> enumerator)
         {
             while (enumerator.Current == null && enumerator.MoveNext())
             {
             }
-
             return enumerator.Current != null;
         }
-
         private static string CsvValue(object value)
         {
             if (value is Array arrayValue)
                 value = String.Join(", ", arrayValue);
-
             value = value ?? String.Empty;
             string valueString = value.ToString();
-
             if (valueString.IndexOfAny(CsvSpecialSymbols) == -1)
             {
                 return valueString;
             }
-
             value = valueString.Replace("\"", "\"\"");
-
             return string.Concat("\"", value, "\"");
         }
     }

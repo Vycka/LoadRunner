@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
@@ -9,6 +10,17 @@ namespace Viki.LoadRunner.Tools.Extensions
     public static class JsonStream
     {
         //Deserialize specified file in to IEnumerable assuming it has array of JSON objects
+
+        public static IEnumerable<object> FromFile(string fileName)
+        {
+            return DeserializeFromJson<object>(fileName);
+        }
+
+        public static IEnumerable<T> FromFile<T>(string fileName)
+        {
+            return DeserializeFromJson<T>(fileName);
+        }
+
         public static IEnumerable<T> DeserializeFromJson<T>(string fileName)
         {
             StreamReader fileStream = File.OpenText(fileName);
