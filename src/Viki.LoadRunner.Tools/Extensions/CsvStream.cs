@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Viki.LoadRunner.Tools.Extensions
 {
@@ -63,7 +62,7 @@ namespace Viki.LoadRunner.Tools.Extensions
                 }
                 else if (current is IDictionary<string, object>) // Expando
                 {
-                    result = result.Concat(SerializeDictionary<T, IDictionary<string, object>>(enumerator, headers));
+                    result = result.Concat(SerializeExpando(enumerator, headers));
                 }
                 else if (IsAnonymous(current)) // Anonymous
                 {
@@ -77,6 +76,7 @@ namespace Viki.LoadRunner.Tools.Extensions
             return result;
             
         }
+
         private static IEnumerable<string> SerializeCustomTypeDescriptor<T>(IEnumerator<T> iterator, string[] headers)
         {
             do
@@ -91,11 +91,12 @@ namespace Viki.LoadRunner.Tools.Extensions
 
             iterator.Dispose();
         }
-        private static IEnumerable<string> SerializeDictionary<T, TValue>(IEnumerator<T> iterator, string[] headers)
+
+        private static IEnumerable<string> SerializeExpando<T>(IEnumerator<T> iterator, string[] headers)
         {
             do
             {
-                IDictionary<string, TValue> row = (IDictionary<string, TValue>)iterator.Current;
+                IDictionary<string, object> row = (IDictionary<string, object>)iterator.Current;
                 if (row != null)
                     yield return String.Join(",", headers.Select(h => CsvValue(row.GetOrNull(h))));
             } while (iterator.MoveNext());
