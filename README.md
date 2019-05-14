@@ -14,7 +14,7 @@ Start with this small setup to get a feel on how it's configured.
   - [2][Optional] Configure how results get aggregated/presented.
   - [3] Configure strategy on how test gets executed (e.g. How much threads, how long it should run. etc...)
 
-HistogramAggregator is a powerful tool of its own which can aggregate any generic data (new Histogram<T>()).
+HistogramAggregator is a default tool to aggregate results with defined dimensions/metrics
  * Given its flexibility documentation will take time till its done.
  * Until then - it should be easy enough to figure it out through various uses in examples already available:
    - [HistogramAggregatorDemo.cs#L30](/demo/Guides/Aggregation/HistogramAggregatorDemo.cs#L30) - WiP
@@ -22,6 +22,8 @@ HistogramAggregator is a powerful tool of its own which can aggregate any generi
    - [RawDataMeasurementsDemo.cs#L59](/demo/Guides/Aggregation/RawDataMeasurementsDemo.cs#L59)
    - [AggregationImpactDemo.cs#L39](/demo/Theoretical/AggregationImpactDemo.cs#L39)
    - [BatchAndWaitDemo.cs#L29](/src/Viki.LoadRunner.Playground/BatchAndWaitDemo.cs#L29)
+ * Also a generic version of it which can be used with generic type: new Histogram&lt;T&gt;()
+   - It also contains some generic [dimensions](/src/Viki.LoadRunner.Engine/Analytics/Dimensions) and [metrics](/src/Viki.LoadRunner.Engine/Analytics/Metrics), but given the custom type and required aggregation, one might need to implement some custom IDimension&lt;T&gt;'s and IMetric&lt;T&gt;'s
   
 Rest of the demo project:
  * Index
