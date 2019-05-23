@@ -21,6 +21,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Limit
 
         bool ILimitStrategy.StopTest(ITestState state)
         {
+            // Subtracting IdleThreadCount, as those still have received assigned global Id's.
+            // But defined speed strategies are preventing them from executing assigned job.
             return _iterationsLimit <= state.Counters.LastGlobalIterationId - state.ThreadPool.IdleThreadCount;
         }
     }

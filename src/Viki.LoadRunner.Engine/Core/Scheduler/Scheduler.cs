@@ -36,7 +36,7 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
         public ScheduleAction Action { get; set; } = ScheduleAction.Execute;
         public TimeSpan At { get; set; } = TimeSpan.Zero;
 
-        public void WaitNext(ref bool stop)
+        public bool WaitForSchedule(ref bool stop)
         {
             _strategy.Next(_id, this);
 
@@ -50,10 +50,17 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
                     _strategy.Next(_id, this);
                 }
 
-                _waiter.Wait(At, ref stop);
-
-                _counter.AddIdle(-1);
+                return true;
             }
+
+            return false;
+        }
+
+        public void Wait(ref bool stop)
+        {
+            _waiter.Wait(At, ref stop);
+
+            _counter.AddIdle(-1);
         }
 
         public void ThreadStarted()

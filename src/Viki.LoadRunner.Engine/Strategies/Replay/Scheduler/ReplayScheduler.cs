@@ -43,7 +43,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
             _waiter = new SemiWait(timer);
         }
 
-        public void WaitNext(ref bool stop)
+        public bool WaitForSchedule(ref bool stop)
         {
             DataItem dataItem = _dataReader.Next(_threadId);
 
@@ -69,11 +69,18 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
             {
                 stop = true;
             }
+
+            return false;
+        }
+
+        public void Wait(ref bool stop)
+        {
         }
 
         public void ThreadStarted()
         {
         }
+
         public void ThreadFinished()
         {
         }

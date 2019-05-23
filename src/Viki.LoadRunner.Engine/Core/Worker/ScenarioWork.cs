@@ -39,7 +39,12 @@ namespace Viki.LoadRunner.Engine.Core.Worker
             {
                 _handler.PrepareNext();
 
-                _scheduler.WaitNext(ref stop);
+                bool wait = _scheduler.WaitForSchedule(ref stop);
+
+                _handler.Warmup();
+
+                if (wait)
+                    _scheduler.Wait(ref stop);
 
                 if (!stop)
                 {

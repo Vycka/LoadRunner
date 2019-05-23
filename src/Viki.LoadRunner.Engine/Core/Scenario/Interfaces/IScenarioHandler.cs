@@ -5,25 +5,32 @@ namespace Viki.LoadRunner.Engine.Core.Scenario.Interfaces
         /// <summary>
         /// Initial setup
         /// </summary>
-        /// <remarks>Called 1st (Initialize)</remarks>
+        /// <remarks>Called 1st (Initialize) [Only once]</remarks>
         void Init();
 
         /// <summary>
-        /// Prepares context for next iteration
+        /// Setup context for next iteration.
+        /// (Like assigning next Global/Thread IterationId's, as this information will be used in applying ISpeedStrategy)
         /// </summary>
-        ///<remarks>Called 2nd (Before each Execute)</remarks>
+        ///<remarks>Called first before each iteration.</remarks>
         void PrepareNext();
+
+        /// <summary>
+        /// Once execution is scheduled, this gets called early to allow IterationSetup prepare early.
+        /// </summary>
+        /// <remarks>Called after PrepareNext and as early as possible from scheduled execution time</remarks>
+        void Warmup();
 
         /// <summary>
         /// Executes iteration
         /// </summary>
-        ///<remarks>Called 3rd (After each Prepare)</remarks>
+        ///<remarks>Called 3rd [After each Warmup]</remarks>
         void Execute();
 
         /// <summary>
         /// Final cleanup
         /// </summary>
-        /// <remarks>Called last (Cleanup)</remarks>
+        /// <remarks>Called last (Cleanup) [Only once]</remarks>
         void Cleanup();
     }
 }

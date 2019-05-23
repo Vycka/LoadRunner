@@ -12,6 +12,8 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
         private readonly IUniqueIdGenerator<int> _threadIterationIdGenerator;
         protected readonly IIterationControl _context;
 
+        private bool _setupSuccess;
+
 
         public ScenarioHandler(IGlobalCountersControl globalCounters, IUniqueIdGenerator<int> threadIterationIdGenerator, IScenario scenario, IIterationControl context)
         {
@@ -38,13 +40,10 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
             _context.Reset(_threadIterationIdGenerator.Next(), _globalCounters.IterationId.Next());
         }
 
-        /// <summary>
-        /// Final cleanup
-        /// </summary>
-        public void Cleanup()
+        public void Warmup()
         {
-            _context.Reset(-1, -1);
-            _scenario.ScenarioTearDown(_context);
+            _context.Checkpoint(Checkpoint.Names.Setup);
+            _setupSuccess = ExecuteWithExceptionHandling(() => _scenario.IterationSetup(_context));
         }
 
         /// <summary>
@@ -52,10 +51,7 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
         /// </summary>
         public void Execute()
         {
-            _context.Checkpoint(Checkpoint.Names.Setup);
-            bool setupSuccess = ExecuteWithExceptionHandling(() => _scenario.IterationSetup(_context));
-
-            if (setupSuccess)
+            if (_setupSuccess)
             {
                 _context.Checkpoint(Checkpoint.Names.Iteration);
 
@@ -71,6 +67,15 @@ namespace Viki.LoadRunner.Engine.Core.Scenario
 
             _context.Checkpoint(Checkpoint.Names.TearDown);
             ExecuteWithExceptionHandling(() => _scenario.IterationTearDown(_context));
+        }
+
+        /// <summary>
+        /// Final cleanup
+        /// </summary>
+        public void Cleanup()
+        {
+            _context.Reset(-1, -1);
+            _scenario.ScenarioTearDown(_context);
         }
 
         private bool ExecuteWithExceptionHandling(Action action)

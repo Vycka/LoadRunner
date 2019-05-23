@@ -37,13 +37,18 @@ namespace LoadRunner.Demo.Guides.QuickStart
 
         public void ExecuteScenario(IIteration context)
         {
+            // Time is measured only here.
+
             // Only gets called if IterationSetup() succeeds.
-            // Timing is measured only here.
+
+            // Will be skipped if graceful stop is triggered before the call.
         }
 
         public void IterationTearDown(IIteration context)
         {
             // Cleanup after each iteration (even if IterationSetup() or ExecuteScenario() fails)
+            
+            // Will be skipped if ExecuteScenario() was skipped because graceful stop.
         }
 
         public void ScenarioTearDown(IIteration context)

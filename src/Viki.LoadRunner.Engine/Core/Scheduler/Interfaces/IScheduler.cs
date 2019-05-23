@@ -12,7 +12,9 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler.Interfaces
 
     public interface IScheduler
     {
-        void WaitNext(ref bool stop);
+        bool WaitForSchedule(ref bool stop);
+
+        void Wait(ref bool stop);
 
         void ThreadFinished();
         void ThreadStarted();

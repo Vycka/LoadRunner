@@ -4,11 +4,16 @@ namespace Viki.LoadRunner.Engine.Core.Scheduler
 {
     public class NullScheduler : IScheduler
     {
-        public void WaitNext(ref bool stop)
+        public void ThreadStarted()
         {
         }
 
-        public void ThreadStarted()
+        public bool WaitForSchedule(ref bool stop)
+        {
+            return false;
+        }
+
+        public void Wait(ref bool stop)
         {
         }
 
