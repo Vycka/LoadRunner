@@ -14,7 +14,6 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
 
         private readonly List<IConsumer<T>> _consumers = new List<IConsumer<T>>();
         private readonly List<IConsumer<T>> _lockedConsumers = new List<IConsumer<T>>();
-        private readonly List<IReadOnlyList<T>> _lockedBatches = new List<IReadOnlyList<T>>();
 
         private readonly List<T> _buffer = new List<T>();
 
@@ -26,28 +25,10 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             Add(consumers);
         }
 
-        public bool Available => !_completed || _consumers.Count != 0 || _buffer.Count != 0 || _addQueue.IsEmpty == false;
 
-        public bool TryLockBatch(out IReadOnlyList<T> batch)
+        public void Complete()
         {
-            bool result = TryLockPipes();
-            if (result)
-            {
-                _buffer.AddRange(_lockedBatches.SelectMany(b => b));
-                batch = _buffer;
-            }
-            else
-            {
-                batch = null;
-            }
-
-            return result;
-        }
-
-        public void ReleaseBatch()
-        {
-            _buffer.Clear();
-            ReleasePipes();
+            _completed = true;
         }
 
         public IProducer<T> Create()
@@ -72,24 +53,43 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             _addQueue.Enqueue(consumers);
         }
 
-        public void Complete()
-        {
-            _completed = true;
-        }
-
         public void Reset()
         {
             while (!_addQueue.IsEmpty && _addQueue.TryDequeue(out _))
             {
             }
 
-            ReleasePipes();
+            ReleaseBatch();
 
             _consumers.Clear();
             _completed = false;
         }
 
-        private bool TryLockPipes()
+        #region IConsumer
+
+        public bool Available => !_completed || _consumers.Count != 0 || _buffer.Count != 0 || _addQueue.IsEmpty == false;
+
+        public bool TryLockBatch(out IReadOnlyList<T> batch)
+        {
+            _buffer.AddRange(TryRead().SelectMany(r => r));
+
+            bool result = _buffer.Count != 0;
+
+            batch = result ? _buffer : null;
+
+            return result;
+        }
+
+        public void ReleaseBatch()
+        {
+            _buffer.Clear();
+            Release();
+        }
+
+
+        #endregion
+
+        private IEnumerable<IReadOnlyList<T>> TryRead()
         {
             while (!_addQueue.IsEmpty && _addQueue.TryDequeue(out var consumer))
                 _consumers.Add(consumer);
@@ -101,7 +101,7 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
                     if (_consumers[i].TryLockBatch(out var batch))
                     {
                         _lockedConsumers.Add(_consumers[i]);
-                        _lockedBatches.Add(batch);
+                        yield return batch;
                     }
                 }
                 else
@@ -109,11 +109,9 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
                     _consumers.RemoveAt(i--);
                 }
             }
-
-            return _lockedConsumers.Count != 0;
         }
 
-        private void ReleasePipes()
+        private void Release()
         {
             for (int i = 0; i < _lockedConsumers.Count; i++)
             {
@@ -121,7 +119,6 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             }
 
             _lockedConsumers.Clear();
-            _lockedBatches.Clear();
         }
     }
 }
