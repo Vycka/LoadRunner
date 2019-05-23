@@ -1,6 +1,6 @@
 cd %~dp0
 
-SET minorVersion="8.3-beta"
+SET minorVersion="8.4-beta"
 SET majorVersion="0"
 
 SET projectID=Viki.LoadRunner.Tools.Legacy
@@ -21,11 +21,23 @@ echo Clean up finished
 
 echo Try to remove necessary dll's
 
-del pack\lib\net472\Newtonsoft.Json.dll
-del pack\lib\net472\Newtonsoft.Json.xml
-del pack\lib\net472\Newtonsoft.Json.pdb
-del pack\lib\net472\Viki.LoadRunner.Engine.dll
-del pack\lib\net472\Viki.LoadRunner.Engine.deps.json
+del pack\lib\net471\Newtonsoft.Json.dll
+del pack\lib\net471\Newtonsoft.Json.xml
+del pack\lib\net471\Newtonsoft.Json.pdb
+del pack\lib\net471\Viki.LoadRunner.Engine.dll
+del pack\lib\net471\Viki.LoadRunner.Engine.deps.json
+del pack\lib\net471\System.Data.Common.dll
+del pack\lib\net471\System.Diagnostics.StackTrace.dll
+del pack\lib\net471\System.Diagnostics.Tracing.dll
+del pack\lib\net471\System.Globalization.Extensions.dll
+del pack\lib\net471\System.IO.Compression.dll
+del pack\lib\net471\System.Net.Http.dll
+del pack\lib\net471\System.Net.Sockets.dll
+del pack\lib\net471\System.Runtime.Serialization.Primitives.dll
+del pack\lib\net471\System.Security.Cryptography.Algorithms.dll
+del pack\lib\net471\System.Security.SecureString.dll
+del pack\lib\net471\System.Threading.Overlapped.dll
+del pack\lib\net471\System.Xml.XPath.XDocument.dll
 
 echo Necessary dll's removed
 
