@@ -4,7 +4,7 @@ namespace Viki.LoadRunner.Playground.Tools
 {
     public class CountingScenario : IScenario
     {
-        public int Count = 0;
+        public long Count = 0;
         public int ThreadId;
 
         public void ScenarioSetup(IIteration context)

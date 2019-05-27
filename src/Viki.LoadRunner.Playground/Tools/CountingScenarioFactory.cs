@@ -21,7 +21,7 @@ namespace Viki.LoadRunner.Playground.Tools
         public void PrintSum()
         {
             string perThread = String.Join(Environment.NewLine, _instances.Select(i => $"{i.ThreadId} {i.Count}"));
-            int sum = GetSum();
+            long sum = GetSum();
 
             Console.WriteLine(perThread);
             Console.WriteLine(@"-------");
@@ -29,7 +29,7 @@ namespace Viki.LoadRunner.Playground.Tools
         }
 
 
-        public int GetSum()
+        public long GetSum()
         {
             return _instances.Sum(i => i.Count);
         }

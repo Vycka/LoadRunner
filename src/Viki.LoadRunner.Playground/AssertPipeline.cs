@@ -42,7 +42,7 @@ namespace Viki.LoadRunner.Playground
 
             Console.WriteLine(JsonConvert.SerializeObject(aggregator.BuildResultsObjects(), Formatting.Indented));
             factory.PrintSum();
-            int expected = factory.GetSum();
+            long expected = factory.GetSum();
             int actual = (int)aggregator.BuildResults().Data[0][1];
             TimeSpan lastIteration = (TimeSpan)aggregator.BuildResults().Data[0][3];
             Console.WriteLine($@"TPS {expected / lastIteration.TotalSeconds:N}");
