@@ -7,11 +7,9 @@
 
     public interface IPipeProvider<T>
     {
-        event PipeFactoryDelegates.Created<T> PipeCreatedEvent;
+        event PipeCreatedEventDelegate<T> PipeCreatedEvent;
     }
 
-    public static class PipeFactoryDelegates
-    {
-        public delegate void Created<T>(IPipeFactory<T> sender, BatchingPipe<T> pipe);
-    }
+    public delegate void PipeCreatedEventDelegate<T>(IPipeFactory<T> sender, BatchingPipe<T> pipe);
+
 }

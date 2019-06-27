@@ -13,6 +13,6 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
             return pipe;
         }
 
-        public event PipeFactoryDelegates.Created<T> PipeCreatedEvent;
+        public event PipeCreatedEventDelegate<T> PipeCreatedEvent;
     }
 }

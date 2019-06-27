@@ -10,17 +10,14 @@ namespace Viki.LoadRunner.Engine.Core.Worker.Interfaces
 
         bool Initialized { get; }
 
-        event WorkerThreadDelegates.ThreadInitializedEvent ThreadInitialized;
-        event WorkerThreadDelegates.ThreadErrorEvent ThreadError;
-        event WorkerThreadDelegates.ThreadStoppedEvent ThreadStopped;
+        event ThreadInitializedEventDelegate ThreadInitialized;
+        event ThreadErrorEventDelegate ThreadError;
+        event ThreadStoppedEventDelegate ThreadStopped;
     }
 
-    public static class WorkerThreadDelegates
-    {
-        public delegate void ThreadInitializedEvent(IThread sender);
+    public delegate void ThreadInitializedEventDelegate(IThread sender);
 
-        public delegate void ThreadErrorEvent(IThread sender, Exception ex);
+    public delegate void ThreadErrorEventDelegate(IThread sender, Exception ex);
 
-        public delegate void ThreadStoppedEvent(IThread sender);
-    }
+    public delegate void ThreadStoppedEventDelegate(IThread sender);
 }
