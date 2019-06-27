@@ -8,7 +8,7 @@ namespace Viki.LoadRunner.Engine
     /// <summary>
     /// ILoadTestScenario executor
     /// </summary>
-    public class LoadRunnerEngine : IStrategyExecutorAsync, IStrategyExecutor
+    public class LoadRunnerEngine : IStrategyExecutorAsync
     {
         #region Fields
 
@@ -116,6 +116,18 @@ namespace Viki.LoadRunner.Engine
             _rootThread?.Join();
         }
 
+        /// <summary>
+        /// Started event is triggered only if executor succeeds initialization, but moments before starting the strategy.
+        /// If strategy fails at start or in the middle of execution, Stopped event will be triggered and it will contain related exception.
+        /// </summary>
+        public event ExecutorStartedEventDelegate Started;
+
+        /// <summary>
+        /// Ended event is triggered after test is stopped.
+        /// If passed exception is not not null, test has stopped abnormally and passed exception will be the reason why execution was stopped.
+        /// </summary>
+        public event ExecutorStoppedEventDelegate Stopped;
+
         #endregion
 
         #region RunInner() Stuff
@@ -129,6 +141,9 @@ namespace Viki.LoadRunner.Engine
             try
             {
                 Running = true;
+
+                OnStarted();
+
                 _strategy.Start();
 
                 while (_strategy.HeartBeat() == false && Running)
@@ -145,7 +160,19 @@ namespace Viki.LoadRunner.Engine
             {
                 _strategy.Stop();
                 Running = false;
+
+                OnStopped(Exception);
             }
+        }
+
+        private void OnStarted()
+        {
+            Started?.Invoke(this);
+        }
+
+        public void OnStopped(Exception exception)
+        {
+            Stopped?.Invoke(this, exception);
         }
 
         #endregion
