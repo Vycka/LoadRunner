@@ -73,21 +73,21 @@ namespace Viki.LoadRunner.Engine.Core.Worker
 
         #region Events
 
-        public event WorkerThreadDelegates.ThreadInitializedEvent ThreadInitialized;
+        public event ThreadInitializedEventDelegate ThreadInitialized;
 
         private void OnThreadInitialized()
         {
             ThreadInitialized?.Invoke(this);
         }
 
-        public event WorkerThreadDelegates.ThreadErrorEvent ThreadError;
+        public event ThreadErrorEventDelegate ThreadError;
 
         private void OnThreadError(Exception ex)
         {
             ThreadError?.Invoke(this, ex);
         }
 
-        public event WorkerThreadDelegates.ThreadStoppedEvent ThreadStopped;
+        public event ThreadStoppedEventDelegate ThreadStopped;
 
         private void OnThreadFinished()
         {
