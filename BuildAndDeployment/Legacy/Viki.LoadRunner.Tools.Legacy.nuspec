@@ -15,7 +15,7 @@
     <copyright>2019</copyright>
     <tags>Load Stress Performance Test Testing c# Runner Parallel Thread Library Framework Tool Addin .NET</tags>
 	<dependencies>
-        <dependency id="Viki.LoadRunner" version="0.8.62-beta" />
+        <dependency id="Viki.LoadRunner" version="0.8.68-beta" />
     </dependencies>
   </metadata>
 </package>

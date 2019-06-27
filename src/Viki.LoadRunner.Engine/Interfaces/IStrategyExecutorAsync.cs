@@ -2,7 +2,7 @@
 
 namespace Viki.LoadRunner.Engine.Interfaces
 {
-    public interface IStrategyExecutorAsync 
+    public interface IStrategyExecutorAsync : IStrategyExecutor
     {
         /// <summary>
         /// If execution failed due to unhandled exception, it will be set here.
@@ -15,7 +15,7 @@ namespace Viki.LoadRunner.Engine.Interfaces
         bool Running { get; }
 
         /// <summary>
-        /// Executes test in seperate thread (non-blocking call)
+        /// Executes test in separate thread (non-blocking call)
         /// </summary>
         void RunAsync();
 

@@ -58,6 +58,8 @@ namespace Viki.LoadRunner.Tools.Windows
         public void Setup(IStrategy strategy, IValidator validator)
         {
             _engine = new LoadRunnerEngine(strategy);
+            _engine.Started += EngineOnStarted;
+            _engine.Stopped += EngineOnStopped;
 
             _validateButton.Enabled = validator != null;
             _validator = validator;
@@ -66,6 +68,20 @@ namespace Viki.LoadRunner.Tools.Windows
         public void Run()
         {
             Application.Run(this);
+        }
+
+        public event ExecutorStartedEventDelegate Started;
+
+        public event ExecutorStoppedEventDelegate Stopped;
+
+        private void EngineOnStarted(IStrategyExecutor sender)
+        {
+            Started?.Invoke(sender);
+        }
+
+        private void EngineOnStopped(IStrategyExecutor sender, Exception exception)
+        {
+            Stopped?.Invoke(sender, exception);
         }
 
         void IAggregator.Begin()
