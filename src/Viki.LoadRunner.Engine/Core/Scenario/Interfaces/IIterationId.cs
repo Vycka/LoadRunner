@@ -3,7 +3,7 @@
     public interface IIterationId
     {
         /// <summary>
-        /// Unique Iteration ID withing all worker-threads (Starts from zero)
+        /// Unique Iteration ID within all worker-threads (Starts from zero)
         /// [Tip: If scenario fits - this reference ID can be used as index for test-data datasources]
         /// </summary>
         int GlobalIterationId { get; }
