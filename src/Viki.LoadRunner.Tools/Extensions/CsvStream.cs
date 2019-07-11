@@ -9,6 +9,8 @@ namespace Viki.LoadRunner.Tools.Extensions
 {
     public static class CsvStream
     {
+        public static Func<object, string> ValueFormatter { get; set; } = o => o.ToString(); 
+
         private static readonly char[] CsvSpecialSymbols = { ',', '\"', '\r', '\n' };
         private static string[] DefaultHeaderOrder(string[] input) => input;
         public static void SerializeToCsv<T>(this IEnumerable<T> input, string outFile, string[] headerOrder, bool includeHeaders = true)
@@ -204,7 +206,7 @@ namespace Viki.LoadRunner.Tools.Extensions
             if (value is Array arrayValue)
                 value = String.Join(", ", arrayValue);
             value = value ?? String.Empty;
-            string valueString = value.ToString();
+            string valueString = ValueFormatter(value);
             if (valueString.IndexOfAny(CsvSpecialSymbols) == -1)
             {
                 return valueString;
