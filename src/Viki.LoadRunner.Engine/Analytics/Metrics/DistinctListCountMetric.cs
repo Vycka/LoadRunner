@@ -38,7 +38,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
             }
         }
 
-        public Func<IEnumerable<KeyValuePair<TOut, int>>, IEnumerable<KeyValuePair<TOut, int>>> Sort { get; set; } = input => input.OrderBy(e => e);
+        public Func<IEnumerable<KeyValuePair<TOut, int>>, IEnumerable<KeyValuePair<TOut, int>>> Sort { get; set; } = input => input.OrderBy(e => e.Key);
 
         public string[] ColumnNames => new[] { _name };
         public object[] Values => new object[] { String.Join(", ", Sort(_elements).Select(e => String.Concat(e.Key, "[", e.Value, "]"))) };
