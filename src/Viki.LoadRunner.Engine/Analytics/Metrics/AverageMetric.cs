@@ -7,16 +7,16 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
     public class AverageMetric<T> : IMetric<T>
     {
         private readonly string _name;
-        private readonly Func<T, double> _selector;
+        private readonly DoubleSelectorDelegate<T> _selector;
 
         private readonly AverageCalculator _calculator = new AverageCalculator();
 
-        public AverageMetric(Func<T, double> selector)
+        public AverageMetric(DoubleSelectorDelegate<T> selector)
             : this("Average", selector)
         {
         }
 
-        public AverageMetric(string name, Func<T, double> selector)
+        public AverageMetric(string name, DoubleSelectorDelegate<T> selector)
         {
             _name = name;
             _selector = selector;

@@ -10,17 +10,17 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
     public class RatioMetric<T> : IMetric<T>
     {
         private readonly string _name;
-        private readonly Func<T, bool> _selector;
+        private readonly BoolSelectorDelegate<T> _selector;
         private readonly double _multiplier;
 
         private readonly RatioCalculator _calculator = new RatioCalculator();
 
-        public RatioMetric(Func<T, bool> include, double multiplier = 1.0)
+        public RatioMetric(BoolSelectorDelegate<T> include, double multiplier = 1.0)
             : this("Ratio", include, multiplier)
         {
         }
 
-        public RatioMetric(string name, Func<T, bool> include, double multiplier = 1.0)
+        public RatioMetric(string name, BoolSelectorDelegate<T> include, double multiplier = 1.0)
         {
             _name = name ?? throw new ArgumentNullException(nameof(name));
             _selector = include ?? throw new ArgumentNullException(nameof(include));

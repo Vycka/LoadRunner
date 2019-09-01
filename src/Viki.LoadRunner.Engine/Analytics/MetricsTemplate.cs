@@ -25,12 +25,15 @@ namespace Viki.LoadRunner.Engine.Analytics
         private class MetricsMuxer : IMetric<T>
         {
             private readonly IMetric<T>[] _metrics;
+            private readonly int _length;
 
             public MetricsMuxer(IMetric<T>[] templates)
             {
                 _metrics = templates
                     .Select(t => t.CreateNew())
                     .ToArray();
+
+                _length = _metrics.Length;
             }
 
             public IMetric<T> CreateNew()
@@ -40,7 +43,7 @@ namespace Viki.LoadRunner.Engine.Analytics
 
             public void Add(T data)
             {
-                for (int i = 0; i < _metrics.Length; i++)
+                for (int i = 0; i < _length; i++)
                 {
                     _metrics[i].Add(data);
                 }

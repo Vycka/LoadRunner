@@ -7,7 +7,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 {
     public class ValueMetric<T> : ValuesMetric<T>
     {
-        public ValueMetric(string name, ValueSelectorDelegate<T> selector)
+        public ValueMetric(string name, ObjectSelectorDelegate<T> selector)
             : base(data => new[] { new Val(name, selector(data)) })
         {
         }
@@ -16,9 +16,6 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
             : base(data => new[] { valueSelector(data) })
         {
         }
-
-        public delegate Val ValSelectorDelegate<in TData>(TData data);
-        public delegate object ValueSelectorDelegate<in TData>(TData data);
     }
 
     public class ValuesMetric<T> : IMetric<T>
@@ -55,9 +52,8 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 
         public string[] ColumnNames { get; private set; }
         public object[] Values { get; private set; }
-
-        public delegate IEnumerable<Val> ValuesSelectorDelegate<in TData>(TData data);
     }
+
 
     public class Val
     {

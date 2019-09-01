@@ -6,20 +6,26 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 {
     public class SubMetric<TBase, TSub> : IMetric<TBase>
     {
-        private readonly SubSelectorDelegate _selector;
-        private readonly IMetric<TSub>[] _metrics;
-        private readonly int _metricsCount;
+        private readonly SubSelectorDelegate<TSub, TBase> _selector;
+        private readonly MetricsTemplate<TSub> _template;
+        private readonly IMetric<TSub> _metric;
 
-        public SubMetric(SubSelectorDelegate selector, params IMetric<TSub>[] metrics)
+        public SubMetric(SubSelectorDelegate<TSub, TBase> selector, params IMetric<TSub>[] metrics)
+        : this(selector, new MetricsTemplate<TSub>(metrics))
+        {
+        }
+
+        public SubMetric(SubSelectorDelegate<TSub, TBase> selector, MetricsTemplate<TSub> template)
         {
             _selector = selector;
-            _metrics = metrics.Select(m => m.CreateNew()).ToArray();
-            _metricsCount = _metrics.Length;
+            _template = template;
+
+            _metric = _template.Create();
         }
 
         public IMetric<TBase> CreateNew()
         {
-            return new SubMetric<TBase, TSub>(_selector, _metrics);
+            return new SubMetric<TBase, TSub>(_selector, _template);
         }
 
         public void Add(TBase data)
@@ -27,16 +33,13 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
             IEnumerable<TSub> subInput = _selector(data);
             foreach (TSub subItem in subInput)
             {
-                for (int i = 0; i < _metricsCount; i++)
-                {
-                    _metrics[i].Add(subItem);
-                }
+                _metric.Add(subItem);
             }
         }
 
-        public string[] ColumnNames => _metrics.SelectMany(m => m.ColumnNames).ToArray();
-        public object[] Values => _metrics.SelectMany(m => m.Values).ToArray();
-
-        public delegate IEnumerable<TSub> SubSelectorDelegate(TBase input);
+        public string[] ColumnNames => _metric.ColumnNames;
+        public object[] Values => _metric.Values;
     }
+
+    public delegate IEnumerable<TSub> SubSelectorDelegate<TSub, TBase>(TBase input);
 }

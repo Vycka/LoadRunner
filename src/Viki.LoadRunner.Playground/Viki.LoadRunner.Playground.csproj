@@ -61,6 +61,7 @@
     <Compile Include="Replay\DataGenerator.cs" />
     <Compile Include="Replay\ReplayDemo.cs" />
     <Compile Include="Replay\ReplayScenario.cs" />
+    <Compile Include="RnD\PercentileMetricWithCount.cs" />
     <Compile Include="Storage\EnumerableTextReader.cs" />
     <Compile Include="Storage\JsonObjectsReader.cs" />
     <Compile Include="Storage\JsonObjectsWriter.cs" />

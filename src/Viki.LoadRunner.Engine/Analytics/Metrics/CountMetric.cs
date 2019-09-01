@@ -5,7 +5,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 {
     public class CountMetric<T> : IMetric<T>
     {
-        private readonly Func<T,bool> _canCountSelector;
+        private readonly BoolSelectorDelegate<T> _canCountSelector;
         private int _count = 0;
 
         public CountMetric(string name = "Count")
@@ -13,7 +13,7 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
         {
         }
 
-        public CountMetric(Func<T,bool> canCountSelector, string name = "Count")
+        public CountMetric(BoolSelectorDelegate<T> canCountSelector, string name = "Count")
         {
             _canCountSelector = canCountSelector;
             ColumnNames = new[] { name };
