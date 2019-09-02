@@ -24,15 +24,20 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline.Extensions
 
         private static void ProduceAndComplete<T>(IProducer<T> producer, IEnumerable<T> items, CancellationToken token)
         {
-            foreach (T item in items)
+            try
             {
-                if (token.IsCancellationRequested)
-                    break;
+                foreach (T item in items)
+                {
+                    if (token.IsCancellationRequested)
+                        break;
 
-                producer.Produce(item);
+                    producer.Produce(item);
+                }
             }
-
-            producer.ProducingCompleted();
+            finally
+            {
+                producer.ProducingCompleted();
+            }
         }
 
         public static void Produce<T>(this IProducer<T> producer, IEnumerable<T> items)
