@@ -10,4 +10,5 @@ namespace Viki.LoadRunner.Engine.Analytics.Interfaces
         Dictionary<string, string> ColumnAliases { get; }
         List<string> ColumnIgnoreNames { get; }
     }
+
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Analytics.Interfaces;
 
@@ -52,18 +51,5 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 
         public string[] ColumnNames { get; private set; }
         public object[] Values { get; private set; }
-    }
-
-
-    public class Val
-    {
-        public Val(string key, object value)
-        {
-            Key = key;
-            Value = value;
-        }
-
-        public string Key;
-        public object Value;
     }
 }

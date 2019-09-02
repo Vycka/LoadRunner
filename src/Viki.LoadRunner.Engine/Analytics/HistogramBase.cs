@@ -23,7 +23,7 @@ namespace Viki.LoadRunner.Engine.Analytics
     {
         #region Fields
 
-        private FlexiRow<DimensionKey, IMetric<TData>> _row;
+        private FlexiRow<DimensionKey, MetricsHandler<TData>> _row;
 
         private DimensionsHandler<TData> _dimensionsKeyBuilder;
         private MetricsHandler<TData> _metricMultiplexer;
@@ -45,7 +45,7 @@ namespace Viki.LoadRunner.Engine.Analytics
         public void Begin()
         {
             _metricMultiplexer = new MetricsHandler<TData>(Metrics);
-            _row = new FlexiRow<DimensionKey, IMetric<TData>>(() => ((IMetric<TData>)_metricMultiplexer).CreateNew());
+            _row = new FlexiRow<DimensionKey, MetricsHandler<TData>>(() => _metricMultiplexer.Create());
 
             _dimensionsKeyBuilder = new DimensionsHandler<TData>(Dimensions);
         }
@@ -75,8 +75,13 @@ namespace Viki.LoadRunner.Engine.Analytics
         {
             if (_row == null)
                 throw new InvalidOperationException("Aggregation was never performed.");
+
+            KeyValuePair<DimensionKey, Val[]>[] results = _row
+                .Select(r => new KeyValuePair<DimensionKey, Val[]>(r.Key, r.Value.Export().ToArray()))
+                .ToArray();
+
             OrderLearner orderLearner = new OrderLearner();
-            _row.ForEach(i => orderLearner.Learn(i.Value.ColumnNames));
+            results.ForEach(kv => orderLearner.Learn(kv.Value.Select(v => v.Key)));
 
             string[] columnNames = Dimensions
                 .Select(d => d.DimensionName)
@@ -87,24 +92,24 @@ namespace Viki.LoadRunner.Engine.Analytics
             object[][] resultValues = new object[_row.Count][];
 
             int rowIndex = 0;
-            foreach (KeyValuePair<DimensionKey, IMetric<TData>> pair in _row)
+            foreach (KeyValuePair<DimensionKey, Val[]> pair in results)
             {
                 resultValues[rowIndex] = new object[columnNames.Length];
 
                 DimensionKey dimensions = pair.Key;
-                IMetric<TData> metrics = pair.Value;
+                Val[] metrics = pair.Value;
 
                 for (int i = 0; i < dimensions.Values.Count; i++)
                 {
                     resultValues[rowIndex][i] = dimensions.Values[i];
                 }
 
-                for (int i = 0; i < metrics.ColumnNames.Length; i++)
+                for (int i = 0; i < metrics.Length; i++)
                 {
-                    int columnIndex = Array.FindIndex(columnNames, s => s == metrics.ColumnNames[i]);
+                    int columnIndex = Array.FindIndex(columnNames, s => s == metrics[i].Key);
 
                     if (columnIndex != -1)
-                        resultValues[rowIndex][columnIndex] = metrics.Values[i];
+                        resultValues[rowIndex][columnIndex] = metrics[i].Value;
                 }
 
                 rowIndex++;

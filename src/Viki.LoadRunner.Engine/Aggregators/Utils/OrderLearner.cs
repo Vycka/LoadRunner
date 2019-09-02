@@ -21,7 +21,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Utils
             _nameOrder = new List<string>();
         }
 
-        public void Learn(string[] names)
+        public void Learn(IEnumerable<string> names)
         {
 
             string previousName = "";

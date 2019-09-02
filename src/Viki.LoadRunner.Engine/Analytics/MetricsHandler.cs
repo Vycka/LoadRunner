@@ -7,7 +7,7 @@ namespace Viki.LoadRunner.Engine.Analytics
 {
     namespace Viki.LoadRunner.Engine.Aggregators.Utils
     {
-        public class MetricsHandler<T> : IMetric<T>
+        public class MetricsHandler<T>
         {
             private readonly IMetric<T>[] _metrics;
 
@@ -23,12 +23,12 @@ namespace Viki.LoadRunner.Engine.Analytics
                 _metrics = metricTemplates.ToArray();
             }
 
-            IMetric<T> IMetric<T>.CreateNew()
+            public MetricsHandler<T> Create()
             {
                 return new MetricsHandler<T>(_metrics.Select(m => m.CreateNew()));
             }
 
-            void IMetric<T>.Add(T result)
+            public void Add(T result)
             {
                 for (int i = 0; i < _metrics.Length; i++)
                 {
@@ -36,8 +36,25 @@ namespace Viki.LoadRunner.Engine.Analytics
                 }
             }
 
-            string[] IMetric<T>.ColumnNames => _metrics.SelectMany(m => m.ColumnNames).ToArray();
-            object[] IMetric<T>.Values => _metrics.SelectMany(m => m.Values).ToArray();
+            public IEnumerable<Val> Export()
+            {
+                var keys = _metrics.SelectMany(m => m.ColumnNames).ToArray();
+                var values = _metrics.SelectMany(m => m.Values).ToArray();
+
+                return keys.Select((k, i) => new Val(k, values[i]));
+            }
         }
+    }
+
+    public struct Val
+    {
+        public Val(string key, object value)
+        {
+            Key = key;
+            Value = value;
+        }
+
+        public string Key;
+        public object Value;
     }
 }

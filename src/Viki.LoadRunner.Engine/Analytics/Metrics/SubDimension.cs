@@ -2,36 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using Viki.LoadRunner.Engine.Analytics.Interfaces;
-using Viki.LoadRunner.Engine.Analytics.Viki.LoadRunner.Engine.Aggregators.Utils;
 
 namespace Viki.LoadRunner.Engine.Analytics.Metrics
 {
 
     public class SubDimension<T> : IMetric<T>
     {
-        private readonly MetricsHandler<T> _metricsHandler;
+        private readonly MetricsTemplate<T> _metricsHandler;
         private readonly IDimension<T> _subDimension;
         private readonly ColumnNameDelegate _columnNameSelector;
 
         private readonly FlexiRow<string, IMetric<T>> _row;
 
         public SubDimension(IDimension<T> subDimension, params IMetric<T>[] actualMetrics)
-            : this(subDimension, (d, m) => String.Concat(d, ": ", m), new MetricsHandler<T>(actualMetrics))
+            : this(subDimension, (d, m) => String.Concat(d, ": ", m), new MetricsTemplate<T>(actualMetrics))
         {
         }
 
         public SubDimension(IDimension<T> subDimension, ColumnNameDelegate columnNameSelector, params IMetric<T>[] actualMetrics)
-            : this(subDimension, columnNameSelector, new MetricsHandler<T>(actualMetrics))
+            : this(subDimension, columnNameSelector, new MetricsTemplate<T>(actualMetrics))
         {
         }
 
-        private SubDimension(IDimension<T> subDimension, ColumnNameDelegate columnNameSelector, MetricsHandler<T> metricsHandler)
+        private SubDimension(IDimension<T> subDimension, ColumnNameDelegate columnNameSelector, MetricsTemplate<T> metricsHandler)
         {
             _subDimension = subDimension ?? throw new ArgumentNullException(nameof(subDimension));
             _metricsHandler = metricsHandler ?? throw new ArgumentNullException(nameof(metricsHandler));
             _columnNameSelector = columnNameSelector ?? throw new ArgumentNullException(nameof(columnNameSelector));
 
-            _row = new FlexiRow<string, IMetric<T>>(((IMetric<T>)_metricsHandler).CreateNew);
+            _row = new FlexiRow<string, IMetric<T>>(_metricsHandler.Create);
         }
 
         IMetric<T> IMetric<T>.CreateNew()
