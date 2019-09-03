@@ -46,7 +46,7 @@ namespace Viki.LoadRunner.Engine.Analytics
 
         public void Begin()
         {
-            _metricMultiplexer = new MetricsHandler<TData>(Metrics);
+            _metricMultiplexer = new MetricsHandler<TData>(Metrics, MetricsPostProcess);
             _row = new FlexiRow<DimensionKey, MetricsHandler<TData>>(() => _metricMultiplexer.Create());
 
             _dimensionsKeyBuilder = new DimensionsHandler<TData>(Dimensions);
