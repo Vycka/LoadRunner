@@ -8,7 +8,7 @@ using Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Interfaces;
 namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
 {
     /// <summary>
-    /// Executes iterations in desired batch sizes at start of each time interval.
+    /// Executes iterations in desired batch sizes at start of each time(frame) interval.
     /// Thread count should be at least big as batch size for strategy to work as expected
     /// </summary>
     public class BatchByTimeIntervalSpeed : ISpeedStrategy
@@ -22,14 +22,15 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom.Strategies.Speed
         private int _executedBatchIterations;
 
         /// <summary>
-        /// Executes iterations in desired batch sizes at start of each time interval.
+        /// Executes iterations in desired batch sizes at start of each time(frame) interval.
         /// Thread count should be at least as big as batch size for strategy to work as expected.
         /// 
-        /// Threads should be able to complete their iteration within the time interval,
-        /// otherwise at next batch, threads which didn't managed to complete in time, will only start once they finish the previous batch.
+        /// Aim interval and thread count to be good enough so there will be enough free threads as the batch size at the start of the batch,
+        /// otherwise if there are not enough threads to start whole batch at the same time
+        /// there will be a late executions within batch size and time limits if any threads free up.
         /// 
         /// If no threads are available to execute the whole batch within interval,
-        /// the remaining iterations won't be executed when next time interval comes.
+        /// the remaining iterations won't be executed when next batch time frame comes.
         /// </summary>
         /// <param name="interval">Time interval at start of each [batchSize] of iterations will be executed</param>
         /// <param name="batchSize">Amount of iterations to execute within one batch defined in [interval]</param>

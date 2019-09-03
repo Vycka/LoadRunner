@@ -26,10 +26,16 @@ namespace Viki.LoadRunner.Engine.Analytics
         /// </summary>
         /// <param name="builder">Current histogram builder</param>
         /// <param name="metric">metric object</param>
+        /// <param name="postProcess">allows postprocessing of results/order for this metric before outputting it to the main results table.</param>
         /// <returns>Current Histogram instance</returns>
-        public static TBuilder Add<TData, TBuilder>(this IHistogramBuilder<TData, TBuilder> builder, IMetric<TData> metric)
+        public static TBuilder Add<TData, TBuilder>(this IHistogramBuilder<TData, TBuilder> builder, IMetric<TData> metric, PostProcessDelegate postProcess = null)
             where TBuilder : IHistogramBuilder<TData, TBuilder>
         {
+            if (postProcess != null)
+            {
+                builder.MetricsPostProcess.Add(builder.Metrics.Count, postProcess);
+            }
+
             builder.Metrics.Add(metric);
 
             return (TBuilder)builder;

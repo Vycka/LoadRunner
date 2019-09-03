@@ -37,7 +37,7 @@ namespace Viki.LoadRunner.Playground.Tools
 
         public void PrintResults()
         {
-            Console.WriteLine($@"IdsValidator: _nextId: {_nextId}, _missedOrderIds:{_missedOrderIds.Count}");
+            Console.WriteLine($@"IdsValidator: _nextId: {_nextId}, _missedOrderIds:{_missedOrderIds.Count}: {String.Join(", ", _missedOrderIds)}");
         }
     }
 }

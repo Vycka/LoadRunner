@@ -30,7 +30,7 @@ namespace Viki.LoadRunner.Playground
 
             StrategyBuilder strategy = new StrategyBuilder()
                 .SetScenario(factory)
-                .SetThreading(new FixedThreadCount(12))
+                .SetThreading(new FixedThreadCount(16))
                 .SetLimit(new TimeLimit(TimeSpan.FromSeconds(12)))
                 .SetAggregator(aggregator, idsValidator, streamAggregator);
 

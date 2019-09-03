@@ -38,6 +38,8 @@ namespace Viki.LoadRunner.Engine.Analytics
         public Dictionary<string, string> ColumnAliases { get; } = new Dictionary<string, string>();
         public List<string> ColumnIgnoreNames { get; } = new List<string>();
 
+        public Dictionary<int, PostProcessDelegate> MetricsPostProcess { get; } = new Dictionary<int, PostProcessDelegate>();
+
         #endregion
 
         #region Aggregation methods
@@ -143,4 +145,6 @@ namespace Viki.LoadRunner.Engine.Analytics
 
         #endregion
     }
+
+    public delegate IEnumerable<Val> PostProcessDelegate(IEnumerable<Val> input);
 }

@@ -9,23 +9,21 @@ namespace Viki.LoadRunner.Engine.Analytics
     {
         public class MetricsHandler<T>
         {
+            private readonly Dictionary<int, PostProcessDelegate> _postProcess;
             private readonly IMetric<T>[] _metrics;
 
-            /// <summary>
-            /// MetricsHandler acts as single metric, but it wraps multiple provided metrics and makes them work as one
-            /// </summary>
-            /// <param name="metricTemplates"></param>
-            public MetricsHandler(IEnumerable<IMetric<T>> metricTemplates)
+            public MetricsHandler(IEnumerable<IMetric<T>> metricTemplates, Dictionary<int, PostProcessDelegate> postProcess = null)
             {
                 if (metricTemplates == null)
                     throw new ArgumentNullException(nameof(metricTemplates));
 
+                _postProcess = postProcess ?? new Dictionary<int, PostProcessDelegate>();
                 _metrics = metricTemplates.ToArray();
             }
 
             public MetricsHandler<T> Create()
             {
-                return new MetricsHandler<T>(_metrics.Select(m => m.CreateNew()));
+                return new MetricsHandler<T>(_metrics.Select(m => m.CreateNew()), _postProcess);
             }
 
             public void Add(T result)
@@ -38,10 +36,21 @@ namespace Viki.LoadRunner.Engine.Analytics
 
             public IEnumerable<Val> Export()
             {
-                var keys = _metrics.SelectMany(m => m.ColumnNames).ToArray();
-                var values = _metrics.SelectMany(m => m.Values).ToArray();
+                IEnumerable<string[]> keys = _metrics.Select(m => m.ColumnNames);
+                object[][] values = _metrics.Select(m => m.Values).ToArray();
 
-                return keys.Select((k, i) => new Val(k, values[i]));
+                IEnumerable<Val> result = keys
+                    .SelectMany((k, i) =>
+                    {
+                        IEnumerable<Val> metricResult = k.Select((kk, ii) => new Val(kk, values[i][ii]));
+
+                        if (_postProcess.TryGetValue(i, out var processor))
+                            metricResult = processor(metricResult);
+
+                        return metricResult;
+                    });
+                    
+                return result;
             }
         }
     }
