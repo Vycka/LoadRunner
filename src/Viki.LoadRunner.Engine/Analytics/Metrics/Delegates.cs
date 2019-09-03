@@ -8,4 +8,5 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
     public delegate long LongSelectorDelegate<in TData>(TData data);
     public delegate double DoubleSelectorDelegate<in TData>(TData data);
     public delegate bool BoolSelectorDelegate<in TData>(TData data);
+    public delegate bool BoolSelectorDelegate<in TBase, in TSub>(TBase data, TSub sub);
 }
