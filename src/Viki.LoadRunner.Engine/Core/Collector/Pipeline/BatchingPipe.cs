@@ -21,19 +21,30 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
         {
             bool result = false;
 
-            if (_readOnlyList.Count != 0)
+            if (_writeOnlyList.Count != 0)
             {
-                batch = _readOnlyList;
-                result = true;
+                if (_readOnlyList.Count != 0)
+                {
+                    batch = _readOnlyList;
+                    result = true;
+                }
+                else
+                {
+                    Flip();
+                    batch = null;
+                }
             }
-            else if (_completed && _writeOnlyList.Count != 0)
+            else if (_completed) // WoS == 0, Completed == TRUE
             {
-                batch = _writeOnlyList;
-                _writeOnlyList = _readOnlyList;
-
-                _readOnlyList = (List<T>)batch;
-
-                result = true;
+                if (_readOnlyList.Count != 0)
+                {
+                    batch = _readOnlyList;
+                    result = true;
+                }
+                else
+                {
+                    batch = null;
+                }
             }
             else
             {
@@ -46,18 +57,20 @@ namespace Viki.LoadRunner.Engine.Core.Collector.Pipeline
         public void ReleaseBatch()
         {
             _readOnlyList.Clear();
+
+            Flip();
+        }
+
+        private void Flip()
+        {
+            var tmp = _readOnlyList;
+            _readOnlyList = _writeOnlyList;
+            _writeOnlyList = tmp;
         }
 
         public void Produce(T item)
         {
             _writeOnlyList.Add(item);
-
-            if (_completed == false && _readOnlyList.Count == 0)
-            {
-                var tmp = _readOnlyList;
-                _readOnlyList = _writeOnlyList;
-                _writeOnlyList = tmp;
-            }
         }
 
         public void ProducingCompleted()

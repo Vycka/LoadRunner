@@ -6,8 +6,18 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 {
     public class ValueMetric<T> : ValuesMetric<T>
     {
+        public ValueMetric(BoolSelectorDelegate<T> filterSelector, string name, ObjectSelectorDelegate<T> selector)
+            : base(filterSelector, data => new[] { new Val(name, selector(data)) })
+        {
+        }
+
         public ValueMetric(string name, ObjectSelectorDelegate<T> selector)
             : base(data => new[] { new Val(name, selector(data)) })
+        {
+        }
+
+        public ValueMetric(BoolSelectorDelegate<T> filterSelector, ValSelectorDelegate<T> valueSelector)
+            : base(filterSelector, data => new[] { valueSelector(data) })
         {
         }
 
@@ -20,10 +30,17 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
     public class ValuesMetric<T> : IMetric<T>
     {
         private readonly ValuesSelectorDelegate<T> _selector;
+        private readonly BoolSelectorDelegate<T> _filterSelector;
         private bool _done;
 
         public ValuesMetric(ValuesSelectorDelegate<T> selector)
+            : this((i) => true, selector)
         {
+        }
+
+        public ValuesMetric(BoolSelectorDelegate<T> filterSelector, ValuesSelectorDelegate<T> selector)
+        {
+            _filterSelector = filterSelector ?? throw new ArgumentNullException(nameof(filterSelector));
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
 
             ColumnNames = new string[0];
@@ -33,12 +50,12 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 
         public IMetric<T> CreateNew()
         {
-            return new ValuesMetric<T>(_selector);
+            return new ValuesMetric<T>(_filterSelector, _selector);
         }
 
         public void Add(T data)
         {
-            if (!_done)
+            if (!_done && _filterSelector(data))
             {
                 Val[] columns = _selector(data).ToArray();
 
