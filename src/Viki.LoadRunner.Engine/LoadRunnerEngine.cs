@@ -25,6 +25,11 @@ namespace Viki.LoadRunner.Engine
         public bool Running { get; private set; }
 
         /// <summary>
+        /// Is test is in stopping state
+        /// </summary>
+        public bool Stopping { get; private set; }
+
+        /// <summary>
         /// Controls, how often root thread will ping strategies with HeartBeat()
         /// Some strategies depend on this to readjust time sensitive limits, and increasing value too much can result some Thread/Speed precision decrease.
         /// E.g. ListOfSpeed strategy will readjust speed only at this heart-beat.
@@ -83,7 +88,7 @@ namespace Viki.LoadRunner.Engine
         /// <remarks>Use [Running] property to check when it is finished</remarks>
         public void CancelAsync(bool blocking = false)
         {
-            Running = false;
+            Stopping = true;
 
             if (blocking)
                 Wait();
@@ -141,12 +146,13 @@ namespace Viki.LoadRunner.Engine
             try
             {
                 Running = true;
+                Stopping = false;
 
                 OnStarted();
 
                 _strategy.Start();
 
-                while (_strategy.HeartBeat() == false && Running)
+                while (_strategy.HeartBeat() == false && !Stopping)
                 {
                     Thread.Sleep(HeartBeatMs);
                 }
@@ -160,6 +166,7 @@ namespace Viki.LoadRunner.Engine
             {
                 _strategy.Stop();
                 Running = false;
+                Stopping = false;
 
                 OnStopped(Exception);
             }

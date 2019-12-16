@@ -14,6 +14,12 @@ namespace Viki.LoadRunner.Engine.Interfaces
         /// </summary>
         bool Running { get; }
 
+
+        /// <summary>
+        /// Is test is in stopping state
+        /// </summary>
+        bool Stopping { get; }
+
         /// <summary>
         /// Executes test in separate thread (non-blocking call)
         /// </summary>
