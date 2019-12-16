@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Viki.LoadRunner.Engine;
 using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
+using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Analytics.Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Core.Collector;
@@ -28,8 +29,8 @@ namespace Viki.LoadRunner.Tools.Windows
     {
         public string TextTemplate = "LR-UI {0}";
 
-        private readonly MetricsHandler<IResult> _metricMultiplexerTemplate;
-        private IMetric<IResult> _metricMultiplexer;
+        private MetricsTemplate<IResult> _metricsTemplate;
+        private IMetric<IResult> _metrics;
 
         private readonly ExecutionTimer _timer;
         private readonly ConcurrentQueue<IResult> _resultsQueue = new ConcurrentQueue<IResult>();
@@ -41,7 +42,7 @@ namespace Viki.LoadRunner.Tools.Windows
         {
             _timer = new ExecutionTimer();
 
-            _metricMultiplexerTemplate = new MetricsHandler<IResult>(new IMetric[]
+            _metricsTemplate = new MetricsTemplate<IResult>(new IMetric[]
             {
                 new FuncMultiMetric<int>((row, result) => 
                     result.Checkpoints.ForEach(c => row[c.Name] = (int)c.TimePoint.TotalMilliseconds),
@@ -98,7 +99,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private void ResetStats()
         {
-            _metricMultiplexer = ((IMetric<IResult>)_metricMultiplexerTemplate).CreateNew();
+            _metrics = _metricsTemplate.Create();
         }
 
 
@@ -164,8 +165,9 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private IDictionary<string, object> GetData()
         {
-            string[] labels = _metricMultiplexer.ColumnNames;
-            object[] values = _metricMultiplexer.Values;
+
+            string[] labels = _metrics.ColumnNames;
+            object[] values = _metrics.Values;
 
             Dictionary<string, object> dictionary = new Dictionary<string, object>(labels.Length);
 
@@ -181,11 +183,8 @@ namespace Viki.LoadRunner.Tools.Windows
 
         private async void _validateButton_Click(object sender, EventArgs e)
         {
-            var metric = new MinDurationMetric();
-
             IterationResult result = await Task.Run(() => _validator.Validate(0)).ConfigureAwait(false);
-
-            
+           
 
             Invoke(new InvokeDelegate(
                 () => AppendMessage($"Validation OK:\r\n{String.Join("\r\n", Process(result).Select(c => $"{c.Item1}->{c.Item2}: {c.Item3}{(c.Item4 != null ? $"\r\n{c.Item4.ToString()}\r\n" : "")}"))}"))
@@ -216,7 +215,7 @@ namespace Viki.LoadRunner.Tools.Windows
 
             while (_resultsQueue.TryDequeue(out result))
             {
-                _metricMultiplexer.Add(result);
+                _metrics.Add(result);
 
                 foreach (ICheckpoint checkpoint in result.Checkpoints)
                 {
