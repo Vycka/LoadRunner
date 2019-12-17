@@ -66,4 +66,16 @@ namespace Viki.LoadRunner.Engine.Analytics
         public string Key;
         public object Value;
     }
+
+    public struct Val<T>
+    {
+        public Val(string key, T value)
+        {
+            Key = key;
+            Value = value;
+        }
+
+        public string Key;
+        public T Value;
+    }
 }

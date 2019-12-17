@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Analytics.Interfaces;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
@@ -36,7 +39,7 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
         protected override IMetric<IResult> CreateNewMetric()
         {
-            return new CheckpointValuesMetric(_ignoredCheckpoints);
+            return new CheckpointValuesMetric(_prefix, _ignoredCheckpoints);
         }
 
         protected override void AddResult(IResult result)
@@ -65,6 +68,21 @@ namespace Viki.LoadRunner.Engine.Aggregators.Metrics
 
                         _row[key] = Convert.ToInt64(momentDiff.TotalMilliseconds);
                     }
+                }
+            }
+        }
+
+        public static IEnumerable<Val<TimeSpan>> Parse(ICheckpoint[] checkpoints)
+        {
+            if (checkpoints.Length == 1)
+                yield return new Val<TimeSpan>(checkpoints[0].Name, checkpoints[0].TimePoint);
+            else
+            {
+                int length = checkpoints.Length - 1;
+                for (int i = 0; i < length; i++)
+                {
+                    ICheckpoint checkpoint = checkpoints[i];
+                    yield return new Val<TimeSpan>(checkpoint.Name, checkpoint.Diff(checkpoints[i+1]));
                 }
             }
         }
