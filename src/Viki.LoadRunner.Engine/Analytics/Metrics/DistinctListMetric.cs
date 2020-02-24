@@ -24,7 +24,8 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
         {
             return new DistinctListMetric<TIn, TOut>(_name, _selector)
             {
-                Sort = Sort
+                Sort = Sort,
+                Limit = Limit
             };
         }
 
@@ -40,7 +41,9 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
 
         public Func<IEnumerable<TOut>, IEnumerable<TOut>> Sort { get; set; } = input => input.OrderBy(e => e);
 
+        public int Limit { get; set; } = Int32.MaxValue;
+
         public string[] ColumnNames => new[] { _name };
-        public object[] Values => new object[] { String.Join(", ", Sort(_elements)) };
+        public object[] Values => new object[] { String.Join(", ", Sort(_elements).Take(Limit)) + (_elements.Count > Limit ? $"... +{_elements.Count-Limit} more items." : "") };
     }
 }
