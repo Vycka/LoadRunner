@@ -11,7 +11,15 @@
     <Copyright>2019</Copyright>
     <PackageProjectUrl>https://github.com/Vycka/LoadRunner</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Vycka/LoadRunner</RepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
