@@ -13,6 +13,7 @@ Start with this small setup to get a feel on how it's configured.
   - [1] Write Scenario implementation, defining code it-self which will get executed concurrently multiple times.
   - [2][Optional] Configure how results get aggregated/presented.
   - [3] Configure strategy on how test gets executed (e.g. How much threads, how long it should run. etc...)
+* Real case & simple load-test scenario to meassure "somewhat-theoretical" performance of simple http server - https://github.com/Vycka/HttpMockSlim/tree/master/tests/HttpMockSlim.LoadTest
 
 HistogramAggregator is a default tool to aggregate results with defined dimensions/metrics
  * Given its flexibility documentation will take time till its done.
@@ -37,7 +38,7 @@ Rest of the demo project:
   
 Until demo project is completed, one can also checkout my messy setups i use for debugging:
  * [src/Playground/Program.cs](/src/Viki.LoadRunner.Playground/Program.cs)
-  
+ 
 [Future TODOs](../../wiki/TODOs)
 
 ***Have any questions/suggestions/etc, feel free to contact me.***
