@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Viki.LoadRunner.Engine.Analytics.Interfaces;
+using Viki.LoadRunner.Engine.Utils;
 
 namespace Viki.LoadRunner.Engine.Analytics
 {
@@ -55,6 +57,7 @@ namespace Viki.LoadRunner.Engine.Analytics
         }
     }
 
+    [DebuggerDisplay("{Key}: {DebuggerValue}")]
     public struct Val
     {
         public Val(string key, object value)
@@ -65,8 +68,11 @@ namespace Viki.LoadRunner.Engine.Analytics
 
         public string Key;
         public object Value;
+
+        private string DebuggerValue => Value?.ToString().SubstringSafe(0, 256);
     }
 
+    [DebuggerDisplay("{Key}: {DebuggerValue}")]
     public struct Val<T>
     {
         public Val(string key, T value)
@@ -77,5 +83,7 @@ namespace Viki.LoadRunner.Engine.Analytics
 
         public string Key;
         public T Value;
+
+        private string DebuggerValue => Value?.ToString().SubstringSafe(0, 256);
     }
 }
