@@ -62,9 +62,6 @@
     <Compile Include="Replay\ReplayDemo.cs" />
     <Compile Include="Replay\ReplayScenario.cs" />
     <Compile Include="RnD\PercentileMetricWithCount.cs" />
-    <Compile Include="Storage\EnumerableTextReader.cs" />
-    <Compile Include="Storage\JsonObjectsReader.cs" />
-    <Compile Include="Storage\JsonObjectsWriter.cs" />
     <Compile Include="TheoreticalSpeedDemo.cs" />
     <Compile Include="Tools\AssertIterationIdsAggregator.cs" />
     <Compile Include="Tools\CountingScenario.cs" />
