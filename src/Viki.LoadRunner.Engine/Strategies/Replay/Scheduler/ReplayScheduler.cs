@@ -45,7 +45,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Scheduler
 
         public void WaitNext(ref bool stop)
         {
-            DataItem dataItem = _dataReader.Next(_threadId);
+            DataItem dataItem = _dataReader.Next(_threadId, ref stop);
 
             if (dataItem != null)
             {

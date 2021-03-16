@@ -10,6 +10,8 @@ using Viki.LoadRunner.Engine.Core.Factory;
 using Viki.LoadRunner.Engine.Core.Factory.Interfaces;
 using Viki.LoadRunner.Engine.Core.Pool.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
+using Viki.LoadRunner.Engine.Core.State;
+using Viki.LoadRunner.Engine.Core.State.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
 using Viki.LoadRunner.Engine.Core.Worker;
 using Viki.LoadRunner.Engine.Core.Worker.Interfaces;
@@ -31,8 +33,9 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
         private PipelineDataAggregator _aggregator;
         private IReplayDataReader _dataReader;
         private IErrorHandler _errorHandler;
-        private IThreadPoolCounter _counter;
+        private IThreadPoolCounter _threadPoolCounter;
         private ThreadPool _pool;
+        private GlobalCounters _globalCounters;
 
         public ReplayStrategy(IReplayStrategySettings<TData> settings)
         {
@@ -45,19 +48,21 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
         public virtual void Start()
         {
-            _counter = new ThreadPoolCounter();
+            _threadPoolCounter = new ThreadPoolCounter();
+            _globalCounters = GlobalCounters.CreateDefault();
+            ITestState testState = new TestState(_timer, _globalCounters, _threadPoolCounter);
             PipeFactory<IResult> pipeFactory = new PipeFactory<IResult>();
             _aggregator = new PipelineDataAggregator(_settings.Aggregators, pipeFactory);
             _aggregator.Start();
 
             _errorHandler = new ErrorHandler();
             _dataReader = _settings.DataReader;
-            _dataReader.Begin();
+            _dataReader.Begin(testState);
 
             IIterationContextFactory iterationContextFactory = CreateIterationContextFactory();
             IReplayScenarioHandlerFactory scenarioHandlerFactory = CreateScenarioHandlerFactory();
             IReplaySchedulerFactory schedulerFactory = CreateSchedulerFactory();
-            IDataCollectorFactory dataCollectorFactory = CreateDataCollectorFactory(pipeFactory, _counter);
+            IDataCollectorFactory dataCollectorFactory = CreateDataCollectorFactory(pipeFactory, _threadPoolCounter);
             IScenarioThreadFactory scenarioThreadFactory = CreateScenarioThreadFactory();
 
             IThreadFactory threadFactory = new ReplayScenarioThreadFactory(
@@ -68,10 +73,10 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
                 scenarioThreadFactory
             );
 
-            _pool = new ThreadPool(threadFactory, _counter);
+            _pool = new ThreadPool(threadFactory, _threadPoolCounter);
             _pool.StartWorkersAsync(_settings.ThreadCount);
 
-            while (_counter.CreatedThreadCount != _counter.InitializedThreadCount)
+            while (_threadPoolCounter.CreatedThreadCount != _threadPoolCounter.InitializedThreadCount)
             {
                 Thread.Sleep(100);
                 _errorHandler.Assert();
@@ -95,12 +100,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
         private IReplayScenarioHandlerFactory CreateScenarioHandlerFactory()
         {
-            return new ReplayScenarioHandlerFactory<TData>(_settings.ScenarioFactory, GlobalCounters.CreateDefault());
+            return new ReplayScenarioHandlerFactory<TData>(_settings.ScenarioFactory, _globalCounters);
         }
 
         private IReplaySchedulerFactory CreateSchedulerFactory()
         {
-            return new ReplaySchedulerFactory(_timer,  _dataReader, _counter, _settings.SpeedMultiplier);
+            return new ReplaySchedulerFactory(_timer,  _dataReader, _threadPoolCounter, _settings.SpeedMultiplier);
         }
 
         private IDataCollectorFactory CreateDataCollectorFactory(IPipeFactory<IResult> pipeFactory, IThreadPoolStats poolStats)
@@ -122,7 +127,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
 
             _errorHandler.Assert();
             // ReplayScheduler stops threads when IDataReader rans out of replay items.
-            return _counter.CreatedThreadCount == 0;
+            return _threadPoolCounter.CreatedThreadCount == 0;
         }
 
         public void Stop()

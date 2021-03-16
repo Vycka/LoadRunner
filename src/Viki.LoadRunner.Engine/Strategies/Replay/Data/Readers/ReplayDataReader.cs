@@ -21,12 +21,12 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay.Data.Readers
             _data = data.ToArray();
         }
 
-        public void Begin()
+        public void Begin(ITestState testState)
         {
             _readIndex = -1;
         }
 
-        public DataItem Next(int threadId)
+        public DataItem Next(int threadId, ref bool stop)
         {
             int current = Interlocked.Increment(ref _readIndex);
 
