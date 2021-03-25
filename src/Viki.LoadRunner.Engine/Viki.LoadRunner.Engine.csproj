@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.8.83-beta</Version>
+    <Version>0.8.83</Version>
     <PackageId>Viki.LoadRunner</PackageId>
     <Authors>Vytautas Klumbys</Authors>
     <Description>Generic performance testing library for executing load-tests written in .NET c#
@@ -22,22 +22,11 @@ Visit project website for examples.</Description>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
-
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageReleaseNotes>WARNING: This has a trivial compile-level compatibility break for IReplayDataReader:
-
-Begin() -&gt; Begin(ITestState testState)
-Next() -&gt; Next(int threadId, ref bool stop) (one can now block return as long as one occacionally tests stop value so if test execution ends, one needs to release call gracefully (after the stop==true, one can still return one more item to be executed (although its recommended to just return null to indicate end, as executed time will be executed within limits of FinishTimout and might be aborted))
-
-Fix is trivial, and major version was not bumped because its still in beta.</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
 
 
   <ItemGroup>
