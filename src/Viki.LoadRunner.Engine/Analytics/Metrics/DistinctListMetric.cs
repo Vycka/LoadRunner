@@ -9,20 +9,22 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
     {
         private readonly string _name;
         private readonly Func<TIn, TOut> _selector;
+        private readonly string _separator;
 
         private readonly HashSet<TOut> _elements;
 
-        public DistinctListMetric(string name, Func<TIn, TOut> selector)
+        public DistinctListMetric(string name, Func<TIn, TOut> selector, string separator = ", ")
         {
             _name = name;
             _selector = selector;
+            _separator = separator;
 
             _elements = new HashSet<TOut>();
         }
 
         public IMetric<TIn> CreateNew()
         {
-            return new DistinctListMetric<TIn, TOut>(_name, _selector)
+            return new DistinctListMetric<TIn, TOut>(_name, _selector, _separator)
             {
                 Sort = Sort,
                 Limit = Limit
@@ -44,6 +46,6 @@ namespace Viki.LoadRunner.Engine.Analytics.Metrics
         public int Limit { get; set; } = Int32.MaxValue;
 
         public string[] ColumnNames => new[] { _name };
-        public object[] Values => new object[] { String.Join(", ", Sort(_elements).Take(Limit)) + (_elements.Count > Limit ? $"... +{_elements.Count-Limit} more items." : "") };
+        public object[] Values => new object[] { String.Join(_separator, Sort(_elements).Take(Limit)) + (_elements.Count > Limit ? $"... +{_elements.Count - Limit} more items." : "") };
     }
 }

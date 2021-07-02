@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.8.49</Version>
+    <Version>0.8.50</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Vytautas Klumbys</Authors>
     <PackageTags>Load performance Test Tester c# Runner Parallel Thread Client Library Framework Tool Addin .NET utils</PackageTags>
