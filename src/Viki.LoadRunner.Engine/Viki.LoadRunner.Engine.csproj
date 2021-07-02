@@ -12,7 +12,7 @@ Visit project website for examples.</Description>
     <PackageProjectUrl>https://github.com/Vycka/LoadRunner</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Vycka/LoadRunner</RepositoryUrl>
     <PackageTags>Load Stress Performance Test Testing c# Runner Parallel Thread Library Framework Tool Addin .NET</PackageTags>
-    <Copyright>2019</Copyright>
+    <Copyright>2019 - 2022</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
