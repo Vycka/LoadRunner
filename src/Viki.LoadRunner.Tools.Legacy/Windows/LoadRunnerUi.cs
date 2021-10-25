@@ -11,7 +11,6 @@ using Viki.LoadRunner.Engine.Aggregators.Interfaces;
 using Viki.LoadRunner.Engine.Aggregators.Metrics;
 using Viki.LoadRunner.Engine.Analytics;
 using Viki.LoadRunner.Engine.Analytics.Interfaces;
-using Viki.LoadRunner.Engine.Analytics.Viki.LoadRunner.Engine.Aggregators.Utils;
 using Viki.LoadRunner.Engine.Core.Collector;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
@@ -23,8 +22,7 @@ using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Utils;
 using Viki.LoadRunner.Engine.Validators;
 
-
-namespace Viki.LoadRunner.Tools.Windows
+namespace Viki.LoadRunner.Tools.Legacy.Windows
 {
     public partial class LoadRunnerUi : Form, IAggregator, IStrategyExecutor
     {

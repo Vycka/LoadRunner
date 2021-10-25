@@ -2,9 +2,9 @@
 using Viki.LoadRunner.Engine.Strategies.Extensions;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 using Viki.LoadRunner.Engine.Validators;
-using Viki.LoadRunner.Tools.Windows;
+using Viki.LoadRunner.Tools.Legacy.Windows;
 
-namespace Viki.LoadRunner.Tools.Extensions
+namespace Viki.LoadRunner.Tools.Legacy.Extensions
 {
     public static class StrategyBuilderExtensions
     {

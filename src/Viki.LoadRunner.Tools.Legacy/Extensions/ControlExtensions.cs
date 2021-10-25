@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace Viki.LoadRunner.Tools.Extensions
+namespace Viki.LoadRunner.Tools.Legacy.Extensions
 {
     public static class ControlExtensions
     {

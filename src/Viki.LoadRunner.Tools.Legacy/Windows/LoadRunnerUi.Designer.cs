@@ -1,4 +1,4 @@
-﻿namespace Viki.LoadRunner.Tools.Windows
+﻿namespace Viki.LoadRunner.Tools.Legacy.Windows
 {
     partial class LoadRunnerUi
     {
