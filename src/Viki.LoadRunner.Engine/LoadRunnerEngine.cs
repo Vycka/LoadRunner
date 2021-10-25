@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Viki.LoadRunner.Engine.Core.State.Interfaces;
 using Viki.LoadRunner.Engine.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
 
@@ -18,6 +19,11 @@ namespace Viki.LoadRunner.Engine
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// State counters of load-test 
+        /// </summary>
+        public ITestState State { get; private set; }
 
         /// <summary>
         /// Is test running
@@ -150,7 +156,7 @@ namespace Viki.LoadRunner.Engine
 
                 OnStarted();
 
-                _strategy.Start();
+                State = _strategy.Start();
 
                 while (_strategy.HeartBeat() == false && !Stopping)
                 {
@@ -174,7 +180,7 @@ namespace Viki.LoadRunner.Engine
 
         private void OnStarted()
         {
-            Started?.Invoke(this);
+            Started?.Invoke(this, State);
         }
 
         public void OnStopped(Exception exception)

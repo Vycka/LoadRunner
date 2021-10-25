@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Transactions;
+using Viki.LoadRunner.Engine.Core.State.Interfaces;
 
 namespace Viki.LoadRunner.Engine.Interfaces
 {
@@ -23,7 +24,7 @@ namespace Viki.LoadRunner.Engine.Interfaces
         event ExecutorStoppedEventDelegate Stopped;
     }
 
-    public delegate void ExecutorStartedEventDelegate(IStrategyExecutor sender);
+    public delegate void ExecutorStartedEventDelegate(IStrategyExecutor sender, ITestState state);
 
     public delegate void ExecutorStoppedEventDelegate(IStrategyExecutor sender, Exception exception);
 }

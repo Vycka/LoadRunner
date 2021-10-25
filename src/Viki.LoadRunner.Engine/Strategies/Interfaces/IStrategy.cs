@@ -1,8 +1,10 @@
-﻿namespace Viki.LoadRunner.Engine.Strategies.Interfaces
+﻿using Viki.LoadRunner.Engine.Core.State.Interfaces;
+
+namespace Viki.LoadRunner.Engine.Strategies.Interfaces
 {
     public interface IStrategy
     {
-        void Start();
+        ITestState Start();
 
         bool HeartBeat();
 

@@ -46,7 +46,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
             _timer = new ExecutionTimer();
         }
 
-        public virtual void Start()
+        public virtual ITestState Start()
         {
             _threadPoolCounter = new ThreadPoolCounter();
             _globalCounters = GlobalCounters.CreateDefault();
@@ -83,6 +83,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Replay
             }
 
             _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
+
+            return testState;
         }
 
         private IScenarioThreadFactory CreateScenarioThreadFactory()

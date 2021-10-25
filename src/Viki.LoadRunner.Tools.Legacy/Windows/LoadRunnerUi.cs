@@ -16,6 +16,7 @@ using Viki.LoadRunner.Engine.Core.Collector;
 using Viki.LoadRunner.Engine.Core.Collector.Interfaces;
 using Viki.LoadRunner.Engine.Core.Scenario;
 using Viki.LoadRunner.Engine.Core.Scenario.Interfaces;
+using Viki.LoadRunner.Engine.Core.State.Interfaces;
 using Viki.LoadRunner.Engine.Core.Timer;
 using Viki.LoadRunner.Engine.Interfaces;
 using Viki.LoadRunner.Engine.Strategies.Interfaces;
@@ -75,9 +76,9 @@ namespace Viki.LoadRunner.Tools.Windows
 
         public event ExecutorStoppedEventDelegate Stopped;
 
-        private void EngineOnStarted(IStrategyExecutor sender)
+        private void EngineOnStarted(IStrategyExecutor sender, ITestState state)
         {
-            Started?.Invoke(sender);
+            Started?.Invoke(sender, _engine.State);
         }
 
         private void EngineOnStopped(IStrategyExecutor sender, Exception exception)

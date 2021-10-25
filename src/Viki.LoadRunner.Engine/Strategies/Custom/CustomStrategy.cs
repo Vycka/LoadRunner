@@ -60,7 +60,7 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             _timer = new ExecutionTimer();
         }
 
-        public void Start()
+        public ITestState Start()
         {
             _threadPoolCounter = new ThreadPoolCounter();
 
@@ -99,6 +99,8 @@ namespace Viki.LoadRunner.Engine.Strategies.Custom
             InitialThreadingSetup();
 
             _timer.Start(); // This line also releases Worker-Threads from wait in IPrewait
+
+            return _state;
         }
 
         public bool HeartBeat()
