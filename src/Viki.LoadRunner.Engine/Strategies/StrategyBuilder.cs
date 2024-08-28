@@ -49,6 +49,16 @@ namespace Viki.LoadRunner.Engine.Strategies
         }
 
         /// <summary>
+        /// Set inline Func&lt;int,IScenario&gt; factory.
+        /// </summary>
+        /// <param name="scenarioFactory">Func scenarion factory</param>
+        public StrategyBuilder SetScenario(CreateScenarioDelegate scenarioFactory)
+        {
+            ScenarioFactory = new FuncScenarioFactory(scenarioFactory);
+            return this;
+        }
+
+        /// <summary>
         /// Sets rules which decide when test execution should finish.
         /// </summary>
         /// <param name="limits">list of strategies set</param>
